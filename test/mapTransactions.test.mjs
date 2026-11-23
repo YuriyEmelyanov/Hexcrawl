@@ -738,6 +738,10 @@ test('manual road command commits exactly once and stale callback cannot write a
   const crossing=before.map.crossings[0];assert.ok(crossing,'fixture crossing required');
   const command={type:'crossing',roadId:crossing.roadId,segmentKey:crossing.roadSegmentKey,riverId:crossing.riverId,kind:crossing.kind==='bridge'?'ferry':'bridge'};
   assert.equal(h.render().editRoadDocument(command),true);
+  const arrows = h.render().riverDirectionArrows;
+  assert.ok(arrows.length > 0, 'ordinary river edges still show flow');
+  const crossingEdges = new Set(before.map.crossings.map(c => c.riverEdgeKey));
+  assert.ok(arrows.every(arrow => !crossingEdges.has(arrow.edgeKey)), 'crossing symbols have no flow arrow');
   const after=stable(h.render());assert.notDeepEqual(after,before);assert.equal(h.render().undoHistory.length,stack+1);assertUndoRedo(h,before,after);
   const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
   assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);

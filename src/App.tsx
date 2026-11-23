@@ -1,4 +1,7 @@
-import {finePoiLabel} from './oneMilePresentation';
+import {routeClearance} from './routeClearance';
+import {refinedRouteBends} from './refinedRouteBends';
+import {ends, roundedRoutes, svgPoints} from './routeBends';
+import {FINE_HEX_WIDTH, finePoiLabel} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
 import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {prepareAcceptedSmallLakeViews,prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,type SmallLakeProtection} from './smallLakeShore';
@@ -564,7 +567,7 @@ const SVG_EXPORT_STYLES = `
   .river-arrow-head { fill:var(--water-marks, #ffffff); }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
-  .trail-line { stroke:#8b6a3f; stroke-width:1.5; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
+  .trail-line { stroke:#8b6a3f; stroke-width:2.25; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
   .trail-line--ford { stroke-dasharray:none; stroke-dashoffset:0; opacity:.42; }
   .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
@@ -8498,7 +8501,7 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
   const hexWidth = getHexWidth(HEX_SIZE);
   const fullnessByEdge = getRiverSectorFullnessByEdge(river);
   const fallbackFullness = getRiverFallbackFullness(river);
-  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number; fullness: RiverFullness }> = [];
+  const segments: Array<{ key: string; riverId:number; edgeKey:string; x1: number; y1: number; x2: number; y2: number; width: number; fullness: RiverFullness }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
@@ -8507,6 +8510,7 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
     const fullness=fullnessByEdge.get(segmentEdgeKey) ?? fallbackFullness;
     segments.push({
       key: `river-segment-${river.id}-${i}`,
+      riverId: river.id, edgeKey: segmentEdgeKey,
       x1: start.x + offsetX,
       y1: start.y + offsetY,
       x2: end.x + offsetX,
@@ -12528,9 +12532,10 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
     const offsetY = HEX_SIZE - minBaseY;
+    const crossingEdges = new Set(crossings.map(crossing => crossing.riverEdgeKey));
     return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, hiddenRiverEdgeKeys))
-      .filter((arrow) => !rapidRiverEdgeKeys.has(arrow.edgeKey));
-  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys]);
+      .filter(arrow => !rapidRiverEdgeKeys.has(arrow.edgeKey) && !crossingEdges.has(arrow.edgeKey));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys, crossings]);
   const riverRapidMarks = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -12557,6 +12562,23 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     return { x: (HEX_SIZE * SQRT3) / 2 - minBaseX, y: HEX_SIZE - minBaseY };
   }, [positionedHexes]);
+  const nativeClearance=useMemo(()=>routeClearance(roadSegments.map(ends),riverSegments.map(ends)),[roadSegments,riverSegments]);
+  const riverPaint = useMemo(() => {
+    const shore = lakeVertices.map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y}));
+    const paths = riverSegments.map(s => ({key:s.riverId+':'+s.edgeKey, routeId:s.riverId, points:ends(s)}));
+    return roundedRoutes(paths,[...shore,...riverWaterfalls],(p,r)=>nativeClearance(p,'river',r),{halfSteps:24});
+  }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls,nativeClearance]);
+  const roadPins=useMemo(()=>regions.flatMap(r => hasCentralPoi(r) ? [r.centerHex,...r.pointsOfInterest] : r.pointsOfInterest)
+      .map(h => toPixel(h.q,h.r)).map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y})),[regions,riverOffset]);
+  const roadPaint = useMemo(() => {
+    const byRoad = new Map(renderedCrossings.map(c => [c.roadId+':'+c.roadSegmentKey,c]));
+    const paths = roadSegments.map(s => {
+      const crossing = byRoad.get(s.roadId+':'+s.segmentKey);
+      return {key:s.key,routeId:s.roadId,points:ends(s),fixed:!!crossing && crossing.kind!=='bridge',
+        trim:crossing ? .24 : .38};
+    });
+    return roundedRoutes(paths,roadPins,(p,r)=>nativeClearance(p,'road',r),{halfSteps:24,joinRouteEnds:true});
+  }, [roadSegments,renderedCrossings,roadPins,nativeClearance]);
   const lakeVerticesDebug = useMemo(
     () => drawLakeVerticesDebug(lakeVertices, riverOffset.x, riverOffset.y),
     [lakeVertices, riverOffset.x, riverOffset.y]
@@ -16125,14 +16147,36 @@ export function App() {
     finishNotesGroup();clearNotesDraft();closeEditors();setSelectedHex({...hex});setRiverFeatureTarget(target);setIsSidePanelCollapsed(false);return true;
   };
   const riverMapTargets=editMode?rivers.flatMap(r=>r.vertexPath.slice(1).flatMap((b,i)=>{const a=r.vertexPath[i],key=edgeKey(a,b),hex=regions.flatMap(r=>r.hexes).find(h=>getHexEdgeKeys(h).has(key));return hex?[{riverId:r.id,hexKey:hexKey(hex),edgeKey:key,a,b}]:[];})):[];
-  const activateMapRiver=(event:React.MouseEvent<SVGLineElement>,target:RiverFeatureTarget)=>{
+  const riverEdgePoints = (id:number,a:RiverVertex,b:RiverVertex) => svgPoints(riverPaint.get(id+':'+edgeKey(a,b))
+    ?? [a,b].map(p=>({x:p.x+riverOffset.x,y:p.y+riverOffset.y})));
+  function selectedRiverVertexPoint(target: RiverFeatureTarget) {
+    const river = rivers.find(r => r.id === target.riverId);
+    if (!river || !target.vertexKey) return;
+    const index = river.vertexPath.findIndex(v => v.key === target.vertexKey);
+    if (index < 0) return;
+    const vertex = river.vertexPath[index];
+    const previous = river.vertexPath[index - 1];
+    const next = river.vertexPath[index + 1];
+    const paintedEdge = (neighbor: RiverVertex) => riverPaint.get(river.id + ':' + edgeKey(vertex, neighbor));
+    const incoming = previous && paintedEdge(previous);
+    return (incoming && incoming[incoming.length - 1]) ?? (next && paintedEdge(next)?.[0])
+      ?? { x: vertex.x + riverOffset.x, y: vertex.y + riverOffset.y };
+  }
+  const selectedRiverVertex = editMode && riverFeatureTarget?.vertexKey
+    ? selectedRiverVertexPoint(riverFeatureTarget) : undefined;
+  const activateMapRiver=(event:React.MouseEvent<SVGPolylineElement>,target:RiverFeatureTarget)=>{
     event.stopPropagation();if(riverDraftGesture.current?.moved)return;
     if(event.detail===0){chooseMapRiver(target);return;}
-    const nodes=event.currentTarget.parentElement?.querySelectorAll<SVGLineElement>('[data-river-map-edge]')??[];
+    const nodes=event.currentTarget.parentElement?.querySelectorAll<SVGPolylineElement>('[data-river-map-edge]')??[];
     const hits=Array.from(nodes).filter(node=>{const matrix=node.getScreenCTM();return matrix&&node.isPointInStroke(new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()));});
     const choices=hits.flatMap(node=>{const hit=riverMapTargets.find(t=>`${t.riverId}:${t.edgeKey}`===node.dataset.riverMapEdge);return hit?[{riverId:hit.riverId,edgeKey:hit.edgeKey,hexKey:hit.hexKey}]:[];});
     const matrix=event.currentTarget.getScreenCTM(),point=matrix?new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()):null;
-    const roadHits=point?roadSegments.filter(s=>{const dx=s.x2-s.x1,dy=s.y2-s.y1,t=Math.max(0,Math.min(1,((point.x-s.x1)*dx+(point.y-s.y1)*dy)/(dx*dx+dy*dy)));return Math.hypot(point.x-s.x1-t*dx,point.y-s.y1-t*dy)<=22/mapScaleRef.current;}).map(s=>({roadId:s.roadId,pair:s.segmentKey})):[];
+    const roadHits=point?roadSegments.filter(s=>roadPaint.get(s.key)?.some((b,i,points)=>{
+      if (!i) return false;
+      const a=points[i-1],dx=b.x-a.x,dy=b.y-a.y;
+      const t=Math.max(0,Math.min(1,((point.x-a.x)*dx+(point.y-a.y)*dy)/(dx*dx+dy*dy||1)));
+      return Math.hypot(point.x-a.x-t*dx,point.y-a.y-t*dy)<=22/mapScaleRef.current;
+    })).map(s=>({roadId:s.roadId,pair:s.segmentKey})):[];
     if(choices.length>1||roadHits.length){setRiverHitChoices(choices);setRiverRoadHitChoices(roadHits);setIsSidePanelCollapsed(false);setEditError(language==='ru'?'Здесь несколько объектов. Выберите нужный участок.':'Several objects overlap. Choose the intended edge.');return;}
     if(choices[0])chooseMapRiver(choices[0]);
   };
@@ -16503,9 +16547,26 @@ export function App() {
   const fineReadCell=fineDraft?.target??fineHover??fineDisplay?.selectedCell??null;
   const fineRow=fineReadCell?fineCells.find(row=>isSameHex(row.cell,fineReadCell)):undefined;
   const fineValues=fineReadCell?fineDisplay?.fineCellEdits?.[hexKey(fineReadCell)]:undefined;
+  const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
+  const fineRoutes=useMemo(()=>fineDisplay?.viewStep===1 && fineDisplay.geometryRefinement && refinedSource?.status==='prepared'
+    ? refinedRouteBends(refinedSource,fineDisplay.geometryRefinement,hiddenRiverEdgeKeys,{roads:roadSegments,crossings:renderedCrossings,origin:fineDisplay.grid.origin,offset:riverOffset,waterfalls:riverWaterfalls,roadPins}) : undefined,
+    [fineDisplay?.viewStep,fineDisplay?.geometryRefinement,refinedSource,hiddenRiverEdgeKeys,roadSegments,renderedCrossings,riverOffset,riverWaterfalls,roadPins]);
+  const summaryRoutes = useMemo(() => {
+    if (fineRoutes || fineDisplay?.viewStep !== 1) return fineRoutes;
+    const origin = fineDisplay.grid.origin;
+    const nativeRoads = new Map<string, {x:number; y:number}[]>();
+    for (const segment of roadSegments) {
+      const points = roadPaint.get(segment.key);
+      if (points) nativeRoads.set(JSON.stringify([segment.roadId, segment.segmentKey]), points.map(p => ({
+        x: (p.x - riverOffset.x) / FINE_HEX_WIDTH + origin.x,
+        y: (p.y - riverOffset.y) / FINE_HEX_WIDTH + origin.y,
+      })));
+    }
+    return {roadPaint: nativeRoads, riverPaint: new Map()};
+  }, [fineRoutes, fineDisplay?.viewStep, fineDisplay?.grid.origin, roadSegments, roadPaint, riverOffset]);
   const fineSummary=useMemo(()=>fineDisplay&&fineReadCell?summarizeDetailCell({...fineDisplay,selectedWorldPoint:undefined},fineReadCell,
-    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin)}):null,
-    [fineDisplay,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
+    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin),displayRoutes:summaryRoutes}):null,
+    [fineDisplay,summaryRoutes,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
   const finePoi=(fp:Detail1State['poiFootprints'][number])=>{
     const alias=fp.legacyRef??'',parts=alias.split(':'),water=alias.startsWith('waterPoi:'),key=parts[water?1:2],hex=key?parseWaterHex(key):START_HEX;
     const region=regions.find(r=>r.id===Number(parts[1])),waterKind=waterPoiByKey.get(key),central=region&&hasCentralPoi(region)&&isSameHex(region.centerHex,hex);
@@ -16623,7 +16684,7 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const acceptedSmallLakes=physicalGrid?.smallLakes;
-  const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
+
   const needsSmallLakeProtection=!!smallLakeDraft||!!acceptedSmallLakes?.lakes.length;
   const smallLakeProtection=useMemo(()=>needsSmallLakeProtection&&fineDisplay?.viewStep===1
     ?smallLakeProtectionForMap(captureMap(),fineDisplay):null,
@@ -16712,11 +16773,11 @@ export function App() {
   };
   const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
     !acceptedLakeArtwork.reserved.has(hexKey(fineDisplay.selectedCell));
-  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} smallLakeDraftCells={smallLakeDraft?.cells} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
+  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork displayRoutes={fineRoutes} state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
+  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork nativeRiverPaint={riverPaint} nativeRoadPaint={roadPaint} state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} smallLakeDraftCells={smallLakeDraft?.cells} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     geography={mask=>refinedArtwork(fineDisplay,mask)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [fineDisplay,fineRoutes,riverPaint,roadPaint,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
@@ -16786,12 +16847,11 @@ export function App() {
             })}
             <g className="rivers-layer">
               {renderDetails && riverSegments.map((segment) => (
-                <line
+                <polyline
                   key={segment.key}
-                  x1={segment.x1}
-                  y1={segment.y1}
-                  x2={segment.x2}
-                  y2={segment.y2}
+                  data-source-edge={segment.edgeKey}
+                  data-river-id={segment.riverId}
+                  points={svgPoints(riverPaint.get(segment.riverId+':'+segment.edgeKey)!)}
                   className="river-polyline"
                   strokeWidth={segment.width}
                 />
@@ -16824,7 +16884,8 @@ export function App() {
               {renderDetails && roadSegments.map((segment) => {
                 const crossing = renderedCrossings.find((item) => item.roadId === segment.roadId && item.roadSegmentKey === segment.segmentKey);
                 const lineClass = segment.kind === 'trail' ? 'trail-line' : 'road-line';
-                if (!crossing) return <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={lineClass} />;
+                const paintedRoad = <polyline key={segment.key} points={svgPoints(roadPaint.get(segment.key)!)} fill="none" data-road-id={segment.roadId} data-source-segment={segment.segmentKey} className={lineClass} />;
+                if (!crossing) return paintedRoad;
                 const gap = 7;
                 const beforeX = crossing.x - crossing.ux * gap;
                 const beforeY = crossing.y - crossing.uy * gap;
@@ -16875,7 +16936,7 @@ export function App() {
                 const railLength = 11;
                 return (
                   <g key={segment.key} className="river-crossing river-crossing--bridge">
-                    <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={lineClass} />
+                    {paintedRoad}
                     {[-1, 1].map((side) => {
                       const offset = side * railOffset;
                       const outerOffset = side * (railOffset + 2);
@@ -16970,7 +17031,7 @@ export function App() {
                 const size = HEX_SIZE * .62;
                 return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
                   <circle cx={position.x} cy={position.y} r={HEX_SIZE*.425} fill={engravingFor(id)!.poiColor}
-                    stroke="#f4ecd5" strokeWidth={1}/>
+                    stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
                   <image className="poi-marker" href={getPoiSvgHref(kind, !!waterKind)}
                     x={position.x-size/2} y={position.y-size/2} width={size} height={size}
                     role="img" aria-label={title}/>
@@ -17024,7 +17085,7 @@ export function App() {
             ) : null}
             <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g>
   </>), [
-    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, coarseTerrain, coarseTextures, debugRivers, debugVerticesByRegion, hexTerrainByKey, isMapRotated, kingdoms, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, waterPoiByKey
+    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, coarseTerrain, coarseTextures, debugRivers, debugVerticesByRegion, hexTerrainByKey, isMapRotated, kingdoms, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverPaint, roadPaint, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, waterPoiByKey
   ]);
 
   useEffect(() => {
@@ -17658,11 +17719,11 @@ export function App() {
             {fineActive&&fineDisplay?.selectedCell&&<g data-editor-only="fine-selection" transform={`translate(8 8) ${mapRotationTransform??''}`} pointerEvents="none"><polygon data-fine-selected={hexKey(fineDisplay.selectedCell)} points={detailCellPolygon(createDetailGrid(1,fineDisplay.grid.origin),fineDisplay.selectedCell).map(p=>`${(p.x-fineDisplay.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x},${(p.y-fineDisplay.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y}`).join(' ')} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} vectorEffect="non-scaling-stroke"/></g>}
             {editMode&&riverFeatureTarget&&!riverDraft&&<g data-editor-only="river-selected" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-selected-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7dd3fc" /></marker></defs>
-              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><line key={i} x1={r.vertexPath[i].x+riverOffset.x} y1={r.vertexPath[i].y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={5} markerEnd="url(#river-selected-arrow)" />))}
+              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><polyline key={i} fill="none" points={riverEdgePoints(r.id,r.vertexPath[i],v)} stroke="#7dd3fc" strokeWidth={5} markerEnd="url(#river-selected-arrow)" />))}
             </g>}
             {editMode&&riverFeatureTarget&&riverFeatureTarget.hexKey===selectedHexKey&&!roadDraft&&!obstacleDraft&&<g data-editor-only="river-feature" transform={mapRotationTransform} pointerEvents="none">
-              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>riverFeatureTarget.edgeKey?riverReachKeys.has(edgeKey(e.a,e.b)):false).map(e=><line data-river-reach-edge={edgeKey(e.a,e.b)} key={edgeKey(e.a,e.b)} x1={e.a.x+riverOffset.x} y1={e.a.y+riverOffset.y} x2={e.b.x+riverOffset.x} y2={e.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
-              {riverFeatureTarget.vertexKey&&rivers.find(r=>r.id===riverFeatureTarget.riverId)?.vertexPath.filter(v=>v.key===riverFeatureTarget.vertexKey).map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={6} fill="#f7dc6f" />)}
+              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>riverFeatureTarget.edgeKey?riverReachKeys.has(edgeKey(e.a,e.b)):false).map(e=><polyline fill="none" data-river-reach-edge={edgeKey(e.a,e.b)} key={edgeKey(e.a,e.b)} points={riverEdgePoints(riverFeatureTarget.riverId,e.a,e.b)} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
+              {selectedRiverVertex && <circle cx={selectedRiverVertex.x} cy={selectedRiverVertex.y} r={6} fill="#f7dc6f" />}
             </g>}
             {(riverCommandPreview||riverDraft?.riverId!==undefined)&&<g data-editor-only="river-preview" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-preview-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f7dc6f" /></marker></defs>
@@ -17680,9 +17741,9 @@ export function App() {
               {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
             </g>}
             {editMode && !poiDraft && !regionDraft && !waterDraft && !riverDraft && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
-              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
+              {roadSegments.map(s=><polyline key={s.key} fill="none" className="road-map-target" role="button" tabIndex={0}
                 aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
+                points={svgPoints(roadPaint.get(s.key)!)} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
                 onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
                 onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
               {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
@@ -17691,8 +17752,8 @@ export function App() {
                 onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
                 onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
               {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
-              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
+              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><polyline key={s.key} fill="none"
+                points={svgPoints(roadPaint.get(s.key)!)} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
             </g>}
             {editMode && !poiDraft && !regionDraft && !waterDraft && !riverDraft && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
               {!obstacleDraft && obstacles.map(o=>{const e=obstacleGeometry(o);if(!e)return null;return <circle key={o.id}
@@ -17720,8 +17781,8 @@ export function App() {
               })}
             </g>}
             {editMode&&!poiDraft&&!regionDraft&&!waterDraft&&!riverDraft&&!roadDraft&&!obstacleDraft&&!riverCommandPreview&&<g data-editor-only="river-targets" transform={mapRotationTransform}>
-              {riverMapTargets.map(target=><line key={`${target.riverId}:${target.edgeKey}`} data-river-map-edge={`${target.riverId}:${target.edgeKey}`} className="river-map-target" role="button" tabIndex={0} aria-label={`${language==='ru'?'Река':'River'} ${riverLabel(target.riverId)} · ${target.hexKey}`} x1={target.a.x+riverOffset.x} y1={target.a.y+riverOffset.y} x2={target.b.x+riverOffset.x} y2={target.b.y+riverOffset.y} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke" onClick={event=>activateMapRiver(event,target)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseMapRiver(target);}}} />)}
-              {riverHitHover&&riverMapTargets.filter(t=>t.riverId===riverHitHover.riverId&&t.edgeKey===riverHitHover.edgeKey).map(t=><line key={t.edgeKey} x1={t.a.x+riverOffset.x} y1={t.a.y+riverOffset.y} x2={t.b.x+riverOffset.x} y2={t.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={7} pointerEvents="none" />)}
+              {riverMapTargets.map(target=><polyline fill="none" key={`${target.riverId}:${target.edgeKey}`} data-river-map-edge={`${target.riverId}:${target.edgeKey}`} className="river-map-target" role="button" tabIndex={0} aria-label={`${language==='ru'?'Река':'River'} ${riverLabel(target.riverId)} · ${target.hexKey}`} points={riverEdgePoints(target.riverId,target.a,target.b)} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke" onClick={event=>activateMapRiver(event,target)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseMapRiver(target);}}} />)}
+              {riverHitHover&&riverMapTargets.filter(t=>t.riverId===riverHitHover.riverId&&t.edgeKey===riverHitHover.edgeKey).map(t=><polyline key={t.edgeKey} fill="none" points={riverEdgePoints(t.riverId,t.a,t.b)} stroke="#f7dc6f" strokeWidth={7} pointerEvents="none" />)}
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />

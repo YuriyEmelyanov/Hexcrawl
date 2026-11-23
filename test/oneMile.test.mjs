@@ -254,3 +254,21 @@ test('finite visible water preserves dry approaches at shallow and endpoint cros
   assert.ok(view.pieces.reduce((n,p)=>n+Math.hypot(p.to.x-p.from.x,p.to.y-p.from.y),0)>.5);
  }
 });
+
+test('a nearby stream shortens only the conflicting road bend', async()=>{
+  const {roundedRoutes}=await import('../src/routeBends.ts');
+  const {routeClearance}=await import('../src/routeClearance.ts');
+  const {detailCrossingPoint}=await import('../src/detailGeography.ts');
+  const path=[{x:0,y:0},{x:10,y:0},{x:10,y:10},{x:20,y:10}];
+  const stream=[{x:9,y:.95},{x:9.1,y:.95}];
+  const draw=rivers=>{
+    const limit=routeClearance([path],rivers);
+    return roundedRoutes([{key:'road',routeId:1,points:path}],[],(p,r)=>limit(p,'road',r)).get('road');
+  };
+  const meetsStream=points=>points.some((p,i)=>i>0 && detailCrossingPoint(
+    {from:points[i-1],to:p},{from:stream[0],to:stream[1]})!==null);
+  const clear=draw([]), guarded=draw([stream]);
+  assert.ok(meetsStream(clear),'the unrestricted curve would introduce a crossing');
+  assert.equal(meetsStream(guarded),false);
+  assert.deepEqual(guarded.filter(p=>p.y>5),clear.filter(p=>p.y>5),'adjacent bend retains its shape');
+});
