@@ -1,0 +1,157 @@
+{
+  "run_id": "2026-11-24T0100-reviewer-HX062",
+  "task_id": "HX-BL-062",
+  "role": "reviewer",
+  "reason": "Whole-package independent review requested for PR 513 at immutable head after programmer handoff.",
+  "status": "changes_requested",
+  "pr": 513,
+  "branch": "feat/hx062-discovery",
+  "base_sha": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390",
+  "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+  "checks": {
+    "head": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "base": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390",
+    "tree": "ee73c3257adc4a84b3cb61a6070f9cff021e092d",
+    "runs": [
+      [
+        45269435959,
+        "HX-FB-001 UI acceptance",
+        "skipped"
+      ],
+      [
+        45269435833,
+        "Check",
+        "success"
+      ]
+    ],
+    "jobs": [
+      [
+        138025165160,
+        "world-random",
+        "success"
+      ],
+      [
+        138025165592,
+        "check",
+        "success"
+      ],
+      [
+        138025165716,
+        "browser",
+        "success"
+      ],
+      [
+        138025167961,
+        "engraved-map-comparison",
+        "skipped"
+      ]
+    ]
+  },
+  "claim_ref": "agent-work/claims/2026-11-24T0100-reviewer-HX062.json",
+  "review_findings": [
+    {
+      "id": "HX062-RV05",
+      "criterion": "AC3",
+      "severity": "blocking",
+      "location": "src/App.tsx (central type selector and handler)",
+      "profiles": [
+        "Classic",
+        "Knave"
+      ],
+      "fixture": "seed 42, road-free copy, region 1",
+      "reproduction": "At 3,-2 portal/farm are absent from the central capital selector; both type-change handlers refuse portal. Move the same secret, RU/EN-named capital to 1,0 and back to 3,-2. At this identical coordinate selecting portal now succeeds. The region center, name and discovery value are preserved.",
+      "expected": "The owner defined the capital as an ordinary POI with no additional conditions. Type changes for an existing capital must not require a round trip.",
+      "evidence": [
+        "agent-work/evidence/HX-BL-062-F1/review-60771c0/same-capital.mjs",
+        "agent-work/evidence/HX-BL-062-F1/review-60771c0/contract-probes.log"
+      ]
+    }
+  ],
+  "review_observations": [
+    "Independent probes of 41 discovery rows across 100 rolls each and portal boundary values 19/20/54/55 passed.",
+    "28 comparisons against main across Classic and Knave retained RNG and map contents, excluding savedAt and the new discovery field.",
+    "One-mile 0,0 portal projection plus separate untyped POI retained independent discovery across scale changes, save and reload.",
+    "Legacy imports preserved comments and secret modes. Invalid imports retained map and Undo/Redo. Existing permitted central type choices worked. Name protection, deliberate clearing, deletion, undo/redo and JSON reopen passed."
+  ],
+  "independent_checks": [
+    "independent_pr513",
+    "discovery_contract"
+  ],
+  "test_change_summary": {
+    "base_sha": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390",
+    "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "source": "Logical test declarations and executed browser entry points in base..head diff",
+    "added": 4,
+    "removed": 0,
+    "modified": 10,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 3,
+        "removed": 0,
+        "modified": 8,
+        "executed": 448,
+        "passed": 448,
+        "scenario": "Discovery transactions, ordinary capital editing, save/import, type tables"
+      },
+      {
+        "suite": "browser",
+        "added": 1,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "New seed42 visual capture, existing Knave lifecycle and one-mile evidence",
+        "smoke_scripts_passed": 10,
+        "capture_scripts_passed": 1
+      },
+      {
+        "suite": "world-random",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "job_passed": true
+      }
+    ],
+    "reuse_or_new_reason": "Existing suites cover import, tag generation, one-mile and Knave lifecycle. Dedicated capital transitions and a reproducible end-to-end capture cover separate risks. Reviewer diagnostic is separate from permanent suites."
+  },
+  "score_assessment": {
+    "status": "preliminary_changes_requested",
+    "model_version": "1.3-rc8",
+    "criterion_id": "S05-C03",
+    "level": "L1",
+    "base_ref": "agent-work/score/current-score.json",
+    "before": {
+      "grade": "G1",
+      "points": 2.4691358024691357
+    },
+    "after": {
+      "grade": "G2",
+      "points": 4.938271604938271
+    },
+    "delta": 2.4691358024691357,
+    "booked_delta": 0,
+    "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "method": "F1 table, real generation/save/reload, independent discovery editing, legacy import and AC1/2/4/5 probes",
+    "evidence": [
+      "agent-work/evidence/HX-BL-062-F1/review-60771c0/contract-probes.log"
+    ],
+    "limits": "Provisional only. Recheck new SHA after RV05. L2/L3 unchanged. Package unpublished."
+  },
+  "release_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Исправить HX062-RV05: для уже существующей столицы в центре использовать обычный выбор и обработчик смены типа POI. Сохранить правила создания, каталог деревни и поведение остальных центральных типов. Передать новый SHA на независимую приёмку.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-23T22:01:03.732Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-23T22:06:24.585Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "evidence_dir": "agent-work/evidence/HX-BL-062-F1/review-60771c0",
+  "completed_at": "2026-11-23T22:06:24.585Z"
+}
