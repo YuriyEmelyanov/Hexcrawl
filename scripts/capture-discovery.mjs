@@ -91,6 +91,18 @@ try {
   const moved=JSON.parse(await fs.readFile(capitalFile,'utf8')).map;
   assert.equal(moved.regions[0].pointOfInterestKinds['1,0'],'capital');
   assert.equal(moved.poiDiscovery['poi:1:1,0'],map.map.poiDiscovery['poi:1:3,-2']);
+  // Reopen the original center and change its type directly, before moving it.
+  await input.setInputFiles({name:'rv05.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(roadFreeMap))});
+  await select('3,-2');
+  await ensureEdit();
+  const editType=info.getByRole('button',{name:'Редактировать точку интереса',exact:true});
+  await editType.click();
+  const types=info.getByRole('combobox',{name:'Выберите точку интереса',exact:true});
+  assert.equal(await types.inputValue(),'capital');
+  assert.equal(await types.locator('option[value="farm"]').count(),1);
+  await types.selectOption('portal');
+  await info.getByText(/Портал/i).first().waitFor();
+  await info.screenshot({path:out+'/capital-to-portal.png'});
   await page.reload();
   // App may restore the language preference after reload.
   if (await page.locator('.language-toggle').innerText() === 'EN') await page.locator('.language-toggle').click();
