@@ -100,6 +100,9 @@ def main():
                 software_ranks = ranks(counts)
                 for t in sorted(counts, key=lambda t:(-counts[t],tools[t]['name'].casefold(),t)):
                     writer.writerow([period if period!='period' else f'{months[0]}/{months[-1]}',software_ranks.get(t,''),t,tools[t]['name'],' + '.join(tools[t]['types']),counts[t]])
+    names = {tool: item['name'] for tool, item in sorted(tools.items())}
+    (ROOT.parent / 'tools.json').write_text(json.dumps(names, ensure_ascii=False, indent=2) + '\n')
+
     # The parent directory exposes the same data to historical callers.
     for name in ('ranking.csv','monthly.csv','evidence.csv'):
         (ROOT.parent/name).write_bytes((ROOT/name).read_bytes())
