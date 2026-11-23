@@ -1,0 +1,143 @@
+{
+  "role": "programmer",
+  "task_id": "HX-BL-062",
+  "run_id": "2026-11-24T0000-programmer-HX062-capital",
+  "role_selection_reason": "PR512 is deployed and scored. Current owner clarification, the approved F1 AC3 and backlog route the central-capital correction to the programmer.",
+  "generation": 677,
+  "branch": "feat/hx062-discovery",
+  "pr": 513,
+  "base_sha": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390",
+  "previous_pr_head_sha": "987fbaf6563576635d5fd9e533ae475acd4dd8a3",
+  "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+  "tree_sha": "ee73c3257adc4a84b3cb61a6070f9cff021e092d",
+  "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
+  "decision_ref": "agent-work/interviews/HX-BL-062/DISC/decisions.json",
+  "previous_review_ref": "agent-work/evidence/HX-BL-062-F1/review-987fbaf/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/capital-242a7cf/replay.mjs",
+  "visible_progress": "Classic seed 42, Лагевейк. The linked capital at 3/-2 reports its paths. In a separate road-free save of the same map, the capital moves to 1/0, retains its name and discovery and leaves the region center intact. Deleting the central capital, changing its type to town and moving its secret are verified via application commands and full JSON reload.",
+  "ui_actual": {
+    "sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "artifact_id": 14865290020,
+    "evidence_commit": "d4e02461e43e6c46ee30c87ffbb5e82a303f60ed",
+    "before": "agent-work/evidence/HX-BL-062-F1/capital-242a7cf/capital-before.png",
+    "after": "agent-work/evidence/HX-BL-062-F1/capital-242a7cf/capital-after.png",
+    "export": "agent-work/evidence/HX-BL-062-F1/capital-242a7cf/capital-moved.json",
+    "positive_scenario": "road-free controlled copy, roads and crossings empty; no repair or deletion of paths as part of POI move",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45269435833/artifacts/14865290020",
+    "before_sha256": "614b4bc558ec8b220c6955b4f305086e53ea1ffb701c5a00c9d2c6b50de5eafb",
+    "after_sha256": "797ba4b49abb5314dd23157ee3d5634a47670dc28bd292e6655e3f191e1cb708",
+    "provenance": "Exact-head CI captured both images. They are byte-identical to the archived pair. Move exports differ only in savedAt."
+  },
+  "implementation": {
+    "underlying_issue": "Central storage was excluded by both the editor and preparePoiMove. Capital was also missing from ordinary settlement type choices and toponym enumeration.",
+    "changes": "Detach the capital to an ordinary POI when moving it or changing to an ordinary type. Preserve the coordinates of the geographic center and reuse POI migration, history and save validation. Expose deletion for an unambiguous central capital. Other central kinds keep their historical behavior.",
+    "integration": "Merged main containing the published PR512. Kept both workflows and both sets of App imports. GitHub reports mergeable."
+  },
+  "validation": {
+    "node_version": "24.22.3",
+    "red": "The new central-capital case fails at startPoiDraft on 987fbaf.",
+    "direct": "Passed targeted Node integration case and real seed 42 replay. Same-region and cross-region move, linked refusal, direct central deletion, full Undo/Redo, fresh import, mode/name preservation and retype.",
+    "local_browser": "Chromium could not start due to socket EPERM. Visual scenario executed in the existing GitHub Actions browser job.",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45269435833",
+    "pre_final_regression": "Browser lifecycle detected an unintended capital option for a village in 242a7cf. The final head offers that option only to an existing ordinary capital. The original browser assertion was retained.",
+    "local_full_previous_tree": "359 passing; two whole runner files failed before reporting constituent cases. Isolated sequential rerun of both completed 89/89. Local production build passed.",
+    "local_full": {
+      "command": "npm run check",
+      "node_version": "24.22.3",
+      "exit_code": 0,
+      "passed": 448,
+      "executed": 448,
+      "skipped": 0,
+      "typescript": "passed",
+      "build": "passed",
+      "tree_sha": "ee73c3257adc4a84b3cb61a6070f9cff021e092d"
+    },
+    "ci": {
+      "run_id": 45269435833,
+      "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+      "base_sha": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390",
+      "mergeable": true,
+      "check": "success",
+      "node_log": [
+        "2026-11-23T21:39:48.3610630Z ℹ tests 448",
+        "2026-11-23T21:39:48.3611691Z ℹ pass 448",
+        "2026-11-23T21:39:48.3612162Z ℹ fail 0",
+        "2026-11-23T21:39:48.3613137Z ℹ skipped 0"
+      ],
+      "browser": {
+        "status": "success",
+        "ran": 10,
+        "passed": 10,
+        "skipped": 0,
+        "source": "package.json test:browser calls ten sequential scripts; workflow step passed"
+      },
+      "visual_capture": {
+        "status": "success",
+        "artifact_id": 14865290020
+      },
+      "world_rng": {
+        "ran": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "conditional_engraved_comparison": "skipped by workflow condition"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "987fbaf6563576635d5fd9e533ae475acd4dd8a3",
+    "head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "scope": "This AC3 correction, excluding other changes inherited from the already released PR512",
+    "suites": [
+      {
+        "suite": "node:test",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "Central capital move/delete, full history and JSON roundtrip across regions.",
+        "reuse_or_new_reason": "Existing E8 tests cover an ordinary object at a geometric center and a deliberately immovable central lair. Neither exercised an actual central capital."
+      },
+      {
+        "suite": "browser evidence replay",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "Visible location control and linked refusal, real map relocation with name/discovery.",
+        "reuse_or_new_reason": "Extended the existing seed 42 capture in scripts/capture-discovery.mjs."
+      }
+    ],
+    "source": "git diff 987fbaf..60771c0 -- test/regionEditing.test.mjs scripts/capture-discovery.mjs; touched case definitions/runner, excluding merged PR512 cases.",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "node:test and one existing browser capture (disaggregated below)",
+    "scenario_risk": "F1 AC3 central capital edits, move refusal on occupied paths, names/discovery and JSON history.",
+    "reuse_or_new_reason": "Separate cross-region editor regression and expansion of the existing real-map visual scenario.",
+    "scenario": "F1 AC3 central capital edits, move refusal on occupied paths, names/discovery and JSON history."
+  },
+  "score": {
+    "criterion_id": "S05-C03",
+    "model_version": "1.3-rc8",
+    "status": "pending_independent_assessment",
+    "published": false
+  },
+  "release_authorized": false,
+  "status": "review_ready",
+  "review_ready": true,
+  "full_package_review_ready": true,
+  "next_role": "reviewer",
+  "next_step": "Независимая приёмка всего PR №513 на 60771c0ece2bd44d3871e2186fd9a03495c5c872, в том числе AC3 со столицей в центре: перенос, удаление, смена типа, Undo/Redo и повторное открытие. Рассчитать предварительную оценку S05-C03 по 1.3-rc8.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-23T21:00:36.581Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-23T21:40:38.105Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-23T21:40:38.105Z"
+}
