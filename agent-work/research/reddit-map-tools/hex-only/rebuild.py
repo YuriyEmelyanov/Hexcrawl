@@ -5,6 +5,7 @@ import json
 from collections import defaultdict
 from datetime import date, datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 
@@ -32,6 +33,22 @@ def ranks(counts):
             positions[tool] = str(start) if start == end else f'{start}–{end}'
         start = end + 1
     return positions
+
+def validate_source_link(row):
+    url = urlsplit(row['permalink'].strip())
+    parts = url.path.strip('/').split('/')
+    thread = row['thread_id']
+    if (url.scheme != 'https' or url.netloc.lower() not in
+            {'reddit.com', 'www.reddit.com', 'old.reddit.com', 'np.reddit.com'}
+            or not thread or not row['id']
+            or parts[:4] != ['r', row['subreddit'], 'comments', thread]):
+        raise ValueError(f'Permalink does not match Reddit thread: {row["id"]}')
+    if row['kind'] == 'comments':
+        if len(parts) != 6 or parts[-1] != row['id']:
+            raise ValueError(f'Permalink does not identify the comment: {row["id"]}')
+    elif len(parts) not in (4, 5) or thread != row['id']:
+        raise ValueError(f'Permalink does not identify the post: {row["id"]}')
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -82,6 +99,7 @@ def main():
                 raise ValueError(f"Missing identifiable author: {row['id']}")
             if row['subreddit'] not in {'osr', 'rpg', 'mapmaking'} or row['kind'] not in {'posts', 'comments'}:
                 raise ValueError(f"Invalid source collection: {row['id']}")
+            validate_source_link(row)
             key = tool, row['kind'], row['id']
             if key in seen or tool not in tools:
                 raise ValueError(f'Duplicate or ineligible observation: {key}')
