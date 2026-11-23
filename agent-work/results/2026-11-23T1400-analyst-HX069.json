@@ -1,0 +1,122 @@
+{
+  "run_id": "2026-11-23T1400-analyst-HX069",
+  "task_id": "HX-BL-069",
+  "role": "business-analyst",
+  "claim_ref": "agent-work/claims/2026-11-23T1400-analyst-HX069.json",
+  "programmer_slot": false,
+  "branch": "agent-operations",
+  "base_sha": "3652acd44ef56462d51a13c4ed0dd5ea70840887",
+  "generation": 629,
+  "acquired_at": "2026-11-23T11:02:00.469Z",
+  "heartbeat_at": "2026-11-23T11:02:00.469Z",
+  "status": "completed",
+  "completed_at": "2026-11-23T11:03:04.968Z",
+  "selection_reason": "Для AC2 ранее смешивались удаление, создание и присвоение имени. Изолирован согласованный случай переименования уже существующего внешнего POI, независимый от RR-Q01–03 и занятого слота HX062.",
+  "spec_ref": "agent-work/specs/HX-BL-069-classic-reroll-acceptance-D1.md",
+  "source_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "blob_comparison": {
+    "files": 103,
+    "differences": []
+  },
+  "method": "Штатные обработчики Classic в generation-harness, seed 1, два региона по 8 гексов. Для сравнения экспортов исключено savedAt, ключи упорядочены рекурсивно, массивы сохранены, SHA-256.",
+  "observations": {
+    "anchors": [
+      {
+        "q": 0,
+        "r": 0
+      },
+      {
+        "q": 1,
+        "r": -1
+      }
+    ],
+    "nk": "poi:1:0,0",
+    "pending": true,
+    "error": null,
+    "rows": [
+      {
+        "step": "baseline",
+        "kind": "statue",
+        "present": true,
+        "name": null,
+        "second": "84376a9f7f3cb68b1d976417ced63b2c7c73d00b0ed4f987cb808e3fff30c8ca",
+        "doc": "610eeb2cc0d198cadfb984b19b73d230dcfaff2d04e8a24c81032a14bc65e465",
+        "undo": 2
+      },
+      {
+        "step": "named",
+        "kind": "statue",
+        "present": true,
+        "name": {
+          "en": "Stone Sentinel",
+          "ru": "Каменный страж"
+        },
+        "second": "84376a9f7f3cb68b1d976417ced63b2c7c73d00b0ed4f987cb808e3fff30c8ca",
+        "doc": "724b8fd9d325ee1dc67ec4360be8855da2080f030cd56e9fc7b00f69edb10860",
+        "undo": 3
+      },
+      {
+        "step": "reroll",
+        "kind": "statue",
+        "present": true,
+        "name": {
+          "en": "Stone Sentinel",
+          "ru": "Каменный страж"
+        },
+        "second": "c0291a60121e7c252265cb82e6bb459b515241cfde2751f171d7a0c8e8ba37ec",
+        "doc": "e913b262d00ca7128ea3e3d8fd4e8f707cfb8cff1d6f89ba79ad1f65759cccce",
+        "undo": 4
+      },
+      {
+        "step": "import",
+        "doc": "e913b262d00ca7128ea3e3d8fd4e8f707cfb8cff1d6f89ba79ad1f65759cccce",
+        "name": {
+          "en": "Stone Sentinel",
+          "ru": "Каменный страж"
+        }
+      },
+      {
+        "step": "undo",
+        "kind": "statue",
+        "present": true,
+        "name": {
+          "en": "Stone Sentinel",
+          "ru": "Каменный страж"
+        },
+        "second": "84376a9f7f3cb68b1d976417ced63b2c7c73d00b0ed4f987cb808e3fff30c8ca",
+        "doc": "724b8fd9d325ee1dc67ec4360be8855da2080f030cd56e9fc7b00f69edb10860",
+        "undo": 3
+      },
+      {
+        "step": "redo",
+        "kind": "statue",
+        "present": true,
+        "name": {
+          "en": "Stone Sentinel",
+          "ru": "Каменный страж"
+        },
+        "second": "c0291a60121e7c252265cb82e6bb459b515241cfde2751f171d7a0c8e8ba37ec",
+        "doc": "e913b262d00ca7128ea3e3d8fd4e8f707cfb8cff1d6f89ba79ad1f65759cccce",
+        "undo": 4
+      }
+    ]
+  },
+  "outcome": "Изолированное переименование существующей внешней статуи прошло. Оба имени пережили переброс, холодный импорт, отмену и повтор. Случай именования вновь созданных руин остаётся отдельным.",
+  "limitations": "Одна карта Classic, сценарный стенд, подтверждены данные документа. Визуальная приёмка не проводилась.",
+  "next_role": "interviewer",
+  "next_step": "После ответов RR-Q01–03 аналитик включает контроль сохранения двух имён внешней статуи в чистовую спецификацию.",
+  "release_authorized": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-23T11:00:42.065Z",
+      "is_enabled": true
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-11-23T11:03:04.968Z"
+    },
+    "restored": false,
+    "errors": []
+  }
+}
