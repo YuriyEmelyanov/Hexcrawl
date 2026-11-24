@@ -17,6 +17,15 @@ const fail=(code:string,...details:string[]):never=>{throw new PoiMoveError(code
 const owns=(o:object,k:string)=>Object.prototype.hasOwnProperty.call(o,k);
 export const poiLocatorKey=(l:PoiLocator)=>l.kind==='water'?`waterPoi:${l.hexKey}`:`poi:${l.regionId}:${l.hexKey}`;
 export const hasCentralPoi=(r:PoiRegion)=>!!r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract;
+/** Detach a capital marker from its generation slot while retaining its POI address. */
+export function detachCapital<R extends PoiRegion>(region:R):R {
+  const key=waterHexKey(region.centerHex);
+  if(!hasCentralPoi(region)||region.centralPoiKind!=='capital')return region;
+  if(region.pointsOfInterest.some(h=>waterHexKey(h)===key))fail('ambiguous_poi',key);
+  return {...region,centralPoiKind:undefined,suppressCentralPoi:true,
+    pointsOfInterest:[...region.pointsOfInterest,region.centerHex],
+    pointOfInterestKinds:{...region.pointOfInterestKinds,[key]:'capital'}};
+}
 function owners(regions:readonly PoiRegion[]){
   const result=new Map<string,PoiRegion>(),ids=new Set<number>();
   for(const r of regions){
@@ -75,7 +84,12 @@ export function preparePoiMove<D extends PoiDocument>(doc:D,edit:PoiMove,policy:
   const sourceWater=waterKindAt(doc.hexTerrainByKey,from),targetWater=waterKindAt(doc.hexTerrainByKey,to);
   const count=occurrences(doc,from);
   if(count>1)fail('ambiguous_poi',from);
-  if(source.kind==='land'&&sourceRegion&&hasCentralPoi(sourceRegion)&&waterHexKey(sourceRegion.centerHex)===from)fail('central_poi',from);
+  if(sourceRegion&&hasCentralPoi(sourceRegion)&&waterHexKey(sourceRegion.centerHex)===from){
+    if(sourceRegion.centralPoiKind!=='capital'||policy.mode!=='classic')fail('central_poi',from);
+    if(from===to)return doc;
+    const regions=doc.regions.map(r=>r===sourceRegion?detachCapital(r):r);
+    return preparePoiMove({...doc,regions},edit,policy);
+  }
   const found=source.kind==='water'?doc.waterPoiByKey.has(from):!!sourceRegion&&byHex.get(from)===sourceRegion&&sourceRegion.pointsOfInterest.some(h=>waterHexKey(h)===from);
   if(!found||count!==1)fail('stale_poi_move',from);
   // Same source is a no-op even for an accepted legacy incompatibility/type.

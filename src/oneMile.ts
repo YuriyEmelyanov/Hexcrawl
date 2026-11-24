@@ -1,3 +1,4 @@
+import type {Discovery} from './knaveClassic.ts';
 /** ONE-MILE1 domain seam. Actual accepted geography, display cells and local
  * author edits have deliberately separate identities. No generator or UI state
  * is mutated here; the controller commits the returned document atomically. */
@@ -11,6 +12,7 @@ export type OneMileSource = Readonly<{
   water?: 'sea' | 'lake';
 }>;
 export type FineCellEdit = Readonly<{
+  localPlace?: Discovery;
   name?: Readonly<{ru?: string; en?: string}>;
   landBiomeId?: string;
   note?: string;
@@ -137,8 +139,13 @@ export function parseFineCellEdits(value: unknown, accepted: readonly OneMileCel
     const [q,r]=key.split(',').map(Number);detailCellCenter(createDetailGrid(1),{q,r});
     if (fineCellKey({q,r})!==key || !support.has(key)) throw Error('Orphan fine address');
     const row=record(raw,'fine edit');
-    if (Object.keys(row).some(k=>!['name','landBiomeId','note'].includes(k))) throw Error('Unknown fine field');
-    const parsed: {name?: {ru?:string;en?:string}; landBiomeId?: string;note?:string}={};
+    if (Object.keys(row).some(k=>!['name','landBiomeId','note','localPlace'].includes(k))) throw Error('Unknown fine field');
+    const parsed: {localPlace?:Discovery;name?: {ru?:string;en?:string}; landBiomeId?: string;note?:string}={};
+    if (own(row,'localPlace')) {
+      const mode=row.localPlace;
+      if(mode!=='passage' && mode!=='exploration' && mode!=='interaction') throw Error('Invalid local place discovery');
+      parsed.localPlace=mode;
+    }
     if (own(row,'name')) {
       const name=record(row.name,'fine name'), names: {ru?:string;en?:string}={};
       for (const [language,text] of Object.entries(name)) {
@@ -165,7 +172,7 @@ export function parseFineCellEdits(value: unknown, accepted: readonly OneMileCel
  * command; the caller owns draft guards and the single history transaction. */
 export function prepareFineCellEdit(input: Readonly<{
   edits: FineCellEdits; target: DetailCell; revision: number; expectedRevision: number;
-  accepted: readonly OneMileCell[]; language:'ru'|'en'; name?: string;note?: string;landBiomeId?: string;
+  accepted: readonly OneMileCell[]; language:'ru'|'en'; localPlace?:Discovery|null; name?: string;note?: string;landBiomeId?: string;
 }>, validBiome: (id:string)=>boolean): FineCellEdits {
   if (!Number.isSafeInteger(input.revision)||input.revision<0||input.revision!==input.expectedRevision) throw Error('Stale fine edit');
   if (input.language!=='ru'&&input.language!=='en') throw Error('Invalid fine language');
@@ -173,7 +180,8 @@ export function prepareFineCellEdit(input: Readonly<{
   const key=fineCellKey(input.target), current=parseFineCellEdits(input.edits,input.accepted,validBiome);
   const prior=current[key]??{}, names={...prior.name};
   if (input.name===undefined) delete names[input.language];else names[input.language]=input.name;
-  const next={...current,[key]:{...(Object.keys(names).length?{name:names}:{}),...(input.note===undefined?{}:{note:input.note}),...(input.landBiomeId===undefined?{}:{landBiomeId:input.landBiomeId})}};
+  const localPlace=input.localPlace===undefined?prior.localPlace:input.localPlace;
+  const next={...current,[key]:{...(localPlace!=null?{localPlace}:{}),...(Object.keys(names).length?{name:names}:{}),...(input.note===undefined?{}:{note:input.note}),...(input.landBiomeId===undefined?{}:{landBiomeId:input.landBiomeId})}};
   // Validate even an empty edit against support before canonical removal.
   const checked=parseFineCellEdits(next,input.accepted,validBiome);
   if (!Object.keys(checked[key]).length) {const reset={...checked};delete reset[key];return Object.freeze(reset);}

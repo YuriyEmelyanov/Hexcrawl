@@ -77,7 +77,16 @@ export async function checkFineObjectsAndPng({page,step,snap,shot,button,manifes
   const text=await panel.innerText();if(sample.kinds.includes('water-poi'))assert.match(text,/Lake/,'lake POI card does not mislabel the lake as a sea');
   for(const road of oracle.roads)assert.equal(text.includes(`OM route ${road.id}`),sample.routes.some(r=>r.id===road.id),`local road ${road.id} in ${id}`);
   for(const river of oracle.rivers)assert.equal(text.includes(`OM river ${river.id}`),sample.rivers.some(r=>r.id===river.id),`local river ${river.id} in ${id}`);
-  const poiLabels=[];for(const poi of sample.pois){const marker=page.locator(`[data-fine-pois] [data-poi-id="${poi.poiId}"] [role=img]`).first();if(await marker.count())poiLabels.push(await marker.getAttribute('aria-label'));}
+  const poiLabels=[];
+  for(const poi of sample.pois){
+   const marker=page.locator(`[data-fine-pois] [data-poi-id="${poi.poiId}"] [role=img]`).first();
+   if(!await marker.count())continue;
+   const label=await marker.getAttribute('aria-label');
+   const owner=before.map.physicalGrid.poiFootprints.find(fp=>fp.poiId===poi.poiId)?.legacyRef;
+   const mode=before.map.poiDiscovery?.[owner]??'passage';
+   const modeText={passage:'On passage',exploration:'By exploration',interaction:'Secret place'};
+   poiLabels.push(owner ? label+' · '+modeText[mode] : label);
+  }
   for(const label of poiLabels)assert.ok(text.includes(label),`local POI label ${label}`);
   const dom=await page.locator('[data-fine-world]').evaluate(fineArtworkGeometry);
   if(sample.kinds.some(k=>k.startsWith('large-poi')))assert.ok(sample.pois.some(p=>p.poiId===oracle.large_owner),'both fine parts address the same accepted owner');

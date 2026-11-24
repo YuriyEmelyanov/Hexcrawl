@@ -116,9 +116,15 @@ test('Knave real generation commits content with its map, preserves world RNG an
  const serialized=m=>JSON.parse(JSON.stringify(m,(_key,value)=>value instanceof Map?{entries:[...value]}:value));
  // The fine layer can legitimately differ when the profile provides other
  // site anchors. Compare base geography here and keep the exact reload check.
- const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
+ const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.poiDiscovery;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
  const generate=(h,anchor)=>assert.equal(h.render().safelyAddRegionToMap(anchor,options).success,true);
  const empty=map(knave);generate(plain,{q:0,r:0});generate(knave,{q:0,r:0});
+ const real = createGenerationHarness(1);
+ real.render().chooseKnaveProfile(true);
+ generate(real,{q:0,r:0});
+ const generated = map(real);
+ assert.equal(generated.regions[0].pointOfInterestKinds['1,3'],'dungeon');
+ assert.equal(generated.poiDiscovery['poi:1:1,3'],'exploration');
  const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);assert.deepEqual(physical(first),physical(map(plain)));
  assert.deepEqual(first.generation,map(plain).generation);assert.equal(Object.keys(first.knave.content.byPoi).length,facts.length);
  // The preference controls future Classic generation; retained snapshots stay
@@ -176,9 +182,9 @@ test('Knave difficulty is sparse and detached; accepted submerged flags survive 
  assert.deepEqual(setKnaveDifficulty(difficult,context,'0,0','unspecified').difficultyByHex,{});
  assert.deepEqual(difficult.discoveryByPoi,{});
 });
-test('Knave interaction requires a bounded separate clue and mode changes preserve authored text',()=>{
+test('Legacy Knave accepts secrets without a clue and validates optional authored text',()=>{
  const context=knaveContext(),initial=newKnaveLayer(),key='poi:1:0,0';
- assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','  '));
+ assert.deepEqual(setKnaveDiscovery(initial,context,key,'interaction','  ').discoveryByPoi[key], {mode:'interaction',clueText:''});
  assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','x'.repeat(513)));
  const secret=setKnaveDiscovery(initial,context,key,'interaction','  Authored test clue <not HTML>  ');
  assert.deepEqual(initial.discoveryByPoi,{});assert.equal(secret.discoveryByPoi[key].clueText,'Authored test clue <not HTML>');
@@ -382,13 +388,13 @@ test('Knave actual reroll command is one reversible transaction preserving autho
  clock+=350;assert.equal(h.render().mutateKnaveContent(key,'both'),true);const both=stable(h),content=both.map.knave.content.byPoi[key],counters=both.map.knave.content.rollCounters[key];
  assert.equal(counters.category,1);assert.equal(counters.primary,2);assert.equal(counters.trait,3);assert.equal(content.category,before.map.knave.content.byPoi[key].category);
  assert.equal(both.map.regions[0].pointOfInterestKinds['2,0'],content.site.representation);
- assert.deepEqual(both.map.editorNames,before.map.editorNames);assert.deepEqual(both.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(both.map.knave.discoveryByPoi,before.map.knave.discoveryByPoi);assert.deepEqual(both.map.knave.difficultyByHex,before.map.knave.difficultyByHex);assert.deepEqual(both.map.generation,before.map.generation);
+ assert.deepEqual(both.map.editorNames,before.map.editorNames);assert.deepEqual(both.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(both.map.poiDiscovery,before.map.poiDiscovery);assert.deepEqual(both.map.knave.difficultyByHex,before.map.knave.difficultyByHex);assert.deepEqual(both.map.generation,before.map.generation);
  const physical=doc=>{const copy=structuredClone(doc);delete copy.map.knave;for(const r of copy.map.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return copy;};assert.deepEqual(physical(both),physical(before));
  h.render().undoMap();assert.deepEqual(stable(h),trait);h.render().redoMap();assert.deepEqual(stable(h),both);
  const save=h.render().createSaveData();assert.equal(save.version,10);h.geometry.assertHexcrawlSaveData(save);
  const restored=createGenerationHarness(42);await load(restored,save);restored.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);clock+=350;
  assert.equal(h.render().mutateKnaveContent(key,'primary'),true);assert.equal(restored.render().mutateKnaveContent(key,'primary'),true);assert.deepEqual(stable(h),stable(restored));
- clock+=350;h.render().setEditMode(true);assert.equal(h.render().changeKnaveDraft({clueText:'Незавершённая улика'}),true);const draft=stable(h),draftHistory=h.render().undoHistory.length;
+ clock+=350;h.render().setEditMode(true);assert.equal(h.render().changeKnaveDraft({mode:'exploration'}),true);const draft=stable(h),draftHistory=h.render().undoHistory.length;
  assert.equal(h.render().mutateKnaveContent(key,'trait'),false);assert.deepEqual(stable(h),draft);assert.equal(h.render().undoHistory.length,draftHistory);h.render().resetKnaveDraft();
  const missing=h.injectFunction('knaveGenerationCatalog',()=>{throw Error('Missing catalog');}),unchanged=stable(h),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);assert.equal(h.render().mutateKnaveContent(key,'both'),false);assert.deepEqual(stable(h),unchanged);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);missing();
 });

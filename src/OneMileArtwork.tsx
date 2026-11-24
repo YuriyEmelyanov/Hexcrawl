@@ -118,6 +118,10 @@ export function OneMileArtwork(p:Props){
   </>}
   <g data-fine-grid pointerEvents="none"><ColorHexGrid cells={p.cells.map(row=>center(row.cell))} radius={radius} viewMagnification={6}/></g>
   {p.coordinates&&<g className="hex-coordinate-layer" pointerEvents="none">{p.cells.map(row=>{const c=center(row.cell);return <text transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={`${row.cell.q},${row.cell.r}`} x={c.x} y={c.y+3.4} fontSize={1.5} textAnchor="middle" fill="#152238">{row.cell.q}/{row.cell.r}</text>;})}</g>}
+  <g pointerEvents="none">{Object.entries(edits??{}).filter(([,v])=>v.localPlace).map(([key])=>{
+    const [q,r]=key.split(',').map(Number),c=center({q,r});
+    return <circle key={key} data-local-place={key} cx={c.x} cy={c.y} r={1.3} fill="#fff4ce" stroke="#352b22" strokeWidth={0.5}/>;
+  })}</g>
   <g data-fine-pois pointerEvents="none">{pointsOfInterest.map(({fp,outline,markers})=>{
    const v=p.poi(fp),size=radius*.62;
    return <g key={fp.poiId} data-poi-id={fp.poiId}>
