@@ -1,0 +1,60 @@
+{
+  "task_id": "HX-BL-073",
+  "stage_id": "REGION-SPLIT",
+  "draft_spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
+  "draft_spec_version": "D2",
+  "draft_spec_blob_sha": "6b08dd1dabed2140506d8a81d4ea20d653c021fb",
+  "interview_status": "awaiting_owner_decisions",
+  "interview_completed": false,
+  "round_refs": [
+    "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-001.json"
+  ],
+  "confirmed_decisions": [
+    {
+      "id": "SPLIT-OWNER-01",
+      "source_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/66f32ba/agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
+      "owner_quote": "Загружать. Присваивать тогда, допустим, вместо 7 7.1 и 7.2, рассматривать как отдельные регионы не сбивая общую номерацию",
+      "interpretation": "Открывать JSON Classic и делить несвязный регион на самостоятельные части с суффиксами. Соседние номера и следующий обычный целый номер сохраняются.",
+      "requirement_refs": [
+        "D2: поведение при открытии",
+        "D2: номера и повторное открытие"
+      ]
+    },
+    {
+      "id": "SPLIT-OWNER-02",
+      "source_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/commit/45d6c43de0257fc3b591dfd8a1f6fa8971446a49",
+      "interpretation": "Потеря малого озера при удалении последнего региона с карты 5–6 миль сама по себе не вызывает предупреждение. Сценарий на сайте пройден. Граница сохранения конфликтующего соседнего озера вынесена в SPLIT-Q07.",
+      "requirement_refs": [
+        "D2: удаление последнего региона"
+      ],
+      "evidence_ref": "agent-work/evidence/HX-BL-073/lake-delete-baseline-d8d8fe7/verification.json"
+    }
+  ],
+  "decisions": [],
+  "open_question_ids": [
+    "SPLIT-Q01",
+    "SPLIT-Q02",
+    "SPLIT-Q03",
+    "SPLIT-Q04",
+    "SPLIT-Q05",
+    "SPLIT-Q06",
+    "SPLIT-Q07"
+  ],
+  "review_coverage": {
+    "result": "Детерминированное разбиение по смежности, сохранение координат, нерасходование очереди целых отображаемых номеров и проверка дубликатов определены D2. Независимую часть спецификации можно опирать на эти решения. Правила спорных развилок остаются в реестре владельца.",
+    "covered_sections": [
+      "Условия импорта",
+      "Самостоятельность частей и отображаемые номера",
+      "Координаты, вода, смежность и дубликаты",
+      "Центры, якоря и свойства",
+      "Топология связей, сохранение и повторное открытие",
+      "Удаление региона и малые озёра"
+    ],
+    "scope": "Интервью и подготовка решений в существующей согласованной задаче."
+  },
+  "ready_for_development": false,
+  "next_role": "owner",
+  "next_role_after_decisions": "business_analyst",
+  "next_step": "Ожидаются решения владельца по HX-BL-073. После закрытия интервью аналитик готовит чистовую спецификацию.",
+  "updated_at": "2026-11-24T17:04:38.064Z"
+}
