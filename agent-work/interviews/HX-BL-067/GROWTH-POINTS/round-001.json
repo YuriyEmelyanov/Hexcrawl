@@ -1,0 +1,162 @@
+{
+  "task_id": "HX-BL-067",
+  "stage_id": "GROWTH-POINTS",
+  "round_id": "round-001",
+  "draft_spec_ref": "agent-work/specs/HX-BL-067-growth-points-roundtrip-D1.md",
+  "draft_spec_version": "D1",
+  "trigger": "Черновик передан после решения владельца сменить приоритет.",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-2026-11-24-switch-HX069-to-HX067.json"
+  ],
+  "source_sha": "a4184a601fd045f326d0dc81164d8dc0322f2456",
+  "fixture_ref": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+  "observations": [
+    {
+      "scenario": "original",
+      "saved": 34,
+      "opened": 35,
+      "deltaAdded": [
+        "-3,3"
+      ],
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": true,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "alreadyResaved",
+      "saved": 35,
+      "opened": 35,
+      "deltaAdded": [],
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": true,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "omitted",
+      "saved": null,
+      "opened": 35,
+      "deltaAdded": null,
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": true,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "partial",
+      "saved": 33,
+      "opened": 35,
+      "deltaAdded": [
+        "-2,-3",
+        "-3,3"
+      ],
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": true,
+      "validGrowthListed": true
+    }
+  ],
+  "coverage": {
+    "AC1": "Правильно сохранённые 34 координаты должны совпасть, включая второе открытие. Неполный список — GP-Q02.",
+    "AC2": "Озеро остаётся озером и открывает карточку. Известный ложный элемент старого списка — GP-Q01.",
+    "AC3": "−2/−3 создаёт четвёртый регион при наличии допустимой точки. После нового сохранения сравнить новые множества.",
+    "AC4": "GP-Q01 определяет судьбу лишней записи, GP-Q02 определяет восстановление пропущенной допустимой точки.",
+    "scope": "Classic, открытие и экспорт JSON, действующие условия роста. Интерфейс и формат сохраняются. HX-BL-064 о морском старте отдельно."
+  },
+  "questions": [
+    {
+      "question_id": "GP-Q01",
+      "topic": "Ранее пересохранённая карта с озером в списке роста",
+      "requirement_refs": [
+        "AC2",
+        "AC4"
+      ],
+      "why_it_matters": "На уже пересохранённой карте −3/3 записана как точка роста, хотя это озеро Vargsjø и на карте открывается его карточка.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "При открытии очищать подтверждённые ложные точки, включая −3/3. Следующий экспорт содержит 34 координаты. Озеро, его карточка и три региона сохраняются."
+        },
+        {
+          "id": "B",
+          "effect": "Сохранять старую запись в JSON для совместимости, но исключать −3/3 из доступного расширения. Файл продолжит содержать 35 координат."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Исправленный JSON снова описывает тот же набор доступных точек, что и карта. Водные гексы, допускаемые действующими правилами, проверять по этим правилам.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependent_questions": []
+    },
+    {
+      "question_id": "GP-Q02",
+      "topic": "Пропуск допустимой точки в явно записанном списке",
+      "requirement_refs": [
+        "AC1",
+        "AC3",
+        "AC4"
+      ],
+      "why_it_matters": "Если из списка удалить допустимую точку −2/−3, текущий загрузчик восстанавливает её. Строгое сохранение списка может сделать часть побережья недоступной для продолжения.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Восстанавливать пропущенные допустимые точки по геометрии, когда сохранённый список неполон. Полный корректный список сохранять."
+        },
+        {
+          "id": "B",
+          "effect": "Считать явно сохранённый неполный список намеренным, оставлять только его допустимые точки. При отсутствии поля целиком восстанавливать точки по геометрии."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Сохраняется доступ к допустимому расширению и существующее поведение для неполных файлов. Случай отсутствующего поля остаётся совместимым при обоих вариантах.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependent_questions": []
+    }
+  ],
+  "owner_answers": [],
+  "open_question_ids": [
+    "GP-Q01",
+    "GP-Q02"
+  ],
+  "new_question_ids": [
+    "GP-Q01",
+    "GP-Q02"
+  ],
+  "presented_in_chat_at": "2026-11-24T09:03:39.848Z",
+  "presented_in_chat_ref": null,
+  "presentation_note": "Варианты предъявлены в существующем чате; идентификатор сообщения недоступен.",
+  "status": "presented_awaiting_owner",
+  "next_role": "interviewer",
+  "next_step": "Ожидаются GP-Q01 и GP-Q02. Аналитик может независимо уточнить AC1–AC3 для корректного файла.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-24T09:01:16.862Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-24T09:03:02.418Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
