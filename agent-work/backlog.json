@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-24T18:05:42.625Z",
+  "updated_at": "2026-11-24T18:46:30.750Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -2552,7 +2552,7 @@
     },
     {
       "task_id": "HX-BL-073",
-      "title": "Разделять несвязные регионы при открытии карты Classic",
+      "title": "Разделять несвязные регионы при открытии карты",
       "status": "Согласована",
       "source": {
         "kind": "owner",
@@ -2566,19 +2566,19 @@
         "remaining_L1_points": 0.9876543209876544
       },
       "requirements": [
-        "Загружать JSON Classic с несвязными регионами, разделяя каждый такой регион на самостоятельные регионы по связным группам гексов.",
+        "При обычном открытии JSON разделять все несвязные регионы на самостоятельные связные части, независимо от режима и происхождения регионов.",
         "Отображать номера частей с суффиксами, например 7.1 и 7.2. Сохранять номера остальных регионов и последовательность нумерации новых регионов.",
-        "При удалении последнего региона на карте 5–6 миль потеря малого озера на карте 1 миля сама по себе не вызывает предупреждения."
+        "При удалении последнего региона сохранять все малые озёра без диалога об озёрах. Правила исчезнувшей опоры и конфликта с восстановленными объектами уточняются."
       ],
       "acceptance_outline": [
-        "Контрольная карта Classic seed 42 открывается с исходными регионами. Копия с гексом 500/500 открывается с двумя самостоятельными частями исходного региона.",
+        "Контрольный JSON открывается обычным способом. Несвязные регионы Classic, Mythic и смешанной карты разделяются; связанные остаются целыми.",
         "Сохранение и повторное открытие сохраняют номера, геометрию и ссылки. Следующий обычный регион получает тот же целый номер, что и без разделения.",
-        "При удалении последнего региона на 5–6 милях не появляется предупреждение о потере малого озера. Проверить соседнее озеро и Undo/Redo."
+        "При удалении последнего региона сохраняются все малые озёра без предупреждения об озёрах. Проверить Undo/Redo после уточнения правил для исчезнувшей опоры и конфликтующих объектов."
       ],
       "implementation_authorized": false,
       "release_authorized": false,
       "ready_for_development": false,
-      "updated_at": "2026-11-24T17:04:38.064Z",
+      "updated_at": "2026-11-24T18:46:30.750Z",
       "strategy_proposal": {
         "task_id": "HX-BL-073",
         "status": "superseded_by_d2",
@@ -2642,7 +2642,7 @@
       },
       "proposal_status": "approved_as_revised",
       "next_role": "owner",
-      "next_step": "Ожидаются решения владельца по HX-BL-073. После закрытия интервью аналитик готовит чистовую спецификацию.",
+      "next_step": "Уточнить сохранение малых озёр при исчезновении опоры и конфликте с восстановленным объектом.",
       "draft_spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
       "draft_spec_version": "D2",
       "lake_delete_baseline": {
@@ -2659,17 +2659,12 @@
       "approval_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
       "approved_at": "2026-11-24T16:29:22.416Z",
       "interview_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/decisions.json",
-      "interview_round_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-001.json",
+      "interview_round_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-002.json",
       "interview_status": "awaiting_owner_decisions",
       "interview_completed": false,
       "open_question_ids": [
-        "SPLIT-Q01",
-        "SPLIT-Q02",
-        "SPLIT-Q03",
-        "SPLIT-Q04",
-        "SPLIT-Q05",
-        "SPLIT-Q06",
-        "SPLIT-Q07"
+        "SPLIT-Q08",
+        "SPLIT-Q09"
       ],
       "next_role_after_decision": "business_analyst"
     },
