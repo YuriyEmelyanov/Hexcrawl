@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import { assertGeneratedIds } from '../src/saveValidation.ts';
+import { buildManualRiverNetwork } from '../src/manualRiverGeometry.ts';
 import { editTag, emptyTags, rollTag } from '../src/tags/engine.ts';
 import { mythicDefinitions } from '../src/tags/mythic.ts';
 const h = createGenerationHarness(42);
@@ -583,6 +584,62 @@ test('opening a disconnected region preserves numbered parts and authored addres
   app.render().addFallbackTractToMap(app.render().candidateHexes[0]);
   assert.equal(save().map.regions.at(-1).id, 3);
   assert.equal(save().map.regions.at(-1).splitNumber, undefined);
+});
+
+test('import assigns each river sector to its supporting part, including a legacy implicit owner', async () => {
+  const app = createGenerationHarness(42);
+  const source = regionFixture();
+  const [first, bridge] = source.map.regions;
+  first.hexes = [first.centerHex, first.pointsOfInterest[0]];
+  first.anchorHex = first.hexes[1];
+  first.finalSize = 2;
+  bridge.hexes = [{ q: 1, r: 0 }];
+  bridge.centerHex = bridge.anchorHex = bridge.hexes[0];
+  bridge.finalSize = 1;
+  const corners = new Map(source.map.regions.flatMap(region => region.hexes.flatMap(hex =>
+    app.geometry.getHexCornerPoints(hex).map(vertex => [vertex.key, vertex]))));
+  const path = ['121.244,-14','121.244,14','96.995,28','72.746,14','48.497,28','24.249,14','0,28']
+    .map(key => corners.get(key));
+  const riverId = 5;
+  source.map.rivers = [{ id: riverId, regionId: first.id, vertexPath: path, sectors: path.slice(1).map((end, i) => ({
+    id: `sector-${i + 1}`, riverId, sectorIndex: i + 1, vertexPath: [path[i], end],
+    edgeKeys: [[path[i].key, end.key].sort().join('|')], startVertexKey: path[i].key, endVertexKey: end.key,
+    startReason: i === 0 ? 'river_start' : 'region_boundary',
+    endReason: i === path.length - 2 ? 'river_end' : 'region_boundary',
+    fullness: 1, ...(i < 3 ? { assignedRegionId: first.id } : i < 5 ? { assignedRegionId: bridge.id } : {}),
+  })) }];
+  source.counters.nextRiverId = riverId + 1;
+  const messages = [];
+  app.render();
+  app.setWindow({ alert: message => messages.push(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  const save = () => structuredClone(app.render().createSaveData().map);
+  const physicalIssues = map => buildManualRiverNetwork(map.rivers, app.geometry.buildManualRiverGeometryContext(map).geometry).issues;
+  app.geometry.assertHexcrawlSaveData(source);
+  assert.deepEqual(physicalIssues({ ...source.map, hexTerrainByKey: new Map() }), []);
+  await open(source);
+  assert.deepEqual(messages, []);
+  const split = save(), [primary, secondary] = split.regions, [river] = split.rivers;
+  assert.equal(river.regionId, secondary.id);
+  assert.deepEqual(river.vertexPath, structuredClone(path));
+  assert.deepEqual(river.sectors.map(sector => sector.assignedRegionId),
+    [secondary.id, secondary.id, secondary.id, bridge.id, bridge.id, primary.id]);
+  assert.deepEqual(physicalIssues(app.render().captureDocument().map), []);
+  await open({ ...source, map: split });
+  assert.deepEqual(save().rivers, split.rivers);
+  assert.deepEqual(physicalIssues(app.render().captureDocument().map), []);
+
+  // This legacy file is structurally valid, but its river explicitly assigns
+  // a sector on the bridging hex to the region being split.
+  const unsupported = structuredClone(source);
+  unsupported.map.rivers[0].sectors[3].assignedRegionId = first.id;
+  app.geometry.assertHexcrawlSaveData(unsupported);
+  const depth = app.render().undoHistory.length;
+  await open(unsupported);
+  assert.match(messages.at(-1), /map\.rivers\[0\]\.sectors\[3\]\.assignedRegionId/);
+  assert.deepEqual(save().rivers, split.rivers);
+  assert.equal(app.render().undoHistory.length, depth);
 });
 
 test('import splitting follows region geography across Classic and Mythic ownership links', async () => {

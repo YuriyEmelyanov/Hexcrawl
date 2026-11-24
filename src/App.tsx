@@ -1099,21 +1099,24 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
   const geography=new Map([...plans].map(([id,{parts}])=>[id,parts.map(part=>({
     id:part.id,vertices:getRegionVertexKeys(part.hexes),edges:new Set(part.hexes.flatMap(hex=>[...getHexEdgeKeys(hex)]))
   }))]));
-  const rivers=map.rivers.map(river=>{
+  const rivers=map.rivers.map((river, riverIndex)=>{
     const parts=geography.get(river.regionId);
     const start=river.vertexPath[0]?.key;
     const regionId=(start && parts?.find(part=>part.vertices.has(start))?.id)||river.regionId;
-    const sectors=river.sectors.map(sector=>{
-      if (sector.assignedRegionId===undefined) return sector;
-      const owners=geography.get(sector.assignedRegionId);
-      if (!owners) return sector;
-      // Preserve the route and the sector's hydrological values. Its first
-      // edge in an owning part decides the nominal region for the sector.
-      for (const edge of sector.edgeKeys) {
-        const owner=owners.find(part=>part.edges.has(edge));
-        if (owner) return {...sector,assignedRegionId:owner.id};
+    const sectors=river.sectors.map((sector, sectorIndex)=>{
+      // Resolve the legacy fallback before changing the owner of the river.
+      const oldOwner=sector.assignedRegionId??river.regionId;
+      const parts=geography.get(oldOwner);
+      if (!parts) return sector;
+      const part=sector.edgeKeys.length
+        ? parts.find(candidate=>sector.edgeKeys.every(edge=>candidate.edges.has(edge)))
+        : parts.find(candidate=>candidate.id===oldOwner);
+      if (!part) {
+        throw new SaveValidationError(`map.rivers[${riverIndex}].sectors[${sectorIndex}].assignedRegionId`,
+          `no part of region ${oldOwner} supports river ${river.id} sector ${sector.id}`);
       }
-      return sector;
+      return sector.assignedRegionId===undefined && part.id===regionId
+        ? sector : {...sector,assignedRegionId:part.id};
     });
     return {...river,regionId,sectors};
   });
