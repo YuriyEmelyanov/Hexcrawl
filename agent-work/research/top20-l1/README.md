@@ -18,9 +18,9 @@
 | 10 | [Pirate Borg](games/PIRATE.json) | 3 | 0 | 0 |
 | 11 | [Crows: Fortune or Death](games/CROWS.json) | 13 | 13 | 0 |
 | 12 | [Sundered Isles](games/SI.json) | 5 | 4 | 0 |
-| 13 | [Ashes Without Number](games/AWN.json) | 4 | 0 | 4 |
+| 13 | [Ashes Without Number](games/AWN.json) | 4 | 3 | 0 |
 | 14 | [Vaults of Vaarn](games/VAARN.json) | 2 | 2 | 0 |
-| 15 | [Black Sword Hack Ultimate Chaos](games/BSH.json) | 2 | 0 | 2 |
+| 15 | [Black Sword Hack Ultimate Chaos](games/BSH.json) | 2 | 2 | 0 |
 | 16 | [Pathfinder 1](games/PF1.json) | 13 | 13 | 0 |
 | 17 | [Swords & Wizardry Complete](games/SWC.json) | 4 | 0 | 4 |
 | 18 | [Mausritter](games/MAUS.json) | 5 | 5 | 0 |
@@ -37,7 +37,10 @@
 
 Sundered Isles задаёт состав стартовой акватории, с выбором 4/3/2 основных островов по области. Описаны четыре сценария для случая, когда мастер сам выбирает гекс-карту. Фракционный оракул отложен до ведения игры. Три строки Pirate Borg относятся к картам-подсказкам, поэтому исключены из рабочей формализации L1. В таблице сохранены все исходные строки. [Передача по морскому срезу](handoffs/2026-11-24-top20-l1-maritime-1930.json).
 
+## Ashes Without Number и Black Sword Hack
+
+Описаны пять операций и 10 сценариев приёмки. В Ashes Without Number подтверждены пример метрической сетки, выбор места анклава и постепенное расширение карты. Печатная подложка остаётся контекстом источника. Теги анклава описывают уже выбранное место и исключены из рабочего L1. Black Sword Hack применён к выбранной мастером гекс-карте через ручные подписи и территориальные рубежи. Исторические пробы покрывают отдельные смежные случаи. [Передача](handoffs/2026-11-24-top20-l1-awn-bsh-2230.json).
+
 ## Продолжение
 
-Структурированы 160 из 177 операций. Для четырёх закрыта применимость к L1 без нового требования; осталось 13 строк. Следующий срез — Ashes Without Number и Black Sword Hack.
-
+165 из 177 операций сформулированы. Пять строк закрыты решением о границах L1, семь ещё требуют разбора. Следующий срез — Swords & Wizardry Complete.

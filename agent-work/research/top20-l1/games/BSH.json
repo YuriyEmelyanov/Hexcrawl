@@ -4,7 +4,217 @@
   "research_sha": "f1171afb87ada1e372fb15812746aac73dec5cb7",
   "game_matrix_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/BSH.json",
   "rows": [
-    {"id":"BSH-obs-01","game_id":"BSH","disposition":"keep_L1","source":{"edition":"Black Sword Hack Ultimate Chaos Edition, SRD, Creating Your World §8.2","locator":"Black Sword Hack Ultimate Chaos Edition, SRD, Creating Your World §8.2","source_ref":"https://blackswordhack.github.io/8world.html","recorded_facts":null,"access_level":"открытый SRD","verification":"reused_from_existing_research"},"model":{"game_unit_id":"BSH","operation_id":"BSH-obs-01","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/BSH.json#BSH-obs-01","related_common_criterion_ids":["S04-C03"]},"canonical":{"binding_id":null,"common_rule_ids":["map.reference_labels"],"candidate_binding":true},"formalization":"model_fixture_only","operational_requirement":null,"model_fixture":{"user_action":"Нанести названия выбранных соседних регионов на исходную карту.","expected_output":"Два различных региона сохраняют имена и положение, подписи читаются на карте.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"territory-probe.mjs","sha":null,"model_reported_status":"partial","finding":"В новом тесте после открытия найдены обе области по своим именам. Видимость обеих надписей одновременно на самом изображении не установлена.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Resolve inputs, source conditions and precise acceptance cases.","Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"BSH-obs-02","game_id":"BSH","disposition":"keep_L1","source":{"edition":"Black Sword Hack Ultimate Chaos Edition, SRD, Creating Your World §8.2","locator":"Black Sword Hack Ultimate Chaos Edition, SRD, Creating Your World §8.2","source_ref":"https://blackswordhack.github.io/8world.html","recorded_facts":null,"access_level":"открытый SRD","verification":"reused_from_existing_research"},"model":{"game_unit_id":"BSH","operation_id":"BSH-obs-02","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/BSH.json#BSH-obs-02","related_common_criterion_ids":[]},"canonical":{"binding_id":null,"common_rule_ids":["map.political_territories"],"candidate_binding":true},"formalization":"model_fixture_only","operational_requirement":null,"model_fixture":{"user_action":"Использовать географический рубеж при размещении территорий.","expected_output":"Заданные смежные области располагаются по выбранные стороны реки или гор.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/MB-layer-baseline-2026-11-20.json#MB-REALM-003-L1","sha":null,"model_reported_status":"partial","finding":"Топонимы и контроль регионов поддерживаются. Ручная привязка границы двух выбранных стран к рубежу не проверена.","scope":"unresolved_or_analogy","matching_prior_operation":"MB-REALM-003-L1"}},"open_checks":["Resolve inputs, source conditions and precise acceptance cases.","Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]}
-  ]
+    {
+      "id": "BSH-obs-01",
+      "game_id": "BSH",
+      "disposition": "keep_L1",
+      "source": {
+        "url": "https://blackswordhack.github.io/8world.html",
+        "edition": "Black Sword Hack Ultimate Chaos Edition, Kobayashi / The Merry Mushmen, SRD 1.0.2, EN",
+        "author_project_key": "merry-mushmen:kobayashi:black-sword-hack:ue-srd-1.0.2",
+        "access_level": "author_publisher_open_srd",
+        "source_ref": "https://blackswordhack.github.io/8world.html",
+        "primary_url": "https://blackswordhack.github.io/8world.html",
+        "locator": "§8.2 The Struggle, первая часть до таблицы d6; для сравнения §11.3.3 Create Your World (solo)",
+        "recorded_facts": "На пустой схеме отмечают названия начальных стран или регионов с учётом их взаимного расположения. В соло-варианте допустим даже перечень относительных мест без рисования карты.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "BSH",
+        "operation_id": "BSH-obs-01",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/BSH.json#BSH-obs-01",
+        "related_common_criterion_ids": [
+          "S04-C03",
+          "S04-C04"
+        ],
+        "legacy_related_common_criterion_ids": [
+          "S04-C03"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Проверяются устойчивые подписи регионов и возврат после сохранения. Ролевые слои и туман войны из правила не следуют.",
+          "model_operation_id": "BSH-obs-01"
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.reference_labels"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://blackswordhack.github.io/8world.html (§8.2 The Struggle, первая часть до таблицы d6; для сравнения §11.3.3 Create Your World (solo))",
+        "normative_kind": "authored_hex_projection_of_setting_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для своего мира. SRD предлагает эскиз карты без обязательной сетки, размера или масштаба.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать два начальных региона на своей гекс-карте и присвоить им имена.",
+        "inputs_and_units": {
+          "regions": "два разных ID области и по одной точке подписи q/r внутри соответствующей области",
+          "names": [
+            "имя A",
+            "имя B"
+          ],
+          "zoom": "фиксированный обзор, где обе области помещаются на карте"
+        },
+        "product_operation": "Сохранить подписи у выбранных регионов и отобразить их на обзорной карте.",
+        "expected_output": "У обеих областей на прежних местах читаются свои названия после загрузки и повторного включения подписей.",
+        "constraints_and_exceptions": [
+          "Число два — пример приёмки, не число регионов по правилам. Соло-режим может вовсе обходиться без карты.",
+          "Выбор имён не порождает политические характеристики и таблицы d6."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Два соседних региона A и B видны целиком на выбранном отдалении.",
+            "when": "Поставить подписи «Север» и «Юг», сохранить и открыть карту с включёнными подписями.",
+            "expected": "Обе подписи читаются на карте одновременно и каждая относится к своему ID региона."
+          },
+          {
+            "given": "У A есть подпись «Север», у B — «Юг».",
+            "when": "Переименовать A, экспортировать и открыть.",
+            "expected": "Изменилось только имя A; B и координаты обоих регионов прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Из SRD следует нанесение имён. Одновременная читаемость на заданном обзоре, IDs и сохранение — критерии продукта.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.reference_labels"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Нанести названия выбранных соседних регионов на исходную карту.",
+        "expected_output": "Два различных региона сохраняют имена и положение, подписи читаются на карте.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "territory-probe.mjs",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "В новом тесте после открытия найдены обе области по своим именам. Видимость обеих надписей одновременно на самом изображении не установлена.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+            "ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/territory-probe-result.json",
+            "scope": "historical_partial_same_subcase",
+            "finding": "Две области и поселение найдены по именам в исходных координатах после импорта. Проба не проверяла одновременную читаемость обеих надписей на карте."
+          }
+        ]
+      },
+      "open_checks": [
+        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта."
+      ],
+      "disposition_reason": "Проверяются устойчивые подписи регионов и возврат после сохранения. Ролевые слои и туман войны из правила не следуют."
+    },
+    {
+      "id": "BSH-obs-02",
+      "game_id": "BSH",
+      "disposition": "keep_L1",
+      "source": {
+        "url": "https://blackswordhack.github.io/8world.html",
+        "edition": "Black Sword Hack Ultimate Chaos Edition, Kobayashi / The Merry Mushmen, SRD 1.0.2, EN",
+        "author_project_key": "merry-mushmen:kobayashi:black-sword-hack:ue-srd-1.0.2",
+        "access_level": "author_publisher_open_srd",
+        "source_ref": "https://blackswordhack.github.io/8world.html",
+        "primary_url": "https://blackswordhack.github.io/8world.html",
+        "locator": "§8.2 The Struggle, первый абзац, geographical borders",
+        "recorded_facts": "При размещении начальных стран или регионов следует учитывать географические границы и возникающие из них отношения. SRD не предписывает автоматическую границу и не устанавливает, какую природную преграду обязательно выбирать.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "BSH",
+        "operation_id": "BSH-obs-02",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/BSH.json#BSH-obs-02",
+        "related_common_criterion_ids": [
+          "S06-C01",
+          "S04-C04"
+        ],
+        "legacy_related_common_criterion_ids": [],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "S06-C01 относится к исходной задаче фракций, связь только с пространственным компонентом территории. S04-C04 даёт проверку хранения геометрии.",
+          "model_operation_id": "BSH-obs-02"
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.political_territories"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://blackswordhack.github.io/8world.html (§8.2 The Struggle, первый абзац, geographical borders)",
+        "normative_kind": "authored_hex_projection_of_setting_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для своего мира. SRD предлагает эскиз карты без обязательной сетки, размера или масштаба.",
+        "layer": "L1",
+        "trigger_or_user_action": "На выбранной гекс-карте вручную задать соседние территории по сторонам выбранного природного рубежа.",
+        "inputs_and_units": {
+          "territories": [
+            "ID территории A",
+            "ID территории B"
+          ],
+          "geographic_boundary": "выбранный мастером отрезок реки либо гряда; координаты рёбер/гексов текущей карты",
+          "membership": "явно назначенные мастером гексы по обе стороны"
+        },
+        "product_operation": "Сохранить выбор территорий и линию соприкосновения на карте без изменения рельефа или реки. Границу назначает мастер.",
+        "expected_output": "Указанные гексы остаются в своих территориях, линия соприкосновения соответствует выбранному рубежу после загрузки.",
+        "constraints_and_exceptions": [
+          "Река или гряда — примеры проверочной карты, не обязательный предписанный SRD тип.",
+          "Естественная граница не назначает контроль мест, отношение к Закону/Хаосу или территорию третьей силы. Не требуется автоподгонка либо симуляция политики."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Территории A и B с тремя явно выбранными парами прилегающих гексов по обе стороны реки, проходящей по их общим рёбрам.",
+            "when": "Вручную задать смежные границы, сохранить и открыть.",
+            "expected": "Все указанные гексы сохранили свою принадлежность, три общих ребра совпадают с выбранной линией; река не менялась."
+          },
+          {
+            "given": "Соседние земли разделены грядой. Один гекс к северу мастер решил оставить вне обеих территорий.",
+            "when": "Нанести ручные границы и открыть сохранение.",
+            "expected": "Отмеченный гекс остался ничейным. Остальные назначения и гряда сохранены."
+          }
+        ],
+        "source_vs_product_interpretation": "SRD требует учитывать географию при размещении. Ручная проверка совпадения рубежа с краями гексов — только выбранная реализация сценария.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.political_territories"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Использовать географический рубеж при размещении территорий.",
+        "expected_output": "Заданные смежные области располагаются по выбранные стороны реки или гор.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/MB-layer-baseline-2026-11-20.json#MB-REALM-003-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Топонимы и контроль регионов поддерживаются. Ручная привязка границы двух выбранных стран к рубежу не проверена.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "MB-REALM-003-L1"
+        }
+      },
+      "open_checks": [
+        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта."
+      ],
+      "disposition_reason": "S06-C01 относится к исходной задаче фракций, связь только с пространственным компонентом территории. S04-C04 даёт проверку хранения геометрии."
+    }
+  ],
+  "latest_formalization_base_sha": "26611e367554b4f4fcfb65681314870a5177d12c",
+  "latest_formalization_run_id": "2026-11-24-top20-l1-awn-bsh-2230"
 }
