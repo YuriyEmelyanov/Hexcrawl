@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-24-dnd5-wonderdraft-1030",
+  "task_id": "HX-RSR-001",
+  "status": "completed",
+  "started_at": "2026-11-24T07:30:54.408Z",
+  "completed_at": "2026-11-24T07:33:43.630Z",
+  "selected_task": {
+    "id": "DND5-DIGITAL-HEX-TO-TABLE",
+    "game_id": "DND5",
+    "scenario": "Проверить по первоисточникам кампанию 1s65gkz: на каком этапе создавалась гекс-сетка в Wonderdraft, какие элементы относятся только к физической карте и как связаны версии 5e и 5.5e. Учесть один проект, сверить с прежними наблюдениями DND5.",
+    "source": "https://www.reddit.com/r/DnD/comments/1s65gkz/",
+    "layer": "L1",
+    "completion_condition": "Подтвердить последовательность создания карты и использования за столом, проверить атрибуцию сетки и учесть кампанию один раз."
+  },
+  "selection_reason": "Предыдущий checkpoint назвал конкретный источник для D&D 5e. Кампания с отчётом о фактической игре проверяет практику создания карт у игры на первом месте активного рейтинга.",
+  "alternatives": [
+    {
+      "task": "Повторный разбор спорных упоминаний Reddit",
+      "reason": "Годовая ревизия закрыта по доступному корпусу; ветки r/DnD и r/dndnext вне её критериев."
+    },
+    {
+      "task": "Повторная оцифровка масштаба DMG 2014",
+      "reason": "Существует рабочая строка L1. Для уточнения нормативного текста требуется точное издание, а авторский отчёт позволяет завершить независимую оценку практики."
+    }
+  ],
+  "inputs_and_versions": {
+    "branch": "agent-operations",
+    "base_sha": "40e7920eb9b97a2b36f2a1d058147512560dc9da",
+    "rank_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "rank_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "previous_run": "agent-work/research/runs/2026-11-24-game-create-0930.json",
+    "game_matrix": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json",
+    "contract": "agent-work/research/data-contract.json",
+    "method": "agent-work/research/method.json",
+    "competitor_registry": "agent-work/research/competitors/registry.json"
+  },
+  "findings": [
+    {
+      "id": "HX-OBS-DND5-IBIR-MAGNETIC-20260328",
+      "game_ids": [
+        "DND5"
+      ],
+      "source": {
+        "url_or_ref": "https://www.reddit.com/r/DnD/comments/1s65gkz/",
+        "locator": "Текст автора, абзацы о Wonderdraft, 5e → 5.5e и итогах двух лет. Комментарии автора о масштабе, карте мастера и наклейках.",
+        "published_at": "2026-03-28"
+      },
+      "observed_fact": "Ведущий vincependrell создал собственный регион в Wonderdraft до начала кампании и распечатал карту. За столом игроки снимали белые магнитные накладки и отмечали находки буквами, которые ведущий позже заменял круглыми наклейками. Автор сообщает о 50 сессиях за два года, более чем 60 открытых гексах, 14 посещённых поселениях и как минимум 20 обнаруженных местах. Описан переход одной группы с 5e на 5.5e. Размер гекса в кампании — 6 миль, физическая накладка немного шире 2 см по короткой диагонали.",
+      "interpretation": "Это подтверждение от ведущего, что региональная карта была подготовлена цифровым способом и использовалась в регулярной игре. Создание цифровой географии и подготовка печатной основы относятся к L1. Физическое раскрытие и отметки в ходе сессий дают контекст L2. Точное происхождение сетки на цифровом файле остаётся неизвестным.",
+      "signal_type": "gm_materials",
+      "quantity": 1,
+      "unit": "авторская кампания; 50 сессий — сообщённый итог внутри неё",
+      "period": "Около двух лет по состоянию на 28 марта 2026. Точные даты старта и перехода редакции неизвестны.",
+      "geography_language": "Англоязычная публикация. Местонахождение группы неизвестно.",
+      "author_project_key": "reddit/vincependrell/magnetic-homebrew-hexcrawl-1s65gkz",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop",
+        "play_now"
+      ],
+      "limitations": [
+        "Сетка до печати и настройки экспорта не описаны.",
+        "Редактируемый файл карты и журнал сессий недоступны.",
+        "Фото доски в источнике доступно через текстовую страницу и подпись; сам файл изображения при переходе переадресован на страницу поста.",
+        "Точная доля сессий в каждой версии и распространённость сценария неизвестны.",
+        "r/DnD вне рейтинговых сообществ."
+      ],
+      "observed_at": "2026-11-24T07:33:43.630Z",
+      "disposition": "keep_L1",
+      "tool_id": "wonderdraft",
+      "supporting_sources": [
+        {
+          "url": "https://www.reddit.com/r/DnD/comments/1s65gkz/comment/od0gxda/",
+          "locator": "Ответ ведущего о 6 милях по короткой диагонали"
+        },
+        {
+          "url": "https://www.reddit.com/r/DnD/comments/1s65gkz/",
+          "locator": "Ответы автора к Jai84 и heropon_riki: карта ведущего, результаты таблиц, временные буквы и круглые наклейки"
+        },
+        {
+          "url": "https://www.reddit.com/r/dndnext/comments/1s2md6e/",
+          "locator": "Сообщение о домашних правилах и нескольких годах итераций. Индексированный первичный текст."
+        },
+        {
+          "url": "https://ibir.itch.io/verdant",
+          "locator": "Назначение и список PDF для Verdant. Это процедура путешествия и материалы для игры."
+        }
+      ]
+    },
+    {
+      "id": "HX-OBS-DND5-WONDERDRAFT-NESTED-20210111",
+      "game_ids": [
+        "DND5"
+      ],
+      "source": {
+        "url_or_ref": "https://www.reddit.com/r/DnDBehindTheScreen/comments/kv5iv4/",
+        "locator": "Авторское руководство, разделы с импортом географии, сеткой и вложенными масштабами; январь 2021.",
+        "published_at": "2021-01-11"
+      },
+      "observed_fact": "Автор описал конкретный комплект карт для 5e. Он импортировал очертания береговой линии и данные высотности в Wonderdraft, добавил гекс-сетку и указал масштабы 1, 3 и 8 миль на гекс по короткой диагонали в своих картах.",
+      "interpretation": "Документирован цифровой этап создания сетки с географией у другого опубликованного примера. Эти масштабы выбрал автор, и они не устанавливают происхождение сетки магнитного проекта или обязательные масштабы D&D.",
+      "signal_type": "gm_materials",
+      "quantity": 1,
+      "unit": "опубликованный комплект карт",
+      "period": "Публикация 11 января 2021",
+      "geography_language": "Англоязычная публикация, география группы неизвестна.",
+      "author_project_key": "reddit/t3_kv5iv4/wonderdraft-nested-map-series",
+      "duplicate_of": null,
+      "access_level": "search_snippet",
+      "scenario_relevance": [
+        "create"
+      ],
+      "limitations": [
+        "Проверен развёрнутый индексированный текст первичного поста. Прямое открытие вернуло DisabledError.",
+        "Ник и фактическая игра по этому комплекту не установлены.",
+        "Пост mv2ml2 с похожим авторским процессом оставлен вне счёта из-за возможного дубля.",
+        "Вне года и сообществ рейтинга."
+      ],
+      "observed_at": "2026-11-24T07:33:43.630Z",
+      "disposition": "keep_L1",
+      "tool_id": "wonderdraft"
+    }
+  ],
+  "conclusion": {
+    "confirmed": "Один ведущий использовал созданную в Wonderdraft региональную географию в одной длительной кампании, прошедшей через две версии правил D&D. Дополнительный авторский пример подтверждает, что в программе создавали именно цифровую гекс-карту для D&D 5e.",
+    "unknown": "Чем выставили сетку авторского постера и где велась карта мастера. Источник не даёт долю мастеров, выполняющих такой сценарий.",
+    "baseline": {
+      "create_rank": 1,
+      "overall_rank": 1
+    },
+    "development_context": {
+      "existing_refs": [
+        "agent-work/backlog.json#HX-BL-063",
+        "agent-work/rules/common-rules.json#map.physical_hex_scale",
+        "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-002-L1-v2-draft"
+      ],
+      "disposition": "keep_L1",
+      "scenario": "При выборе карты с шестимильной сеткой и известных ведущему объектов результат экспорта для печати должен позволять различить ячейки и обозначения. Связь с существующим кандидатом HX-BL-063 дана как свидетельство практики; спецификацию и требования задачи не меняли.",
+      "product_implementation_status": "unknown_in_this_review",
+      "evidence_sha": null
+    },
+    "history_only": [
+      "Магнитный постер, накладки, наклейки и материалы Verdant. Они описывают применение созданной карты."
+    ],
+    "competitor_registry": {
+      "confirmed": 268,
+      "added": 0,
+      "tool_already_present": "wonderdraft",
+      "remaining_to_initial_target": 0
+    },
+    "needs_owner_action": false
+  },
+  "changed_refs": [
+    "agent-work/claims/2026-11-24-dnd5-wonderdraft-1030.json",
+    "agent-work/research/automation-health/2026-11-24-dnd5-wonderdraft-1030-started.json",
+    "agent-work/research/runs/2026-11-24-dnd5-wonderdraft-1030.json",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json#research_agent"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "access": "Первичный отчёт автора и доступные ответы. Авторские описания Verdant и цифровой сетки сверены независимо от рейтинга.",
+    "dedup": "Проверены текущие research/market и market по ID публикаций и автору. Известные публикации Ibir сведены к одному проекту; сравнение 2021 — публикация с отдельным стабильным ID без подсчёта людей.",
+    "rating_scope": "r/DnD, r/dndnext, r/DnDBehindTheScreen вне корпуса.",
+    "product_acceptance": "not_run"
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261124T103000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261124T103000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ]
+  },
+  "checkpoint": {
+    "run_id": "2026-11-24-dnd5-wonderdraft-1030",
+    "status": "completed_bounded_DND5_campaign_evidence",
+    "result_ref": "agent-work/research/runs/2026-11-24-dnd5-wonderdraft-1030.json",
+    "game_id": "DND5",
+    "next_candidate": {
+      "id": "PF2-DIGITAL-HEX-CAMPAIGN-FOLLOWTHROUGH",
+      "game_id": "PF2",
+      "layer": "L1",
+      "source": "https://www.reddit.com/r/wonderdraft/comments/15ef751/",
+      "scenario": "Сопоставить карту автора PF2e Keep on the Borderlands с доступным продолжением той же кампании. Проверить региональный масштаб, инструмент, применение за столом и отличие от импорта готовой карты Kingmaker. При недоступности продолжения проверить независимый случай PF2e с отчётом ведущего. Сверить с текущими PF2e наблюдениями."
+    }
+  },
+  "next_candidate": {
+    "id": "PF2-DIGITAL-HEX-CAMPAIGN-FOLLOWTHROUGH",
+    "game_id": "PF2",
+    "layer": "L1",
+    "source": "https://www.reddit.com/r/wonderdraft/comments/15ef751/",
+    "scenario": "Сопоставить карту автора PF2e Keep on the Borderlands с доступным продолжением той же кампании. Проверить региональный масштаб, инструмент, применение за столом и отличие от импорта готовой карты Kingmaker. При недоступности продолжения проверить независимый случай PF2e с отчётом ведущего. Сверить с текущими PF2e наблюдениями."
+  }
+}
