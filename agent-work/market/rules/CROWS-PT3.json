@@ -2642,7 +2642,7 @@
         "reason": "Карта собственного мира допустима без обязательного воспроизведения географии Cornath; это применимость набора данных, не новая подсистема.",
         "product_boundary": "Выбор содержимого карты",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
         "current_L1_eligible": true,
         "implementation_retested": false,
         "current_operational_requirement": {
@@ -2657,15 +2657,20 @@
             }
           },
           "product_operation": "Мастер выбирает собственную территорию или готовый сеттинг.",
-          "expected_output": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы.",
+          "expected_output": "Создать, сохранить и повторно открыть карту собственного мира (0,5). Открыть готовую карту Корната (0,5).",
           "constraints_and_exceptions": [
             "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
           ],
           "acceptance_cases": [
             {
-              "given": "Пустая карта, выбран Classic mode.",
-              "when": "Выбрать обычную карту своего сеттинга",
-              "expected": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы."
+              "given": "Пустая карта в Classic",
+              "when": "Создать и повторно открыть карту своего мира",
+              "expected": "Карта открывается с прежними данными. Вес 0,5."
+            },
+            {
+              "given": "Готовая карта Корната",
+              "when": "Открыть карту для работы",
+              "expected": "Готовая карта доступна. Вес 0,5."
             }
           ],
           "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
@@ -2680,7 +2685,7 @@
             "fixed_setting_mandatory": false
           }
         },
-        "checkable_result": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы."
+        "checkable_result": "Создать, сохранить и повторно открыть карту собственного мира (0,5). Открыть готовую карту Корната (0,5)."
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -3655,7 +3660,7 @@
           "CROWS-DUN-003": "rule"
         }
       },
-      "layer": "L1",
+      "layer": "L2",
       "operational_requirement": {
         "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
         "normative_kind": "recommendation",
@@ -3855,18 +3860,18 @@
         }
       ],
       "scope_review": {
-        "disposition": "keep_L1",
-        "reason": "Известные игрокам региональные места и скрытое содержание разделяются в принятой обнаружимости. Локальные ловушки не требуют тактического редактора.",
+        "disposition": "move_L2",
+        "reason": "Выдача игрокам карты известных мест и раскрытие скрытых мест относятся к ведению гекскроула.",
         "product_boundary": "Представление карты игрокам/обнаружимость",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
-        "current_L1_eligible": true,
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+        "current_L1_eligible": false,
         "implementation_retested": false,
         "current_operational_requirement": {
           "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
           "normative_kind": "recommendation",
           "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
-          "layer": "L1",
+          "layer": "L2",
           "trigger_or_user_action": "Подготовить карту известных мест и секреты ведущего",
           "inputs_and_units": {
             "CROWS-R26-EXISTING-PLACES": {
@@ -3918,7 +3923,8 @@
           },
           "CROWS-DUN-003": {}
         },
-        "checkable_result": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены."
+        "checkable_result": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены.",
+        "current_layer": "L2"
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -4839,10 +4845,10 @@
       ],
       "scope_review": {
         "disposition": "keep_L1",
-        "reason": "Выбранный ориентир/препятствие прямо наполняет карту; географическая привязка лесопилки к реке проверяема. Боевая детализация готовых мест исключена.",
+        "reason": "Проверяются выбранные региональные места, включая входы в подземелья.",
         "product_boundary": "Наполнение и пространственная привязка POI",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
         "current_L1_eligible": true,
         "implementation_retested": false,
         "current_operational_requirement": {
@@ -4850,24 +4856,29 @@
           "normative_kind": "recommendation",
           "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
           "layer": "L1",
-          "trigger_or_user_action": "Разместить выбранную лесопилку у реки",
+          "trigger_or_user_action": "Вручную разместить выбранные готовые места в своей региональной карте.",
           "inputs_and_units": {
-            "site": "Ruined Sawmill",
-            "type": "sawmill",
-            "river": "R",
-            "constraint": "riverbank"
+            "placement": "manual",
+            "scenarios": [
+              "прибрежная лесопилка",
+              "два региональных входа"
+            ]
           },
-          "product_operation": "Разместить выбранную лесопилку у реки",
-          "expected_output": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены.",
+          "product_operation": "Вручную разместить выбранные готовые места в своей региональной карте.",
+          "expected_output": "Вручную разместить выбранные места из готовых материалов на своей региональной карте. После сохранения и открытия у выбранных мест сохранены имена, положение и краткие описания, включая условия подхода для входов в подземелья.",
           "constraints_and_exceptions": [
-            "Локальные ловушки, урон газа, добыча руды, панели/комнаты и игровые способности обитателей не включены в текущую операцию.",
-            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+            "Для краткого описания подходит заметка соответствующего гекса."
           ],
           "acceptance_cases": [
             {
-              "given": "{\"site\":\"Ruined Sawmill\",\"type\":\"sawmill\",\"river\":\"R\",\"constraint\":\"riverbank\"}",
-              "when": "Разместить выбранную лесопилку у реки; сохранить и повторно открыть карту",
-              "expected": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены."
+              "given": "Готовое описание лесопилки",
+              "when": "Поставить лесопилку у реки с именем и кратким описанием, сохранить и открыть карту",
+              "expected": "Сохранены выбранное место, имя и краткое описание."
+            },
+            {
+              "given": "Два готовых входа в подземелья с разными подходами",
+              "when": "Разместить входы отдельно, записать условия подхода и повторно открыть карту",
+              "expected": "Имена, разные адреса и условия подхода сохранены."
             }
           ],
           "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
@@ -4877,14 +4888,19 @@
           ],
           "unresolved_parameters": []
         },
-        "user_action": "Разместить выбранную лесопилку у реки",
+        "user_action": "Вручную разместить выбранные готовые места в своей региональной карте.",
         "map_object_or_state": {
-          "site": "Ruined Sawmill",
-          "type": "sawmill",
-          "river": "R",
-          "constraint": "riverbank"
+          "placement": "manual",
+          "scenarios": [
+            "прибрежная лесопилка",
+            "два региональных входа"
+          ]
         },
-        "checkable_result": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены."
+        "checkable_result": "Вручную разместить выбранные места из готовых материалов на своей региональной карте. После сохранения и открытия у выбранных мест сохранены имена, положение и краткие описания, включая условия подхода для входов в подземелья.",
+        "merged_from": [
+          "CROWS-PT3-L1-022",
+          "CROWS-PT3-L1-024"
+        ]
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -4917,7 +4933,7 @@
           "CROWS-F02-NEAREST-DUNGEON": "data_dependency_of_L3"
         }
       },
-      "layer": "L1",
+      "layer": "L2",
       "operational_requirement": {
         "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-008",
         "normative_kind": "recommendation",
@@ -5088,17 +5104,46 @@
         }
       ],
       "scope_review": {
-        "disposition": "integration_L3",
-        "reason": "Ближайшее населённое подземелье — внешний источник встречи по пути. Запись обитателей не самостоятельная L1-функция и не разрешение движка монстров.",
+        "disposition": "move_L2",
+        "reason": "Связь ближайшего подземелья с его обитателями используется при определении встречи на ходу и относится к ведению гекскроула.",
         "product_boundary": "Граница данных для встреч гекскроула",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
         "current_L1_eligible": false,
         "implementation_retested": false,
-        "current_operational_requirement": null,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-008",
+          "normative_kind": "recommendation",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L2",
+          "trigger_or_user_action": "Записать обитателей подземелья",
+          "inputs_and_units": {
+            "CROWS-F02-NEAREST-DUNGEON": {
+              "source_location": "closest_inhabited_dungeon",
+              "table_key": "monster_type"
+            }
+          },
+          "product_operation": "В описании подземелья указать тип обитателей для последующего внешнего выбора встречи.",
+          "expected_output": "Тип обитателей сохранён в описании A; новая локация не создана. Автоматическая встреча этим не вычислялась.",
+          "constraints_and_exceptions": [],
+          "acceptance_cases": [
+            {
+              "given": "Ведущий записал, что в подземелье A обитает нежить.",
+              "when": "Записать обитателей подземелья",
+              "expected": "Тип обитателей сохранён в описании A; новая локация не создана. Автоматическая встреча этим не вычислялась."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description",
+            "content.site_links"
+          ],
+          "unresolved_parameters": []
+        },
         "user_action": null,
         "map_object_or_state": null,
-        "checkable_result": null
+        "checkable_result": null,
+        "current_layer": "L2"
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -8631,49 +8676,22 @@
         }
       ],
       "scope_review": {
-        "disposition": "keep_L1",
-        "reason": "Выбранные готовые региональные места можно разместить в своей карте; это не перенос сцены вслед за партией ради сюжета.",
+        "disposition": "merged_L1",
+        "reason": "Ручное размещение выбранных готовых мест в своей карте проверяется по 007.",
         "product_boundary": "Подготовка/переиспользование географического содержимого",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
-        "current_L1_eligible": true,
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+        "current_L1_eligible": false,
         "implementation_retested": false,
-        "current_operational_requirement": {
-          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-022",
-          "normative_kind": "optional_variant",
-          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
-          "layer": "L1",
-          "trigger_or_user_action": "Использовать готовые региональные места",
-          "inputs_and_units": {
-            "CROWS-DUN-001": {
-              "dungeons": 5
-            }
-          },
-          "product_operation": "Использовать Cornath или перенести выбранные места в свой мир, сохранив содержание.",
-          "expected_output": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается.",
-          "constraints_and_exceptions": [
-            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
-          ],
-          "acceptance_cases": [
-            {
-              "given": "Мастер выбрал часть готовых мест Cornath для своего мира.",
-              "when": "Использовать готовые региональные места",
-              "expected": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается."
-            }
-          ],
-          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
-          "canonical_rule_refs": [
-            "content.relocate"
-          ],
-          "unresolved_parameters": []
-        },
+        "current_operational_requirement": null,
         "user_action": "Использовать готовые региональные места",
         "map_object_or_state": {
           "CROWS-DUN-001": {
             "dungeons": 5
           }
         },
-        "checkable_result": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается."
+        "checkable_result": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается.",
+        "merged_into": "CROWS-PT3-L1-007"
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -10305,46 +10323,14 @@
         }
       ],
       "scope_review": {
-        "disposition": "keep_L1",
-        "reason": "Региональные входы и условия подхода — географические места; комнаты и тактические планы не переводятся в региональные гексы.",
+        "disposition": "merged_L1",
+        "reason": "Размещение отдельных региональных входов и сохранение условий подхода проверяются по 007.",
         "product_boundary": "Входы/ориентиры на региональной карте",
         "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
-        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
-        "current_L1_eligible": true,
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+        "current_L1_eligible": false,
         "implementation_retested": false,
-        "current_operational_requirement": {
-          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-024",
-          "normative_kind": "adventure_example",
-          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
-          "layer": "L1",
-          "trigger_or_user_action": "Разместить региональный вход с условиями подхода",
-          "inputs_and_units": {
-            "site": "Blood Library",
-            "approach": "blood lake",
-            "another_site": "Floating Manor",
-            "another_approach": "Wist Weald forest"
-          },
-          "product_operation": "Разместить региональный вход с условиями подхода",
-          "expected_output": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами.",
-          "constraints_and_exceptions": [
-            "Рекомендуемые уровни партий и тактические планы не являются правилами новой региональной географии.",
-            "Ссылку на локальную карту можно сохранить как существующее справочное содержимое; тактические планы, LOS и управление фигурами не разрабатываются.",
-            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
-          ],
-          "acceptance_cases": [
-            {
-              "given": "{\"site\":\"Blood Library\",\"approach\":\"blood lake\",\"another_site\":\"Floating Manor\",\"another_approach\":\"Wist Weald forest\"}",
-              "when": "Разместить региональный вход с условиями подхода; сохранить и повторно открыть карту",
-              "expected": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами."
-            }
-          ],
-          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
-          "canonical_rule_refs": [
-            "content.place_description",
-            "content.site_links"
-          ],
-          "unresolved_parameters": []
-        },
+        "current_operational_requirement": null,
         "user_action": "Разместить региональный вход с условиями подхода",
         "map_object_or_state": {
           "site": "Blood Library",
@@ -10352,7 +10338,8 @@
           "another_site": "Floating Manor",
           "another_approach": "Wist Weald forest"
         },
-        "checkable_result": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами."
+        "checkable_result": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами.",
+        "merged_into": "CROWS-PT3-L1-007"
       },
       "operational_requirement_status": "historical_original; current use only scope_review.current_operational_requirement"
     },
@@ -15266,14 +15253,12 @@
     "CROWS-PT3-L1-002",
     "CROWS-PT3-L1-003",
     "CROWS-PT3-L1-004",
-    "CROWS-PT3-L1-005",
     "CROWS-PT3-L1-007",
     "CROWS-PT3-L1-009",
     "CROWS-PT3-L1-011",
     "CROWS-PT3-L1-017",
     "CROWS-PT3-L1-019",
-    "CROWS-PT3-L1-022",
-    "CROWS-PT3-L1-023",
-    "CROWS-PT3-L1-024"
-  ]
+    "CROWS-PT3-L1-023"
+  ],
+  "current_scope_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json"
 }

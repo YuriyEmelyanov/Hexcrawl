@@ -5531,12 +5531,12 @@
           "id": "CROWS-PT3-L1-001",
           "game": "CROWS",
           "action": "Свой мир или Cornath",
-          "expected": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы.",
+          "expected": "Создать, сохранить и повторно открыть карту собственного мира (0,5). Открыть готовую карту Корната (0,5).",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-001",
-          "functional": "full",
-          "functional_credit": 1,
+          "functional": "partial",
+          "functional_credit": 0.5,
           "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-001",
-          "finding": "Классическая карта создаётся с нуля и загружается повторно без обязательной карты Корната.",
+          "finding": "В Chromium создана, сохранена и повторно открыта карта собственного мира. Готовая карта Корната недоступна.",
           "quality": [
             0,
             1
@@ -5554,7 +5554,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 0.5,
+          "acceptance_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json#CROWS-PT3-L1-001"
         },
         {
           "id": "CROWS-PT3-L1-002",
@@ -5562,10 +5564,10 @@
           "action": "Физический размер гекса",
           "expected": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги.",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-002",
-          "functional": "partial",
-          "functional_credit": 0.5,
+          "functional": "full",
+          "functional_credit": 1,
           "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-002",
-          "finding": "Базовый шаг 6 миль сохраняет геометрию и одномильную детализацию. Движок сетки использует 6 миль между сторонами; отдельного шага 5 миль нет, как и предусмотрено решением владельца.",
+          "finding": "В Chromium показан режим «5–6 миль». Сохранение и открытие JSON сохраняют базовый масштаб и геометрию карты.",
           "quality": [
             0,
             1
@@ -5583,7 +5585,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json#CROWS-PT3-L1-002"
         },
         {
           "id": "CROWS-PT3-L1-003",
@@ -5623,7 +5627,7 @@
           "functional": "full",
           "functional_credit": 1,
           "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-004",
-          "finding": "Существующий брод сменил на мост. При повторном открытии сохранились родительские ID дороги и реки, ребро пересечения и тип bridge. Отмена точно восстанавливает брод.",
+          "finding": "В Chromium брод заменён мостом. Повторное открытие JSON сохраняет мост, ребро пересечения, дорогу и реку.",
           "quality": [
             0,
             1
@@ -5641,47 +5645,20 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
-        },
-        {
-          "id": "CROWS-PT3-L1-005",
-          "game": "CROWS",
-          "action": "Что известно игрокам",
-          "expected": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены.",
-          "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-005",
-          "functional": "absent",
-          "functional_credit": 0,
-          "evidence": "src/App.tsx:createExportSvgClone, handleExportPng, createSaveData; score13-surface.mjs",
-          "finding": "Проверка реализации штатных выходов: PNG копирует SVG мастера и удаляет служебные элементы; JSON сохраняет полную карту. Выборочная выдача по признаку известности игрокам отсутствует в режиме/контракте экспорта. Проверка кода, отдельное изображение для игроков не предъявлено.",
-          "quality": [
-            0,
-            0
-          ],
-          "quality_cases": [
-            {
-              "case": "base",
-              "state": "fail",
-              "low": 0,
-              "high": 0
-            }
-          ],
-          "disposition": "keep_L1",
-          "scope_basis": "Что известно игрокам",
-          "source_acceptance": null,
-          "probe": "CROWS-PT3-L1-implementation-probe.mjs",
-          "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json#CROWS-PT3-L1-004"
         },
         {
           "id": "CROWS-PT3-L1-007",
           "game": "CROWS",
           "action": "Выбранные POI и их содержание",
-          "expected": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены.",
+          "expected": "Вручную разместить выбранные места из готовых материалов на своей региональной карте. После сохранения и открытия у выбранных мест сохранены имена, положение и краткие описания, включая условия подхода для входов в подземелья.",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-007",
-          "functional": "partial",
-          "functional_credit": 0.5,
+          "functional": "full",
+          "functional_credit": 1,
           "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-007",
-          "finding": "Лесопилка с именем сохранена в гексе, который имеет общее ребро с рекой. Появилась только выбранная точка. Такой же тип принимается и на карте без реки.",
+          "finding": "Именованная лесопилка размещена вручную у реки. Два именованных входа в подземелья сохранены в разных гексах. Краткие описания и условия подхода сохранились в заметках соответствующих гексов после повторного открытия JSON.",
           "quality": [
             0,
             1
@@ -5699,7 +5676,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json#CROWS-PT3-L1-007"
         },
         {
           "id": "CROWS-PT3-L1-009",
@@ -5818,35 +5797,6 @@
           "binding": null
         },
         {
-          "id": "CROWS-PT3-L1-022",
-          "game": "CROWS",
-          "action": "Готовая карта или перенос мест",
-          "expected": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается.",
-          "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-022",
-          "functional": "partial",
-          "functional_credit": 0.5,
-          "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-022",
-          "finding": "Общие инструменты сохраняют выбранные именованные POI. Штатный тест переносит POI вместе с её собственными данными между гексами одного документа.",
-          "quality": [
-            0,
-            1
-          ],
-          "quality_cases": [
-            {
-              "case": "base",
-              "state": "unknown",
-              "low": 0,
-              "high": 1
-            }
-          ],
-          "disposition": "keep_L1",
-          "scope_basis": "Готовая карта или перенос мест",
-          "source_acceptance": null,
-          "probe": "CROWS-PT3-L1-implementation-probe.mjs",
-          "origin": "registered",
-          "binding": null
-        },
-        {
           "id": "CROWS-PT3-L1-023",
           "game": "CROWS",
           "action": "Четыре готовые деревни",
@@ -5874,40 +5824,28 @@
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
           "binding": null
-        },
-        {
-          "id": "CROWS-PT3-L1-024",
-          "game": "CROWS",
-          "action": "Региональные входы в подземелья",
-          "expected": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами.",
-          "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-024",
-          "functional": "partial",
-          "functional_credit": 0.5,
-          "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-024",
-          "finding": "Blood Library и Floating Manor вручную сохранены как разные региональные входы по двум адресам. Имя и тип POI сохранились, дорожная и речная геометрия совпали после импорта.",
-          "quality": [
-            0,
-            1
-          ],
-          "quality_cases": [
-            {
-              "case": "base",
-              "state": "unknown",
-              "low": 0,
-              "high": 1
-            }
-          ],
-          "disposition": "keep_L1",
-          "scope_basis": "Региональные входы в подземелья",
-          "source_acceptance": null,
-          "probe": "CROWS-PT3-L1-implementation-probe.mjs",
-          "origin": "registered",
-          "binding": null
         }
       ],
       "functional_replays": [
         "CROWS-PT3-L1-implementation-probe"
-      ]
+      ],
+      "merged_operations": [
+        {
+          "id": "CROWS-PT3-L1-022",
+          "title": "Готовая карта или перенос мест",
+          "route": "merged",
+          "decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+          "merged_into": "CROWS-PT3-L1-007"
+        },
+        {
+          "id": "CROWS-PT3-L1-024",
+          "title": "Региональные входы в подземелья",
+          "route": "merged",
+          "decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+          "merged_into": "CROWS-PT3-L1-007"
+        }
+      ],
+      "scope_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json"
     },
     {
       "game": "SI",
@@ -7417,6 +7355,20 @@
       "id": "S10-C05",
       "title": "Публичный отчёт",
       "route": "external_leadership"
+    },
+    {
+      "id": "CROWS-PT3-L1-005",
+      "title": "Что известно игрокам",
+      "route": "L2",
+      "decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+      "target_level": "L2"
+    },
+    {
+      "id": "CROWS-PT3-L1-008",
+      "title": "Обитатели подземелья",
+      "route": "L2",
+      "decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+      "target_level": "L2"
     }
   ],
   "out_of_cohort": {
@@ -7500,17 +7452,18 @@
     "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "core_ref": "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
     "game_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
-    "published_total_rounded": 187.59,
+    "published_total_rounded": 191.38,
     "market": 0,
     "version": "L1-24-S03-C02-merged",
     "prior_browser_total": 104.52887363806904,
     "prior_browser_scope": "34 common + 177 game rows; use Classic review for updated common points",
     "new_score_awarded": 0.5925925925925926,
-    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511. S03-C02 включает S03-C03, 29 правил, общий вес ядра 675.",
+    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511. S03-C02 включает S03-C03, 29 правил, общий вес ядра 675. CROWS пересчитан по решению владельца от 24.11.2026.",
     "core_points": 128.7735152031827,
-    "game_points": 58.81521362843202,
-    "total_points": 187.58872883161473,
-    "scale_points": 0
+    "game_points": 62.60794867116706,
+    "total_points": 191.38146387434978,
+    "scale_points": 0,
+    "crows_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json"
   },
   "game_block": {
     "weight_in_level": 0.3333333333333333,
@@ -7578,8 +7531,9 @@
       {
         "id": "CROWS",
         "kind": "game",
-        "accepted_share": 0.07692307692307694,
-        "weight": 1
+        "accepted_share": 0.35,
+        "weight": 1,
+        "scope_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json"
       },
       {
         "id": "SI",
