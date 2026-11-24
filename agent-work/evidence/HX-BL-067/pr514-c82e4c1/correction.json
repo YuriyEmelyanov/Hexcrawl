@@ -1,0 +1,120 @@
+{
+  "task_id": "HX-BL-067",
+  "pr": 514,
+  "previous_sha": "2bd0140726a30c699483f3cc4f4f9e8c45ccc3f1",
+  "head_sha": "c82e4c1b19f409f8bbfdc541ce268716ab9e3e9f",
+  "tree_sha": "3d5f640c21fbff3f62feab7e892a7ff47dc120e2",
+  "failed_previous_job": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45380931774/job/138399443643",
+  "cause": "Duplicate or unrelated saved coordinates caused valid coordinates to be used in untrusted order instead of normalizing. Existing E7 test detected the ordering change.",
+  "fix": "Use the deterministic geometric frontier for duplicates and unrelated coordinates. Preserve valid order and restore omissions in Classic lists without those errors; ignore lake entries.",
+  "node_log": "✔ E7 v7 import retains only an exact unique frontier order; legacy/mismatch/duplicate/empty/sea retain prior normalization (793.936751ms)\n✔ Classic import restores the growth frontier without promoting an adjacent lake (30.306068ms)\nℹ tests 2\nℹ suites 0\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 5923.215244\n",
+  "browser": {
+    "source_sha": "c82e4c1b19f409f8bbfdc541ce268716ab9e3e9f",
+    "fixture_regions": 3,
+    "fixture_points": 34,
+    "cycles": [
+      {
+        "cycle": 1,
+        "regions": 3,
+        "lakeCard": "💧 Озеро Варгшё\n\nКоординаты гекса: -3/3\n\nПоверхность: Озеро Варгшё",
+        "shown": 34,
+        "saved": 34,
+        "addedVsOriginal": [],
+        "missingVsOriginal": [],
+        "extraSavedVsVisible": []
+      },
+      {
+        "cycle": 2,
+        "regions": 3,
+        "lakeCard": "💧 Озеро Варгшё\n\nКоординаты гекса: -3/3\n\nПоверхность: Озеро Варгшё",
+        "shown": 34,
+        "saved": 34,
+        "addedVsOriginal": [],
+        "missingVsOriginal": [],
+        "extraSavedVsVisible": []
+      }
+    ],
+    "expansion": {
+      "anchor": "-2,-3",
+      "regions": 4,
+      "regionsAfterReopen": 4,
+      "saved": 60,
+      "reopened": 60,
+      "added": [],
+      "removed": []
+    }
+  },
+  "compatibility": [
+    {
+      "scenario": "original",
+      "second_cycle_same": true,
+      "saved": 34,
+      "opened": 34,
+      "deltaAdded": [],
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": false,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "alreadyResaved",
+      "second_cycle_same": true,
+      "saved": 35,
+      "opened": 34,
+      "deltaAdded": [],
+      "deltaRemoved": [
+        "-3,3"
+      ],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": false,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "omitted",
+      "second_cycle_same": true,
+      "saved": null,
+      "opened": 34,
+      "deltaAdded": null,
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": false,
+      "validGrowthListed": true
+    },
+    {
+      "scenario": "partial",
+      "second_cycle_same": true,
+      "saved": 33,
+      "opened": 34,
+      "deltaAdded": [
+        "-2,-3"
+      ],
+      "deltaRemoved": [],
+      "lakeTerrain": {
+        "terrainOverride": "lake",
+        "lakeId": 1
+      },
+      "waterStillListed": false,
+      "validGrowthListed": true
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "2bd0140726a30c699483f3cc4f4f9e8c45ccc3f1",
+    "head_sha": "c82e4c1b19f409f8bbfdc541ce268716ab9e3e9f",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node",
+    "scenario": "Existing E7 order regression and Classic frontier lake/missing regression",
+    "reuse_or_new_reason": "Both existing cases prevent the regression on the relevant paths.",
+    "source": "diff of previous and current PR heads has no test path changes"
+  }
+}
