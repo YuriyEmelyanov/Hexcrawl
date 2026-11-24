@@ -65,13 +65,23 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "TOP20-L1-ROOT-DND5-OPEN-SOURCE-OPERATIONS",
+    "id": "TOP20-L1-MARITIME-CORPUS",
     "layer": "L1",
-    "scope": "DND5-2014-016-L1-v2-draft и ROOT-SCOPE-M01…M07. Проверить применимость к региональной карте, источники и исключения. Подготовить самостоятельные входы, ожидаемые выходы и ссылки на существующие bindings. Закрытие пробелов продолжать по top20-l1/index.json."
+    "row_ids": [
+      "PIRATE-obs-01",
+      "PIRATE-obs-02",
+      "PIRATE-obs-03",
+      "SI-obs-01",
+      "SI-obs-02",
+      "SI-obs-03",
+      "SI-obs-04",
+      "SI-obs-05"
+    ],
+    "scope": "Три строки Pirate Borg и пять Sundered Isles. Сверить масштаб, сетку и правило нанесения объекта по оригиналу; отдельно отметить локальные карты кладов и авторский перенос на региональную гекс-карту."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-24-dnd5-wonderdraft-1030",
+  "last_completed_run": "2026-11-24-top20-l1-dnd5-root-1630",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -324,7 +334,8 @@
     "agent-work/research/runs/2026-11-24-dnd5-wonderdraft-1030.json",
     "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
     "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
-    "agent-work/research/runs/2026-11-24-top20-l1-formalization.json"
+    "agent-work/research/runs/2026-11-24-top20-l1-formalization.json",
+    "agent-work/research/runs/2026-11-24-top20-l1-dnd5-root-1630.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -365,7 +376,7 @@
       }
     ]
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-24-top20-l1-formalization.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-24-top20-l1-dnd5-root-1630.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/top20-l1/index.json",
@@ -1108,7 +1119,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-24T10:49:56.242Z",
+  "updated_at": "2026-11-24T13:36:26Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1250,7 +1261,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-24-top20-l1-formalization",
+  "last_run_id": "2026-11-24-top20-l1-dnd5-root-1630",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1306,21 +1317,34 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-24-top20-l1-formalization",
+  "last_run": "2026-11-24-top20-l1-dnd5-root-1630",
   "checkpoint": {
-    "status": "top20_baseline_mapped_formalization_in_progress",
-    "run_id": "2026-11-24-top20-l1-formalization",
-    "result_ref": "agent-work/research/runs/2026-11-24-top20-l1-formalization.json",
+    "status": "top20_formalization_in_progress",
+    "run_id": "2026-11-24-top20-l1-dnd5-root-1630",
+    "result_ref": "agent-work/research/runs/2026-11-24-top20-l1-dnd5-root-1630.json",
     "index_ref": "agent-work/research/top20-l1/index.json",
-    "completed": "Сопоставлены 20 игр и 177 операций в двух версиях рабочей матрицы. 143 структурированных требования переиспользованы, 5 проверены по первоисточнику Mausritter.",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-24-top20-l1-dnd5-root-1630.json",
+    "completed": "Формализованы 8 оставшихся строк D&D 5e и Root. Описаны 17 приёмочных случаев, включая повторное открытие и граничные условия.",
     "remaining": {
-      "operations_without_structured_requirements": 29,
-      "operations_without_common_criterion": 14,
+      "operations_without_structured_requirements": 21,
+      "operations_without_related_common_criterion": 7,
       "operations_without_exact_binding": 51,
-      "operations_without_historical_operation_evidence_sha": 91,
-      "scope": "Счётчики пересекаются. Нужна адресная проверка полноты источников и действующей реализации."
+      "with_parent_binding_instead_of_exact": 7,
+      "operations_without_historical_same_operation_evidence_sha": 91,
+      "new_rows_current_implementation_unknown": 8,
+      "scope": "Счётчики пересекаются. Структурирование и связность матрицы не определяют реализацию."
     },
-    "next": "DND5-2014-016-L1-v2-draft и ROOT-SCOPE-M01…M07. Проверить применимость к региональной карте, источники и исключения. Подготовить самостоятельные входы, ожидаемые выходы и ссылки на существующие bindings. Закрытие пробелов продолжать по top20-l1/index.json.",
+    "next": "Три строки Pirate Borg и пять Sundered Isles. Сверить масштаб, сетку и правило нанесения объекта по оригиналу; отдельно отметить локальные карты кладов и авторский перенос на региональную гекс-карту.",
+    "next_row_ids": [
+      "PIRATE-obs-01",
+      "PIRATE-obs-02",
+      "PIRATE-obs-03",
+      "SI-obs-01",
+      "SI-obs-02",
+      "SI-obs-03",
+      "SI-obs-04",
+      "SI-obs-05"
+    ],
     "needs_owner_action": false
   },
   "latest_recent_survey_audit": {
@@ -2215,8 +2239,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-24T10:49:56.242Z",
-  "last_bounded_completed_run": "2026-11-24-dnd5-wonderdraft-1030",
+  "last_run_at": "2026-11-24T13:36:26Z",
+  "last_bounded_completed_run": "2026-11-24-top20-l1-dnd5-root-1630",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -3154,7 +3178,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "closed_for_available_2025_11_to_2026_10_evidence",
+  "last_run_outcome": "bounded_top20_DND5_ROOT_formalization_completed",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -5191,8 +5215,8 @@
       "unresolved_original_products_excluded": 2
     }
   },
-  "last_completed_at": "2026-11-24T07:33:43.630Z",
-  "previous_result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
+  "last_completed_at": "2026-11-24T13:36:26Z",
+  "previous_result_ref": "agent-work/research/runs/2026-11-24-top20-l1-formalization.json",
   "latest_competitor_discovery": {
     "added": [
       "nevirr-simplemap",
@@ -5231,15 +5255,17 @@
   },
   "latest_top20_l1_formalization": {
     "ref": "agent-work/research/top20-l1/index.json",
-    "run_id": "2026-11-24-top20-l1-formalization",
+    "run_id": "2026-11-24-top20-l1-dnd5-root-1630",
     "games": 20,
     "operation_ids": 177,
     "existing_structured_requirements": 143,
-    "new_primary_verified_drafts": 5,
-    "missing_structured_requirements": 29,
-    "linked_to_common_model_criterion": 163,
+    "new_primary_verified_drafts": 13,
+    "missing_structured_requirements": 21,
+    "linked_to_common_model_criterion": 170,
     "existing_bindings": 126,
-    "with_historical_operation_evidence_sha": 86
+    "with_historical_operation_evidence_sha": 86,
+    "distinct_parent_binding_links_on_component_rows": 7,
+    "new_source_verified_drafts_this_run": 8
   },
   "youtube_priority": {
     "status": "parked_by_owner",
