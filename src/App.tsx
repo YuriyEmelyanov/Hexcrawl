@@ -15621,14 +15621,18 @@ export function App() {
       const frontierKeys = new Set(frontier.map(hexKey));
       const savedCandidates = imported.map.candidateHexes ?? [];
       let candidates = frontier;
-      if (imported.version >= 7 && classic) {
-        // Preserve saved traversal order for valid points, then fill omissions.
-        const retained = savedCandidates.filter(candidate => frontierKeys.delete(hexKey(candidate)));
-        candidates = [...retained, ...frontier.filter(candidate => frontierKeys.has(hexKey(candidate)))];
-      } else if (imported.version >= 7) {
+      if (imported.version >= 7) {
         const savedKeys = savedCandidates.map(hexKey);
-        if (savedKeys.length === frontier.length && new Set(savedKeys).size === savedKeys.length &&
-            savedKeys.every(key => frontierKeys.has(key))) candidates = savedCandidates;
+        const unique = new Set(savedKeys).size === savedKeys.length;
+        if (unique && classic && savedCandidates.every(candidate =>
+          frontierKeys.has(hexKey(candidate)) || isLakeHex(candidate, terrain)
+        )) {
+          // Preserve valid saved order while removing lake entries and filling omissions.
+          const retained = savedCandidates.filter(candidate => frontierKeys.delete(hexKey(candidate)));
+          candidates = [...retained, ...frontier.filter(candidate => frontierKeys.has(hexKey(candidate)))];
+        } else if (unique && savedKeys.length === frontier.length && savedKeys.every(key => frontierKeys.has(key))) {
+          candidates = savedCandidates;
+        }
       }
       const seed=imported.map.toponyms?.seed ?? legacyToponymSeed(imported.map.regions);
       const retainedNames=imported.map.toponyms?.names ?? {};
