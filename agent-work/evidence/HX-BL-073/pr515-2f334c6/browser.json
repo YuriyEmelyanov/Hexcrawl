@@ -1,0 +1,69 @@
+{
+  "task_id": "HX-BL-073",
+  "run_id": "2026-11-24T2300-programmer-HX073",
+  "head_sha": "2f334c6faeb913a6a66b0630ba29518086b5f5cb",
+  "tree_sha": "713fc67627e1b4c6fcfb8ad0726b6de34037d6c0",
+  "pr": 515,
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "reproduction": "test/geometryPlan.test.mjs · Region split imports physical4 without moving accepted geometry or detaching the authored POI",
+  "before": {
+    "baseline_head": "b72beecdc87e7a5ae4a96d54d4e1d68043a9d94f",
+    "same_v16": "rejected",
+    "alert": "Failed to load JSON: map preparation error (map.physicalGrid: Geometry source does not match physical grid). Your current map is intact.",
+    "original_map_remained": true
+  },
+  "after": {
+    "fixture": "classic-six-regions-seed42.json + detached road and named POI, accepted physical4",
+    "parts": [
+      {
+        "label": "1.1",
+        "hexes": 9
+      },
+      {
+        "label": "1.2",
+        "hexes": 2
+      }
+    ],
+    "visible_card": "1.2",
+    "authored_poi": "Камень",
+    "poi_identity_preserved": true,
+    "refined_river_paths": 34,
+    "refined_crossings": 2,
+    "json_roundtrip": true,
+    "one_mile_png_bytes": 701218,
+    "dialogs": [],
+    "errors": []
+  },
+  "additional_import_checks": {
+    "fixture": "classic-six-regions-seed42 with distant three-hex component bridged by a lake",
+    "water_hex": "13,0",
+    "preserved_single_secondary_component": true,
+    "stable_center_and_anchor_after_reordering": true,
+    "duplicate_hex_atomic_rejection": true,
+    "river_and_sector_owner_transferred": true,
+    "river_path_and_crossings_preserved": true
+  },
+  "checks": {
+    "typescript": "passed",
+    "production_build": "passed",
+    "targeted_node": {
+      "suites": [
+        "geometryPlan",
+        "saveSafety",
+        "mapTransactions"
+      ],
+      "executed": 106,
+      "passed": 106,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": "Chromium on the production build of the exact candidate tree",
+    "workflow_run": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45477666407"
+  },
+  "lake_removal_check": {
+    "status": "passed",
+    "suite": "mapTransactions",
+    "case": "deleting a real region removes unsupported small lakes and undo restores all of them"
+  },
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/pr515-2f334c6/authored-part-1-2.jpg"
+}
