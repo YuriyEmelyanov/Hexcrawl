@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-25-top20-l1-swc-0130",
+  "source_base_sha": "aea648d4cf2bc6129b56978cebd2c871a2b539cf",
+  "status": "research_handoff_source_verified",
+  "audiences": [
+    "Модель продукта",
+    "Стратег и аналитик разработки"
+  ],
+  "scope": "Четыре исходные строки Swords & Wizardry Complete Revised. Wilderness Adventures и пространственная постановка Random Castles.",
+  "changes": [
+    {
+      "game_id": "SWC",
+      "operation_id": "SWC-obs-01",
+      "source": {
+        "edition": "Swords & Wizardry Complete Revised, Matt Finch / Mythmere Games, Green PDF, EN",
+        "locator": "Referee Guide, с. 79–80, Wilderness Adventures, первые абзацы: стартовое поселение и расширение",
+        "source_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "primary_url": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "publisher_url": "https://www.mythmeregames.com/products/swords-wizardry-complete-revised-a-fantasy-role-playing-game",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "author_project_key": "mythmere:matt-finch:swords-and-wizardry-complete-revised",
+        "recorded_facts": "В начале достаточно деревни и местности рядом с ней и подземельем. Исходную карту можно расширять по мере приключений вплоть до карты большого мира. Площадь, число гексов и направление расширения не заданы.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "disposition": "keep_L1",
+      "basis": "Адресное изменение и сохранение старых данных. Привязка к критериям касается этой операции, а не всей реализации редактирования или импорта.",
+      "criterion_ids": [
+        "S03-C01",
+        "S03-C03",
+        "S04-C04"
+      ],
+      "criterion_fit": {
+        "status": "bounded_component_only",
+        "basis": "Адресное изменение и сохранение старых данных. Привязка к критериям касается этой операции, а не всей реализации редактирования или импорта.",
+        "model_operation_id": "SWC-obs-01"
+      },
+      "binding_id": null,
+      "binding_status": "no_exact_game_binding_at_baseline",
+      "rule_ids": [
+        "map.extend_preserving_content"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF (Referee Guide, с. 79–80, Wilderness Adventures, первые абзацы: стартовое поселение и расширение)",
+        "normative_kind": "referee_map_preparation_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для Swords & Wizardry Complete Revised.",
+        "layer": "L1",
+        "trigger_or_user_action": "Начать с местности вокруг стартовой деревни и при необходимости пристроить соседний участок.",
+        "inputs_and_units": {
+          "initial_map": "адреса q/r в гексах, стартовая деревня V, необязательные места",
+          "growth_footprint": "выбранные примыкающие клетки за рамкой",
+          "step": "физическая длина гекса текущей карты, мили"
+        },
+        "product_operation": "Наполнить стартовый участок и расширить его выбранным соседним участком, сохраняя существующий адресный слой.",
+        "expected_output": "Новые клетки примыкают к старому участку. Старые клетки, геометрия и места сохраняются после открытия.",
+        "constraints_and_exceptions": [
+          "Границу расширения выбирает мастер. Источник не требует автогенерации или фиксированной формы участка.",
+          "Создание подземелья в деталях относится к другой процедуре."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Участок A содержит деревню V, ориентир P и ручную правку биома на границе. К востоку карты нет.",
+            "when": "Достроить примыкающий участок B с двумя отмеченными гексами и открыть сохранение.",
+            "expected": "B привязан к A. Имя, тип и адреса V/P и ручная правка в A совпадают с исходными."
+          },
+          {
+            "given": "Есть только исходная область A. Решение о направлении пока не принято.",
+            "when": "Сохранить и открыть текущую карту без расширения.",
+            "expected": "Площадь и содержимое A совпадают; дополнительные клетки не появились."
+          }
+        ],
+        "source_vs_product_interpretation": "Малая стартовая карта и последующий рост — рекомендация книги. Сохранение адресов и проверка повторным открытием — продуктовая формализация.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-001-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "full",
+          "finding": "Тот же общий сценарий воспроизведён на 20 исходных картах с проверкой старого региона и двух сохранений. Специальная таблица игры для этой операции не требуется.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-001-L1-v2-draft"
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+            "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-001-L1-v2-draft",
+            "scope": "historical_generic_operation_other_game_profile",
+            "finding": "На старом SHA проверено добавление смежной области и сохранение 12 поименованных мест и прежней геометрии в JSON. Повторная проверка релиза для SWC не выполнялась."
+          }
+        ]
+      }
+    },
+    {
+      "game_id": "SWC",
+      "operation_id": "SWC-obs-02",
+      "source": {
+        "edition": "Swords & Wizardry Complete Revised, Matt Finch / Mythmere Games, Green PDF, EN",
+        "locator": "Referee Guide, с. 79–80, Wilderness Adventures, абзац о размере ячейки; с. 83–84, Random Castles, абзац о приближении",
+        "source_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "primary_url": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "publisher_url": "https://www.mythmeregames.com/products/swords-wizardry-complete-revised-a-fantasy-role-playing-game",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "author_project_key": "mythmere:matt-finch:swords-and-wizardry-complete-revised",
+        "recorded_facts": "Для карты дикой местности советуют гексы или квадраты шириной 5 миль. В частном примере для замков используются 5- или 6-мильные гексы. Направление измерения ширины гекса не уточнено.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "disposition": "keep_L1",
+      "basis": "Проверка сохранения явно выбранного физического шага и его единицы. Ширина ячейки не доказывает правдоподобие воды, рельефа или дорог.",
+      "criterion_ids": [
+        "S04-C04",
+        "S06-C04"
+      ],
+      "criterion_fit": {
+        "status": "bounded_component_only",
+        "basis": "Проверка сохранения явно выбранного физического шага и его единицы. Ширина ячейки не доказывает правдоподобие воды, рельефа или дорог.",
+        "model_operation_id": "SWC-obs-02"
+      },
+      "binding_id": null,
+      "binding_status": "no_exact_game_binding_at_baseline",
+      "rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF (Referee Guide, с. 79–80, Wilderness Adventures, абзац о размере ячейки; с. 83–84, Random Castles, абзац о приближении)",
+        "normative_kind": "referee_map_preparation_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для Swords & Wizardry Complete Revised.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать физический масштаб локальной региональной карты и сохранить его с картой.",
+        "inputs_and_units": {
+          "nominal_local_size": {
+            "value": 5,
+            "unit": "миль поперёк гекса",
+            "role": "рекомендация источника"
+          },
+          "castle_example_sizes": {
+            "values": [
+              5,
+              6
+            ],
+            "unit": "миль на гекс",
+            "role": "пример в разделе о замках"
+          },
+          "display_zoom": "безразмерное изменение камеры",
+          "axis": "обозначение геометрической конвенции, если задано продуктом"
+        },
+        "product_operation": "Показать и хранить выбранную величину и единицу карты отдельно от экранного увеличения.",
+        "expected_output": "У карты сохраняется выбранный физический масштаб. При точном 5-мильном варианте сохраняется 5 миль, при выбранных 6 — 6 миль.",
+        "constraints_and_exceptions": [
+          "В источнике ширина гекса не привязана к стороне, вершинам или соседним центрам. Не выводить расстояние между центрами без согласованной геометрической конвенции.",
+          "В рабочей продуктовой группе 5–6 миль допускается 6-мильная сетка. Название группы не подтверждает точный пяти-мильный размер.",
+          "Квадратная ветка и правила реакции гарнизона вне этого требования."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Карта A с явно выбранной физической величиной 5 миль и картографической конвенцией проекта.",
+            "when": "Изменить экранный зум с 1× до 2×, сохранить и открыть.",
+            "expected": "Физическая величина остаётся 5 миль. Зум её не меняет."
+          },
+          {
+            "given": "Карта B использует фактический шаг 6 миль в принятом диапазоне 5–6.",
+            "when": "Открыть сохранение и проверить характеристику физической сетки.",
+            "expected": "Шаг отображается и сохраняется как 6 миль; точная 5-мильная сетка этим сценарием не зачтена."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник приводит масштаб и допустимый частный пример. Различение фактических 5/6 и экранного зума — проверка продукта. Отдельный точный режим 5 миль требует продуктового решения.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Ось размера гекса в книге не уточнена. Точная 5-мильная сетка в приложении не подтверждена."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-002-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Есть фактический выбор 1 и 6 миль. Продуктовая группа 5–6 миль полезна для черновика, точные пять миль не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-002-L1-v2-draft"
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+            "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-002-L1-v2-draft",
+            "scope": "historical_other_scale_analogy",
+            "finding": "На старом SHA зафиксированы 1 и 6 миль в селекторе; 5 миль и ось SWC не установлены."
+          }
+        ]
+      }
+    },
+    {
+      "game_id": "SWC",
+      "operation_id": "SWC-obs-03",
+      "source": {
+        "edition": "Swords & Wizardry Complete Revised, Matt Finch / Mythmere Games, Green PDF, EN",
+        "locator": "Referee Guide, с. 83–84, Random Castles, абзац о размещении замков и их поселений",
+        "source_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "primary_url": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "publisher_url": "https://www.mythmeregames.com/products/swords-wizardry-complete-revised-a-fantasy-role-playing-game",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "author_project_key": "mythmere:matt-finch:swords-and-wizardry-complete-revised",
+        "recorded_facts": "На карте дикой местности рекомендуется отметить замки и относящиеся к ним деревни или хутора. Подробности замка можно определить позднее во время игры.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "disposition": "keep_L1",
+      "basis": "Положение и тип двух постоянных мест и явная связь между ними. Сюжетный состав карточки, экономика, гарнизон, боевые правила и полное покрытие общего критерия не требуются.",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S04-C04"
+      ],
+      "criterion_fit": {
+        "status": "bounded_component_only",
+        "basis": "Положение и тип двух постоянных мест и явная связь между ними. Сюжетный состав карточки, экономика, гарнизон, боевые правила и полное покрытие общего критерия не требуются.",
+        "model_operation_id": "SWC-obs-03"
+      },
+      "binding_id": null,
+      "binding_status": "no_exact_game_binding_at_baseline",
+      "rule_ids": [
+        "content.landmarks",
+        "content.site_links",
+        "content.place_description"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF (Referee Guide, с. 83–84, Random Castles, абзац о размещении замков и их поселений)",
+        "normative_kind": "referee_map_preparation_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для Swords & Wizardry Complete Revised.",
+        "layer": "L1",
+        "trigger_or_user_action": "Поставить замок и при наличии относящееся к нему поселение по выбранным адресам.",
+        "inputs_and_units": {
+          "castle": "ID, тип укрепление, координаты q/r",
+          "settlement": "необязательный ID, тип деревня или хутор, координаты q/r",
+          "relation": "явно выбранная связь с ID замка"
+        },
+        "product_operation": "Создать отдельные места для замка и поселения. Если мастер указал принадлежность поселения, сохранить связь с конкретным замком.",
+        "expected_output": "После открытия места различаются по типам и прежним адресам. Связь ведёт к выбранному замку либо отсутствует при отсутствии выбора.",
+        "constraints_and_exceptions": [
+          "Источник не задаёт способ хранения связи, размер поселения и расстояние до замка.",
+          "Замок можно нанести без поселения, если мастер его не задал. Случайное наполнение гарнизона вне L1.",
+          "Слои показа не должны сливаться с входными данными карты: общий гекс или похожее имя не устанавливают отношение автоматически."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Укрепления C1 и C2 рядом, оба имеют имя «Башня». Выбрано поселение V на явно заданном адресе у C1.",
+            "when": "Нанести V, связать только с C1, сохранить и открыть.",
+            "expected": "V показывает один адресуемый переход к C1. C2 остаётся отдельным, карта различает укрепление и деревню."
+          },
+          {
+            "given": "Мастер нанёс только замок C без деревни.",
+            "when": "Сохранить и открыть.",
+            "expected": "На прежнем адресе виден только C, деревня не добавлена и связь отсутствует."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник указывает какие места отметить. Явная ссылка между объектами и проверка однозначности — продуктовый способ сохранить выбор мастера.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.landmarks",
+          "agent-work/rules/common-rules.json#content.site_links",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-ST-008-v2",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Типизированные места и координаты сохраняются. Связь конкретного поселения с замком не доказана.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "PF2-RM-ST-008-v2"
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+            "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-ST-008-v2",
+            "scope": "historical_other_game_analogy",
+            "finding": "В PF2 сохранялись типизированные места с именем и адресом. Отношение замок–поселение не проверялось."
+          }
+        ]
+      }
+    },
+    {
+      "game_id": "SWC",
+      "operation_id": "SWC-obs-04",
+      "source": {
+        "edition": "Swords & Wizardry Complete Revised, Matt Finch / Mythmere Games, Green PDF, EN",
+        "locator": "Referee Guide, с. 79–80, Wilderness Adventures, сравнение локальной карты с картой побережья, королевства или континента",
+        "source_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "primary_url": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF",
+        "publisher_url": "https://www.mythmeregames.com/products/swords-wizardry-complete-revised-a-fantasy-role-playing-game",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "author_project_key": "mythmere:matt-finch:swords-and-wizardry-complete-revised",
+        "recorded_facts": "Для континентов, побережий и королевств допускается карта с более крупной ячейкой. Такой обзор обычно не используют для локальных приключений. Фиксированного соотношения, общей сетки и автоматической синхронизации не предложено.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "disposition": "keep_L1",
+      "basis": "Общий масштаб и адресная преемственность двух изображений одной местности. map.nested_scales — частичное пересечение, геометрическое вложение и преобразование координат не обязательны.",
+      "criterion_ids": [
+        "S06-C04",
+        "S02-C02",
+        "S04-C04"
+      ],
+      "criterion_fit": {
+        "status": "bounded_component_only",
+        "basis": "Общий масштаб и адресная преемственность двух изображений одной местности. map.nested_scales — частичное пересечение, геометрическое вложение и преобразование координат не обязательны.",
+        "model_operation_id": "SWC-obs-04"
+      },
+      "binding_id": null,
+      "binding_status": "no_exact_game_binding_at_baseline",
+      "rule_ids": [
+        "map.nested_scales",
+        "map.physical_hex_scale"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/677090662/SW-Complete-Revised-Green-PDF (Referee Guide, с. 79–80, Wilderness Adventures, сравнение локальной карты с картой побережья, королевства или континента)",
+        "normative_kind": "referee_map_preparation_guideline",
+        "applicability": "Мастер выбрал региональную гекс-карту для Swords & Wizardry Complete Revised.",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить обзор побережья или королевства в более крупном масштабе и показать на нём область локальной карты.",
+        "inputs_and_units": {
+          "local_step": {
+            "value": 5,
+            "unit": "миль на ячейку",
+            "role": "пример для приёмки"
+          },
+          "overview_step": {
+            "value": 24,
+            "unit": "миль на ячейку",
+            "role": "пример проекта, не значение из SWC"
+          },
+          "geographic_anchors": "явно выбранные общие объекты, например залив B и стартовая деревня V",
+          "overview_selection": "мастер выбирает, какие опорные объекты видны на обзоре"
+        },
+        "product_operation": "Сохранить два связанных по местности представления с различным физическим шагом и однозначными опорными объектами, позволяя ручную привязку.",
+        "expected_output": "После открытия локальная карта сохраняет документ и масштаб. Обзор показывает ту же указанную область, имеет свой крупный шаг и отображает выбранные опорные объекты.",
+        "constraints_and_exceptions": [
+          "Кратность шагов и автоматическое перепроецирование не установлены источником.",
+          "Обычный экранный зум не меняет физический масштаб сетки.",
+          "Обзор не обязан переносить каждую локальную точку; обзорная форма и точные привязки заданы только выбранным тестом."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Проверочная карта: локальная сетка 5 миль, обзорная 24 мили, залив B и деревня V помечены как общие опоры.",
+            "when": "Сохранить обе карты, открыть и сравнить положение опор и масштабы.",
+            "expected": "B и V узнаются в обеих картах на той же местности. Шаги 5 и 24 различаются; переключение не редактирует локальный документ."
+          },
+          {
+            "given": "Существует только карта с шагом 6 миль.",
+            "when": "Отдалить камеру без подготовки второй карты.",
+            "expected": "Шаг сохраняется как 6, обзорная физическая сетка этим действием не создана."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга различает назначение обзора и локальной карты. Два шага и опорные точки — продуктовая проверка выбранного соответствия, не нормативная кратность.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-009-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Мелкая и базовая сетки 1/6 существуют. Региональный обзор с шагом крупнее базовой сетки не предъявлен.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-009-L1-v2-draft"
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+            "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-009-L1-v2-draft",
+            "scope": "historical_lower_scale_analogy",
+            "finding": "На старом SHA проверено 6→1 и JSON. Это переход к детализации, он не подтверждает сохранённый обзор крупнее базового шага."
+          }
+        ]
+      }
+    }
+  ],
+  "development_notes": [
+    "Разделы о масштабе и замках поддерживают принятый диапазон 5–6 миль. Точный шаг 5 миль требует отдельного решения и теста, расстояния считать только по явной конвенции.",
+    "Проверить общие операции расширения, сохранения связанной пары мест и ручного согласования двух физических масштабов. Не выводить из книги новый специализированный генератор."
+  ],
+  "score_changed": false,
+  "product_queue_changed": false,
+  "active_ranking_changed": false
+}
