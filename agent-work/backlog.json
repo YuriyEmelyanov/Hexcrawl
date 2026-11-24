@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-24T14:14:43.102Z",
+  "updated_at": "2026-11-24T15:03:21.871Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -2500,7 +2500,7 @@
       "implementation_authorized": false,
       "release_authorized": false,
       "ready_for_development": false,
-      "updated_at": "2026-11-24T14:09:23.713Z",
+      "updated_at": "2026-11-24T15:03:21.871Z",
       "strategy_proposal": {
         "task_id": "HX-BL-073",
         "status": "proposed",
@@ -2536,7 +2536,31 @@
         "basis": "Приёмочный сценарий VAL-04 на Classic seed 42 и реализация валидатора на d8d8fe7. Цикл по гексам проверяет дубли и непустой регион, далее проверяет принадлежность центра и якоря, обхода связности по общим рёбрам в проверке региона нет.",
         "prepared_at": "2026-11-24T14:09:23.713Z",
         "source_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
-        "prepared_by_run": "2026-11-24T1700-reviewer-PR514"
+        "prepared_by_run": "2026-11-24T1700-reviewer-PR514",
+        "scope_review": {
+          "type": "published_source_scope_review",
+          "method": "Статическая сверка исходников опубликованного SHA. Использован прежний приёмочный результат VAL-04.",
+          "finding": "При переносе гекса редактор уже отклоняет разрыв исходного или целевого региона с disconnected_region и ID региона. Проверка работает по шести общим рёбрам и только по координатам своего региона. Ручной импорт JSON использует общий структурный валидатор без этой проверки. Тот же валидатор вызывается перед пятью операциями редактора.",
+          "scope_recommendation": "Применить существующее правило связности на пути явного импорта JSON Classic после структурных проверок, до подготовки и замены карты. При отказе указать ID региона и сохранить карту и обе истории. Сохранить поведение редактирования, генерации, других режимов и формата JSON. Учитывать принадлежность гекса региону, включая принадлежащую ему ячейку с водной подложкой.",
+          "acceptance_note": "Для отказа от несвязного JSON использовать имеющийся сценарий атомарного импорта с доступным Redo. Успешный контроль — обычное открытие исходной карты. Прежний тест переноса гекса оставляет покрытие редактора.",
+          "evidence": [
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/manualRegions.ts#L84",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/manualWater.ts#L29",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/saveValidation.ts#L75",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L15608",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L15667",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L13937",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L13960",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L14243",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L15712",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/App.tsx#L16854",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/test/manualRegions.test.mjs#L38",
+            "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/test/saveSafety.test.mjs#L369"
+          ],
+          "source_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+          "run_id": "2026-11-24T1800-strategist-HX073",
+          "reviewed_at": "2026-11-24T15:03:21.871Z"
+        }
       },
       "proposal_status": "proposed",
       "next_role": "owner",
