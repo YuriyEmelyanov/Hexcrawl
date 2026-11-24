@@ -4,8 +4,8 @@
   "draft_spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
   "draft_spec_version": "D2",
   "draft_spec_blob_sha": "6b08dd1dabed2140506d8a81d4ea20d653c021fb",
-  "interview_status": "awaiting_owner_decisions",
-  "interview_completed": false,
+  "interview_status": "completed",
+  "interview_completed": true,
   "round_refs": [
     "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-001.json",
     "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-002.json"
@@ -70,15 +70,18 @@
     },
     {
       "question_id": "SPLIT-Q07",
-      "answer": "все озера сохраняются без диалога.",
-      "interpretation": "При удалении последнего региона сохранять все малые озёра без диалога об озёрах. Ответ заменяет прежнее допущение об автоматическом удалении. Способ сохранения при исчезновении опорного гекса или при конфликте с восстановленной дорогой/POI уточняется.",
-      "answer_source": "owner_chat_2026-11-24"
+      "answer": "Удалять озеро под удаляемым гексом без предупреждения об озере.",
+      "owner_quote": "Гекс удаляется, значит всё удаляется.",
+      "interpretation": "При удалении базового гекса удаляется относящееся к нему содержимое карты 1 миля, включая малое озеро. Отдельного подтверждения о потере озера нет."
+    },
+    {
+      "question_id": "SPLIT-Q08",
+      "answer": "Удалять.",
+      "owner_quote": "Q-08 удаляем.",
+      "interpretation": "Если озеро целиком находится под удаляемыми гексами, удалить его вместе с ними."
     }
   ],
-  "open_question_ids": [
-    "SPLIT-Q08",
-    "SPLIT-Q09"
-  ],
+  "open_question_ids": [],
   "review_coverage": {
     "result": "Детерминированное разбиение по смежности, сохранение координат, нерасходование очереди целых отображаемых номеров и проверка дубликатов определены D2. Независимую часть спецификации можно опирать на эти решения. Правила спорных развилок остаются в реестре владельца.",
     "covered_sections": [
@@ -92,8 +95,11 @@
     "scope": "Интервью и подготовка решений в существующей согласованной задаче."
   },
   "ready_for_development": false,
-  "next_role": "owner",
+  "next_role": "business_analyst",
   "next_role_after_decisions": "business_analyst",
-  "next_step": "Уточнить сохранение малых озёр при исчезновении опоры и конфликте с восстановленным объектом.",
-  "updated_at": "2026-11-24T18:46:30.750Z"
+  "next_step": "Чистовая спецификация по ответам владельца, затем реализация и приёмка.",
+  "updated_at": "2026-11-24T18:54:06.340Z",
+  "withdrawn_question_ids": [
+    "SPLIT-Q09"
+  ]
 }
