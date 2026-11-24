@@ -9,6 +9,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import { assertGeneratedIds } from '../src/saveValidation.ts';
+import { editTag, emptyTags, rollTag } from '../src/tags/engine.ts';
+import { mythicDefinitions } from '../src/tags/mythic.ts';
 const h = createGenerationHarness(42);
 h.render().addFallbackTractToMap({q:0,r:0});
 const valid = JSON.parse(JSON.stringify(h.render().createSaveData()));
@@ -598,6 +600,16 @@ test('import splitting follows region geography across Classic and Mythic owners
   classic.finalSize = classic.hexes.length;
   mythic.hexes.push({ q: 6, r: 0 });
   mythic.finalSize = mythic.hexes.length;
+  mythic.pointsOfInterest = [{ q: 6, r: 0 }];
+  mythic.pointOfInterestKinds = { '6,0': 'monument' };
+  const poi = { kind: 'poi', regionId: mythic.id, hexKey: '6,0' };
+  const region = { kind: 'region', id: mythic.id };
+  const monument = mythicDefinitions['mb.monument'];
+  const seed = source.generation.masterSeed;
+  let tags = rollTag(emptyTags(), poi, monument, seed);
+  tags = rollTag(tags, poi, monument, seed, 1);
+  tags = editTag(tags, poi, monument.id, 0, 'ru', 'Камень дозора');
+  source.map.tags = rollTag(tags, region, mythicDefinitions['mb.land'], seed);
   const road = {
     id: 1,
     regionId: classic.id,
@@ -606,11 +618,25 @@ test('import splitting follows region geography across Classic and Mythic owners
   source.map.roads = [road];
   source.counters.nextRoadId = 2;
 
-  await app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(source) }], value: '' } });
-  const { map } = app.render().createSaveData();
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  assert.doesNotThrow(() => app.geometry.assertHexcrawlSaveData(source));
+  await open(source);
+  const saved = app.render().createSaveData(), { map } = saved;
   assert.equal(map.regions.length, 4);
   assert.deepEqual(map.regions.map(region => region.generationMode), ['classic', 'classic', 'mythic', 'mythic']);
   assert.deepEqual(map.kingdoms[0].regionIds, map.regions.slice(2).map(region => region.id));
   assert.deepEqual(map.roads, [{ ...road, regionId: map.regions[1].id }]);
   assert.deepEqual(map.regions[1].pointsOfInterest, classic.pointsOfInterest);
+  const moved = map.regions[3].id;
+  assert.deepEqual(map.tags.instances, source.map.tags.instances.map(tag => tag.owner.kind === 'poi'
+    ? { ...tag, owner: { ...tag.owner, regionId: moved } } : tag));
+  assert.deepEqual(map.tags.rollCounters, {
+    [`poi:${moved}:6,0|mb.monument|group`]: 1,
+    [`poi:${moved}:6,0|mb.monument|entry`]: 2,
+    [`region:${mythic.id}|mb.land|character`]: 1,
+    [`region:${mythic.id}|mb.land|form`]: 1,
+  });
+  assert.deepEqual(saved.generation, source.generation);
+  await open(saved);
+  assert.deepEqual(app.render().createSaveData().map.tags, map.tags);
 });

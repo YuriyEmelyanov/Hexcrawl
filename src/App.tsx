@@ -1073,8 +1073,8 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
     const match=/^(poi|settlement):(\d+):(-?\d+,-?\d+)$/.exec(key);
     return match ? `${match[1]}:${atHex(match[3],Number(match[2]))}:${match[3]}` : key;
   };
-  const rekey=<T,>(record: Record<string,T>, path: string): Record<string,T>=>{
-    const entries=Object.entries(record).map(([key,value])=>[alias(key),value] as const);
+  const rekey=<T,>(record: Record<string,T>, path: string, keyFor=alias): Record<string,T>=>{
+    const entries=Object.entries(record).map(([key,value])=>[keyFor(key),value] as const);
     if (new Set(entries.map(([key])=>key)).size!==entries.length) {
       throw new SaveValidationError(path,'duplicate reference after splitting region');
     }
@@ -1118,8 +1118,16 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
     return {...river,regionId,sectors};
   });
   const kingdoms=map.kingdoms?.map(kingdom=>({...kingdom,regionIds:kingdom.regionIds.flatMap(id=>plans.get(id)?.parts.map(part=>part.id)??[id])}));
-  const tags=map.tags && {...map.tags,instances:map.tags.instances.map(tag=>tag.owner.kind==='poi'
-    ? {...tag,owner:{...tag.owner,regionId:atHex(tag.owner.hexKey,tag.owner.regionId)}} : tag)};
+  const tags=map.tags && {
+    ...map.tags,
+    instances:map.tags.instances.map(tag=>tag.owner.kind==='poi'
+      ? {...tag,owner:{...tag.owner,regionId:atHex(tag.owner.hexKey,tag.owner.regionId)}} : tag),
+    rollCounters:rekey(map.tags.rollCounters,'map.tags.rollCounters', key=>{
+      // Counter keys are stored as owner|definition|slot. Keep the entire suffix.
+      const separator=key.indexOf('|');
+      return alias(key.slice(0,separator))+key.slice(separator);
+    })
+  };
   const knave=map.knave && {
     ...map.knave,
     discoveryByPoi:rekey(map.knave.discoveryByPoi,'map.knave.discoveryByPoi'),
