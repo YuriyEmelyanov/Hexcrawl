@@ -1,0 +1,93 @@
+{
+  "run_id": "2026-11-24T2200-programmer-HX073",
+  "task_id": "HX-BL-073",
+  "role": "programmer",
+  "generation": 766,
+  "claim_ref": "agent-work/claims/2026-11-24T2200-programmer-HX073.json",
+  "status": "working_scenario_saved_in_draft_pr",
+  "completed_at": "2026-11-24T19:11:51.384Z",
+  "role_selection_reason": "Появилась утверждённая F1 по HX-BL-073 с закрытым интервью; свободен общий слот программиста.",
+  "result": "Chromium на Classic seed 42 открыл изолированный гекс 500/500 как регион 1.2. Сохранение и повторный импорт сохранили номера, карту, дороги, реки и пересечения. Обычное продолжение получило №4. Дополнительно пройдена целевая проверка смешанных регионов, королевства и владельца дороги.",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/decisions.json",
+  "branch": "feat/hx073-split-regions-on-import",
+  "pr": 515,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+  "pr_draft": true,
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "head_sha": "b72beecdc87e7a5ae4a96d54d4e1d68043a9d94f",
+  "tree_sha": "c0eba246c8ac3bb2aadf9ac4978b01da7784b3b4",
+  "backlog_commit": "cac83b1367d99b45e6337f35a23aab0f18f37473",
+  "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-b72beec/browser.json",
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/pr515-b72beec/region-1-2.jpg",
+  "evidence_commit": "bd127d38fdc5e45cc88b99b98c167b282936d4b4",
+  "checks": {
+    "typescript": "passed",
+    "production_build": "passed",
+    "chromium_exact_tree": "passed",
+    "targeted_node": {
+      "suites": [
+        "saveSafety",
+        "manualRegions"
+      ],
+      "executed": 70,
+      "passed": 70,
+      "failed": 0,
+      "skipped": 0
+    },
+    "local_full": {
+      "status": "failed",
+      "passed": 228,
+      "failed_file_processes": 12,
+      "reason": "Файлы завершились с общим сообщением test failed, утверждения о причине нет.",
+      "further_verification": "GitHub Check workflow"
+    },
+    "ci": {
+      "status": "in_progress",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45467244478"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+    "head_sha": "b72beecdc87e7a5ae4a96d54d4e1d68043a9d94f",
+    "suite": "Node saveSafety",
+    "added": 2,
+    "removed": 0,
+    "modified": 0,
+    "scenario": "Сохранение нумерации и адресов после импорта и повторного деления; владельцы дорог и связи королевства в смешанном сохранении.",
+    "reuse_or_new_reason": "Два независимых контракта нового поведения добавлены в существующий harness сохранений.",
+    "source": "diff of logical test declarations on exact base and head"
+  },
+  "remaining": [
+    "Проверить и довести открытие карты с принятым GeometryPlan, включая обновление связанных ссылок и проверку отпечатка.",
+    "Проверить принадлежность участков рек и авторские привязки на содержательном примере.",
+    "Подтвердить остальные сценарии F1, включая озёра на итоговом SHA, и провести полную проверку."
+  ],
+  "remaining_forecast": "Оценка 3–7 запусков работы и последующей приёмки после первого сквозного сценария. Точные сроки зависят от связей GeometryPlan и CI.",
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "criterion_id": "S02-C05",
+    "rule": "VAL-04",
+    "status": "incomplete_candidate",
+    "booked_delta": 0
+  },
+  "review_ready": false,
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-073",
+  "next_step": "Продолжить HX-BL-073 в черновике PR №515: проверить и сохранить связи в JSON с принятым GeometryPlan, закрыть оставшиеся сценарии F1 и передать итоговый SHA проверяющему.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-24T19:01:22.341Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-24T19:11:51.383Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
