@@ -15534,7 +15534,9 @@ export function App() {
       gmNotesByHexKey: {...doc.map.gmNotesByHexKey},
       kingdoms:doc.map.kingdoms, obstacles:doc.map.obstacles,
       regions:doc.map.regions,
-      candidateHexes:doc.map.candidateHexes,
+      candidateHexes: doc.generationMode === 'classic'
+        ? doc.map.candidateHexes.filter(hex => !isLakeHex(hex, doc.map.hexTerrainByKey))
+        : doc.map.candidateHexes,
       rivers:doc.map.rivers,
       roads:doc.map.roads,
       crossings:doc.map.crossings,
@@ -15608,12 +15610,30 @@ export function App() {
       const imported=structuredClone(parsed);
       const terrain=new Map(Object.entries(imported.map.terrainByHexKey));
       const hexes=imported.map.regions.flatMap(r=>r.hexes);
-      const frontier=hexes.length?getCandidateHexes(hexes,getSeaHexKeys(terrain)):[];
-      const frontierKeys=new Set(frontier.map(hexKey)),savedCandidates=imported.map.candidateHexes??[];
-      // Preserve an accepted v7 traversal order only for the exact unique
-      // geometric frontier. Legacy/duplicate/mismatching input still normalizes.
-      const savedKeys=savedCandidates.map(hexKey);
-      const candidates=imported.version>=7&&savedKeys.length===frontier.length&&new Set(savedKeys).size===savedKeys.length&&savedKeys.every(k=>frontierKeys.has(k))?savedCandidates:frontier;
+      const classic = (imported.ui.generationMode ?? 'classic') === 'classic';
+      const blockedGrowthKeys = getSeaHexKeys(terrain);
+      if (classic) {
+        for (const [key, entry] of terrain) {
+          if (entry.terrainOverride === 'lake') blockedGrowthKeys.add(key);
+        }
+      }
+      const frontier = getCandidateHexes(hexes, blockedGrowthKeys);
+      const frontierKeys = new Set(frontier.map(hexKey));
+      const savedCandidates = imported.map.candidateHexes ?? [];
+      let candidates = frontier;
+      if (imported.version >= 7) {
+        const savedKeys = savedCandidates.map(hexKey);
+        const unique = new Set(savedKeys).size === savedKeys.length;
+        if (unique && classic && savedCandidates.every(candidate =>
+          frontierKeys.has(hexKey(candidate)) || isLakeHex(candidate, terrain)
+        )) {
+          // Preserve valid saved order while removing lake entries and filling omissions.
+          const retained = savedCandidates.filter(candidate => frontierKeys.delete(hexKey(candidate)));
+          candidates = [...retained, ...frontier.filter(candidate => frontierKeys.has(hexKey(candidate)))];
+        } else if (unique && savedKeys.length === frontier.length && savedKeys.every(key => frontierKeys.has(key))) {
+          candidates = savedCandidates;
+        }
+      }
       const seed=imported.map.toponyms?.seed ?? legacyToponymSeed(imported.map.regions);
       const retainedNames=imported.map.toponyms?.names ?? {};
       const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};

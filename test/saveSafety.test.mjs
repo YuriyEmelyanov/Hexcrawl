@@ -279,6 +279,36 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
  }
 });
 
+test('Classic import restores the growth frontier without promoting an adjacent lake', async () => {
+  const fixture = structuredClone(valid);
+  const [lake, missing, ...otherPoints] = fixture.map.candidateHexes;
+  assert.ok(lake && missing && otherPoints.length);
+  const lakeKey = `${lake.q},${lake.r}`;
+  const lakeId = fixture.counters.nextLakeId++;
+  fixture.map.terrainByHexKey[lakeKey] = {terrainOverride:'lake', lakeId};
+  fixture.map.candidateHexes = [...otherPoints.reverse(), lake];
+
+  const session = createGenerationHarness(42);
+  session.render();
+  session.setWindow({alert: message => assert.fail(message)});
+  session.injectFunction('readTextFile', async file => file.text);
+  const open = async data => {
+    await session.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});
+    return structuredClone(session.render().createSaveData());
+  };
+
+  const saved = await open(fixture);
+  assert.deepEqual(saved.map.candidateHexes, [...otherPoints, missing]);
+  assert.deepEqual(saved.map.terrainByHexKey[lakeKey], {terrainOverride:'lake', lakeId});
+  assert.deepEqual(saved.map.regions, fixture.map.regions);
+  assert.deepEqual(saved.generation, fixture.generation);
+  assert.deepEqual((await open(saved)).map.candidateHexes, saved.map.candidateHexes);
+
+  const doc = session.render().captureDocument();
+  const withLakeCandidate = {...doc, map:{...doc.map, candidateHexes:[...doc.map.candidateHexes, lake]}};
+  assert.deepEqual(session.render().createSaveData(withLakeCandidate).map.candidateHexes, saved.map.candidateHexes);
+});
+
 // ONE-MILE1 extends the existing real import/history suite rather than creating
 // a second harness. Core geometry cases already live in oneMile.test.mjs; these
 // scenarios cover the new document boundary, not rendering or generator quality.
