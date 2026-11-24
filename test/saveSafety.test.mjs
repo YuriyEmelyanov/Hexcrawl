@@ -636,7 +636,7 @@ test('import splitting follows region geography across Classic and Mythic owners
     [`region:${mythic.id}|mb.land|character`]: 1,
     [`region:${mythic.id}|mb.land|form`]: 1,
   });
-  assert.deepEqual(saved.generation, source.generation);
+  assert.deepEqual(structuredClone(saved.generation), source.generation);
   await open(saved);
   assert.deepEqual(app.render().createSaveData().map.tags, map.tags);
 });
