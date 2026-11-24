@@ -1,0 +1,324 @@
+{
+  "task_id": "HX-BL-073",
+  "run_id": "2026-11-25T0100-reviewer-HX073",
+  "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "tree_sha": "f0f31b383948c9a4bc6a2f3a80881febd1f48429",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "verdict": "changes_requested",
+  "pr": 515,
+  "independence": {
+    "independent_agent": "hx073_fresh_review_48c679b",
+    "scope": "Заново проверил исходники и обнаружил контрпример; проверяющий повторил на точном SHA штатным обработчиком, сетевой проверкой и Chromium."
+  },
+  "finding": {
+    "id": "HX073-RV02-01",
+    "severity": "P1",
+    "requirement": "SPLIT-Q04",
+    "status": "confirmed",
+    "source_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/48c679b5d8d069ea64c24ab3a82a8140a2d21958/src/App.tsx#L1106-L1118",
+    "fixture_ref": "agent-work/evidence/HX-BL-073/review-48c679b/river-owner-input.json",
+    "steps": [
+      "Открыть валидный обычный JSON с рекой №5, которая начинается в обособленной части исходного региона №1, проходит по региону №2 и возвращается в часть со старым центром.",
+      "Выгрузить JSON и сверить эффективного владельца сектора check-sector-5 с реальной опорой ребра. Повторно открыть сохранённый JSON."
+    ],
+    "expected": "Река №5 целиком остаётся у части 1.2 по истоку. Последнее ребро 0,28|24.249,14 должно принадлежать части 1.1. Штатная проверка речной сети проходит, геометрия и ID сохранены.",
+    "actual": "Последний сектор без assignedRegionId наследует нового владельца всей реки 1.2. Единственный географический владелец ребра — часть 1.1. Импорт проходит молча; `invalid_owner` сохраняется после экспорта и повторного открытия.",
+    "fix_acceptance": "Сохранить смысл явного и неявного владельца каждого участка при разделении. Проверить географию участков, не меняя ID/путь реки, пересечения и данные одномильного слоя. При непереносимой ссылке оборвать импорт до замены карты с указанием ссылки. На приложенном входе должно быть 0 invalid_owner до и после экспорта, река у 1.2, хвост у 1.1.",
+    "impact": "Нарушено правило переноса локальных связей. В сохранённом документе присутствует назначение участка региону, которому ребро географически не принадлежит."
+  },
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45487582149",
+      "jobs": [
+        {
+          "id": 138777145009,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777145305,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777145637,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777146953,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 452,
+        "passed": 452,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "reviewer_node": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "failed": 0
+    },
+    "browser_exact_source_tree": "passed for named scenario packs, confirmed failure by ownership audit",
+    "runs": {
+      "classic-browser": {
+        "connected_opened": true,
+        "split_parts": [
+          [
+            "7.1",
+            8
+          ],
+          [
+            "7.2",
+            1
+          ]
+        ],
+        "region_card": "7.2",
+        "old_center_preserved": true,
+        "old_anchor_preserved": true,
+        "roundtrip_exact": true,
+        "repeated_parts": [
+          "7.1",
+          "7.2",
+          "7.3"
+        ],
+        "duplicate_and_missing_owner_atomic": true,
+        "redo_preserved_and_executed": true,
+        "next_regular_id": 8,
+        "expected_dialogs": [
+          "Не удалось загрузить JSON: некорректные данные (map.regions[1].hexes[2]: duplicate ownership). Текущая карта сохранена.",
+          "Не удалось загрузить JSON: некорректные данные (map.roads[0].regionId: missing reference). Текущая карта сохранена."
+        ],
+        "errors": []
+      },
+      "mythic-browser": {
+        "before": {
+          "result": "rejected",
+          "alert": "Не удалось загрузить JSON: ошибка подготовки карты (map.tags: invalid tag data). Текущая карта сохранена.",
+          "previous_map_preserved": true
+        },
+        "after": {
+          "result": "opened",
+          "part": "2.2",
+          "tag": "mb.monument",
+          "author_text": "Камень дозора",
+          "dice_identical_on_import": true,
+          "roundtrip_identical": true,
+          "roll_counts_before": {
+            "group": 1,
+            "entry": 2
+          },
+          "roll_counts_after_explicit_roll": {
+            "group": 1,
+            "entry": 3
+          },
+          "undo_identical": true,
+          "errors": []
+        }
+      },
+      "v16-browser": {
+        "fixture": "classic-six-regions-seed42.json + detached road and named POI, accepted physical4",
+        "parts": [
+          {
+            "label": "1.1",
+            "hexes": 9
+          },
+          {
+            "label": "1.2",
+            "hexes": 2
+          }
+        ],
+        "visible_card": "1.2",
+        "authored_poi": "Камень",
+        "poi_identity_preserved": true,
+        "refined_river_paths": 34,
+        "refined_crossings": 2,
+        "json_roundtrip": true,
+        "one_mile_png_bytes": 701218,
+        "dialogs": [],
+        "errors": []
+      },
+      "lake": {
+        "isolated_small_lake_loss_confirmations": 0,
+        "lakes_before": 2,
+        "lakes_after": 1,
+        "unaffected_lake_preserved": true,
+        "undo_redo_exact": true
+      },
+      "acceptance": {
+        "fixture": "classic-six-regions-seed42 with distant three-hex component bridged by a lake",
+        "water_hex": "13,0",
+        "preserved_single_secondary_component": true,
+        "stable_center_and_anchor_after_reordering": true,
+        "duplicate_hex_atomic_rejection": true,
+        "river_and_sector_owner_transferred": true,
+        "river_path_and_crossings_preserved": true
+      },
+      "river-result": {
+        "source_valid": true,
+        "beforeIssues": [],
+        "correctedIssues": [],
+        "alerts": [],
+        "ids": [
+          [
+            1,
+            {
+              "base": 1,
+              "part": 1
+            }
+          ],
+          [
+            9007199254740991,
+            {
+              "base": 1,
+              "part": 2
+            }
+          ],
+          [
+            2,
+            null
+          ]
+        ],
+        "riverOwner": 9007199254740991,
+        "sectors": [
+          {
+            "sector": "check-sector-0",
+            "effectiveOwner": 9007199254740991,
+            "edge": "121.244,-14|121.244,14",
+            "validOwners": [
+              9007199254740991
+            ]
+          },
+          {
+            "sector": "check-sector-1",
+            "effectiveOwner": 9007199254740991,
+            "edge": "121.244,14|96.995,28",
+            "validOwners": [
+              9007199254740991
+            ]
+          },
+          {
+            "sector": "check-sector-2",
+            "effectiveOwner": 9007199254740991,
+            "edge": "72.746,14|96.995,28",
+            "validOwners": [
+              9007199254740991
+            ]
+          },
+          {
+            "sector": "check-sector-3",
+            "effectiveOwner": 2,
+            "edge": "48.497,28|72.746,14",
+            "validOwners": [
+              2
+            ]
+          },
+          {
+            "sector": "check-sector-4",
+            "effectiveOwner": 2,
+            "edge": "24.249,14|48.497,28",
+            "validOwners": [
+              2
+            ]
+          },
+          {
+            "sector": "check-sector-5",
+            "effectiveOwner": 9007199254740991,
+            "edge": "0,28|24.249,14",
+            "validOwners": [
+              1
+            ]
+          }
+        ],
+        "issues": [
+          "[\"invalid_owner\",[5,\"0,28|24.249,14\",9007199254740991]]"
+        ],
+        "issueAfterRoundtrip": [
+          "[\"invalid_owner\",[5,\"0,28|24.249,14\",9007199254740991]]"
+        ]
+      },
+      "river-browser": {
+        "import_silent": true,
+        "river_path_literal": true,
+        "expected_end_sector_part": "1.1",
+        "actual_end_sector_part": "1.2",
+        "unchanged_on_reopen": true,
+        "dialogs": [],
+        "errors": []
+      }
+    }
+  },
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/review-48c679b/classic-7-2.jpg",
+  "test_change_summary": {
+    "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+    "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "added": 3,
+    "removed": 0,
+    "modified": 0,
+    "source": "git diff base..exact head and count top-level logical Node declarations",
+    "suites": [
+      {
+        "suite": "Node saveSafety",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Нумерация, повторный импорт, карта смешанных профилей, теги и владельцы дорог."
+      },
+      {
+        "suite": "Node geometryPlan",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Сохранность выбранной одномильной геометрии и идентичности точки для полного и частичного слоя."
+      }
+    ],
+    "reuse_or_new_reason": "Проверки относятся к разным требованиям и воспроизводят соответствующие ошибки. Существующие проверки импортируют согласованный путь или явно заданный сектор; нужен отдельный вход с дорегиональным неявным владельцем в одном из сквозных сценариев.",
+    "temporary_review_diagnostics": [
+      "Classic 8+1, повторное деление и отказ с сохранённым Redo",
+      "Речной сектор без assignedRegionId: штатная проверка до, после и после повторного открытия",
+      "Chromium: импорт и экспорт проблемного речного сохранения"
+    ]
+  },
+  "score_assessment": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S02-C05",
+    "rule_id": "VAL-04",
+    "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "status": "conditional_candidate_withheld",
+    "grade_before": {
+      "accepted_weight": 65,
+      "maximum_weight": 75,
+      "accepted_share": 0.8666666666666667,
+      "rule_weight_accepted": 10
+    },
+    "grade_after_for_ledger": {
+      "accepted_weight": 65,
+      "maximum_weight": 75,
+      "accepted_share": 0.8666666666666667,
+      "rule_weight_accepted": 10
+    },
+    "points_before": 6.419753086419753,
+    "points_after_for_ledger": 6.419753086419753,
+    "delta": 0,
+    "potential_rule_weight_after": 20,
+    "potential_points_after": 7.407407407407407,
+    "potential_delta": 0.9876543209876544,
+    "booked_delta": 0,
+    "method": "Classic 8+1 и структурные отказы на точном SHA подтвердили целевую связность. Пакет удержан из-за новой неверной связи речного сектора. Её нельзя переносить в подтверждённый результат. История не содержит дублирующей строки HX-BL-073; прежний PR511 учтён.",
+    "baseline_ref": "agent-work/research/acceptance/L1-PR509/ledger.json#S02-C05",
+    "baseline_release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+    "evidence_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+    "limitation": "Условный остаток +0,987654 L1 относится к VAL-04. Он требует исправления, независимой приёмки нового SHA и сверки после публикации."
+  }
+}
