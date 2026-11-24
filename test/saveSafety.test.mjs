@@ -532,3 +532,85 @@ test('a migrated Knave secret can veto reset and undo an accepted reset',async()
  consent=true;app().resetMap();assert.equal(app().regions.length,0);
  app().undoMap();assert.deepEqual(structuredClone(app().createSaveData().map),before);
 });
+
+test('opening a disconnected region preserves numbered parts and authored addresses across JSON', async () => {
+  const app = createGenerationHarness(42);
+  app.render();
+  const messages = [];
+  app.setWindow({ alert: message => messages.push(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  const save = () => JSON.parse(JSON.stringify(app.render().createSaveData()));
+
+  const source = regionFixture();
+  const [first, neighbor] = source.map.regions;
+  first.hexes = [first.centerHex, first.pointsOfInterest[0]];
+  first.anchorHex = first.pointsOfInterest[0];
+  first.finalSize = 2;
+  source.map.toponyms.names['region:1'] = { ru: 'Равнина', en: 'Lowland', model: 'germanic', kind: 'region', revision: 1 };
+
+  await open(source);
+  assert.deepEqual(messages, []);
+  const initial = save();
+  const [primary, isolated, unchanged] = initial.map.regions;
+  assert.deepEqual(primary.splitNumber, { base: 1, part: 1 });
+  assert.deepEqual(isolated.splitNumber, { base: 1, part: 2 });
+  assert.notEqual(isolated.id, primary.id);
+  assert.deepEqual(primary.centerHex, first.centerHex);
+  assert.deepEqual(isolated.anchorHex, first.anchorHex);
+  assert.deepEqual(isolated.pointsOfInterest, first.pointsOfInterest);
+  assert.deepEqual(isolated.pointOfInterestKinds, first.pointOfInterestKinds);
+  assert.equal(isolated.suppressCentralPoi, true);
+  assert.equal(initial.map.toponyms.names['region:1'].ru, 'Равнина');
+  assert.equal(initial.map.toponyms.names[`region:${isolated.id}`].ru, 'Равнина (1.2)');
+  assert.deepEqual(initial.map.gmNotesByHexKey, source.map.gmNotesByHexKey);
+  assert.deepEqual(unchanged, neighbor);
+
+  await open(initial);
+  assert.deepEqual(save().map.regions, initial.map.regions);
+  assert.deepEqual(save().map.toponyms, initial.map.toponyms);
+  const again = structuredClone(initial);
+  again.map.regions[1].hexes.unshift({ q: 500, r: 500 });
+  again.map.regions[1].finalSize = 2;
+  await open(again);
+  assert.deepEqual(messages, []);
+  const repeated = save().map.regions;
+  assert.deepEqual(repeated.slice(0, 3).map(region => region.splitNumber.part), [1, 2, 3]);
+  assert.equal(repeated[1].id, isolated.id);
+
+  app.render().addFallbackTractToMap(app.render().candidateHexes[0]);
+  assert.equal(save().map.regions.at(-1).id, 3);
+  assert.equal(save().map.regions.at(-1).splitNumber, undefined);
+});
+
+test('import splitting follows region geography across Classic and Mythic ownership links', async () => {
+  const app = createGenerationHarness(42);
+  app.render();
+  app.setWindow({ alert: message => assert.fail(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const source = regionFixture('mythic');
+  const [classic, mythic] = source.map.regions;
+  classic.generationMode = 'classic';
+  delete classic.kingdomId;
+  source.map.kingdoms[0].regionIds = [mythic.id];
+  classic.hexes = [classic.centerHex, classic.pointsOfInterest[0]];
+  classic.anchorHex = classic.pointsOfInterest[0];
+  classic.finalSize = classic.hexes.length;
+  mythic.hexes.push({ q: 6, r: 0 });
+  mythic.finalSize = mythic.hexes.length;
+  const road = {
+    id: 1,
+    regionId: classic.id,
+    segments: [{ from: classic.pointsOfInterest[0], to: mythic.centerHex, kind: 'trail' }]
+  };
+  source.map.roads = [road];
+  source.counters.nextRoadId = 2;
+
+  await app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(source) }], value: '' } });
+  const { map } = app.render().createSaveData();
+  assert.equal(map.regions.length, 4);
+  assert.deepEqual(map.regions.map(region => region.generationMode), ['classic', 'classic', 'mythic', 'mythic']);
+  assert.deepEqual(map.kingdoms[0].regionIds, map.regions.slice(2).map(region => region.id));
+  assert.deepEqual(map.roads, [{ ...road, regionId: map.regions[1].id }]);
+  assert.deepEqual(map.regions[1].pointsOfInterest, classic.pointsOfInterest);
+});
