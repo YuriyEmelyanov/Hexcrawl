@@ -17,7 +17,7 @@
   "score_model_path": "agent-work/research/experiments/score-model-1.3/rc8-levels/README.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": "HX073-RV02-01: неверный географический владелец последнего сектора реки",
+  "execution_blocker": null,
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -29,7 +29,7 @@
   "run_id": "2026-11-25T0200-programmer-HX073-RV02",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "in_progress",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,7 +40,7 @@
   "unverified_weight": null,
   "last_completed_task": "HX-BL-056",
   "operational_state_write": {
-    "run_id": "2026-11-25T0100-reviewer-HX073",
+    "run_id": "2026-11-25T0200-programmer-HX073-RV02",
     "status": "result_verified_claim_released_latest_last"
   },
   "budget_status": "owner_waived_usage_gate",
@@ -50,25 +50,25 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-073",
   "spec_path": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-25T0100-reviewer-HX073.json",
+  "result_path": "agent-work/results/2026-11-25T0200-programmer-HX073-RV02.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": "agent-work/claims/2026-11-25T0200-programmer-HX073-RV02.json",
-  "next_step": "Исправление владельца речного сектора HX073-RV02-01.",
+  "active_claim": null,
+  "next_step": "Независимо проверить F1 на cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b: географическую принадлежность сектора, целостность русла, повторное открытие и отказ при непереносимом секторе. Затем рассчитать предварительный VAL-04 по 1.3-rc8.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "evidence_path": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-owner.json",
   "branch_name": "feat/hx073-split-regions-on-import",
   "pr": 515,
-  "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
-  "tree_sha": "f0f31b383948c9a4bc6a2f3a80881febd1f48429",
+  "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
   "checks_status": "success",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45487582149",
-  "review_verdict": "changes_requested",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
+  "review_verdict": "pending_independent_review",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -83,7 +83,7 @@
   "score_update_task_id": "HX-BL-067",
   "score_update_release_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Точный SHA в review_ready, полный CI успешен, слот HX-BL-073 свободен, решение о публикации отсутствует. Выбран ближайший независимый этап проверки.",
+  "role_selection_reason": "Точный SHA возвращён проверяющим из-за HX073-RV02-01. Исправление утверждено чистовой спецификацией и готово к выполнению в свободном слоте программиста.",
   "score_update_result_ref": "agent-work/results/2026-11-24T1700-reviewer-PR514.json",
   "score_update_completed_at": "2026-11-24T14:14:50.005Z",
   "score_update_delta": 0.21470746108427266,
@@ -97,12 +97,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-24T22:01:03.704Z",
+      "at": "2026-11-24T23:02:05.050Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-24T22:07:56.340Z",
+      "at": "2026-11-24T23:23:09.149Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -710,7 +710,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-24T23:02:53.682Z",
+  "updated_at": "2026-11-24T23:23:15.981Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -907,7 +907,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-owner.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -2237,7 +2237,7 @@
   "current_stage_id": "DISC",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": "agent-work/claims/2026-11-24T2200-programmer-HX073.json",
   "evidence_commit_sha": "4d5635d2dca6c0e5cafd36d75ea4cea6b9470849",
@@ -7713,7 +7713,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-25T0100-reviewer-HX073.json",
+  "result_ref": "agent-work/results/2026-11-25T0200-programmer-HX073-RV02.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -18246,8 +18246,8 @@
       "errors": []
     }
   },
-  "active_claim_run_id": "2026-11-25T0200-programmer-HX073-RV02",
-  "implementation_head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+  "active_claim_run_id": null,
+  "implementation_head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
   "review_fix_ref": "agent-work/results/2026-11-24T0200-programmer-HX062-RV05.json",
   "latest_HX_BL_069_city_reroll": {
     "result_ref": "agent-work/results/2026-11-24T0600-analyst-HX069.json",
@@ -18315,27 +18315,28 @@
     }
   ],
   "preserved_active_interview": null,
-  "review_ready_sha": null,
+  "review_ready_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
   "latest_HX_BL_073_implementation": {
     "task_id": "HX-BL-073",
     "role": "programmer",
+    "status": "review_ready",
     "pr": 515,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
-    "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
     "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
-    "tree_sha": "f0f31b383948c9a4bc6a2f3a80881febd1f48429",
-    "status": "review_ready",
     "branch": "feat/hx073-split-regions-on-import",
     "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
-    "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-48c679b/mythic-tag.json",
-    "result_ref": "agent-work/results/2026-11-25T0000-programmer-HX073-RV01.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-owner.json",
+    "result_ref": "agent-work/results/2026-11-25T0200-programmer-HX073-RV02.json",
     "next_task_id": "HX-BL-073",
     "next_role": "reviewer",
-    "next_step": "Независимо проверить F1 на 48c679b5d8d069ea64c24ab3a82a8140a2d21958, воспроизвести Mythic с переносом тега и рассчитать предварительный результат VAL-04 по 1.3-rc8.",
+    "next_step": "Независимо проверить F1 на cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b: географическую принадлежность сектора, целостность русла, повторное открытие и отказ при непереносимом секторе. Затем рассчитать предварительный VAL-04 по 1.3-rc8.",
     "review_ready": true,
     "publication_authorized": false,
-    "confirmed_work": "В валидном Mythic JSON ячейка 6/0 входила в отделяемую часть с авторским тегом «Камень дозора». Предыдущий SHA отклонял импорт. В исправленной версии карта открылась, тег, значения и оба счётчика сохранились. После экспорта и повторного открытия ручной бросок увеличил счётчик записи с 2 до 3, Undo восстановил сохранение целиком.",
-    "result_commit_sha": "0850a83b0b6e2a719dc126998a35e9835a211e75"
+    "confirmed_work": "На проверочной карте река №5 осталась у части 1.2 по истоку, последний сектор — у части 1.1 по географии. Chromium подтвердил неизменное русло и повторное открытие JSON. Сектор с непереносимой обязательной ссылкой отклоняется с указанием позиции в JSON, открытая карта сохранена. Контрольный v16 сохранил 34 участка рек, две переправы и выгрузку одномильного PNG.",
+    "fix_ref": "HX073-RV02-01",
+    "result_commit_sha": "1130452c25d43e07a1454b5b8991655671a0bc9e"
   },
   "reviewed_head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
   "latest_HX_BL_073_review": {
