@@ -1,0 +1,39 @@
+{
+  "task_id": "HX-BL-073",
+  "scope": "SPLIT-Q03: authored Mythic POI tag with unequal slot counters",
+  "run_id": "2026-11-25T0000-programmer-HX073-RV01",
+  "pr": 515,
+  "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+  "tree_sha": "f0f31b383948c9a4bc6a2f3a80881febd1f48429",
+  "previous_head_sha": "2f334c6faeb913a6a66b0630ba29518086b5f5cb",
+  "product_build_sha": "e16b275202ad3dab345cb662ee1e5b26dd85dac0",
+  "exact_build_note": "Only the Node test comparison was updated after the proven build; the product source and generated application are identical.",
+  "finding_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515#discussion_r4686108131",
+  "fixture": "Existing mixed region fixture, monument at 6,0 with group counter 1, entry counter 2, Russian override, and a region tag on the part with the old center.",
+  "before": {
+    "result": "rejected",
+    "alert": "Не удалось загрузить JSON: ошибка подготовки карты (map.tags: invalid tag data). Текущая карта сохранена.",
+    "previous_map_preserved": true
+  },
+  "after": {
+    "result": "opened",
+    "part": "2.2",
+    "tag": "mb.monument",
+    "author_text": "Камень дозора",
+    "dice_identical_on_import": true,
+    "roundtrip_identical": true,
+    "roll_counts_before": {
+      "group": 1,
+      "entry": 2
+    },
+    "roll_counts_after_explicit_roll": {
+      "group": 1,
+      "entry": 3
+    },
+    "undo_identical": true,
+    "errors": []
+  },
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/pr515-48c679b/mythic-tag-part-2-2.jpg",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45487582149",
+  "regression_case": "test/saveSafety.test.mjs · import splitting follows region geography across Classic and Mythic ownership links"
+}
