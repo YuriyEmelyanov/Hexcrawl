@@ -116,6 +116,52 @@ test('GEO2 classic seed42 through-lake legacy refinement imports, roundtrips and
  assert.deepEqual(h.render().captureDocument().map.physicalGrid.geometryRefinement,retained,'view/import never replace the stored scoped plan');
 });
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
+
+test('Region split imports physical4 without moving accepted geometry or detaching the authored POI',async()=>{
+ const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});
+ h.injectFunction('readTextFile',async f=>f.text);
+ const open=text=>h.render().handleImportJson({target:{files:[{text}],value:'map'}});
+ await open(fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8'));
+ const doc=h.render().captureDocument(), first=doc.map.regions[0], island={q:12,r:0};
+ const islandEnd={q:13,r:0},roadId=doc.map.nextRoadId;
+ const oldAlias=`poi:${first.id}:12,0`;
+ const map={...doc.map,
+  regions:[{...first,hexes:[...first.hexes,island,islandEnd],finalSize:first.finalSize+2,
+   pointsOfInterest:[...first.pointsOfInterest,island],pointOfInterestKinds:{...first.pointOfInterestKinds,'12,0':'statue'}},...doc.map.regions.slice(1)],
+  roads:[...doc.map.roads,{id:roadId,regionId:first.id,segments:[{from:island,to:islandEnd,kind:'road'}]}],
+  nextRoadId:roadId+1,
+  editorNames:{...doc.map.editorNames,[oldAlias]:{ru:'Камень',en:'Stone'}},
+  gmNotesByHexKey:{...doc.map.gmNotesByHexKey,'12,0':'Authored note'}
+ };
+ const plan=prepareGeometryPlan({...h.geometry.geometryPlanInput(map),scopePolicy:'explicit_preview'});
+ assert.equal(plan.status,'prepared',JSON.stringify(plan.refs));
+ const old=plan.geometryRefinement;
+ const oldId=old.sourceState.poiIdentities.byLegacyRef[oldAlias];
+ assert.ok(oldId);
+ for(const physicalGrid of [plan.candidateState,composeScopedDetailState(old.sourceState,old)]){
+  const imported=h.render().createSaveData({...doc,map:{...map,physicalGrid}});
+  assert.equal(imported.version,16);
+  assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(imported),'pre-split file is valid');
+  await open(JSON.stringify(imported));
+  const saved=h.render().createSaveData(), part=saved.map.regions.find(r=>r.splitNumber?.base===first.id&&r.splitNumber.part===2);
+  assert.deepEqual(part.hexes,[island,islandEnd]);
+  const alias=`poi:${part.id}:12,0`, state=saved.map.physicalGrid, next=state.geometryRefinement;
+  assert.equal(state.poiIdentities.byLegacyRef[alias],oldId);
+  assert.equal(next.sourceState.poiFootprints.find(p=>p.poiId===oldId).legacyRef,alias);
+  assert.deepEqual(saved.map.editorNames[alias],{ru:'Камень',en:'Stone'});
+  assert.equal(saved.map.gmNotesByHexKey['12,0'],'Authored note');
+  assert.equal(Boolean(state.globalAuthoredState),Boolean(physicalGrid.globalAuthoredState));
+  assert.deepEqual(next.riverPlan.paths,old.riverPlan.paths);
+  assert.deepEqual(next.riverPlan.ports,old.riverPlan.ports);
+  assert.deepEqual(next.roads.crossings,old.roads.crossings);
+  assert.deepEqual(next.roads.roads,old.roads.roads.map(r=>r.roadId===roadId?{...r,regionId:part.id}:r));
+  assert.equal(saved.map.roads.find(r=>r.id===roadId).regionId,part.id);
+  assert.notEqual(next.sourceFingerprint,old.sourceFingerprint);
+  await open(JSON.stringify(saved));
+  assert.deepEqual(copy(h.render().createSaveData().map),copy(saved.map));
+ }
+});
+
 let deltaFixture;
 function acceptedDelta(){
  if(deltaFixture)return deltaFixture;

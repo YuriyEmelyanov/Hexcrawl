@@ -3,7 +3,7 @@
 import type {Detail1State,DetailPoiFootprint} from './detailModel.ts';
 import {parseDetail1StateV11} from './detailModel.ts';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,type WorldPoint} from './detailGrid.ts';
-import {roadPair} from './manualRoads.ts';
+import {roadPair,type EditableRoad} from './manualRoads.ts';
 import {detailFootprintWorldAnchor,detailFootprintHasOutline,detailFootprintPolygons,detailPointInPolygon} from './detailSizes.ts';
 import {prepareRefinementGeographyFromSource,prepareRefinementGeographyPreview} from './geometryRefinementPreview.ts';
 import {refinementInputFingerprint} from './geometryRefinementFingerprint.ts';
@@ -288,6 +288,38 @@ export function validateGeometryRefinementSource(input:GeometrySourceValidationI
 }
 
 function equality(a:unknown,b:unknown):boolean{if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b))return false;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>equality(v,b[i]));const ka=Object.keys(a).sort(),kb=Object.keys(b).sort();return ka.length===kb.length&&ka.every((k,i)=>k===kb[i]&&equality((a as Obj)[k],(b as Obj)[k]));}
+
+/** Region splitting changes ownership of existing geometry on import. Keep
+ * every accepted route and port and validate their correspondence again. */
+export function rebindGeometryRegionOwners(
+ input:GeometrySourceValidationInput,
+ accepted:GeometryRefinement,
+ sourceState:Detail1State
+):GeometryRefinement {
+ const source=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin});
+ if(source.status!=='prepared')return fail(`split river source ${source.refs.join(', ')}`);
+ const {source:previous}=accepted.riverPlan;
+ const withoutOwner=<T extends {assignedRegionId:number|null}>(rows:readonly T[])=>rows.map(({assignedRegionId,...row})=>row);
+ if(!equality(source.segments,previous.segments)||!equality(source.rapids,previous.rapids)||
+    !equality(source.waterfalls,previous.waterfalls)||
+    !equality(withoutOwner(source.sectors),withoutOwner(previous.sectors))||
+    !equality(withoutOwner(source.boundaries),withoutOwner(previous.boundaries)))return fail('split changed river geometry');
+ const boundaryOwners=new Map(source.boundaries.map(b=>[JSON.stringify([b.riverId,b.sectorId,b.end]),b.assignedRegionId]));
+ const riverPlan={...accepted.riverPlan,source,boundaries:accepted.riverPlan.boundaries.map(b=>({
+   ...b,assignedRegionId:boundaryOwners.get(JSON.stringify([b.riverId,b.sectorId,b.end]))??null
+ }))};
+ const roadOwners=new Map((input.map.roads as readonly EditableRoad[]).map(road=>[road.id,road.regionId]));
+ const roads={...accepted.roads,roads:accepted.roads.roads.map(road=>({
+   ...road,regionId:roadOwners.get(road.roadId)??fail(`split road:${road.roadId}`)
+ }))};
+ const poiOwners=new Map(sourceState.poiFootprints.map(poi=>[poi.poiId,poi]));
+ const pois={...accepted.pois,pois:accepted.pois.pois.map(poi=>({
+   ...poi,footprint:{...poi.footprint,legacyRef:(poiOwners.get(poi.poiId)??fail(`split POI:${poi.poiId}`)).legacyRef}
+ }))};
+ const sourceFingerprint=refinementInputFingerprint({...input,riverPlan,lockedPoiIds:new Set(accepted.lockedPoiIds)},sourceState);
+ return parseGeometryRefinement({...accepted,sourceState,sourceFingerprint,riverPlan,roads,pois},parseDetail1StateV11);
+}
+
 function inputPayload(g:GeometryRefinement):Obj{return JSON.parse(g.sourceFingerprint.slice('geo2-source-input-v1:'.length)) as Obj;}
 /** A generated domain stays unrefined in the accepted document during normal
  * edits/generation. Explicit preview may acquire it; automatic presentation

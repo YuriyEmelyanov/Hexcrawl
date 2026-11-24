@@ -14,10 +14,10 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,ty
 import {summarizeDetailCell} from './detailSummary';
 import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
-import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
+import {prepareGeometryPlan,rebindGeometryRegionOwners,validateGeometryRefinementSource,type GeometrySourceValidationInput} from './geometryPlan';
 import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
-import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
+import {projectGeometryRefinementEdit,projectSplitGeometryRefinement,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {projectOneMile,oneMileCandidates,oneMileSourceOverlaps,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
@@ -1137,12 +1137,30 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
       ...(state.globalAuthoredState?{globalAuthoredState:remapDetail(state.globalAuthoredState)}:{})
     };
   };
-  return {...data,map:{...map,regions,roads,rivers,kingdoms,tags,knave,
+  const imported:ValidatedHexcrawlSaveData={...data,map:{...map,regions,roads,rivers,kingdoms,tags,knave,
     physicalGrid:map.physicalGrid && remapDetail(map.physicalGrid),
     poiDiscovery:map.poiDiscovery && rekey(map.poiDiscovery,'map.poiDiscovery'),
     editorNames:map.editorNames && rekey(map.editorNames,'map.editorNames'),
     toponyms:{seed,model:DEFAULT_TOPONYM_MODEL,names}
   }};
+  const state=imported.map.physicalGrid;
+  if (state?.geometryRefinement) {
+    try {
+      const accepted=state.geometryRefinement;
+      const sourceState=structuredClone(remapDetail(accepted.sourceState));
+      let input:GeometrySourceValidationInput=refinementSourceInput(importedOneMileMap(imported),state,accepted.riverPlan);
+      if (state.globalAuthoredState) {
+        const parts=new Map([...plans].map(([id,plan])=>[id,plan.parts.map(part=>part.id)]));
+        const scoped=projectSplitGeometryRefinement(input,{...accepted,sourceState},parts,alias);
+        if (scoped.status==='error') throw Error(`${scoped.code}: ${scoped.refs.join(', ')}`);
+        input=scoped.input;
+      }
+      imported.map.physicalGrid={...state,geometryRefinement:rebindGeometryRegionOwners(input,accepted,sourceState)};
+    } catch (error) {
+      throw new SaveValidationError('map.physicalGrid.geometryRefinement',isRecord(error)&&typeof error.message==='string'?error.message:'invalid refinement');
+    }
+  }
+  return imported;
 }
 
 function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<string,HexTerrainData>,crossings:RiverCrossing[]):FeatureEligibility{
@@ -1453,9 +1471,12 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  parseFineCellEdits(state.fineCellEdits??{},cells,id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
  if(state.selectedCell&&!cells.some(row=>row.cell.q===state.selectedCell!.q&&row.cell.r===state.selectedCell!.r))throw Error('DETAIL1 stale_fine_selection');
 }
+function importedOneMileMap(data:HexcrawlSaveData):OneMileDocumentMap{
+ return {...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
+  hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()};
+}
 function validateImportedOneMile(data:HexcrawlSaveData):void{
- validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
-  hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()},state));
+ validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap(importedOneMileMap(data),state));
 }
 
 /** Use the same world geometry for the editor and for a detached import. */
