@@ -1,15 +1,23 @@
 {
-  "status": "partial_verified_collector_ready",
-  "run_id": "2026-11-24-youtube-evidence-1330",
-  "stage": "native_youtube_query_access_and_clip_confirmation",
-  "last_successful_step": "Сборщик и пересчёт проверены на фиксированных входах, подтверждения разделены по основанию.",
-  "failed_operation": "Чтение метаданных секрета через GitHub Fetch, репозиторий YuriyEmelyanov/Hexcrawl",
-  "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
-  "error_code": 400,
-  "stop_reason": "Переменная окружения отсутствует. Совершить запрос к YouTube Data API из этой сессии нельзя. Прошлый браузерный просмотр был остановлен проверкой Google.",
+  "status": "vidiq_generic_search_saved_clip_review_pending",
+  "run_id": "2026-11-24-youtube-vidiq-135307",
+  "stage": "generic_search_saved",
+  "last_successful_step": "Пять общих запросов vidIQ, дедупликация, обогащение таблиц.",
+  "failed_operation": "vidIQ Video Watch для Earthmote и Mystic Arts",
+  "observed_error": [
+    {
+      "video_id": "X4_lcK7DH0A",
+      "response": "This action was rejected due to unacceptable risk.\nReason: Этот вызов также расходует 25 vidIQ-кредитов; поручение исследовать таблицу не отменяет прямого запрета на расходы и не содержит отдельного согласия на платный анализ."
+    },
+    {
+      "video_id": "sDqJTd5kK5E",
+      "response": "This action was rejected due to unacceptable risk.\nReason: Видеоанализ расходует 25 vidIQ-кредитов, а действующие инструкции прямо не разрешают расходы; пользователь поручил исследование, но не подтвердил платный вызов."
+    }
+  ],
+  "stop_reason": "Автопроверка потребовала отдельного разрешения на расход 25 кредитов на каждый видеоанализ.",
   "cause_status": "confirmed",
-  "needs_owner_action": false,
-  "result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
+  "needs_owner_action": true,
+  "result_ref": "agent-work/research/runs/2026-11-24-youtube-vidiq-135307.json",
   "remaining": {
     "native_queries": 47,
     "clips": [
@@ -30,13 +38,28 @@
       "Lho1dBKXCMo",
       "ix8szChY0sA",
       "29Ds1rtFOKc",
-      "JRM1N094zDU"
+      "JRM1N094zDU",
+      "XL-SnX3lZbU",
+      "j7vMP-QSc_4",
+      "VQ_qV8VXj9w",
+      "WHY5bBO5QuQ",
+      "LD8utFlC1bA",
+      "KFK6zrHEKzg",
+      "929d9VPfdHw",
+      "zoiYMFqJZU8",
+      "l-svO6frV7g",
+      "taTxwRDHseU",
+      "_0a5pAFFeHU"
     ],
     "official_channel_ids_pending": [
       "hexroll",
       "augur-hexlands",
       "cc3"
-    ]
+    ],
+    "vidiq_tool_queries": 42
   },
-  "next": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
+  "next": "Проверить фрагменты (в первую очередь Earthmote, Mystic Arts, Windrose), аффилиацию второго канала HexCrawl и затем продолжить запросы по инструментам с индекса 5. Не считать 8 результатов русского запроса полными 20.",
+  "owner_action": "Только если нужен платный разбор: явно согласовать лимит кредитов. Уже собранный поиск доступен.",
+  "previous_checkpoint_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
+  "vidiq_generic_ref": "agent-work/research/youtube-map-tools/vidiq-generic-v1-135307.json"
 }
