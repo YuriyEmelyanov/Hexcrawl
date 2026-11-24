@@ -2,12 +2,12 @@
   "schema_version": 1,
   "as_of": "2026-11-24",
   "target": 200,
-  "confirmed": 259,
+  "confirmed": 264,
   "remaining": 0,
-  "direct": 168,
-  "partial": 91,
-  "also_L2": 93,
-  "with_popularity_observation": 180,
+  "direct": 172,
+  "partial": 92,
+  "also_L2": 94,
+  "with_popularity_observation": 185,
   "criteria": "Цифровые средства создания и наполнения региональных гексагональных карт НРИ. Для универсального редактора требуется первичный пример использования.",
   "method": "Учитывается семейство программы один раз. Для специализированного инструмента проверяются назначение и операция в редакторе, генераторе или модуле. Для универсального — авторская карта или демонстрация процесса. Счётчик охватывает только внешние продукты.",
   "entries": [
@@ -9878,13 +9878,257 @@
         },
         "basis": "В публичной демоверсии 1.0 проверены обычные кнопки генерации и экспорта PNG. Версия 1.0 Full относится к тому же продукту."
       }
+    },
+    {
+      "id": "firesmoker-hexgen",
+      "name": "HexGen Pro (firesmoker)",
+      "aliases": [
+        "hexcrawl_maker_type2"
+      ],
+      "url": "https://github.com/firesmoker/hexcrawl_maker_type2",
+      "sources": [
+        "https://github.com/firesmoker/hexcrawl_maker_type2",
+        "https://github.com/firesmoker/hexcrawl_maker_type2/blob/3a8253e04d999655e1922ddf4db48bd722bf1676/index.html"
+      ],
+      "fit": "direct",
+      "product_types": [
+        "generator",
+        "editor"
+      ],
+      "author_project_dedup_key": "github/firesmoker/hexcrawl_maker_type2",
+      "disposition": "keep_L1",
+      "layers": [
+        "L1"
+      ],
+      "l1_action": "Сгенерировать гексы местности и выгрузить координаты, рельеф и объекты в CSV.",
+      "l2_action": null,
+      "l2_status": "unconfirmed",
+      "checked_on": "2026-11-24",
+      "popularity": {
+        "value": 0,
+        "unit": "звёзды GitHub",
+        "scope": "публичный репозиторий",
+        "source": "https://api.github.com/repos/firesmoker/hexcrawl_maker_type2",
+        "observed_on": "2026-11-24"
+      },
+      "hex_scope": "confirmed_from_documented_workflow",
+      "digital_review": {
+        "date": "2026-11-24",
+        "decision": "keep_L1",
+        "source": "https://github.com/firesmoker/hexcrawl_maker_type2/blob/3a8253e04d999655e1922ddf4db48bd722bf1676/index.html",
+        "actual_use_example": "В опубликованной реализации Generate Grid → Export CSV дал hex_map.csv с 170 строками гексов, заголовком, метаданными и разделом путей.",
+        "verification_ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json"
+      }
+    },
+    {
+      "id": "trickyturtle-hexcrawl-builder",
+      "name": "Hexcrawl Builder (trickyturtle)",
+      "aliases": [
+        "hexcrawl_builder"
+      ],
+      "url": "https://github.com/trickyturtle/hexcrawl_builder",
+      "sources": [
+        "https://github.com/trickyturtle/hexcrawl_builder",
+        "https://github.com/trickyturtle/hexcrawl_builder/blob/e14a0360a6523d08435125ddac7ec97275f8685f/src/engine/generator/terrainGenerator.js"
+      ],
+      "fit": "direct",
+      "product_types": [
+        "generator",
+        "editor"
+      ],
+      "author_project_dedup_key": "github/trickyturtle/hexcrawl_builder",
+      "disposition": "keep_L1",
+      "layers": [
+        "L1"
+      ],
+      "l1_action": "Создать регион и заполнить гексы рельефом для приключений НРИ.",
+      "l2_action": null,
+      "l2_status": "unconfirmed",
+      "checked_on": "2026-11-24",
+      "popularity": {
+        "value": 0,
+        "unit": "звёзды GitHub",
+        "scope": "публичный репозиторий",
+        "source": "https://api.github.com/repos/trickyturtle/hexcrawl_builder",
+        "observed_on": "2026-11-24"
+      },
+      "hex_scope": "confirmed_from_documented_workflow",
+      "digital_review": {
+        "date": "2026-11-24",
+        "decision": "keep_L1",
+        "source": "https://github.com/trickyturtle/hexcrawl_builder/blob/e14a0360a6523d08435125ddac7ec97275f8685f/src/engine/generator/terrainGenerator.js",
+        "actual_use_example": {
+          "input": "8 × 5",
+          "generated": {
+            "cells": 40,
+            "terrain": [
+              "ocean",
+              "hills",
+              "mountains",
+              "forest",
+              "plains",
+              "coast"
+            ],
+            "unique": 40
+          },
+          "entrypoint": "generateHexes вызывается в src/App.jsx"
+        },
+        "verification_ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json"
+      }
+    },
+    {
+      "id": "nomadesrpg-gerador-de-hexcrawl",
+      "name": "Gerador de Hexcrawl (nomadesrpg)",
+      "aliases": [
+        "gerador-de-hexcrawl"
+      ],
+      "url": "https://github.com/nomadesrpg/gerador-de-hexcrawl",
+      "sources": [
+        "https://github.com/nomadesrpg/gerador-de-hexcrawl",
+        "https://github.com/nomadesrpg/gerador-de-hexcrawl/blob/9dc657e64ab33320ef6a23dbd63f14256f4b9ba4/gerar.py"
+      ],
+      "fit": "direct",
+      "product_types": [
+        "generator"
+      ],
+      "author_project_dedup_key": "github/nomadesrpg/gerador-de-hexcrawl",
+      "disposition": "keep_L1",
+      "layers": [
+        "L1"
+      ],
+      "l1_action": "Сгенерировать соседний гекс с учётом базового и записать регион для просмотра в Obsidian.",
+      "l2_action": null,
+      "l2_status": "unconfirmed",
+      "checked_on": "2026-11-24",
+      "popularity": {
+        "value": 0,
+        "unit": "звёзды GitHub",
+        "scope": "публичный репозиторий",
+        "source": "https://api.github.com/repos/nomadesrpg/gerador-de-hexcrawl",
+        "observed_on": "2026-11-24"
+      },
+      "hex_scope": "confirmed_from_documented_workflow",
+      "digital_review": {
+        "date": "2026-11-24",
+        "decision": "keep_L1",
+        "source": "https://github.com/nomadesrpg/gerador-de-hexcrawl/blob/9dc657e64ab33320ef6a23dbd63f14256f4b9ba4/gerar.py",
+        "actual_use_example": "Через меню созданы гексы 1 и 2 с горной местностью, первый с древними руинами. Экспорт Mapa.md содержит 37 координат, две заполнены, 35 пусты.",
+        "verification_ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json"
+      }
+    },
+    {
+      "id": "loomeery-ethereal-hexcrawl",
+      "name": "D&D Ethereal Hexcrawl (LooMeeRy)",
+      "aliases": [
+        "dnd-hexcrawl-map"
+      ],
+      "url": "https://github.com/LooMeeRy/dnd-hexcrawl-map",
+      "sources": [
+        "https://github.com/LooMeeRy/dnd-hexcrawl-map",
+        "https://github.com/LooMeeRy/dnd-hexcrawl-map/blob/87a68ce13187863b031c918635a723f4de85af6a/src/views/DMMapEditor.jsx",
+        "https://dnd-hexcrawl-map.vercel.app/"
+      ],
+      "fit": "direct",
+      "product_types": [
+        "editor"
+      ],
+      "author_project_dedup_key": "github/loomeery/dnd-hexcrawl-map",
+      "disposition": "keep_L1",
+      "layers": [
+        "L1"
+      ],
+      "l1_action": "Добавить соседние гексы региона и назначить каждому изображение местности.",
+      "l2_action": null,
+      "l2_status": "unconfirmed",
+      "checked_on": "2026-11-24",
+      "popularity": {
+        "value": 0,
+        "unit": "звёзды GitHub",
+        "scope": "публичный репозиторий",
+        "source": "https://api.github.com/repos/LooMeeRy/dnd-hexcrawl-map",
+        "observed_on": "2026-11-24"
+      },
+      "hex_scope": "confirmed_from_documented_workflow",
+      "digital_review": {
+        "date": "2026-11-24",
+        "decision": "keep_L1",
+        "source": "https://github.com/LooMeeRy/dnd-hexcrawl-map/blob/87a68ce13187863b031c918635a723f4de85af6a/src/views/DMMapEditor.jsx",
+        "actual_use_example": {
+          "method": "Публичная браузерная сборка запущена локально. В режиме ведущего добавлены лес, озеро и перевал; карта прочитана после перезагрузки.",
+          "map_after_reload": {
+            "0,0": {
+              "q": 0,
+              "r": 0,
+              "image": null
+            },
+            "1,0": {
+              "q": 1,
+              "r": 0,
+              "image": "Alder-forest.png"
+            },
+            "1,-1": {
+              "q": 1,
+              "r": -1,
+              "image": "Lake-of-Mists.png"
+            },
+            "0,-1": {
+              "q": 0,
+              "r": -1,
+              "image": "North-Pass.png"
+            }
+          },
+          "public_bundle_sha256": "fd8fcb906a702aa3df8db989d0340dd0496577704ae8e66c01842083e59a407f"
+        },
+        "verification_ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json"
+      }
+    },
+    {
+      "id": "zepedro0901-explorers-hexcrawl",
+      "name": "Explorer’s Hexcrawl (Foundry VTT)",
+      "aliases": [
+        "Explorer-s-Hexcrawl-for-Foundry-VTT"
+      ],
+      "url": "https://github.com/zepedro0901/Explorer-s-Hexcrawl-for-Foundry-VTT",
+      "sources": [
+        "https://github.com/zepedro0901/Explorer-s-Hexcrawl-for-Foundry-VTT",
+        "https://github.com/zepedro0901/Explorer-s-Hexcrawl-for-Foundry-VTT/blob/be6d9a32307c600a66bf86bf10e93a8740264d16/docs/landmarks.png"
+      ],
+      "fit": "partial",
+      "product_types": [
+        "functional_module"
+      ],
+      "author_project_dedup_key": "github/zepedro0901/explorer-s-hexcrawl-for-foundry-vtt",
+      "disposition": "keep_L1",
+      "layers": [
+        "L1",
+        "L2"
+      ],
+      "l1_action": "На региональной карте поставить в выбранный гекс именованную точку интереса или обзорную точку.",
+      "l2_action": "При перемещении жетона группы модуль учитывает часы пути и открывает отмеченные места по расстоянию.",
+      "l2_status": "confirmed",
+      "checked_on": "2026-11-24",
+      "popularity": {
+        "value": 0,
+        "unit": "звёзды GitHub",
+        "scope": "публичный репозиторий",
+        "source": "https://api.github.com/repos/zepedro0901/Explorer-s-Hexcrawl-for-Foundry-VTT",
+        "observed_on": "2026-11-24"
+      },
+      "hex_scope": "confirmed_from_documented_workflow",
+      "digital_review": {
+        "date": "2026-11-24",
+        "decision": "keep_L1",
+        "source": "https://github.com/zepedro0901/Explorer-s-Hexcrawl-for-Foundry-VTT/blob/be6d9a32307c600a66bf86bf10e93a8740264d16/docs/landmarks.png",
+        "actual_use_example": "Снимок автора показывает карту The Sword Coast, обнаруженное место и две удалённые отметки. В инструкции приведено действие ведущего Shift+L. Версия модуля 0.6.4.",
+        "verification_ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json"
+      }
     }
   ],
   "pending_verification": [],
   "scope_audit": {
     "previous_snapshot": "79ffe38ccfe14d468b325ea2ea98a0e3a42997ea",
     "reviewed": 89,
-    "eligible_count": 259,
+    "eligible_count": 264,
     "review_pending_ids": [
       "kanka",
       "chronica",
@@ -10028,9 +10272,13 @@
     },
     "latest_discovery": {
       "added": [
-        "righteous-tools-hexsmith"
+        "firesmoker-hexgen",
+        "trickyturtle-hexcrawl-builder",
+        "nomadesrpg-gerador-de-hexcrawl",
+        "loomeery-ethereal-hexcrawl",
+        "zepedro0901-explorers-hexcrawl"
       ],
-      "ref": "agent-work/research/runs/2026-11-24-rpg-october-0230.json",
+      "ref": "agent-work/research/runs/2026-11-24-rpg-october-0430.json",
       "ranking_observations": 0
     },
     "pending_reconciliation": {
