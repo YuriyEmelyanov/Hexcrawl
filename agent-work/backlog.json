@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-24T18:46:30.750Z",
+  "updated_at": "2026-11-24T18:54:06.340Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -2553,7 +2553,7 @@
     {
       "task_id": "HX-BL-073",
       "title": "Разделять несвязные регионы при открытии карты",
-      "status": "Согласована",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/score/rules/S02-C05.md"
@@ -2568,17 +2568,17 @@
       "requirements": [
         "При обычном открытии JSON разделять все несвязные регионы на самостоятельные связные части, независимо от режима и происхождения регионов.",
         "Отображать номера частей с суффиксами, например 7.1 и 7.2. Сохранять номера остальных регионов и последовательность нумерации новых регионов.",
-        "При удалении последнего региона сохранять все малые озёра без диалога об озёрах. Правила исчезнувшей опоры и конфликта с восстановленными объектами уточняются."
+        "При удалении базового гекса удалять его содержимое карты 1 миля, включая малые озёра, без отдельного предупреждения об озёрах."
       ],
       "acceptance_outline": [
         "Контрольный JSON открывается обычным способом. Несвязные регионы Classic, Mythic и смешанной карты разделяются; связанные остаются целыми.",
         "Сохранение и повторное открытие сохраняют номера, геометрию и ссылки. Следующий обычный регион получает тот же целый номер, что и без разделения.",
-        "При удалении последнего региона сохраняются все малые озёра без предупреждения об озёрах. Проверить Undo/Redo после уточнения правил для исчезнувшей опоры и конфликтующих объектов."
+        "Удалить регион с малым озером под удаляемым базовым гексом: озеро исчезает без предупреждения об озере, Undo/Redo восстанавливают оба состояния. Соседнее озеро без конфликтов сохраняется."
       ],
-      "implementation_authorized": false,
+      "implementation_authorized": true,
       "release_authorized": false,
-      "ready_for_development": false,
-      "updated_at": "2026-11-24T18:46:30.750Z",
+      "ready_for_development": true,
+      "updated_at": "2026-11-24T18:54:06.340Z",
       "strategy_proposal": {
         "task_id": "HX-BL-073",
         "status": "superseded_by_d2",
@@ -2641,8 +2641,8 @@
         }
       },
       "proposal_status": "approved_as_revised",
-      "next_role": "owner",
-      "next_step": "Уточнить сохранение малых озёр при исчезновении опоры и конфликте с восстановленным объектом.",
+      "next_role": "programmer",
+      "next_step": "Реализовать разделение при открытии JSON по F1 и проверить удаление озера без предупреждения.",
       "draft_spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
       "draft_spec_version": "D2",
       "lake_delete_baseline": {
@@ -2655,18 +2655,19 @@
         "known_boundary": "При восстановлении пути или POI из контрольной точки опубликованное правило удаляет конфликтующее малое озеро даже при сохранённой сухой опоре. Аналитику следует явно оговорить эту границу фразы D1 об остальных озёрах.",
         "score_status": "score-neutral"
       },
-      "execution_state": "interview_awaiting_owner_decisions",
+      "execution_state": "ready_for_development",
       "approval_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-D2.md",
       "approved_at": "2026-11-24T16:29:22.416Z",
       "interview_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/decisions.json",
       "interview_round_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-002.json",
-      "interview_status": "awaiting_owner_decisions",
-      "interview_completed": false,
-      "open_question_ids": [
-        "SPLIT-Q08",
-        "SPLIT-Q09"
-      ],
-      "next_role_after_decision": "business_analyst"
+      "interview_status": "completed",
+      "interview_completed": true,
+      "open_question_ids": [],
+      "next_role_after_decision": "business_analyst",
+      "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+      "final_spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+      "spec_version": "F1",
+      "final_spec_version": "F1"
     },
     {
       "task_id": "HX-BL-074",
