@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-24-youtube-evidence-1330",
+  "task_id": "HX-RSR-001",
+  "status": "partial_verified_collector_ready",
+  "started_at": "2026-11-24T10:30:53.393Z",
+  "completed_at": "2026-11-24T10:34:44.967Z",
+  "selected_task": {
+    "scope": "YouTube L1, доведение пилота до воспроизводимого поиска и зачёта",
+    "cohort_ref": "agent-work/research/youtube-map-tools/cohort-v1.json"
+  },
+  "selection_reason": "Прямой приоритет владельца",
+  "alternatives": [
+    {
+      "task": "Повторить весь веб-поиск",
+      "reason": "Индексация уже выполнена; повтор не даёт сопоставимого нативного покрытия."
+    },
+    {
+      "task": "Поставить ранги по черновым минимумам",
+      "reason": "Покрытие неполное, часть видео требует просмотра."
+    }
+  ],
+  "inputs_and_versions": {
+    "base_sha": "c2da846772ca0ac87393f38258050de22165153d",
+    "previous_result": "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
+    "api_doc": "https://developers.google.com/youtube/data/reference/rest/v3/search/list"
+  },
+  "findings": [
+    {
+      "indexed_video_ledger_rows": 54,
+      "additional_indexed_videos": 2,
+      "native_queries_executed": 0,
+      "native_queries_remaining": 47,
+      "verified_independent_channels": 0,
+      "provisional_independent_channels": 1,
+      "fragments_to_review": 18,
+      "cohort_positions": 21,
+      "external_registry": 268
+    },
+    {
+      "video_id": "sDqJTd5kK5E",
+      "tool_id": "dungeondraft",
+      "author_project_key": "UCJQEEltSpi8LXqMH8uTrCQQ/Crown of the Fungal Queen",
+      "access_level": "author_chapters_only",
+      "timestamp_seconds": 2078,
+      "decision": "needs_clip",
+      "source": "https://www.youtube.com/watch?v=sDqJTd5kK5E&t=2078s"
+    },
+    {
+      "video_id": "29Ds1rtFOKc",
+      "tool_id": "cc3",
+      "author_project_key": "ProFantasy/Live Mapping: Hexcrawls - A Simple Hex Style",
+      "access_level": "publisher_forum",
+      "source": "https://forum.profantasy.com/discussion/15490/live-mapping-hexcrawl-style-2",
+      "locator": "Пост Loopysue и комментарий Royal Scribe 19 апреля",
+      "decision": "date_unverified"
+    },
+    {
+      "video_id": "JRM1N094zDU",
+      "tool_id": "worldographer",
+      "author_project_key": "Earthmote/Minimum Viable Sandbox",
+      "access_level": "indexed_metadata",
+      "source": "https://www.youtube.com/watch?v=JRM1N094zDU",
+      "decision": "needs_clip"
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/youtube-map-tools/collect_youtube.py",
+    "agent-work/research/youtube-map-tools/build_ranking.py",
+    "agent-work/research/youtube-map-tools/evidence.csv",
+    "agent-work/research/youtube-map-tools/ranking.csv",
+    "agent-work/research/youtube-map-tools/checkpoint.json",
+    "agent-work/research/youtube-map-tools/search-log.json",
+    "agent-work/research/youtube-map-tools/README.md",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "collector_mock": "UTC bounds, fractional seconds, order, video dedup, pagination, interruption, resume, no key in output",
+    "ranking_mock": "channel dedup, official separation, tie ranges, missing decisions, uncertain zero and strict clip",
+    "real_api": false,
+    "video_playback": false
+  },
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true
+      ]
+    ]
+  },
+  "checkpoint": {
+    "status": "partial_verified_collector_ready",
+    "run_id": "2026-11-24-youtube-evidence-1330",
+    "stage": "native_youtube_query_access_and_clip_confirmation",
+    "last_successful_step": "Сборщик и пересчёт проверены на фиксированных входах, подтверждения разделены по основанию.",
+    "failed_operation": "Чтение метаданных секрета через GitHub Fetch, репозиторий YuriyEmelyanov/Hexcrawl",
+    "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+    "error_code": 400,
+    "stop_reason": "Переменная окружения отсутствует. Совершить запрос к YouTube Data API из этой сессии нельзя. Прошлый браузерный просмотр был остановлен проверкой Google.",
+    "cause_status": "confirmed",
+    "needs_owner_action": false,
+    "result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
+    "remaining": {
+      "native_queries": 47,
+      "clips": [
+        "Kr2zJ9rbS4E",
+        "sDqJTd5kK5E",
+        "P5nTJ00mHiQ",
+        "nu497ebnZ4A",
+        "E_-Ln5y_K7E",
+        "cE5k2cgCXdw",
+        "LZcIoO5y2qE",
+        "J54zpmou4KI",
+        "WA2XnYgLpdY",
+        "X4_lcK7DH0A",
+        "kuQlhUBKX_M",
+        "e7j5GOeTQg4",
+        "unqU2gGn5p8",
+        "zps3zIB1lOY",
+        "Lho1dBKXCMo",
+        "ix8szChY0sA",
+        "29Ds1rtFOKc",
+        "JRM1N094zDU"
+      ],
+      "official_channel_ids_pending": [
+        "hexroll",
+        "augur-hexlands",
+        "cc3"
+      ]
+    },
+    "next": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
+  },
+  "next_candidate": {
+    "id": "YOUTUBE-L1-PILOT-V1-CONTINUE",
+    "layer": "L1",
+    "checkpoint_ref": "agent-work/research/youtube-map-tools/checkpoint.json",
+    "scenario": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
+  }
+}

@@ -68,7 +68,7 @@
     "id": "YOUTUBE-L1-PILOT-V1-CONTINUE",
     "layer": "L1",
     "checkpoint_ref": "agent-work/research/youtube-map-tools/checkpoint.json",
-    "scenario": "Переиспользовать список видео. При доступном нативном публичном поиске или YouTube Data API дополнить сначала 5 общих, потом 42 целевых запроса. Проверить отмеченные фрагменты и channel_id. Рассчитать суммы и диапазоны мест после сопоставимого прохода для всех 21 позиций."
+    "scenario": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
   },
   "active_task": null,
   "claim": null,
@@ -323,7 +323,8 @@
     "agent-work/research/runs/2026-11-24-reddit-final-review.json",
     "agent-work/research/runs/2026-11-24-game-create-0930.json",
     "agent-work/research/runs/2026-11-24-dnd5-wonderdraft-1030.json",
-    "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json"
+    "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
+    "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -364,7 +365,7 @@
       }
     ]
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/youtube-map-tools/checkpoint.json",
@@ -543,7 +544,7 @@
     ],
     "result_ref": "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json"
   },
-  "last_health_ref": "agent-work/research/automation-health/2026-11-24-youtube-l1-pilot-started.json",
+  "last_health_ref": "agent-work/research/automation-health/2026-11-24-youtube-evidence-1330-started.json",
   "open_checkpoints": {
     "KNAVE2": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
     "SD": "agent-work/research/checkpoints/SD-terrain-mapping.json",
@@ -1107,7 +1108,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-24T08:41:58.741Z",
+  "updated_at": "2026-11-24T10:34:44.967Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1249,7 +1250,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-24-youtube-l1-pilot",
+  "last_run_id": "2026-11-24-youtube-evidence-1330",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1305,34 +1306,40 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-24-youtube-l1-pilot",
+  "last_run": "2026-11-24-youtube-evidence-1330",
   "checkpoint": {
-    "status": "partial_index_screening_native_access_limited",
-    "run_id": "2026-11-24-youtube-l1-pilot",
-    "result_ref": "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
-    "stage": "native_youtube_coverage_and_clip_confirmation",
-    "last_successful_step": "Веб-индекс собран, метаданные дедуплицированы и разобраны.",
-    "failed_operation": "Открытие видео sDqJTd5kK5E с таймкодом 34:38 в браузере",
-    "observed_error": "Our systems have detected unusual traffic from your computer network. This page checks to see if it’s really you sending the requests, and not a robot.",
-    "stop_reason": "YouTube потребовал проверку. Упорядоченная нативная выдача и просмотр фрагментов не доступны через использованный браузер.",
+    "status": "partial_verified_collector_ready",
+    "run_id": "2026-11-24-youtube-evidence-1330",
+    "stage": "native_youtube_query_access_and_clip_confirmation",
+    "last_successful_step": "Сборщик и пересчёт проверены на фиксированных входах, подтверждения разделены по основанию.",
+    "failed_operation": "Чтение метаданных секрета через GitHub Fetch, репозиторий YuriyEmelyanov/Hexcrawl",
+    "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+    "error_code": 400,
+    "stop_reason": "Переменная окружения отсутствует. Совершить запрос к YouTube Data API из этой сессии нельзя. Прошлый браузерный просмотр был остановлен проверкой Google.",
     "cause_status": "confirmed",
+    "needs_owner_action": false,
+    "result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
     "remaining": {
       "native_queries": 47,
       "clips": [
         "Kr2zJ9rbS4E",
+        "sDqJTd5kK5E",
         "P5nTJ00mHiQ",
         "nu497ebnZ4A",
         "E_-Ln5y_K7E",
         "cE5k2cgCXdw",
         "LZcIoO5y2qE",
         "J54zpmou4KI",
+        "WA2XnYgLpdY",
         "X4_lcK7DH0A",
         "kuQlhUBKX_M",
         "e7j5GOeTQg4",
         "unqU2gGn5p8",
         "zps3zIB1lOY",
         "Lho1dBKXCMo",
-        "ix8szChY0sA"
+        "ix8szChY0sA",
+        "29Ds1rtFOKc",
+        "JRM1N094zDU"
       ],
       "official_channel_ids_pending": [
         "hexroll",
@@ -1340,8 +1347,7 @@
         "cc3"
       ]
     },
-    "next": "Переиспользовать список видео. При доступном нативном публичном поиске или YouTube Data API дополнить сначала 5 общих, потом 42 целевых запроса. Проверить отмеченные фрагменты и channel_id. Рассчитать суммы и диапазоны мест после сопоставимого прохода для всех 21 позиций.",
-    "needs_owner_action": false
+    "next": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
   },
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
@@ -2175,7 +2181,7 @@
     "audit_status": "pending_scheduled_execution",
     "previous_checkpoint_retained": true
   },
-  "checkpoint_resume_override": "Переиспользовать список видео. При доступном нативном публичном поиске или YouTube Data API дополнить сначала 5 общих, потом 42 целевых запроса. Проверить отмеченные фрагменты и channel_id. Рассчитать суммы и диапазоны мест после сопоставимого прохода для всех 21 позиций.",
+  "checkpoint_resume_override": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно.",
   "previous_checkpoint_before_PF2_scope_audit": {
     "status": "checkpoint_large_corpus_remaining",
     "run_id": "2026-11-16-PF2-GMC1-screen-1238",
@@ -2235,7 +2241,7 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-24T08:41:58.741Z",
+  "last_run_at": "2026-11-24T10:34:44.967Z",
   "last_bounded_completed_run": "2026-11-24-dnd5-wonderdraft-1030",
   "scope_audit": {
     "status": "in_progress_across_games",
@@ -5212,7 +5218,7 @@
     }
   },
   "last_completed_at": "2026-11-24T07:33:43.630Z",
-  "previous_result_ref": "agent-work/research/runs/2026-11-24-dnd5-wonderdraft-1030.json",
+  "previous_result_ref": "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
   "latest_competitor_discovery": {
     "added": [
       "nevirr-simplemap",
@@ -5245,6 +5251,8 @@
     "cohort": "agent-work/research/youtube-map-tools/cohort-v1.json",
     "ranking": "agent-work/research/youtube-map-tools/ranking.csv",
     "evidence": "agent-work/research/youtube-map-tools/evidence.csv",
-    "status": "partial_index_screening_native_access_limited"
+    "status": "partial_verified_collector_ready",
+    "collector": "agent-work/research/youtube-map-tools/collect_youtube.py",
+    "ranking_script": "agent-work/research/youtube-map-tools/build_ranking.py"
   }
 }

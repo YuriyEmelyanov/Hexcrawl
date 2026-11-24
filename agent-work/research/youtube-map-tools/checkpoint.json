@@ -1,30 +1,36 @@
 {
-  "status": "partial_index_screening_native_access_limited",
-  "run_id": "2026-11-24-youtube-l1-pilot",
-  "result_ref": "agent-work/research/runs/2026-11-24-youtube-l1-pilot.json",
-  "stage": "native_youtube_coverage_and_clip_confirmation",
-  "last_successful_step": "Веб-индекс собран, метаданные дедуплицированы и разобраны.",
-  "failed_operation": "Открытие видео sDqJTd5kK5E с таймкодом 34:38 в браузере",
-  "observed_error": "Our systems have detected unusual traffic from your computer network. This page checks to see if it’s really you sending the requests, and not a robot.",
-  "stop_reason": "YouTube потребовал проверку. Упорядоченная нативная выдача и просмотр фрагментов не доступны через использованный браузер.",
+  "status": "partial_verified_collector_ready",
+  "run_id": "2026-11-24-youtube-evidence-1330",
+  "stage": "native_youtube_query_access_and_clip_confirmation",
+  "last_successful_step": "Сборщик и пересчёт проверены на фиксированных входах, подтверждения разделены по основанию.",
+  "failed_operation": "Чтение метаданных секрета через GitHub Fetch, репозиторий YuriyEmelyanov/Hexcrawl",
+  "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+  "error_code": 400,
+  "stop_reason": "Переменная окружения отсутствует. Совершить запрос к YouTube Data API из этой сессии нельзя. Прошлый браузерный просмотр был остановлен проверкой Google.",
   "cause_status": "confirmed",
+  "needs_owner_action": false,
+  "result_ref": "agent-work/research/runs/2026-11-24-youtube-evidence-1330.json",
   "remaining": {
     "native_queries": 47,
     "clips": [
       "Kr2zJ9rbS4E",
+      "sDqJTd5kK5E",
       "P5nTJ00mHiQ",
       "nu497ebnZ4A",
       "E_-Ln5y_K7E",
       "cE5k2cgCXdw",
       "LZcIoO5y2qE",
       "J54zpmou4KI",
+      "WA2XnYgLpdY",
       "X4_lcK7DH0A",
       "kuQlhUBKX_M",
       "e7j5GOeTQg4",
       "unqU2gGn5p8",
       "zps3zIB1lOY",
       "Lho1dBKXCMo",
-      "ix8szChY0sA"
+      "ix8szChY0sA",
+      "29Ds1rtFOKc",
+      "JRM1N094zDU"
     ],
     "official_channel_ids_pending": [
       "hexroll",
@@ -32,6 +38,5 @@
       "cc3"
     ]
   },
-  "next": "Переиспользовать список видео. При доступном нативном публичном поиске или YouTube Data API дополнить сначала 5 общих, потом 42 целевых запроса. Проверить отмеченные фрагменты и channel_id. Рассчитать суммы и диапазоны мест после сопоставимого прохода для всех 21 позиций.",
-  "needs_owner_action": false
+  "next": "Запустить сохранённый сборщик с YOUTUBE_API_KEY в разрешённом окружении. Сопоставить кандидатов с evidence.csv, подтвердить таймкоды и channel_id, затем выполнить пересчёт. Для точного среза требуется доступ к API или нативной выдаче. Просмотр видео нужен отдельно."
 }
