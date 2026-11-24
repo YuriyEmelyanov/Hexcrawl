@@ -1,0 +1,176 @@
+{
+  "task_id": "HX-BL-073",
+  "role": "reviewer",
+  "status": "changes_requested",
+  "pr": 515,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+  "branch": "feat/hx073-split-regions-on-import",
+  "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "tree_sha": "f0f31b383948c9a4bc6a2f3a80881febd1f48429",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "review_ready": false,
+  "accepted": false,
+  "publication_authorized": false,
+  "evidence_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "result_ref": "agent-work/results/2026-11-25T0100-reviewer-HX073.json",
+  "next_task_id": "HX-BL-073",
+  "next_role": "programmer",
+  "next_step": "Исправить HX073-RV02-01 на приложенном валидном JSON: река №5 остаётся у части 1.2, последний сектор принадлежит 1.1. Нужны успешная проверка сети, повторное открытие и передача нового SHA на независимую приёмку.",
+  "run_id": "2026-11-25T0100-reviewer-HX073",
+  "claim_ref": "agent-work/claims/2026-11-25T0100-reviewer-HX073.json",
+  "generation": 776,
+  "completed_at": "2026-11-24T22:07:53.615Z",
+  "role_selection_reason": "Точный SHA в review_ready, полный CI успешен, слот HX-BL-073 свободен, решение о публикации отсутствует. Выбран ближайший независимый этап проверки.",
+  "result": "На точном SHA подтверждены сценарии Classic 7.1/7.2, повторное разделение, атомарный отказ с сохранением Redo, JSON v16 и теги. Независимый проверяющий нашёл блокирующую ошибку: сектор реки №5 в части 1.1 наследует владельца 1.2. Ошибка повторена на штатном импорте и в Chromium и остаётся после повторного открытия.",
+  "findings": [
+    {
+      "id": "HX073-RV02-01",
+      "severity": "P1",
+      "requirement": "SPLIT-Q04",
+      "status": "confirmed",
+      "source_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/48c679b5d8d069ea64c24ab3a82a8140a2d21958/src/App.tsx#L1106-L1118",
+      "fixture_ref": "agent-work/evidence/HX-BL-073/review-48c679b/river-owner-input.json",
+      "steps": [
+        "Открыть валидный обычный JSON с рекой №5, которая начинается в обособленной части исходного региона №1, проходит по региону №2 и возвращается в часть со старым центром.",
+        "Выгрузить JSON и сверить эффективного владельца сектора check-sector-5 с реальной опорой ребра. Повторно открыть сохранённый JSON."
+      ],
+      "expected": "Река №5 целиком остаётся у части 1.2 по истоку. Последнее ребро 0,28|24.249,14 должно принадлежать части 1.1. Штатная проверка речной сети проходит, геометрия и ID сохранены.",
+      "actual": "Последний сектор без assignedRegionId наследует нового владельца всей реки 1.2. Единственный географический владелец ребра — часть 1.1. Импорт проходит молча; `invalid_owner` сохраняется после экспорта и повторного открытия.",
+      "fix_acceptance": "Сохранить смысл явного и неявного владельца каждого участка при разделении. Проверить географию участков, не меняя ID/путь реки, пересечения и данные одномильного слоя. При непереносимой ссылке оборвать импорт до замены карты с указанием ссылки. На приложенном входе должно быть 0 invalid_owner до и после экспорта, река у 1.2, хвост у 1.1.",
+      "impact": "Нарушено правило переноса локальных связей. В сохранённом документе присутствует назначение участка региону, которому ребро географически не принадлежит."
+    }
+  ],
+  "independence": {
+    "independent_agent": "hx073_fresh_review_48c679b",
+    "scope": "Заново проверил исходники и обнаружил контрпример; проверяющий повторил на точном SHA штатным обработчиком, сетевой проверкой и Chromium."
+  },
+  "score_assessment": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S02-C05",
+    "rule_id": "VAL-04",
+    "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "status": "conditional_candidate_withheld",
+    "grade_before": {
+      "accepted_weight": 65,
+      "maximum_weight": 75,
+      "accepted_share": 0.8666666666666667,
+      "rule_weight_accepted": 10
+    },
+    "grade_after_for_ledger": {
+      "accepted_weight": 65,
+      "maximum_weight": 75,
+      "accepted_share": 0.8666666666666667,
+      "rule_weight_accepted": 10
+    },
+    "points_before": 6.419753086419753,
+    "points_after_for_ledger": 6.419753086419753,
+    "delta": 0,
+    "potential_rule_weight_after": 20,
+    "potential_points_after": 7.407407407407407,
+    "potential_delta": 0.9876543209876544,
+    "booked_delta": 0,
+    "method": "Classic 8+1 и структурные отказы на точном SHA подтвердили целевую связность. Пакет удержан из-за новой неверной связи речного сектора. Её нельзя переносить в подтверждённый результат. История не содержит дублирующей строки HX-BL-073; прежний PR511 учтён.",
+    "baseline_ref": "agent-work/research/acceptance/L1-PR509/ledger.json#S02-C05",
+    "baseline_release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+    "evidence_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+    "limitation": "Условный остаток +0,987654 L1 относится к VAL-04. Он требует исправления, независимой приёмки нового SHA и сверки после публикации."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45487582149",
+      "jobs": [
+        {
+          "id": 138777145009,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777145305,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777145637,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138777146953,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 452,
+        "passed": 452,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "reviewer_node": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "failed": 0
+    },
+    "exact_build_chromium": "positive controls and negative river regression verified"
+  },
+  "test_change_summary": {
+    "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+    "head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "added": 3,
+    "removed": 0,
+    "modified": 0,
+    "source": "git diff base..exact head and count top-level logical Node declarations",
+    "suites": [
+      {
+        "suite": "Node saveSafety",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Нумерация, повторный импорт, карта смешанных профилей, теги и владельцы дорог."
+      },
+      {
+        "suite": "Node geometryPlan",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Сохранность выбранной одномильной геометрии и идентичности точки для полного и частичного слоя."
+      }
+    ],
+    "reuse_or_new_reason": "Проверки относятся к разным требованиям и воспроизводят соответствующие ошибки. Существующие проверки импортируют согласованный путь или явно заданный сектор; нужен отдельный вход с дорегиональным неявным владельцем в одном из сквозных сценариев.",
+    "temporary_review_diagnostics": [
+      "Classic 8+1, повторное деление и отказ с сохранённым Redo",
+      "Речной сектор без assignedRegionId: штатная проверка до, после и после повторного открытия",
+      "Chromium: импорт и экспорт проблемного речного сохранения"
+    ]
+  },
+  "implementation_ref": "agent-work/results/2026-11-25T0000-programmer-HX073-RV01.json",
+  "backlog_commit": "a2a92297676ef3bcc188906ca7924d2b67bdb779",
+  "evidence_commit": "f79afa45227da1163e7d95fd0ecf6c4107f533e3",
+  "fixture_ref": "agent-work/evidence/HX-BL-073/review-48c679b/river-owner-input.json",
+  "release_gate": "Independent acceptance of corrected exact SHA and explicit owner publication decision.",
+  "remaining_forecast": "Один этап исправления и один этап повторной приёмки при отсутствии новых замечаний. Решение о выпуске отдельно.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-24T22:01:03.704Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-24T22:07:56.340Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
