@@ -1,0 +1,143 @@
+{
+  "task_id": "HX-BL-073",
+  "role": "programmer",
+  "status": "review_ready",
+  "pr": 515,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+  "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "branch": "feat/hx073-split-regions-on-import",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-owner.json",
+  "result_ref": "agent-work/results/2026-11-25T0200-programmer-HX073-RV02.json",
+  "next_task_id": "HX-BL-073",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить F1 на cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b: географическую принадлежность сектора, целостность русла, повторное открытие и отказ при непереносимом секторе. Затем рассчитать предварительный VAL-04 по 1.3-rc8.",
+  "review_ready": true,
+  "publication_authorized": false,
+  "run_id": "2026-11-25T0200-programmer-HX073-RV02",
+  "generation": 780,
+  "claim_ref": "agent-work/claims/2026-11-25T0200-programmer-HX073-RV02.json",
+  "completed_at": "2026-11-24T23:23:09.149Z",
+  "previous_head_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+  "pr_draft": false,
+  "backlog_commit": "f1f7dd13d23b6f9fb81381e67e557b97d2e46a49",
+  "evidence_commit": "ebdd493e5ea553251a33e43281fe48de576d7e91",
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-map.jpg",
+  "result": "На проверочной карте река №5 осталась у части 1.2 по истоку, последний сектор — у части 1.1 по географии. Chromium подтвердил неизменное русло и повторное открытие JSON. Сектор с непереносимой обязательной ссылкой отклоняется с указанием позиции в JSON, открытая карта сохранена. Контрольный v16 сохранил 34 участка рек, две переправы и выгрузку одномильного PNG.",
+  "role_selection_reason": "Точный SHA возвращён проверяющим из-за HX073-RV02-01. Исправление утверждено чистовой спецификацией и готово к выполнению в свободном слоте программиста.",
+  "authority_status": "implementation_approved_publication_not_approved",
+  "addressed_findings": [
+    "HX073-RV02-01"
+  ],
+  "prior_review_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "checks": {
+    "typescript": "passed",
+    "production_build": "passed",
+    "browser_exact_tree": "passed",
+    "single_case_red_on_base": true,
+    "node": {
+      "executed": 132,
+      "passed": 132,
+      "failed": 0,
+      "skipped": 0,
+      "suites": [
+        "saveSafety",
+        "geometryPlan",
+        "manualRegions",
+        "manualRivers",
+        "mapTransactions"
+      ]
+    },
+    "local_recovery": "The first parallel build and type-check were killed; the corresponding isolated checks and serial Node run replaced those attempts.",
+    "ci": {
+      "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+      "status": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
+      "jobs": [
+        {
+          "id": 138844324778,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325544,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325559,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844327563,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 453,
+        "passed": 453,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node saveSafety",
+    "scenario": "Импорт реки с явными и неявным владельцами, целостность сети, повторное открытие, отказ с точным путём при невозможности переноса.",
+    "reuse_or_new_reason": "Проверки смешанных профилей и GeometryPlan не создавали реку с неявным владельцем сектора за пределом части, где находится исток. Использованы существующие harness и генератор фикстуры, добавлен один отдельный воспроизводимый сценарий.",
+    "source": "git diff --unified=0 exact prior reviewed head and candidate; count logical top-level test declarations",
+    "pr_total_from_main": {
+      "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+      "added": 4,
+      "removed": 0,
+      "modified": 0
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S02-C05",
+    "rule": "VAL-04",
+    "status": "candidate_pending_independent_assessment",
+    "booked_delta": 0
+  },
+  "review_handoff": {
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "source_finding": "HX073-RV02-01",
+    "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+    "review_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+    "fixture_ref": "agent-work/evidence/HX-BL-073/review-48c679b/river-owner-input.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-073/pr515-cae2b48/river-owner.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
+    "next_step": "Независимо проверить F1 на cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b: географическую принадлежность сектора, целостность русла, повторное открытие и отказ при непереносимом секторе. Затем рассчитать предварительный VAL-04 по 1.3-rc8."
+  },
+  "remaining_forecast": "Один этап независимой приёмки до запроса о выпуске при отсутствии новых замечаний.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-24T23:02:05.050Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-24T23:23:09.149Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
