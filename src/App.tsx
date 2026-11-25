@@ -14,10 +14,10 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,ty
 import {summarizeDetailCell} from './detailSummary';
 import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
-import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
+import {prepareGeometryPlan,rebindGeometryRegionOwners,validateGeometryRefinementSource,type GeometrySourceValidationInput} from './geometryPlan';
 import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
-import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
+import {projectGeometryRefinementEdit,projectSplitGeometryRefinement,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {projectOneMile,oneMileCandidates,oneMileSourceOverlaps,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
@@ -28,6 +28,7 @@ import {detachCapital,hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
 import {parseWaterHex,prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
 import {prepareRegionGeometry,prepareRegionPoiIdentity,RegionEditError,type RegionEdit} from './manualRegions';
+import { nextRegionId, prepareRegionSplits, regionNumber, type SplitRegionNumber } from './regionSplit';
 import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness} from './manualRiverDependencies';
 import {buildManualRiverNetwork,solveManualRiverPath, type RiverEditingGeometry} from './manualRiverGeometry';
 import {prepareRiverEdit,validateEditedRiverNetwork,rebuildRiverWaterSectors,rebuildRiverRegionSectors,validateRegionRiverHeights,resolveRiverFeatureEdits,type RiverEdit,type FeatureEdit,emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
@@ -230,6 +231,7 @@ type Region = {
   woodlandStyle?: WoodlandStyle;
   suppressCentralPoi?: boolean;
   id: number;
+  splitNumber?: SplitRegionNumber;
   hexes: AxialHex[];
   centerHex: AxialHex;
   anchorHex: AxialHex;
@@ -1027,6 +1029,151 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
 }
 
 
+
+// Structural validation runs before this transformation. Keep it local to
+// import so editor transactions never rewrite existing region ownership.
+function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcrawlSaveData {
+  const map=data.map;
+  const plans=prepareRegionSplits(map.regions);
+  if (!plans.size) return data;
+
+  const terrain=new Map(Object.entries(map.terrainByHexKey));
+  const regions=map.regions.flatMap(region=>{
+    const plan=plans.get(region.id);
+    if (!plan) return [region];
+    return plan.parts.map(part=>{
+      const primary=part.id===region.id;
+      // Plan hexes are already in ascending coordinate order. The first
+      // highest-neighbour candidate is deterministic and consumes no RNG.
+      const fallback=regionCenterCandidates(part.hexes)[0];
+      const owns=(hex: AxialHex)=>plan.byHex.get(hexKey(hex))===part.id;
+      const pointsOfInterest=region.pointsOfInterest.filter(owns);
+      const pointOfInterestKinds=region.pointOfInterestKinds && Object.fromEntries(
+        Object.entries(region.pointOfInterestKinds).filter(([key])=>plan.byHex.get(key)===part.id)
+      );
+      const size=getRegionSizeCategory(part.hexes.length);
+      return {
+        ...region,...part,...size,
+        centerHex: primary ? region.centerHex : fallback,
+        anchorHex: owns(region.anchorHex) ? region.anchorHex : fallback,
+        targetSize: part.hexes.length,
+        finalSize: part.hexes.length,
+        isCoastal: part.hexes.some(hex=>[hex,...getHexNeighbors(hex)].some(h=>waterKindAt(terrain,hexKey(h))==='sea')),
+        isTract: hasCentralPoi(region)&&primary ? false : size.sizeCategory==='tract',
+        pointsOfInterest,pointOfInterestKinds,
+        centralPoiKind: primary ? region.centralPoiKind : undefined,
+        suppressCentralPoi: primary ? region.suppressCentralPoi : true,
+        riverSlope: undefined
+      };
+    });
+  });
+
+  const atHex=(key: string, owner: number)=>plans.get(owner)?.byHex.get(key)??owner;
+  const alias=(key: string)=>{
+    const match=/^(poi|settlement):(\d+):(-?\d+,-?\d+)$/.exec(key);
+    return match ? `${match[1]}:${atHex(match[3],Number(match[2]))}:${match[3]}` : key;
+  };
+  const rekey=<T,>(record: Record<string,T>, path: string, keyFor=alias): Record<string,T>=>{
+    const entries=Object.entries(record).map(([key,value])=>[keyFor(key),value] as const);
+    if (new Set(entries.map(([key])=>key)).size!==entries.length) {
+      throw new SaveValidationError(path,'duplicate reference after splitting region');
+    }
+    return Object.fromEntries(entries);
+  };
+  const originalNames=map.toponyms?.names??{};
+  const seed=map.toponyms?.seed??legacyToponymSeed(map.regions);
+  const stableNames=synchronizeToponyms(originalNames,getToponymEntities(map.regions,map.rivers,terrain),seed);
+  const names=rekey({...stableNames,...originalNames},'map.toponyms.names');
+  for (const [id,plan] of plans) {
+    const name=names[`region:${id}`];
+    for (const part of plan.parts.slice(1)) {
+      const suffix=` (${regionNumber(part)})`;
+      const withSuffix=(value: string)=>value.slice(0,80-suffix.length).replace(/[\uD800-\uDBFF]$/u,'')+suffix;
+      names[`region:${part.id}`]={...name,ru:withSuffix(name.ru),en:withSuffix(name.en)};
+    }
+  }
+  const roads=map.roads.map(road=>{
+    const start=road.segments[0]?.from;
+    return plans.has(road.regionId) && start ? {...road,regionId:atHex(hexKey(start),road.regionId)} : road;
+  });
+  const geography=new Map([...plans].map(([id,{parts}])=>[id,parts.map(part=>({
+    id:part.id,vertices:getRegionVertexKeys(part.hexes),edges:new Set(part.hexes.flatMap(hex=>[...getHexEdgeKeys(hex)]))
+  }))]));
+  const rivers=map.rivers.map((river, riverIndex)=>{
+    const parts=geography.get(river.regionId);
+    const start=river.vertexPath[0]?.key;
+    const regionId=(start && parts?.find(part=>part.vertices.has(start))?.id)||river.regionId;
+    const sectors=river.sectors.map((sector, sectorIndex)=>{
+      // Resolve the legacy fallback before changing the owner of the river.
+      const oldOwner=sector.assignedRegionId??river.regionId;
+      const parts=geography.get(oldOwner);
+      if (!parts) return sector;
+      const part=sector.edgeKeys.length
+        ? parts.find(candidate=>sector.edgeKeys.every(edge=>candidate.edges.has(edge)))
+        : parts.find(candidate=>candidate.id===oldOwner);
+      if (!part) {
+        throw new SaveValidationError(`map.rivers[${riverIndex}].sectors[${sectorIndex}].assignedRegionId`,
+          `no part of region ${oldOwner} supports river ${river.id} sector ${sector.id}`);
+      }
+      return sector.assignedRegionId===undefined && part.id===regionId
+        ? sector : {...sector,assignedRegionId:part.id};
+    });
+    return {...river,regionId,sectors};
+  });
+  const kingdoms=map.kingdoms?.map(kingdom=>({...kingdom,regionIds:kingdom.regionIds.flatMap(id=>plans.get(id)?.parts.map(part=>part.id)??[id])}));
+  const tags=map.tags && {
+    ...map.tags,
+    instances:map.tags.instances.map(tag=>tag.owner.kind==='poi'
+      ? {...tag,owner:{...tag.owner,regionId:atHex(tag.owner.hexKey,tag.owner.regionId)}} : tag),
+    rollCounters:rekey(map.tags.rollCounters,'map.tags.rollCounters', key=>{
+      // Counter keys are stored as owner|definition|slot. Keep the entire suffix.
+      const separator=key.indexOf('|');
+      return alias(key.slice(0,separator))+key.slice(separator);
+    })
+  };
+  const knave=map.knave && {
+    ...map.knave,
+    discoveryByPoi:rekey(map.knave.discoveryByPoi,'map.knave.discoveryByPoi'),
+    ...(map.knave.content?{content:{
+      ...map.knave.content,
+      byPoi:rekey(map.knave.content.byPoi,'map.knave.content.byPoi'),
+      rollCounters:rekey(map.knave.content.rollCounters,'map.knave.content.rollCounters')
+    }}:{})
+  };
+  const remapDetail=(state: Detail1State): Detail1State=>{
+    const identities=state.poiIdentities;
+    return {...state,
+      ...(identities?{poiIdentities:{...identities,byLegacyRef:rekey(identities.byLegacyRef,'map.physicalGrid.poiIdentities')}}:{}),
+      poiFootprints:state.poiFootprints.map(footprint=>({...footprint,legacyRef:footprint.legacyRef===null?null:alias(footprint.legacyRef)})),
+      ...(state.globalAuthoredState?{globalAuthoredState:remapDetail(state.globalAuthoredState)}:{})
+    };
+  };
+  const imported:ValidatedHexcrawlSaveData={...data,map:{...map,regions,roads,rivers,kingdoms,tags,knave,
+    physicalGrid:map.physicalGrid && remapDetail(map.physicalGrid),
+    poiDiscovery:map.poiDiscovery && rekey(map.poiDiscovery,'map.poiDiscovery'),
+    editorNames:map.editorNames && rekey(map.editorNames,'map.editorNames'),
+    toponyms:{seed,model:DEFAULT_TOPONYM_MODEL,names}
+  }};
+  const state=imported.map.physicalGrid;
+  if (state?.geometryRefinement) {
+    try {
+      const accepted=state.geometryRefinement;
+      const sourceState=structuredClone(remapDetail(accepted.sourceState));
+      let input:GeometrySourceValidationInput=refinementSourceInput(importedOneMileMap(imported),state,accepted.riverPlan);
+      if (state.globalAuthoredState) {
+        const parts=new Map([...plans].map(([id,plan])=>[id,plan.parts.map(part=>part.id)]));
+        const scoped=projectSplitGeometryRefinement(input,{...accepted,sourceState},parts,alias);
+        if (scoped.status==='error') throw Error(`${scoped.code}: ${scoped.refs.join(', ')}`);
+        input=scoped.input;
+      }
+      imported.map.physicalGrid={...state,geometryRefinement:rebindGeometryRegionOwners(input,accepted,sourceState)};
+    } catch (error) {
+      throw new SaveValidationError('map.physicalGrid.geometryRefinement',isRecord(error)&&typeof error.message==='string'?error.message:'invalid refinement');
+    }
+  }
+  return imported;
+}
+
 function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<string,HexTerrainData>,crossings:RiverCrossing[]):FeatureEligibility{
   const hidden=new Set([...getLakeEdgeKeys(regions.flatMap(r=>r.hexes),terrain),...getSeaEdgeKeys(terrain)]);
   const crossingEdges=new Set(crossings.map(c=>c.riverEdgeKey));
@@ -1335,9 +1482,12 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  parseFineCellEdits(state.fineCellEdits??{},cells,id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
  if(state.selectedCell&&!cells.some(row=>row.cell.q===state.selectedCell!.q&&row.cell.r===state.selectedCell!.r))throw Error('DETAIL1 stale_fine_selection');
 }
+function importedOneMileMap(data:HexcrawlSaveData):OneMileDocumentMap{
+ return {...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
+  hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()};
+}
 function validateImportedOneMile(data:HexcrawlSaveData):void{
- validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
-  hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()},state));
+ validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap(importedOneMileMap(data),state));
 }
 
 /** Use the same world geometry for the editor and for a detached import. */
@@ -6295,10 +6445,7 @@ function getSeaKeysToFillForTractSeaTouch(
   return Array.from(eligibleKeys).filter((key) => connectedToTouchedSea.has(key));
 }
 
-export function chooseRegionCenter(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex {
-  if (regionHexes.length === 1) {
-    return regionHexes[0];
-  }
+function regionCenterCandidates(regionHexes: AxialHex[]): AxialHex[] {
 
   const regionKeys = new Set(regionHexes.map(hexKey));
   const byNeighborCount = regionHexes.map((hex) => ({
@@ -6311,7 +6458,12 @@ export function chooseRegionCenter(regionHexes: AxialHex[], rng: RandomStreams =
     .filter(({ sameRegionNeighborCount }) => sameRegionNeighborCount === maxNeighborCount)
     .map(({ hex }) => hex);
 
-  return randomFrom(bestCenterCandidates, rng);
+  return bestCenterCandidates;
+}
+
+export function chooseRegionCenter(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex {
+  if (regionHexes.length === 1) return regionHexes[0];
+  return randomFrom(regionCenterCandidates(regionHexes), rng);
 }
 
 function getBiomeColor(biomeId: BiomeId | undefined): string {
@@ -12696,7 +12848,7 @@ export function App() {
     generationProgress.stage = 'tract';
     generationProgress.fallbackReason = reason;
     generationLog.detail('Generation constraint fallback', { reason, anchorHex, attempt: generationProgress.attempt });
-    const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
+    const regionId = nextRegionId(regions);
     const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
     // Если якорь урочища всё ещё числится морем в служебных данных,
     // считаем его будущей сушей уже до расчёта занятых гексов.
@@ -12999,7 +13151,7 @@ export function App() {
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of existingSeaKeysForGrowth) occupiedHexes.add(seaKey);
-      const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
+      const regionId = nextRegionId(regions);
       for (const blocked of options.forbiddenHexes ?? []) occupiedHexes.add(blocked);
       occupiedHexes.delete(anchorKey);
       const regionHexes = generateConnectedRegionFromAnchor(
@@ -15607,7 +15759,9 @@ export function App() {
       const text=await readTextFile(file); stage='json';
       const parsed:unknown=JSON.parse(text); stage='validation'; assertHexcrawlSaveData(parsed);
       stage='preparation';
-      const imported=structuredClone(parsed);
+      const detached=structuredClone(parsed);
+      const imported=splitImportedRegions(detached);
+      if (imported!==detached) assertHexcrawlSaveData(imported);
       const terrain=new Map(Object.entries(imported.map.terrainByHexKey));
       const hexes=imported.map.regions.flatMap(r=>r.hexes);
       const classic = (imported.ui.generationMode ?? 'classic') === 'classic';
@@ -16019,7 +16173,10 @@ export function App() {
     const same=(a:FeatureEdit,b:FeatureEdit)=>a.type===b.type&&(a.type==='rapid'&&b.type==='rapid'?a.riverId===b.riverId&&a.edgeKey===b.edgeKey:a.type==='waterfall'&&b.type==='waterfall'&&a.vertexKey===b.vertexKey);
     changeWaterDraft(draft,{options:{...draft.options,featureEdits:[...(draft.options.featureEdits??[]).filter(e=>!same(e,feature)),{...feature,state}]},preview:true});
   };
-  const regionLabel=(id:number)=>`${toponyms[`region:${id}`]?.[language]??(language==='ru'?'Регион':'Region')} (#${id})`;
+  const regionLabel=(id:number)=>{
+    const region=regions.find(item=>item.id===id);
+    return `${toponyms[`region:${id}`]?.[language]??(language==='ru'?'Регион':'Region')} (#${region ? regionNumber(region) : id})`;
+  };
   const regionTransferSource=regionDraft?.edit.type==='transfer_hex'?regions.find(r=>regionDraft.edit.type==='transfer_hex'&&r.id===regionDraft.edit.fromRegionId):undefined;
   const regionTransferHex=regionTransferSource?.hexes.find(h=>hexKey(h)===regionDraft?.originKey);
   const regionTargets=regionTransferHex?regions.filter(r=>r.id!==regionTransferSource?.id&&getHexNeighbors(regionTransferHex).some(h=>r.hexes.some(v=>isSameHex(h,v)))):[];
@@ -17517,7 +17674,7 @@ export function App() {
                 </button></div>
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
-                  <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
+                  <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong>{selectedRegion.splitNumber && <span data-region-number={regionNumber(selectedRegion)}> №{regionNumber(selectedRegion)}</span>} {renderToponym(`region:${selectedRegion.id}`)}</p>
                   <div className="direct-line">{editMode && editingRegionBiomeId === selectedRegion.id ? <select autoFocus aria-label={language === 'ru' ? 'Местность региона' : 'Region terrain'}
                     value={selectedRegion.biomeId} onChange={e => setSelectedRegionBiome(e.target.value as BiomeId)} onBlur={() => setEditingRegionBiomeId(null)}>
                     {Object.values(BIOMES).filter(b => b.heightLevel === selectedRegion.heightLevel).map(b => {

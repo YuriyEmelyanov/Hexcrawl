@@ -21,14 +21,25 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
 export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement,removals:GeometryScopeRemovalIntent={}){
  return projectSource(input,accepted,false,removals);
 }
-function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,removals:GeometryScopeRemovalIntent={}){
+/** Keep the saved domain when one of its regions becomes multiple owners.
+ * The caller must rebind ownership and validate the finished plan. */
+export function projectSplitGeometryRefinement(
+ input:GeometrySourceValidationInput,accepted:GeometryRefinement,parts:ReadonlyMap<number,readonly number[]>,
+ alias:(ref:string)=>string
+){
+ return projectSource(input,accepted,true,{}, {parts,alias});
+}
+function projectSource(
+ input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,removals:GeometryScopeRemovalIntent={},
+ split?:{parts:ReadonlyMap<number,readonly number[]>;alias:(ref:string)=>string}
+){
  const fail=(code:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code,refs:Object.freeze([...refs]),readyForApplication:false as const});
  try{
   if(input.cancelled?.())return fail('prepare_cancelled',[]);
   if(accepted.sourceFingerprint.length>2000000||input.map.regions.length>20000||input.map.rivers.length>4096||input.map.roads.length>4096||input.map.crossings.length>4096||input.map.hexTerrainByKey.size>20000||input.landCells.length>20000||input.map.regions.reduce((n,r)=>n+r.hexes.length,0)>20000||input.map.rivers.reduce((n,r)=>n+r.vertexPath.length,0)>12288||input.map.roads.reduce((n,r)=>n+r.segments.length,0)>24576)return fail('scope_capacity',[]);
   const payload=JSON.parse(accepted.sourceFingerprint.slice('geo2-source-input-v1:'.length));
   if(payload.version!==1||payload.algorithmVersion!=='geo2-v1')return fail('invalid_scope',[]);
-  const regionIds=new Set<number>(payload.regions.map((r:{id:number})=>r.id)),riverIds=new Set(accepted.riverPlan.source.segments.map(s=>s.riverId));
+  const regionIds=new Set<number>(payload.regions.flatMap((r:{id:number})=>split?.parts.get(r.id)??[r.id])),riverIds=new Set(accepted.riverPlan.source.segments.map(s=>s.riverId));
   const roadIds=new Set<number>(payload.roads.map((r:{id:number})=>r.id)),crossingKeys=new Set<string>(payload.crossings.map((c:{key:string})=>c.key));
   const oldCells=new Set<string>(payload.regions.flatMap((r:{hexes:{q:number;r:number}[]})=>r.hexes.map(key))),oldWater=new Set<string>(payload.waterTerrain.map((w:{key:string})=>w.key));
   const land=new Set<string>(payload.landCells.map(key)),seaIds=new Set<number>(payload.seas.map((s:{id:number})=>s.id));
@@ -45,7 +56,7 @@ function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefi
    for(const [cell,value]of input.map.hexTerrainByKey)if(value.terrainOverride==='lake'&&value.lakeId!==undefined&&lakeIds.has(value.lakeId))oldWater.add(cell);
    for(const sea of input.map.seas)if(seaIds.has(sea.id))for(const cell of sea.hexKeys)oldWater.add(cell);
   }
-  const aliases=new Set<string>(payload.owners.map((o:{alias:string})=>o.alias)),edgeKeys=new Set(accepted.riverPlan.source.segments.map(s=>s.edgeKey));
+  const aliases=new Set<string>(payload.owners.map((o:{alias:string})=>split?split.alias(o.alias):o.alias)),edgeKeys=new Set(accepted.riverPlan.source.segments.map(s=>s.edgeKey));
   const nodeKeys=new Set(accepted.riverPlan.source.segments.flatMap(s=>[s.from.key,s.to.key]));
   const fullSource=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin});
   if(fullSource.status==='error')return fail('boundary_dependency',fullSource.refs);
@@ -118,8 +129,8 @@ function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefi
   const retainedEdges=new Set(rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys.map(k=>JSON.stringify([r.id,k]))))),retainedNodes=new Set(rivers.flatMap(r=>r.vertexPath.map(v=>v.key)));
   const continuationKeys=new Set(outside.rivers.flatMap(r=>r.vertexPath.filter(v=>retainedNodes.has(v.key)).map(v=>v.key)));
   const projected=Object.freeze({...input,riverPlan:accepted.riverPlan,map:Object.freeze({...input.map,physicalGrid:authored,regions:Object.freeze(regions),rivers:Object.freeze(rivers),roads:Object.freeze(roads),crossings:Object.freeze(crossings),hexTerrainByKey:new Map([...input.map.hexTerrainByKey].filter(([k])=>oldCells.has(k)||oldWater.has(k))),waterPoiByKey:new Map([...input.map.waterPoiByKey].filter(([k])=>aliases.has(`waterPoi:${k}`))),seas:Object.freeze(input.map.seas.filter(s=>seaIds.has(s.id)))}),liveRivers:Object.freeze(input.liveRivers.filter(r=>riverIds.has(r.id)).map(r=>({...r,edges:r.edges.filter(e=>retainedEdges.has(JSON.stringify([r.id,e.id]))),starts:r.starts.filter(p=>rivers.find(v=>v.id===r.id)?.sectors.some(s=>{const q=detailSourcePixelToWorld(s.vertexPath[0],input.origin);return s.startReason==='river_start'&&Math.hypot(p.x-q.x,p.y-q.y)<1e-8;})),waterfalls:r.waterfalls.filter(f=>retainedNodes.has(f.id.replace(/^vertex:/,'')))}))),landCells:Object.freeze(input.landCells.filter(c=>land.has(key(c)))),marks:Object.freeze({rapids:new Set([...input.marks.rapids].filter(k=>edgeKeys.has(k))),waterfalls:new Set([...input.marks.waterfalls].filter(k=>nodeKeys.has(k)))})});
-  if(requireUnchanged&&!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
+  if(requireUnchanged&&!split&&!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
   if(input.cancelled?.())return fail('prepare_cancelled',[]);
-  return Object.freeze({status:'projected' as const,continuationKeys,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,sourceCorrespondence:requireUnchanged?'validated_unchanged' as const:'requires_new_plan' as const,boundaryValidation:'required' as const,readyForApplication:false as const});
+  return Object.freeze({status:'projected' as const,continuationKeys,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,sourceCorrespondence:requireUnchanged&&!split?'validated_unchanged' as const:'requires_new_plan' as const,boundaryValidation:'required' as const,readyForApplication:false as const});
  }catch{return fail('invalid_scope',['geometryRefinement.sourceFingerprint']);}
 }

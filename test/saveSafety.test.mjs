@@ -9,6 +9,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import { assertGeneratedIds } from '../src/saveValidation.ts';
+import { buildManualRiverNetwork } from '../src/manualRiverGeometry.ts';
+import { editTag, emptyTags, rollTag } from '../src/tags/engine.ts';
+import { mythicDefinitions } from '../src/tags/mythic.ts';
 const h = createGenerationHarness(42);
 h.render().addFallbackTractToMap({q:0,r:0});
 const valid = JSON.parse(JSON.stringify(h.render().createSaveData()));
@@ -531,4 +534,166 @@ test('a migrated Knave secret can veto reset and undo an accepted reset',async()
  assert.equal(prompts,1);assert.deepEqual(structuredClone(app().createSaveData().map),before);assert.equal(app().undoHistory.length,depth);
  consent=true;app().resetMap();assert.equal(app().regions.length,0);
  app().undoMap();assert.deepEqual(structuredClone(app().createSaveData().map),before);
+});
+
+test('opening a disconnected region preserves numbered parts and authored addresses across JSON', async () => {
+  const app = createGenerationHarness(42);
+  app.render();
+  const messages = [];
+  app.setWindow({ alert: message => messages.push(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  const save = () => JSON.parse(JSON.stringify(app.render().createSaveData()));
+
+  const source = regionFixture();
+  const [first, neighbor] = source.map.regions;
+  first.hexes = [first.centerHex, first.pointsOfInterest[0]];
+  first.anchorHex = first.pointsOfInterest[0];
+  first.finalSize = 2;
+  source.map.toponyms.names['region:1'] = { ru: 'Равнина', en: 'Lowland', model: 'germanic', kind: 'region', revision: 1 };
+
+  await open(source);
+  assert.deepEqual(messages, []);
+  const initial = save();
+  const [primary, isolated, unchanged] = initial.map.regions;
+  assert.deepEqual(primary.splitNumber, { base: 1, part: 1 });
+  assert.deepEqual(isolated.splitNumber, { base: 1, part: 2 });
+  assert.notEqual(isolated.id, primary.id);
+  assert.deepEqual(primary.centerHex, first.centerHex);
+  assert.deepEqual(isolated.anchorHex, first.anchorHex);
+  assert.deepEqual(isolated.pointsOfInterest, first.pointsOfInterest);
+  assert.deepEqual(isolated.pointOfInterestKinds, first.pointOfInterestKinds);
+  assert.equal(isolated.suppressCentralPoi, true);
+  assert.equal(initial.map.toponyms.names['region:1'].ru, 'Равнина');
+  assert.equal(initial.map.toponyms.names[`region:${isolated.id}`].ru, 'Равнина (1.2)');
+  assert.deepEqual(initial.map.gmNotesByHexKey, source.map.gmNotesByHexKey);
+  assert.deepEqual(unchanged, neighbor);
+
+  await open(initial);
+  assert.deepEqual(save().map.regions, initial.map.regions);
+  assert.deepEqual(save().map.toponyms, initial.map.toponyms);
+  const again = structuredClone(initial);
+  again.map.regions[1].hexes.unshift({ q: 500, r: 500 });
+  again.map.regions[1].finalSize = 2;
+  await open(again);
+  assert.deepEqual(messages, []);
+  const repeated = save().map.regions;
+  assert.deepEqual(repeated.slice(0, 3).map(region => region.splitNumber.part), [1, 2, 3]);
+  assert.equal(repeated[1].id, isolated.id);
+
+  app.render().addFallbackTractToMap(app.render().candidateHexes[0]);
+  assert.equal(save().map.regions.at(-1).id, 3);
+  assert.equal(save().map.regions.at(-1).splitNumber, undefined);
+});
+
+test('import assigns each river sector to its supporting part, including a legacy implicit owner', async () => {
+  const app = createGenerationHarness(42);
+  const source = regionFixture();
+  const [first, bridge] = source.map.regions;
+  first.hexes = [first.centerHex, first.pointsOfInterest[0]];
+  first.anchorHex = first.hexes[1];
+  first.finalSize = 2;
+  bridge.hexes = [{ q: 1, r: 0 }];
+  bridge.centerHex = bridge.anchorHex = bridge.hexes[0];
+  bridge.finalSize = 1;
+  const corners = new Map(source.map.regions.flatMap(region => region.hexes.flatMap(hex =>
+    app.geometry.getHexCornerPoints(hex).map(vertex => [vertex.key, vertex]))));
+  const path = ['121.244,-14','121.244,14','96.995,28','72.746,14','48.497,28','24.249,14','0,28']
+    .map(key => corners.get(key));
+  const riverId = 5;
+  source.map.rivers = [{ id: riverId, regionId: first.id, vertexPath: path, sectors: path.slice(1).map((end, i) => ({
+    id: `sector-${i + 1}`, riverId, sectorIndex: i + 1, vertexPath: [path[i], end],
+    edgeKeys: [[path[i].key, end.key].sort().join('|')], startVertexKey: path[i].key, endVertexKey: end.key,
+    startReason: i === 0 ? 'river_start' : 'region_boundary',
+    endReason: i === path.length - 2 ? 'river_end' : 'region_boundary',
+    fullness: 1, ...(i < 3 ? { assignedRegionId: first.id } : i < 5 ? { assignedRegionId: bridge.id } : {}),
+  })) }];
+  source.counters.nextRiverId = riverId + 1;
+  const messages = [];
+  app.render();
+  app.setWindow({ alert: message => messages.push(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  const save = () => structuredClone(app.render().createSaveData().map);
+  const physicalIssues = map => buildManualRiverNetwork(map.rivers, app.geometry.buildManualRiverGeometryContext(map).geometry).issues;
+  app.geometry.assertHexcrawlSaveData(source);
+  assert.deepEqual(physicalIssues({ ...source.map, hexTerrainByKey: new Map() }), []);
+  await open(source);
+  assert.deepEqual(messages, []);
+  const split = save(), [primary, secondary] = split.regions, [river] = split.rivers;
+  assert.equal(river.regionId, secondary.id);
+  assert.deepEqual(river.vertexPath, structuredClone(path));
+  assert.deepEqual(river.sectors.map(sector => sector.assignedRegionId),
+    [secondary.id, secondary.id, secondary.id, bridge.id, bridge.id, primary.id]);
+  assert.deepEqual(physicalIssues(app.render().captureDocument().map), []);
+  await open({ ...source, map: split });
+  assert.deepEqual(save().rivers, split.rivers);
+  assert.deepEqual(physicalIssues(app.render().captureDocument().map), []);
+
+  // This legacy file is structurally valid, but its river explicitly assigns
+  // a sector on the bridging hex to the region being split.
+  const unsupported = structuredClone(source);
+  unsupported.map.rivers[0].sectors[3].assignedRegionId = first.id;
+  app.geometry.assertHexcrawlSaveData(unsupported);
+  const depth = app.render().undoHistory.length;
+  await open(unsupported);
+  assert.match(messages.at(-1), /map\.rivers\[0\]\.sectors\[3\]\.assignedRegionId/);
+  assert.deepEqual(save().rivers, split.rivers);
+  assert.equal(app.render().undoHistory.length, depth);
+});
+
+test('import splitting follows region geography across Classic and Mythic ownership links', async () => {
+  const app = createGenerationHarness(42);
+  app.render();
+  app.setWindow({ alert: message => assert.fail(message), matchMedia: () => ({ matches: false }) });
+  app.injectFunction('readTextFile', async file => file.text);
+  const source = regionFixture('mythic');
+  const [classic, mythic] = source.map.regions;
+  classic.generationMode = 'classic';
+  delete classic.kingdomId;
+  source.map.kingdoms[0].regionIds = [mythic.id];
+  classic.hexes = [classic.centerHex, classic.pointsOfInterest[0]];
+  classic.anchorHex = classic.pointsOfInterest[0];
+  classic.finalSize = classic.hexes.length;
+  mythic.hexes.push({ q: 6, r: 0 });
+  mythic.finalSize = mythic.hexes.length;
+  mythic.pointsOfInterest = [{ q: 6, r: 0 }];
+  mythic.pointOfInterestKinds = { '6,0': 'monument' };
+  const poi = { kind: 'poi', regionId: mythic.id, hexKey: '6,0' };
+  const region = { kind: 'region', id: mythic.id };
+  const monument = mythicDefinitions['mb.monument'];
+  const seed = source.generation.masterSeed;
+  let tags = rollTag(emptyTags(), poi, monument, seed);
+  tags = rollTag(tags, poi, monument, seed, 1);
+  tags = editTag(tags, poi, monument.id, 0, 'ru', 'Камень дозора');
+  source.map.tags = rollTag(tags, region, mythicDefinitions['mb.land'], seed);
+  const road = {
+    id: 1,
+    regionId: classic.id,
+    segments: [{ from: classic.pointsOfInterest[0], to: mythic.centerHex, kind: 'trail' }]
+  };
+  source.map.roads = [road];
+  source.counters.nextRoadId = 2;
+
+  const open = data => app.render().handleImportJson({ target: { files: [{ text: JSON.stringify(data) }], value: '' } });
+  assert.doesNotThrow(() => app.geometry.assertHexcrawlSaveData(source));
+  await open(source);
+  const saved = app.render().createSaveData(), { map } = saved;
+  assert.equal(map.regions.length, 4);
+  assert.deepEqual(map.regions.map(region => region.generationMode), ['classic', 'classic', 'mythic', 'mythic']);
+  assert.deepEqual(map.kingdoms[0].regionIds, map.regions.slice(2).map(region => region.id));
+  assert.deepEqual(map.roads, [{ ...road, regionId: map.regions[1].id }]);
+  assert.deepEqual(map.regions[1].pointsOfInterest, classic.pointsOfInterest);
+  const moved = map.regions[3].id;
+  assert.deepEqual(map.tags.instances, source.map.tags.instances.map(tag => tag.owner.kind === 'poi'
+    ? { ...tag, owner: { ...tag.owner, regionId: moved } } : tag));
+  assert.deepEqual(map.tags.rollCounters, {
+    [`poi:${moved}:6,0|mb.monument|group`]: 1,
+    [`poi:${moved}:6,0|mb.monument|entry`]: 2,
+    [`region:${mythic.id}|mb.land|character`]: 1,
+    [`region:${mythic.id}|mb.land|form`]: 1,
+  });
+  assert.deepEqual(structuredClone(saved.generation), source.generation);
+  await open(saved);
+  assert.deepEqual(app.render().createSaveData().map.tags, map.tags);
 });

@@ -71,9 +71,16 @@ export function validateSaveStructure(value: unknown, domain: {
   }else if(map.physicalGrid!==undefined)fail('map.physicalGrid','Physical grid requires version15 or16');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
-  const land=new Set<string>();
+  const land=new Set<string>(), regionNumbers=new Set<string>();
   for (const [i,v] of regions.entries()) {
     const p=`map.regions[${i}]`, r=record(v,p), own=new Set<string>();
+    let number=String(r.id);
+    if(r.splitNumber!==undefined){
+      const split=record(r.splitNumber,p+'.splitNumber');
+      number=`${integer(split.base,p+'.splitNumber.base')}.${integer(split.part,p+'.splitNumber.part')}`;
+    }
+    if(regionNumbers.has(number))fail(p+'.splitNumber','duplicate region number');
+    regionNumbers.add(number);
     for (const [j,h] of array(r.hexes,p+'.hexes').entries()) {
       const k=key(hex(h,`${p}.hexes[${j}]`)); if(own.has(k)||land.has(k)) fail(`${p}.hexes[${j}]`,'duplicate ownership'); own.add(k); land.add(k);
     }
