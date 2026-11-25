@@ -1,3 +1,4 @@
+import { WORLD_FIELD_LIMITS } from './crowsWorld.ts';
 import {validateSeaIdentity} from './seaIdentity.ts';
 import {validateDeltaReferences, validateRiverCounter, validateRiverFeatures, migrateRiverEditing, type RiverGeometry} from './manualRivers.ts';
 import { generationValidationPath } from './worldRandom.ts';
@@ -62,6 +63,20 @@ export function validateSaveStructure(value: unknown, domain: {
   oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8,9,10,15,16],'version');
   if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.version === 9 || data.version === 10 || data.version === 15 || data.version === 16 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
+  if (map.world !== undefined) {
+    const world = record(map.world, 'map.world');
+    for (const [field, value] of Object.entries(world)) {
+      const path = 'map.world.' + field;
+      if (field !== 'name' && field !== 'description') fail(path, 'unknown world field');
+      if (text(value, path).length > WORLD_FIELD_LIMITS[field as keyof typeof WORLD_FIELD_LIMITS]) fail(path, 'too long');
+    }
+  }
+  if (ui.crowsEnabled !== undefined) {
+    bool(ui.crowsEnabled, 'ui.crowsEnabled');
+    if (ui.crowsEnabled === true && (ui.knaveEnabled === true || (ui.knaveEnabled === undefined && map.knave !== undefined))) {
+      fail('ui.crowsEnabled', 'Classic profiles are mutually exclusive');
+    }
+  }
   if((data.version as number)<8&&map.editorNames!==undefined&&Object.keys(record(map.editorNames,'map.editorNames')).length)fail('map.editorNames','authored names require version8');
   for(const field of ['classification','featurePreparation'])if(map[field]!==undefined)fail('map.'+field,'Unsupported layer in ONE-MILE1; no data was imported');
   if(data.version===15||data.version===16){

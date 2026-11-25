@@ -48,6 +48,22 @@ for (const filename of ['lake-reentry-map','sea-pocket-map','terrain-display-map
   });
 }
 
+test('save validation accepts blank world text and rejects contradictory Classic profiles', () => {
+  const data = structuredClone(valid);
+  data.map.world = { name: 'Свой мир', description: '' };
+  data.map.knave = newKnaveLayer();
+  data.ui.knaveEnabled = false;
+  data.ui.crowsEnabled = true;
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  const invalidWorld = structuredClone(data);
+  invalidWorld.map.world.description = null;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(invalidWorld), /map.world.description/);
+
+  data.ui.knaveEnabled = true;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /ui.crowsEnabled/);
+});
+
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {
   const proposal = () => ({regions:[{id:1}], rivers:[{id:1}], roads:[{id:1}], kingdoms:[{id:1}],
     hexTerrainByKey:new Map([['0,0',{lakeId:1}]]), nextLakeId:2, nextRoadId:2, nextRiverId:2, obstacles:[{id:1}], nextObstacleId:2});

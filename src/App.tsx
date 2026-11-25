@@ -1,3 +1,5 @@
+import { fillCornathWorld, type MapWorld } from './crowsWorld';
+import { MapWorldInfo } from './MapWorldInfo';
 import {assignDiscovery, type DiscoveryMap} from './poiDiscovery';
 import {routeClearance} from './routeClearance';
 import {refinedRouteBends} from './refinedRouteBends';
@@ -504,6 +506,7 @@ type HexcrawlSaveData = {
   savedAt: string;
   map: {
     physicalGrid?:Detail1State;
+    world?: MapWorld;
     knave?: KnaveLayer;
     riverFeatures?: RiverFeatures;
     tags?: TagState;
@@ -533,6 +536,7 @@ type HexcrawlSaveData = {
   ui: {
     generationMode?: GenerationMode;
     knaveEnabled?: boolean;
+    crowsEnabled?: boolean;
     selectedHex: AxialHex | null;
     isMapRotated: boolean;
     mapScale: number;
@@ -2313,6 +2317,7 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 type MapSnapshot = {
   poiDiscovery?: DiscoveryMap;
   physicalGrid?:Detail1State;
+  world?: MapWorld;
   knave?: KnaveLayer;
   seas:SeaRecord[];
   nextSeaId:number;
@@ -2348,7 +2353,7 @@ type OneMileView = Pick<Detail1State, 'selectedCell' | 'selectedWorldPoint'>;
 type DocumentSnapshot = {
   requiresFineAdaptation?:boolean;
   map: MapSnapshot; generationHistory: GenerationCheckpoint[]; selectedHex: AxialHex | null;
-  generationMode: GenerationMode; knaveEnabled?: boolean; isMapRotated: boolean; mapScale: number;
+  generationMode: GenerationMode; knaveEnabled?: boolean; crowsEnabled?: boolean; isMapRotated: boolean; mapScale: number;
   // Reset snapshots remember the detached view without adding it to the save format.
   oneMileView?: OneMileView | false;
 };
@@ -12438,6 +12443,13 @@ export function App() {
   const [knave,setKnave]=useState<KnaveLayer|undefined>(undefined);
   const knaveRef=useRef(knave);knaveRef.current=knave;
   const updateKnave=(value:KnaveLayer|undefined)=>{knaveRef.current=value;setKnave(value);};
+  const [world, setWorld] = useState<MapWorld>();
+  const worldRef = useRef<MapWorld>();
+  const updateWorld = (value: MapWorld | undefined) => {
+    worldRef.current = value;
+    setWorld(value);
+  };
+  const [crowsEnabled, setCrowsEnabled] = useState(false);
   const [knaveEnabled,setKnaveEnabled]=useState(false);
   const knaveEnabledRef=useRef(knaveEnabled);knaveEnabledRef.current=knaveEnabled;
   const updateKnaveEnabled=(value:boolean)=>{knaveEnabledRef.current=value;setKnaveEnabled(value);};
@@ -13029,7 +13041,7 @@ export function App() {
     const snapshot: MapSnapshot = {
       physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13909,7 +13921,7 @@ export function App() {
       const snapshot: MapSnapshot = {
         physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13969,12 +13981,12 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,world:worldRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ requiresFineAdaptation:fineLegacyRef.current,map: captureMap(), generationHistory: history, selectedHex,
     // Camera coordinates belong to the accepted document, not its detached
     // automatic display. Import/Undo convert them to the resulting view below.
-    generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: (pendingMapZoomRef.current?.scale ?? mapScaleRef.current)
+    generationMode, knaveEnabled:knaveEnabledRef.current, crowsEnabled, isMapRotated, mapScale: (pendingMapZoomRef.current?.scale ?? mapScaleRef.current)
       *((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6)/(physicalGridRef.current?.viewStep??6) });
   const closeEditors = () => {
     updateKnaveDraft(null);
@@ -14020,6 +14032,7 @@ export function App() {
     updatePhysicalGrid(map.physicalGrid);
     map=withLegacySeas(map);updateSeaIdentity(map);
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
+    updateWorld(map.world);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -14048,7 +14061,7 @@ export function App() {
     documentRevision.current++;
     updateWaterDraft(null); updateRiverDraft(null); updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map, doc.oneMileView); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
-    setGenerationMode(doc.generationMode); updateKnaveEnabled(doc.knaveEnabled??!!doc.map.knave); setIsMapRotated(doc.isMapRotated);
+    setGenerationMode(doc.generationMode); updateKnaveEnabled(doc.knaveEnabled??!!doc.map.knave); setCrowsEnabled(doc.crowsEnabled ?? false); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale*(doc.map.physicalGrid?.viewStep??6)/((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6)); setPendingRegen(null); closeEditors();
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
@@ -14603,6 +14616,7 @@ export function App() {
     updatePhysicalGrid(map.physicalGrid);
     updateSeaIdentity(map);
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
+    updateWorld(map.world);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -14625,7 +14639,7 @@ export function App() {
     setHistory(backup.history);
     setSelectedHex(backup.selectedHex);
     if (backup.document) {
-      setGenerationMode(backup.document.generationMode); updateKnaveEnabled(backup.document.knaveEnabled??!!backup.document.map.knave); setIsMapRotated(backup.document.isMapRotated);
+      setGenerationMode(backup.document.generationMode); updateKnaveEnabled(backup.document.knaveEnabled??!!backup.document.map.knave); setCrowsEnabled(backup.document.crowsEnabled ?? false); setIsMapRotated(backup.document.isMapRotated);
       updateMapScale(backup.document.mapScale*(backup.document.map.physicalGrid?.viewStep??6)/((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6));
     }
     if (backup.undo) setUndoHistory(backup.undo);
@@ -14843,7 +14857,7 @@ export function App() {
 
   const hasRegions = regions.length > 0;
   const hasResettableMap = hasRegions || hexTerrainByKey.size > 0 || physicalGrid !== undefined
-    || obstacles.length > 0 || kingdoms.length > 0 || knave !== undefined;
+    || obstacles.length > 0 || kingdoms.length > 0 || knave !== undefined || world !== undefined;
 
   const resetMapToMode = (nextMode?:GenerationMode) => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
@@ -14853,7 +14867,7 @@ export function App() {
       && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && nextObstacleId===1 && !isMapRotated
       && seaIdentityRef.current.nextSeaId===1 && !seaIdentityRef.current.seas.length
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
-      && !knaveRef.current && !physicalGridRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
+      && !knaveRef.current && !worldRef.current && !crowsEnabled && !physicalGridRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     const view = automaticFineSceneRef.current ?? physicalGridRef.current;
     const oneMileView = view?.viewStep === 1
       ? {selectedCell:view.selectedCell, selectedWorldPoint:view.selectedWorldPoint}
@@ -14863,7 +14877,7 @@ export function App() {
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
-      requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false,oneMileView:false };
+      requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false,crowsEnabled:false,oneMileView:false };
     recordTransaction(before,after,{replaceMap:true}); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 
@@ -14872,10 +14886,29 @@ export function App() {
     if(generationMode!=='classic'||mutationBlocked())return false;
     if(enabled===knaveEnabledRef.current)return true;
     const layer=knaveRef.current??(enabled?newKnaveLayer():undefined);
-    if(!regions.length&&!hexTerrainByKey.size&&!kingdoms.length){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);return true;}
+    if(!crowsEnabled&&!regions.length&&!hexTerrainByKey.size&&!kingdoms.length){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);return true;}
     finishNotesGroup();
-    const before=captureDocument(),after={...before,map:prepareSourceTransition(before.map,{...before.map,knave:layer}),knaveEnabled:enabled};
+    const before=captureDocument(),after={...before,map:prepareSourceTransition(before.map,{...before.map,knave:layer}),knaveEnabled:enabled,crowsEnabled:enabled?false:before.crowsEnabled};
     recordTransaction(before,after);applyPreparedDocument(after);return true;
+  };
+  const chooseCrowsProfile = (enabled: boolean) => {
+    if (generationMode !== 'classic' || enabled === crowsEnabled || mutationBlocked()) return;
+    const before = captureDocument();
+    const after: DocumentSnapshot = {
+      ...before,
+      map: enabled ? { ...before.map, world: fillCornathWorld(before.map.world) } : before.map,
+      crowsEnabled: enabled,
+      knaveEnabled: enabled ? false : before.knaveEnabled
+    };
+    recordTransaction(before, after);
+    applyPreparedDocument(after);
+  };
+  const editWorldField = (field: keyof MapWorld, value: string) => {
+    if (mutationBlocked() || worldRef.current?.[field] === value) return;
+    const before = captureDocument();
+    const nextWorld = { ...before.map.world, [field]: value };
+    recordTransaction(before, { ...before, map: { ...before.map, world: nextWorld } });
+    updateWorld(nextWorld);
   };
   const changeGenerationMode=(mode:GenerationMode)=>{
     if(mutationBlocked()||mode===generationMode)return;
@@ -14956,6 +14989,7 @@ export function App() {
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
     snapshot=deferFineRegeneration?{...snapshot,physicalGrid:undefined}:retainFineCheckpoint(snapshot);
+    snapshot={...snapshot,world:worldRef.current};
     snapshot={...snapshot,poiDiscovery:retainedDiscoveryCheckpoint(snapshot),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
@@ -15074,6 +15108,7 @@ export function App() {
     const before = captureDocument();
     map.poiDiscovery=retainedDiscoveryCheckpoint(map);
     map.knave=retainedKnaveCheckpoint(map);
+    map.world=before.map.world;
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
       const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
@@ -15693,6 +15728,7 @@ export function App() {
     map: {
       ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
       ...(doc.map.knave===undefined?{}:{knave:structuredClone(doc.map.knave)}),
+      ...(doc.map.world?{world:{...doc.map.world}}:{}),
       seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
       nextSeaId:doc.map.nextSeaId,
       editorNames:structuredClone(doc.map.editorNames??{}),
@@ -15720,6 +15756,7 @@ export function App() {
     ui: {
       generationMode:doc.generationMode,
       ...(doc.map.knave?{knaveEnabled:doc.knaveEnabled??true}:{}),
+      ...(doc.crowsEnabled?{crowsEnabled:true}:{}),
       selectedHex:doc.selectedHex,
       isMapRotated:doc.isMapRotated,
       mapScale:doc.mapScale
@@ -15818,7 +15855,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{physicalGrid:imported.map.physicalGrid,
+        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,
           poiDiscovery:{...Object.fromEntries(Object.entries(imported.map.knave?.discoveryByPoi??{}).map(([key,value])=>[key,value.mode])),...imported.map.poiDiscovery},
           knave:imported.map.knave?{...imported.map.knave,discoveryByPoi:{}}:undefined,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
@@ -15826,7 +15863,7 @@ export function App() {
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
           nextLakeId:Math.max(imported.counters.nextLakeId,Math.max(0,...Array.from(terrain.values(),t=>t.lakeId??0))+1),
           nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
-        requiresFineAdaptation:!imported.map.physicalGrid,generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,
+        requiresFineAdaptation:!imported.map.physicalGrid,generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,crowsEnabled:imported.ui.crowsEnabled,
         selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
         isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1),MAX_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1))
       };
@@ -17067,7 +17104,16 @@ export function App() {
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
     [fineDisplay,fineRoutes,riverPaint,roadPaint,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
-  const finePanel=<OneMilePanel classic={generationMode==='classic'} discoveryLabels={discoveryLabels} localPlace={fineValues?.localPlace} projectedPlaces={projectedPlaces} newPlaceMode={assignDiscovery('none',generationRef.current.masterSeed,'fine:'+ (fineReadCell?hexKey(fineReadCell):''))} language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
+  const infoEditControl = <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
+                  aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!poiDraft&&!poiPreview?.plan}
+                  data-poi-done onClick={() => { if(knaveDraftRef.current){if(finishKnaveDraft())setEditMode(false);return;} if(poiDraftRef.current){if(finishPoiDraft())setEditMode(false);return;}if (!finishRegionDraft() || !finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(!editMode); }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
+                  </svg>
+                </button></div>;
+  const finePanel=<OneMilePanel worldInfo={<MapWorldInfo world={world} language={language} onEditField={editWorldField} />} classic={generationMode==='classic'} discoveryLabels={discoveryLabels} localPlace={fineValues?.localPlace} projectedPlaces={projectedPlaces} newPlaceMode={assignDiscovery('none',generationRef.current.masterSeed,'fine:'+ (fineReadCell?hexKey(fineReadCell):''))} language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>{
@@ -17535,7 +17581,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
-            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label></div>}
+            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><label><input type="checkbox" aria-label="Crows (Cornath)" checked={crowsEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseCrowsProfile(e.target.checked)}/>Crows (Cornath)</label></div>}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
@@ -17700,15 +17746,8 @@ export function App() {
               {fineActive&&editError&&!fineDraft&&<p role="alert" className="direct-error">{editError}</p>}
               {fineActive&&fineDisplay?.geometryRefinement&&fineSummary?.pois.some(p=>fineDisplay.geometryRefinement!.pois.pois.some(fp=>fp.poiId===p.poiId))&&<p data-refined-position>{language==='ru'?'Уточнённое положение в пределах исходного гекса 6 миль.':'Detailed position within the original six-mile hex.'}</p>}
               {fineActive?(busyFineView?.panel??finePanel):<section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
-                <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
-                  aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
-                  title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
-                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!poiDraft&&!poiPreview?.plan}
-                  data-poi-done onClick={() => { if(knaveDraftRef.current){if(finishKnaveDraft())setEditMode(false);return;} if(poiDraftRef.current){if(finishPoiDraft())setEditMode(false);return;}if (!finishRegionDraft() || !finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(!editMode); }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                    {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
-                  </svg>
-                </button></div>
+                {infoEditControl}
+                <MapWorldInfo world={world} language={language} editing={editMode} onEditField={editWorldField} />
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong>{selectedRegion.splitNumber && <span data-region-number={regionNumber(selectedRegion)}> №{regionNumber(selectedRegion)}</span>} {renderToponym(`region:${selectedRegion.id}`)}</p>
@@ -17969,7 +18008,10 @@ export function App() {
                   ) : null}
                 </div>
               </details>}
-              </> : null}
+              </> : <section className="info-block info-block--hex" aria-label={language === 'ru' ? 'Информация о мире' : 'World information'}>
+                {infoEditControl}
+                <MapWorldInfo world={world} language={language} editing={editMode} onEditField={editWorldField} />
+              </section>}
             <section className="info-block map-names" aria-label={language === 'ru' ? 'Названия карты' : 'Map names'}>
               <button type="button" className="secondary map-names__toggle" aria-expanded={namesOpen} aria-controls="map-names-catalog" onClick={() => {if(finishWaterDraft())namesOpen ? requestNameTarget(null) : setNamesOpen(true);}}>{language === 'ru' ? 'Найти объект' : 'Find object'}</button>
               <p role="status" aria-live="polite">{nameStatus === 'saved' ? (language === 'ru' ? 'Название сохранено' : 'Name saved') : nameStatus === 'stale' ? (language === 'ru' ? 'Карта изменилась. Выберите объект заново.' : 'The map changed. Select the object again.') : ''}</p>
