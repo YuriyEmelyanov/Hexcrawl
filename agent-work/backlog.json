@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T19:47:07.606Z",
+  "updated_at": "2026-11-25T19:58:15.782Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3599,13 +3599,58 @@
         "В подписанном тестовом гексе Crows отображается несколько типов среды. Ручное изменение сохраняется. Проверить разные категории деревень и отдельную постройку на карте по таблицам ТЗ.",
         "Маяк первого уровня убирает действие миазмы в своём гексе и шести соседних. Проверить рост зоны при повышении уровня и особый случай маяка пятого уровня при процветании 10."
       ],
-      "execution_state": "awaiting_business_analysis",
-      "next_role": "business-analyst",
-      "next_step": "Сверить техническую постановку с принятой редакцией ТЗ2 CROWS. Подготовить проверяемую спецификацию по пунктам 001, 002, 003, 011, 017, затем передать дальше по процессу команды.",
+      "execution_state": "draft_ready_for_interview",
+      "next_role": "interviewer",
+      "next_step": "Интервьюер независимо проверяет весь D1, предъявляет в этом чате оставшиеся существенные развилки, фиксирует ответы и передаёт аналитику решения для чистовой спецификации первого выпуска.",
       "ready_for_development": false,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T19:36:37.969Z"
+      "updated_at": "2026-11-25T19:58:15.782Z",
+      "stage_id": "CROWS-L1",
+      "draft_spec_ref": "agent-work/specs/HX-BL-077-crows-D1.md",
+      "draft_spec_version": "D1",
+      "draft_spec_blob_sha": "0ceac165896205daba53253be5a04cfe34ee4696",
+      "draft_decision_candidates": [
+        "CROWS-D1-01",
+        "CROWS-D1-02",
+        "CROWS-D1-03",
+        "CROWS-D1-04",
+        "CROWS-D1-05",
+        "CROWS-D1-06"
+      ],
+      "interview_status": "ready_for_interview",
+      "handoff_ref": "agent-work/handoffs/2026-11-25T2252-business-analyst-HX077-crows-D1-interviewer.json",
+      "approval_ref": "agent-work/decisions/owner-request-2026-11-25-crows-mode.json",
+      "ui_preview_status": "presented_proposal",
+      "ui_preview_pending": false,
+      "ui_preview_ref": "agent-work/evidence/HX-BL-077/crows-d1/preview.json",
+      "scope_forecast": {
+        "confidence": "low_pending_interview",
+        "units": "team_runs",
+        "packages": [
+          {
+            "id": "A",
+            "scenario": "Корнат и домашняя деревня с сохранением и повторным открытием карты",
+            "min": 10,
+            "max": 15
+          },
+          {
+            "id": "B",
+            "scenario": "Признаки среды, категории деревень и отдельные постройки",
+            "min": 12,
+            "max": 17
+          },
+          {
+            "id": "C",
+            "scenario": "Состояние Миазмы у гекса и радиус маяков",
+            "min": 8,
+            "max": 12
+          }
+        ],
+        "total_min": 30,
+        "total_max": 44
+      },
+      "result_ref": "agent-work/results/2026-11-25T2252-business-analyst-HX077-crows-D1.json"
     }
   ],
   "retired_pr_packages": {
