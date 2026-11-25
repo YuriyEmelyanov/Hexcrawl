@@ -1,0 +1,378 @@
+{
+  "task_id": "HX-BL-073",
+  "pr": 515,
+  "run_id": "2026-11-25T0300-reviewer-HX073",
+  "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "verdict": "accepted_awaiting_publication_approval",
+  "findings": [],
+  "resolved_finding": "HX073-RV02-01",
+  "prior_review_ref": "agent-work/evidence/HX-BL-073/review-48c679b/review.json",
+  "independent_review": {
+    "agent": "hx073_review_current_cae2b48",
+    "result": "Reproduced old invalid_owner; v2–v10 accepted with no physical ownership issues and v16 retained accepted full/scoped GeometryPlan. Legacy corpus comparison found no head-specific import rejection.",
+    "age_of_context": "fresh"
+  },
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
+      "jobs": [
+        {
+          "id": 138844324778,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325544,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325559,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844327563,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 453,
+        "passed": 453,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "reviewer_node": {
+      "executed": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "runtime": {
+      "classic-browser": {
+        "connected_opened": true,
+        "split_parts": [
+          [
+            "7.1",
+            8
+          ],
+          [
+            "7.2",
+            1
+          ]
+        ],
+        "region_card": "7.2",
+        "old_center_preserved": true,
+        "old_anchor_preserved": true,
+        "roundtrip_exact": true,
+        "repeated_parts": [
+          "7.1",
+          "7.2",
+          "7.3"
+        ],
+        "duplicate_and_missing_owner_atomic": true,
+        "redo_preserved_and_executed": true,
+        "next_regular_id": 8,
+        "expected_dialogs": [
+          "Не удалось загрузить JSON: некорректные данные (map.regions[1].hexes[2]: duplicate ownership). Текущая карта сохранена.",
+          "Не удалось загрузить JSON: некорректные данные (map.roads[0].regionId: missing reference). Текущая карта сохранена."
+        ],
+        "errors": []
+      },
+      "mythic-browser": {
+        "before": {
+          "result": "rejected",
+          "alert": "Не удалось загрузить JSON: ошибка подготовки карты (map.tags: invalid tag data). Текущая карта сохранена.",
+          "previous_map_preserved": true
+        },
+        "after": {
+          "result": "opened",
+          "part": "2.2",
+          "tag": "mb.monument",
+          "author_text": "Камень дозора",
+          "dice_identical_on_import": true,
+          "roundtrip_identical": true,
+          "roll_counts_before": {
+            "group": 1,
+            "entry": 2
+          },
+          "roll_counts_after_explicit_roll": {
+            "group": 1,
+            "entry": 3
+          },
+          "undo_identical": true,
+          "errors": []
+        }
+      },
+      "v16-browser": {
+        "fixture": "classic-six-regions-seed42.json + detached road and named POI, accepted physical4",
+        "parts": [
+          {
+            "label": "1.1",
+            "hexes": 9
+          },
+          {
+            "label": "1.2",
+            "hexes": 2
+          }
+        ],
+        "visible_card": "1.2",
+        "authored_poi": "Камень",
+        "poi_identity_preserved": true,
+        "refined_river_paths": 34,
+        "refined_crossings": 2,
+        "json_roundtrip": true,
+        "one_mile_png_bytes": 701218,
+        "dialogs": [],
+        "errors": []
+      },
+      "lake": {
+        "isolated_small_lake_loss_confirmations": 0,
+        "lakes_before": 2,
+        "lakes_after": 1,
+        "unaffected_lake_preserved": true,
+        "undo_redo_exact": true
+      },
+      "acceptance": {
+        "fixture": "classic-six-regions-seed42 with distant three-hex component bridged by a lake",
+        "water_hex": "13,0",
+        "preserved_single_secondary_component": true,
+        "stable_center_and_anchor_after_reordering": true,
+        "duplicate_hex_atomic_rejection": true,
+        "river_and_sector_owner_transferred": true,
+        "river_path_and_crossings_preserved": true
+      },
+      "river-browser": {
+        "import_silent": true,
+        "river_path_literal": true,
+        "expected_end_sector_part": "1.1",
+        "actual_end_sector_part": "1.1",
+        "unchanged_on_reopen": true,
+        "unsupported_reference_atomic_rejection": true,
+        "mixed_sector_rejected_even_when_first_edge_supported": true,
+        "dialogs": [
+          "Failed to load JSON: map preparation error (map.rivers[0].sectors[3].assignedRegionId: no part of region 1 supports river 5 sector check-sector-3). Your current map is intact.",
+          "Failed to load JSON: map preparation error (map.rivers[0].sectors[2].assignedRegionId: no part of region 1 supports river 5 sector check-sector-2). Your current map is intact."
+        ],
+        "errors": []
+      },
+      "coastal-node": {
+        "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+        "isolated": {
+          "q": 500,
+          "r": 500
+        },
+        "coastAnchor": {
+          "q": -2,
+          "r": -3
+        },
+        "river_road_and_crossing_geometry_preserved": true,
+        "roundtrip_exact": true,
+        "new_region_id": 4,
+        "alerts": []
+      },
+      "fresh_review_probe": "Legacy import, effective ownership, and full JSON re-open [\n  2, 3, 4,  5, 6,\n  7, 8, 9, 10\n]\nPrior head reproduces one invalid owner\nUnsupported sector rejected atomically with both history stacks\nLegacy river GeometryPlan construction prepared undefined\nv16 imports implicit sector scoped false retained river paths 6\nv16 imports implicit sector scoped true retained river paths 6",
+      "legacy_fixture_comparison": [
+        {
+          "fixture": 0,
+          "version": 10,
+          "regions": 6,
+          "rivers": 4,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 1,
+          "version": 7,
+          "regions": 1,
+          "rivers": 1,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 2,
+          "version": 7,
+          "regions": 1,
+          "rivers": 0,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 3,
+          "version": 10,
+          "regions": 4,
+          "rivers": 6,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 4,
+          "version": 2,
+          "regions": 18,
+          "rivers": 16,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 5,
+          "version": 2,
+          "regions": 4,
+          "rivers": 6,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 6,
+          "version": 2,
+          "regions": 15,
+          "rivers": 5,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 7,
+          "version": 2,
+          "regions": 27,
+          "rivers": 26,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 8,
+          "version": 2,
+          "regions": 32,
+          "rivers": 19,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 9,
+          "version": 2,
+          "regions": 1,
+          "rivers": 2,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 10,
+          "version": 2,
+          "regions": 0,
+          "rivers": 0,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 11,
+          "version": 2,
+          "regions": 27,
+          "rivers": 26,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 12,
+          "version": 2,
+          "regions": 1,
+          "rivers": 2,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 13,
+          "version": 2,
+          "regions": 1,
+          "rivers": 0,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 14,
+          "version": 3,
+          "regions": 1,
+          "rivers": 2,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 15,
+          "version": 3,
+          "regions": 0,
+          "rivers": 0,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        },
+        {
+          "fixture": 16,
+          "version": 3,
+          "regions": 27,
+          "rivers": 26,
+          "old": null,
+          "now": null,
+          "issues": [],
+          "addedDiffs": []
+        }
+      ]
+    },
+    "coastal_method_note": "Крупная карта из среза PR509 успешно открылась, экспортировалась и открылась повторно в Chromium. Кандидат за границей видимой области проверен через штатный generateAt в harness, который создал регион №4; в браузере последовательность продолжения до целого №8 подтверждена на Classic 8+1."
+  },
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/river-map.jpg",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/score-assessment.json",
+  "test_change_summary": {
+    "base_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "suite": "Node saveSafety",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "source": "Logical top-level node:test declaration from diff of previous reviewed SHA to current SHA",
+    "scenario": "Неправильное наследование владельца в старом сохранении, безопасный отказ и точный повторный импорт.",
+    "reuse_or_new_reason": "Этот случай воспроизводит invalid_owner на предыдущем SHA и защищает отдельный контракт географии, которого нет в проверках номера, тегов и принятого одномильного слоя.",
+    "pr_total_from_main": {
+      "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+      "added": 4,
+      "removed": 0,
+      "modified": 0
+    }
+  }
+}
