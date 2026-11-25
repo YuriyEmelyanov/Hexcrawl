@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "draft_spec_ref": "agent-work/specs/HX-BL-077-crows-D2.md",
+  "draft_spec_version": "D2",
+  "draft_spec_blob_sha": "2e018ddf83b7e12a207cb666fa3de848179d5eca",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-request-2026-11-25-crows-mode.json",
+    "agent-work/decisions/owner-decision-2026-11-25-HX-BL-077-classic-ui-full-scope.json",
+    "agent-work/decisions/owner-decision-2026-11-25-HX-BL-077-world-first.json"
+  ],
+  "status": "awaiting_owner_answers",
+  "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
+  "round_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.json",
+  "questionnaire_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.md",
+  "questionnaire_commit": "3c5c5b141be3a7b9095c239fadbea54af95d456d",
+  "open_question_ids": [
+    "CROWS-Q01",
+    "CROWS-Q02",
+    "CROWS-Q04",
+    "CROWS-Q06"
+  ],
+  "next_role": "interviewer",
+  "next_step": "После ответов на четыре вопроса сверить решения и передать аналитику чистовую спецификацию полного режима Crows.",
+  "round_id": "round-002",
+  "trigger": "Прямое поручение владельца начать интервью и поставить Мир первым.",
+  "questions": [
+    {
+      "question_id": "CROWS-Q01",
+      "topic": "Crows и Knave 2e",
+      "requirement_refs": [
+        "001",
+        "CROWS-01"
+      ],
+      "fork": "Если включить Crows при включённом Knave 2e, какой профиль применяет правила к новым точкам?",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Только Crows. При возврате в Knave 2e всё ранее созданное снова доступно."
+        },
+        {
+          "id": "B",
+          "effect": "Оба профиля. Crows задаёт деревни и постройки, Knave работает на остальных подходящих точках."
+        }
+      ],
+      "recommendation": "A",
+      "always_allow_free_text": true,
+      "owner_answer": null
+    },
+    {
+      "question_id": "CROWS-Q02",
+      "topic": "Текст о мире",
+      "requirement_refs": [
+        "001",
+        "CROWS-02"
+      ],
+      "fork": "Что показать в верхнем разделе «Мир», если мастер уже заполнил его в Classic, а затем включил Crows?",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Оставить общий авторский текст. Название и описание Корната подставлять только в нетронутые поля."
+        },
+        {
+          "id": "B",
+          "effect": "Показать отдельный текст Корната. Обычный авторский текст снова виден при возврате в Classic."
+        }
+      ],
+      "recommendation": "A",
+      "always_allow_free_text": true,
+      "owner_answer": null
+    },
+    {
+      "question_id": "CROWS-Q04",
+      "topic": "Домашняя деревня на месте башни",
+      "requirement_refs": [
+        "011",
+        "CROWS-05"
+      ],
+      "fork": "Что увидит мастер, если назначит существующую башню домашней деревней?",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Башня сохранит имя, значок и тип, получит отметку «Домашняя деревня» и поля построек."
+        },
+        {
+          "id": "B",
+          "effect": "Точка получит вид деревни в Crows. Исходный тип башни сохранится в данных и снова будет виден в Classic."
+        }
+      ],
+      "recommendation": "A",
+      "always_allow_free_text": true,
+      "owner_answer": null
+    },
+    {
+      "question_id": "CROWS-Q06",
+      "topic": "Отдельные постройки при генерации",
+      "requirement_refs": [
+        "011",
+        "CROWS-07"
+      ],
+      "fork": "Какие места генератора могут стать отдельной постройкой Crows, например маяком или кузницей?",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Любое подходящее место, где Classic выбрал строение, если это освоенная территория или гекс с дорогой в диком регионе. Используется прежний шанс появления строения."
+        },
+        {
+          "id": "B",
+          "effect": "Только конкретные соответствия, например обычная башня → маяк. Остальные классические строения сохраняются."
+        }
+      ],
+      "recommendation": "A",
+      "always_allow_free_text": true,
+      "owner_answer": null
+    }
+  ],
+  "new_question_ids": [],
+  "owner_answers": [],
+  "interpretation": [
+    {
+      "id": "CROWS-UI-ORDER",
+      "source": "direct_owner_message",
+      "text": "«Мир» — первая смысловая позиция действующего блока информации, перед сведениями о регионе, выбранном гексе и точке. Вложенные сведения идут от общего к частному. Штатная кнопка редактирования сохраняется."
+    },
+    {
+      "id": "CROWS-Q03",
+      "source": "ТЗ2 CROWS 011 и решения о сохранении карты при смене режима",
+      "text": "Автостарт — центральная точка первого региона, созданного в Crows; смена профиля не меняет старые точки. Урочище без центра не даёт стартовой деревни."
+    },
+    {
+      "id": "CROWS-Q05",
+      "source": "ТЗ2 CROWS 003",
+      "text": "Можно добавлять признаки вручную и снимать собственные добавления. Автоматические признаки следуют биому и воде. Пункт 003 прямо предусматривает ручное добавление, поэтому отдельный режим подавления автоматических признаков не требуется."
+    }
+  ],
+  "presented_in_chat_at": "2026-11-25T20:24:56.582Z",
+  "presented_in_chat_ref": null,
+  "presentation_evidence": "Ссылка на опросник предъявлена в текущем чате.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T20:23:27.932Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T20:24:58.593Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
