@@ -115,8 +115,193 @@
         "На опубликованном SHA проверить постановку и повторное открытие обеих карт."
       ],
       "disposition_reason": "Применим только пространственный шаг переноса места на карту этой кампании. Близость к горам в старой строке уточнена до предпочтительной видимости из источника; это не проверка линии видимости приложения и не общее правило DCC."
+    },
+    {
+      "id": "DCC84-FIXED-HEX-KEY-L1",
+      "game_id": "DCC",
+      "disposition": "keep_L1",
+      "disposition_reason": "Позволяет подготовить адресуемые места и их вложенные ключи с содержимым для ведущего.",
+      "source": {
+        "edition": "Harley Stroh, Goodman Games, Dungeon Crawl Classics #84, оригинальный модуль ©2014, EN",
+        "primary_url": "https://files.spawningpool.net/docs/Vault2.0.-.TTRPG-Gamebooks/Dungeon%20Crawl%20Classics/Modules/DCC%20-%2084%20Peril%20on%20the%20Purple%20Planet%20-%20Box%20Set/DCC84-Purple-Planet.pdf",
+        "source_ref": "https://files.spawningpool.net/docs/Vault2.0.-.TTRPG-Gamebooks/Dungeon%20Crawl%20Classics/Modules/DCC%20-%2084%20Peril%20on%20the%20Purple%20Planet%20-%20Box%20Set/DCC84-Purple-Planet.pdf",
+        "publisher_listing_url": "https://store.paizo.com/dungeon-crawl-classics-84-peril-on-the-purple-planet-pdf/",
+        "locator": "с. 2, Introduction / Summary of Key Plot Elements; ссылки на A-1 (с. 7) и B-5g (с. 25)",
+        "author_project_key": "goodman-games:harley-stroh:dcc-84-purple-planet",
+        "access_level": "indexed_primary_text_on_third_party_host",
+        "verification": "selected_section_read",
+        "recorded_facts": "Модуль использует региональные гексы с ключами. Пирамида древних содержит место портала A-1. Один из целых зелёных камней находится в укреплении дома Cotcyst, запись B-5g. Это вложенные ключи мест, а не числовые адреса региональных гексов."
+      },
+      "model": {
+        "game_unit_id": "DCC",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Позволяет подготовить адресуемые места и их вложенные ключи с содержимым для ведущего."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "common_rule_ids": [
+          "content.place_description",
+          "map.reference_labels"
+        ]
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://files.spawningpool.net/docs/Vault2.0.-.TTRPG-Gamebooks/Dungeon%20Crawl%20Classics/Modules/DCC%20-%2084%20Peril%20on%20the%20Purple%20Planet%20-%20Box%20Set/DCC84-Purple-Planet.pdf — с. 2, Introduction / Summary of Key Plot Elements; ссылки на A-1 (с. 7) и B-5g (с. 25)",
+        "normative_kind": "module_specific_map_preparation",
+        "applicability": "Региональная карта плато для DCC #84, вручную подготовленная мастером",
+        "layer": "L1",
+        "trigger_or_user_action": "На карте плато назначить два отдельных гекса для пирамиды и крепости, сохранить их ключи и содержимое.",
+        "inputs_and_units": {
+          "hex_addresses": "два различных гекса, адреса выбирает мастер или берёт с проверенного разворота",
+          "site_keys": [
+            "A-1",
+            "B-5g"
+          ],
+          "place_records": "типы и имена мест, связанное содержимое"
+        },
+        "product_operation": "Создать две точки, привязать A-1 к записи пирамиды, B-5g и наличие одного целого зелёного камня к записи крепости.",
+        "expected_output": "При повторном открытии карта выводит два разных объекта по прежним адресам. Портал находится в записи пирамиды, камень — в записи крепости, локальные ключи сохранены.",
+        "constraints_and_exceptions": [
+          "Строки A-1 и B-5g различаются с адресами региональных гексов.",
+          "Летающая цитадель и перемещающееся существо не закрепляются в подготовленной карте как неподвижные источники камней.",
+          "Активация портала, расход камней и разрешение столкновений относятся к ведению."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На тестовой карте мастер выбрал H1 для пирамиды, H2 для крепости.",
+            "when": "Сохранить две записи с ключами A-1 и B-5g и заново открыть карту.",
+            "expected": "H1 содержит пирамиду и ключ портала A-1, H2 — крепость, ключ B-5g и один целый зелёный камень."
+          },
+          {
+            "given": "Мастер меняет содержимое записи крепости, сохраняя привязку к H2.",
+            "when": "Открыть список ключей гексов после сохранения.",
+            "expected": "Изменение видно только в H2, а A-1 остаётся связан с H1."
+          }
+        ],
+        "source_vs_product_interpretation": "Факты модуля привязаны к гексам мастером. Конкретные действия сохранения и образцы адресов относятся к продуктовой проверке.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": [
+          "Не подтверждены региональные координаты и полный список мест на развороте."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Проверка этого профиля на опубликованном SHA не выполнялась."
+      },
+      "open_checks": [
+        "Не подтверждены региональные координаты и полный список мест на развороте."
+      ]
+    },
+    {
+      "id": "DCC84-TERRAIN-TAGS-L1",
+      "game_id": "DCC",
+      "disposition": "keep_L1",
+      "disposition_reason": "Мастер фиксирует вид местности на гексе при подготовке, и ему доступна категория для чтения модуля.",
+      "source": {
+        "edition": "DCC #84, Purple Planet Judge Screen Interior, EN, приложение к оригинальному набору; самостоятельная дата страницы не указана",
+        "primary_url": "https://www.scribd.com/document/775985609/PP-Judge-Screen-Interior",
+        "source_ref": "https://www.scribd.com/document/775985609/PP-Judge-Screen-Interior",
+        "publisher_listing_url": "https://store.paizo.com/dungeon-crawl-classics-84-peril-on-the-purple-planet-pdf/",
+        "locator": "внутренняя панель Random Encounters by Terrain, столбцы; отсылка к с. 13–18 модуля",
+        "author_project_key": "goodman-games:harley-stroh:dcc-84-purple-planet",
+        "access_level": "indexed_primary_text_on_third_party_host",
+        "verification": "selected_section_read",
+        "recorded_facts": "Для таблицы различены пустоши, пересечённые холмы, грибные джунгли и Ancestor Peaks. Это четыре категории этой таблицы, а полный перечень ландшафта карты не извлечён."
+      },
+      "model": {
+        "game_unit_id": "DCC",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Мастер фиксирует вид местности на гексе при подготовке, и ему доступна категория для чтения модуля."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "common_rule_ids": [
+          "map.terrain_zones"
+        ]
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/775985609/PP-Judge-Screen-Interior — внутренняя панель Random Encounters by Terrain, столбцы; отсылка к с. 13–18 модуля",
+        "normative_kind": "module_specific_map_preparation",
+        "applicability": "Региональная карта плато для DCC #84, вручную подготовленная мастером",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить группе гексов плато категории местности из ключа кампании.",
+        "inputs_and_units": {
+          "hex_addresses": "идентификаторы гексов",
+          "terrain_values": [
+            "wastes",
+            "broken_hills",
+            "mushroom_jungle",
+            "ancestor_peaks"
+          ],
+          "unit": "одна категория на гекс в тесте"
+        },
+        "product_operation": "Хранить и показывать категорию каждого явно помеченного гекса в ключе карты, чтобы мастер мог подобрать соответствующую колонку.",
+        "expected_output": "В ключе сохраняется выбранная категория. Пустой гекс без выбранного типа остаётся без классификации из этого профиля.",
+        "constraints_and_exceptions": [
+          "Категории интерфейса могут отображаться локализованно. Сходный рисунок биома сам по себе не подтверждает нужную категорию.",
+          "Бросок 3d5 по столбцу относится к L2. Случайные встречи не становятся постоянными POI.",
+          "Без разворота нельзя вывести исходное распределение категорий или размеры зон."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "H1–H4 последовательно помечены четырьмя категориями, H5 без пометки.",
+            "when": "Сохранить карту, открыть её снова и проверить карточки пяти гексов.",
+            "expected": "H1–H4 сохраняют четыре исходных значения; H5 без пометки, размещённых встреч нет."
+          },
+          {
+            "given": "Гекс H3 меняется с грибных джунглей на пустошь.",
+            "when": "Проверить карточку H3 и открыть сохранение.",
+            "expected": "H3 показывает пустошь, а прежняя категория в соседних гексах сохраняется."
+          }
+        ],
+        "source_vs_product_interpretation": "Факты модуля привязаны к гексам мастером. Конкретные действия сохранения и образцы адресов относятся к продуктовой проверке.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Нужен разворот с ключом для сверки границ местностей и полноты их перечня."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Проверка этого профиля на опубликованном SHA не выполнялась."
+      },
+      "open_checks": [
+        "Нужен разворот с ключом для сверки границ местностей и полноты их перечня."
+      ]
     }
   ],
-  "latest_formalization_base_sha": "ea3b35774d88d7023643dbabaf6d6fcbf57c9b1c",
-  "latest_formalization_run_id": "2026-11-25-top20-l1-salv-dcc-0430"
+  "latest_formalization_base_sha": "16dc0198b476116cae7fa11053e29570775fbe6f",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-dcc84-1330",
+  "latest_source_coverage_review_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-dcc84-1330.json"
 }

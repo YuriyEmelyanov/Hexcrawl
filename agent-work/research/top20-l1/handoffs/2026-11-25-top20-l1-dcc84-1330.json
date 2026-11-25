@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-25-top20-l1-dcc84-1330",
+  "base_sha": "16dc0198b476116cae7fa11053e29570775fbe6f",
+  "game_id": "DCC",
+  "audiences": [
+    "модель продукта",
+    "стратег и аналитик"
+  ],
+  "status": "bounded_source_verified_partial_regional_key",
+  "coverage": [
+    {
+      "source_ref": "https://files.spawningpool.net/docs/Vault2.0.-.TTRPG-Gamebooks/Dungeon%20Crawl%20Classics/Modules/DCC%20-%2084%20Peril%20on%20the%20Purple%20Planet%20-%20Box%20Set/DCC84-Purple-Planet.pdf",
+      "edition": "Harley Stroh, Goodman Games, ©2014, EN",
+      "read": "печатные с. 1–2 и начало с. 3 из индексированного просмотра",
+      "disposition": "keep_L1",
+      "limitation": "Частичные факты о ключевых местах; нет доказательства адресов и полного покрытия."
+    },
+    {
+      "source_ref": "https://www.scribd.com/document/775985609/PP-Judge-Screen-Interior",
+      "edition": "материал коробочного комплекта #84",
+      "read": "Random Encounters by Terrain",
+      "disposition": "keep_L1",
+      "limitation": "Применимы метки гексов; счёт и разрешение встреч отложены."
+    },
+    {
+      "source_ref": "https://store.paizo.com/dungeon-crawl-classics-84-peril-on-the-purple-planet-pdf/",
+      "read": "библиографическая запись продавца",
+      "disposition": "out_of_scope",
+      "limitation": "Подтверждает отдельный модуль; описания гексов и координат нет."
+    }
+  ],
+  "new_operations": [
+    {
+      "id": "DCC84-FIXED-HEX-KEY-L1",
+      "ref": "agent-work/research/top20-l1/games/DCC.json#DCC84-FIXED-HEX-KEY-L1",
+      "rule_ids": [
+        "content.place_description",
+        "map.reference_labels"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "exact_binding_id": null,
+      "implementation": "unknown"
+    },
+    {
+      "id": "DCC84-TERRAIN-TAGS-L1",
+      "ref": "agent-work/research/top20-l1/games/DCC.json#DCC84-TERRAIN-TAGS-L1",
+      "rule_ids": [
+        "map.terrain_zones"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "exact_binding_id": null,
+      "implementation": "unknown"
+    }
+  ],
+  "reuse": {
+    "historic_ref": "agent-work/research/top20-l1/games/DCC.json#DCC-obs-01",
+    "finding": "#84.1 The Rock Awakens задаёт отдельное место с собственной привязкой. Это отличная от #84 редакционная единица. Существующая операция сохранена."
+  },
+  "scope_decisions": [
+    {
+      "item": "Создание статических мест с ключами и категорий местности",
+      "disposition": "keep_L1",
+      "reason": "Сохраняются как проверяемое состояние регионального гекса."
+    },
+    {
+      "item": "Бросок 3d5, перемещение, пропажа следа, реакция движущихся носителей",
+      "disposition": "defer_L2",
+      "reason": "Разрешаются по событиям сессии."
+    },
+    {
+      "item": "Тактические сцены, активация артефакта, урон и магия",
+      "disposition": "out_of_scope",
+      "reason": "Не нужны для сохранения региональной карты."
+    }
+  ],
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-25-top20-l1-dcc84-1330",
+    "result_ref": "agent-work/research/runs/2026-11-25-top20-l1-dcc84-1330.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-dcc84-1330.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "По DCC #84 проверены введение и перечень ключевых мест на с. 2, а также категории местности внутренней панели ведущего. Формализованы две операции создания карты.",
+    "remaining": {
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются прежние остатки по другим играм из карты охвата и соответствующих передач."
+    },
+    "next": "Sundered Isles: сверить пять строк существующей матрицы с официальным Guidebook, подготовку стартовой акватории и зависимые таблицы островов, поселений и примечательных мест. К DCC #84 вернуться при доступе к развороту и страницам ключа.",
+    "needs_owner_action": false
+  }
+}
