@@ -140,7 +140,13 @@ export function validateSaveStructure(value: unknown, domain: {
   }
   for(const f of ['waterPoiByHexKey','biomeOverrideByHexKey']) if(map[f]!==undefined) for(const [k,v] of Object.entries(record(map[f],'map.'+f))) {
     const p='map.'+f+'.'+k; hexKey(k,p);
-    if(f==='waterPoiByHexKey') { const t=terrain[k]; if(!domain.waterPoi(v)||!t||!['lake','sea'].includes((t as RecordValue).terrainOverride as string)) fail(p,'water POI requires water'); }
+    if(f==='waterPoiByHexKey') {
+      const override = (terrain[k] as RecordValue | undefined)?.terrainOverride;
+      if (!domain.waterPoi(v)) fail(p,'unknown water POI');
+      // A saved point may be an authored exception. Require a real map cell;
+      // creation and relocation still check the destination surface.
+      if (!land.has(k) && override !== 'lake' && override !== 'sea') fail(p,'water POI requires an existing hex');
+    }
     else if(!land.has(k)||!domain.biome(v)) fail(p,'biome requires region hex');
   }
   if(map.candidateHexes!==undefined) array(map.candidateHexes,'map.candidateHexes').forEach((h,i)=>hex(h,`map.candidateHexes[${i}]`));

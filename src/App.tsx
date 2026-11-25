@@ -15138,6 +15138,7 @@ export function App() {
   const selectedWaterPoiKind = selectedHexKey ? waterPoiByKey.get(selectedHexKey) : undefined;
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedSea = selectedTerrain?.terrainOverride === 'sea';
+  const selectedSurfaceIsWater = isSelectedLake || isSelectedSea;
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
   const selectedHexRoadIds = selectedHex
     ? Array.from(new Set(roads
@@ -16101,14 +16102,18 @@ export function App() {
   const editableValue = (label: string, value: string, open: () => void) => editMode
     ? <button type="button" className="direct-value" aria-label={label} onClick={() => {if (!mutationBlocked()) { clearNotesDraft(); closeEditors(); open(); }}}>{value}</button>
     : <span>{value}</span>;
-  const renderWaterPoi = () => <>{isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
-    value={selectedWaterPoiKind ?? ''} onBlur={() => setEditingPoiHexKey(null)}
-    onChange={e => e.target.value ? setSelectedWaterPoiKind(e.target.value as WaterPoiKind) : deleteSelectedWaterPoi()}>
-    <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
-    {waterPoiKindOrder.map(kind => <option key={kind} value={kind}>{WATER_POI_DETAILS[kind].emoji} {WATER_POI_DETAILS[kind].label[language]}</option>)}
-  </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi,
-    selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
-    () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
+  const renderWaterPoi = () => {
+    const name = selectedWaterPoiKind ? renderName(`waterPoi:${selectedHexKey}`) : null;
+    const label = selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi;
+    if (!selectedSurfaceIsWater) return selectedWaterPoiKind ? <><span>{label}</span>{name}</> : null;
+    return <>{isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+      value={selectedWaterPoiKind ?? ''} onBlur={() => setEditingPoiHexKey(null)}
+      onChange={e => e.target.value ? setSelectedWaterPoiKind(e.target.value as WaterPoiKind) : deleteSelectedWaterPoi()}>
+      <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
+      {waterPoiKindOrder.map(kind => <option key={kind} value={kind}>{WATER_POI_DETAILS[kind].emoji} {WATER_POI_DETAILS[kind].label[language]}</option>)}
+    </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi, label,
+      () => setEditingPoiHexKey(selectedHexKey)) : null}{name}</>;
+  };
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
   const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
@@ -17708,9 +17713,10 @@ export function App() {
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
-                    {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
-                      {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
+                    {selectedSurfaceIsWater || selectedWaterPoiKind ? <div className="direct-line">{renderWaterPoi()}</div> : null}
+                    {(canEditSelectedPoi || selectedPoiKind) && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
+                      {!canEditSelectedPoi && selectedPoiKind ? <span>{POI_DETAILS[selectedPoiKind].emoji} {POI_DETAILS[selectedPoiKind].label[language]}</span>
+                      : isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
                         {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}

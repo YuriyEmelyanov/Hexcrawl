@@ -636,6 +636,38 @@ try {
  await runWaterLifecycle({page,load,snapshot,ensureEdit,button,select,root,browser});
  await runRegionLifecycle({page,load,snapshot,ensureEdit,button,select,root});
  await runPoiLifecycle({page,load,snapshot,ensureEdit,button,select,root});
+ { // SURFACE-Q02: user-authored exceptions survive opening and saving.
+   await load(fixture);
+   const imported = await snapshot();
+   const region = imported.map.regions[0];
+   region.pointsOfInterest.push({q:1,r:0});
+   region.pointOfInterestKinds = {...region.pointOfInterestKinds,'1,0':'village'};
+   imported.map.terrainByHexKey['1,0'] = {terrainOverride:'lake',lakeId:1};
+   imported.counters.nextLakeId = 2;
+   imported.map.waterPoiByHexKey['0,1'] = 'shipwreck';
+   imported.map.editorNames = {
+     'poi:1:1,0': {ru:'Деревня на сваях',en:'Stilt Village'},
+     'waterPoi:0,1': {ru:'Крушение на суше',en:'Inland Wreck'},
+   };
+   imported.map.poiDiscovery = {'poi:1:1,0':'exploration','waterPoi:0,1':'interaction'};
+   await load(imported);
+   const accepted = await snapshot();
+   assert.equal(accepted.map.regions[0].pointOfInterestKinds['1,0'],'village');
+   assert.equal(accepted.map.terrainByHexKey['1,0'].terrainOverride,'lake');
+   assert.equal(accepted.map.waterPoiByHexKey['0,1'],'shipwreck');
+   assert.notEqual(accepted.map.terrainByHexKey['0,1']?.terrainOverride,'lake');
+   assert.deepEqual(accepted.map.editorNames,imported.map.editorNames);
+   assert.deepEqual(accepted.map.poiDiscovery,imported.map.poiDiscovery);
+   for(const [key,name] of [['1,0','Деревня на сваях'],['0,1','Крушение на суше']]){
+     await page.locator(`[data-engraved-poi="${key}"] .poi-marker`).waitFor();
+     await select(key);
+     assert.ok(await page.getByText(name,{exact:true}).isVisible());
+   }
+   const exported = await snapshot();
+   await load(exported);
+   assert.deepEqual(await snapshot(),exported);
+   console.log('HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.');
+ }
  await runEntityNameLifecycle({page,load,snapshot,ensureEdit,button,select,root});
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
