@@ -1,0 +1,140 @@
+{
+  "run_id": "2026-11-25T0500-strategist-HX074",
+  "task_id": "HX-BL-074",
+  "role": "strategist_manager",
+  "claim_ref": "agent-work/claims/2026-11-25T0500-strategist-HX074.json",
+  "status": "proposal_prepared",
+  "execution_running": false,
+  "role_selection_reason": "На момент выбора HX-BL-064 ожидала ответов, HX-BL-069 отложена владельцем, PR515 ожидал публикации и иной утверждённой работы в действующей очереди не было. HX-BL-074 даёт ограниченный сценарий редактирования по замечанию владельца.",
+  "source_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "ops_base_sha": "6dc2e21de951e65cebd5764e2b897b6cc9953df3",
+  "result": "В существующей карточке кандидата оформлено предложение о ручном восстановлении одного короткого рукава дельты на Classic, с приёмкой на seed 44 и границами по действующей модели рек.",
+  "proposal_ref": "agent-work/backlog.json#HX-BL-074",
+  "proposal_commit": "9aad281609ccd2a74e5af4b3661d5956040f2cc3",
+  "proposal": {
+    "task_id": "HX-BL-074",
+    "status": "proposed",
+    "title": "Вручную восстановить короткий рукав дельты в Classic",
+    "problem": "В бэклоге зафиксировано, что редактор PR511 отклонил ручное восстановление рукава на карте Classic seed 44. На проверенном исходном SHA обычная команда построения по-прежнему не принимает явную связь с основной рекой. Действующий формат сохранения и модель уже знают такую связь для существующих рукавов.",
+    "user_benefit": "Мастер может сам вернуть второе устье на прибрежной карте, сохранив основное русло и авторские правки.",
+    "before_after": "В сценарии seed 44 после удаления рукава прежний маршрут отклонялся. В предлагаемом сценарии мастер указывает допустимую развилку на основной реке и соседнюю морскую вершину, видит два разных устья и может открыть карту с этой же развилкой из JSON.",
+    "scope": [
+      "Classic, базовая региональная карта 5–6 миль, существующая прибрежная река и один рукав на одном ребре по ограничениям уже используемого представления дельты.",
+      "Ручной выбор допустимой развилки и отдельного морского устья. Проверки полноводности, пересечений и циклов сохраняются. Ошибка оставляет карту и историю целыми.",
+      "Показ результата на карте и в PNG, сохранение и открытие JSON, Undo/Redo. Автогенерация HX-BL-065, новое течение HX-BL-066, многорёберные рукава, перерасчёт существующей речной сети и специальные масштабы остаются за пределами предложения."
+    ],
+    "priority": "HX-BL-074 решает конкретную задачу редактирования на известной карте. Для этого есть представление дельты и именованный пример с двумя устьями. HX-BL-065 требует проверки автоматического появления нужной географии в штатной генерации. HX-BL-066 требует разобраться со стоком на нескольких картах. HX-BL-075 охватывает 29 операций, одна из которых уже выделена в HX-BL-069 с отложенными вопросами.",
+    "acceptance": [
+      "На карте Classic seed 44 с прибрежным регионом размера 9 удалить только существующий рукав, затем вручную восстановить его от прежней развилки до второго морского устья. Подтвердить два разных морских выхода и сохранность основного русла, включая существующие переправы и ручные отметки.",
+      "Отдельно проверить отказ для непригодного конца или занятого ребра. Сверить состояние карты и доступность исходных Undo/Redo после отказа.",
+      "Выгрузить PNG и показать оба устья. Выгрузить и вновь открыть JSON, сверить принадлежность рукава и геометрию. В исходном сеансе пройти Undo/Redo добавления."
+    ],
+    "estimate": {
+      "hourly_runs_low": 9,
+      "hourly_runs_high": 15,
+      "confidence": "средняя",
+      "scope": "От черновика и интервью до чистовой спецификации, UI и сквозного примера, проверки истории/JSON/PNG, независимой приёмки, возможной правки и проверки выпуска. Ожидание ответов и разрешения владельца учитывается отдельно.",
+      "main_risk": "Подключение создания рукава к общему редактированию с сохранением ручных зависимостей и существующего поведения обычных притоков."
+    },
+    "dependencies": [
+      "Утверждение только указанного результата, затем цикл аналитика и интервьюера. Общий слот программиста и отдельное разрешение на публикацию проверенного SHA.",
+      "Действующие представление дельты, формат JSON, речной редактор и пример seed 44. В начале проверки обновить основание до актуальной принятой сборки. Ответы по HX-BL-064 и HX-BL-069 не нужны для проработки этого объёма."
+    ],
+    "score": {
+      "model_version": "1.3-rc8",
+      "level": "L1",
+      "criterion_id": "S03-C01",
+      "rule_id": "EDIT-30",
+      "forecast_l1_max": 0.49382716049382713,
+      "forecast_state": "conditional",
+      "formula": "25/675 × 1000/3 × 0,04",
+      "confirmed_delta": null,
+      "note": "Проверяющий сверяет действующую строку EDIT-30 и остаток при приёмке. Прежняя приёмка ручной дельты в RIV-019 уже учтена; по этой строке повторного начисления нет. Автоматическая половина RIV-019 относится к HX-BL-065. L2 и L3 не оценивались."
+    },
+    "evidence_refs": [
+      "agent-work/backlog.json#HX-BL-074",
+      "agent-work/research/acceptance/L1-PR509/classic-common/hydrology/weighted.md",
+      "agent-work/score/rules/S01-C02.md",
+      "agent-work/score/current-score.json",
+      "agent-work/decisions/owner-2026-11-24-switch-HX069-to-HX067.json",
+      "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/manualRivers.ts#L111",
+      "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/manualRiverDependencies.ts#L39",
+      "https://github.com/YuriyEmelyanov/Hexcrawl/blob/d8d8fe78637d6e514f6bfc3db908a4a4ababecfe/src/saveValidation.ts#L155"
+    ],
+    "evidence_limits": "Отказ редактора взят из сохранённой записи PR511. В текущем запуске выполнена статическая сверка модели и исходников, повторный браузерный прогон не проводился.",
+    "owner_question": "Утвердить HX-BL-074 в Classic 5–6 миль: вручную восстановить один короткий рукав до отдельного морского устья с проверкой сохранения, Undo/Redo и PNG?",
+    "prepared_by_run": "2026-11-25T0500-strategist-HX074",
+    "prepared_at": "2026-11-25T02:11:58.785Z",
+    "source_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe"
+  },
+  "checks": {
+    "current_source_static": true,
+    "historical_browser_rejection_only": true,
+    "scope_and_score_sources_reviewed": true,
+    "backlog_write_verified": true
+  },
+  "authority": {
+    "task_start": "pending_owner_approval",
+    "implementation_authorized": false,
+    "publication_authorized": false
+  },
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "next_step": "Ожидается утверждение владельцем задачи HX-BL-074 в границах ручного восстановления одного короткого рукава дельты в Classic.",
+  "waiting_interviews": [
+    {
+      "task_id": "HX-BL-064",
+      "question_ids": [
+        "MARINE-Q01",
+        "MARINE-Q02",
+        "MARINE-Q03",
+        "MARINE-Q04",
+        "MARINE-Q05",
+        "MARINE-Q06"
+      ],
+      "ref": "agent-work/interviews/HX-BL-064/MARINE-START/decisions.json"
+    },
+    {
+      "task_id": "HX-BL-069",
+      "question_ids": [
+        "RR-Q01",
+        "RR-Q02",
+        "RR-Q03"
+      ],
+      "ref": "agent-work/decisions/owner-2026-11-24-switch-HX069-to-HX067.json",
+      "deferred_by_owner": true
+    }
+  ],
+  "pr515_update": {
+    "task_id": "HX-BL-073",
+    "pr": 515,
+    "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "merge_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "merged_at": "2026-11-25T02:10:30Z",
+    "approval_ref": "agent-work/decisions/owner-2026-11-25-publish-PR515-cae2b48.json",
+    "publication_authorized": true,
+    "publication_status": "site_confirmation_pending",
+    "site": "https://app.hexcrawl.ru/",
+    "live_index_sha256": "cea7d2cd48d279561d313b3b6756e3eff53a3ad3d9f3c348dd80455c5752e1d4",
+    "live_observation": "При запросе после слияния SHA-256 HTML совпал с зафиксированным PR514.",
+    "prior_publication_ref": "agent-work/evidence/HX-BL-067/release-d8d8fe7/publication.json",
+    "next_role": "programmer",
+    "next_step": "Подтвердить доставку сборки merge SHA на сайт. После подтверждения проверяющий сверяет опубликованную сборку с принятой и проводит учёт по 1.3-rc8."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25 02:07:46 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T02:13:54.805Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T02:13:54.805Z"
+}
