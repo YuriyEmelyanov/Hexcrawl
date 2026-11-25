@@ -554,7 +554,7 @@ try {
  // E3 draft lifecycle: reuse existing production runner; no second corpus.
  const draftInput=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
  const draftSegment=draftInput.map.roads[0].segments[0];draftInput.map.roads=[];draftInput.map.crossings=[];
- for(const p of [draftSegment.from,draftSegment.to]){const r=draftInput.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ for(const p of [draftSegment.from,draftSegment.to]){const r=draftInput.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));const central=r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract&&r.centerHex.q===p.q&&r.centerHex.r===p.r;if(!central&&!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
  await load(draftInput);await select(`${draftSegment.from.q},${draftSegment.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
  const draftBefore=await snapshot();

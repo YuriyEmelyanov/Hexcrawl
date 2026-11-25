@@ -9122,14 +9122,16 @@ function assignWaterPoiLayer(
     hasCentralPoi(region) ? [region.centerHex, ...region.pointsOfInterest] : region.pointsOfInterest
   ).map(hexKey)));
   for (const key of keysToCheckForNewPoi) {
-    if (next.has(key) || blockedKeys.has(key) || landPoiKeys.has(key)) continue;
+    if (next.has(key) || blockedKeys.has(key)) continue;
     const terrain = hexTerrainByKey.get(key);
     if (!terrain || !waterHexKeySet.has(key)) continue;
     const region = terrain.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
     const context: 'sea' | BiomeLandType = terrain.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild';
     const chance = context === 'wild' ? 4 : 6;
     if (randomInt(1, chance, poiRandomStreams(rng)) !== 1) continue;
-    next.set(key, randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng)));
+    const kind = randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng));
+    // Keep generation's draw order even when the existing land POI owns this hex.
+    if (!landPoiKeys.has(key)) next.set(key, kind);
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
