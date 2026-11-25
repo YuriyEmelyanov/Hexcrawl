@@ -404,6 +404,38 @@ try {
  await select('0,0');await transaction(()=>poi('city'));
  await select('0,1');await transaction(()=>poi('underwater_ruins'));await transaction(()=>poi('rocks'));await transaction(()=>poi(''));
  await transaction(()=>load(fixture));await transaction(()=>button('Сбросить').click());
+ // HX-BL-076: a valid imported map can contain data even without regions.
+ assert.equal(await button('Сбросить').count(),0);
+ const waterOnly = await snapshot();
+ waterOnly.map.terrainByHexKey['0,0']={terrainOverride:'lake',lakeId:1};
+ waterOnly.map.waterPoiByHexKey['0,0']='shipwreck';
+ waterOnly.map.editorNames['waterPoi:0,0']={ru:'Корабль',en:'Wreck'};
+ waterOnly.map.gmNotesByHexKey['0,0']='GM note';
+ waterOnly.counters.nextLakeId=2;
+ await load(waterOnly);
+ const acceptedWaterOnly = await snapshot();
+ assert.equal(acceptedWaterOnly.map.regions.length,0);
+ assert.equal(acceptedWaterOnly.map.terrainByHexKey['0,0'].lakeId,1);
+ assert.deepEqual(acceptedWaterOnly.map.editorNames,waterOnly.map.editorNames);
+ assert.deepEqual(acceptedWaterOnly.map.gmNotesByHexKey,waterOnly.map.gmNotesByHexKey);
+ assert.deepEqual(acceptedWaterOnly.map.waterPoiByHexKey,waterOnly.map.waterPoiByHexKey);
+ assert.equal(await button('Сбросить').isVisible(),true);
+ assert.equal(await button('Удалить последний регион').count(),0);
+ assert.equal(await button('Перегенерировать регион').count(),0);
+ const resetDialogs = [];
+ const observeResetDialog = dialog=>resetDialogs.push(dialog.message());
+ page.on('dialog',observeResetDialog);
+ try {
+   const cleared = await transaction(()=>button('Сбросить').click());
+   assert.deepEqual(cleared.map.terrainByHexKey,{});
+   assert.deepEqual(cleared.map.waterPoiByHexKey,{});
+   assert.deepEqual(cleared.map.editorNames,{});
+   assert.deepEqual(cleared.map.gmNotesByHexKey,{});
+   assert.equal(await button('Сбросить').count(),0);
+   assert.deepEqual(resetDialogs,[]);
+ } finally {
+   page.off('dialog',observeResetDialog);
+ }
  // Failed JSON, read and preparation keep A, view, and redo intact; same file can be retried.
  await load(fixture);await select('1,0');await biome('open_hills');await button('Отменить').click();
  let before=await snapshot();assert.equal(await button('Повторить').isDisabled(),false);

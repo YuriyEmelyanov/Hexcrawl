@@ -14171,12 +14171,6 @@ export function App() {
     return Object.fromEntries(Object.entries(notesMapRef.current).filter(([key]) => keys.has(key)));
   };
   const removedNoteKeys = (notes: Record<string, string>) => Object.keys(notesMapRef.current).filter(key => !(key in notes));
-  const confirmNotesRemoval = (notes: Record<string, string>) => {
-    const removed = removedNoteKeys(notes);
-    return !removed.length || window.confirm(language === 'ru'
-      ? `Удалить заметки мастера (${removed.length}) в гексах ${removed.join('; ')}? Их можно восстановить отменой.`
-      : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
-  };
   const undoMap = () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked() || !undoHistoryRef.current.length) return;
@@ -14832,6 +14826,9 @@ export function App() {
     });
     return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
   }, [kingdomJob, detailedRenderReady]);
+
+  const hasRegions = regions.length > 0;
+  const hasResettableMap = hasRegions || hexTerrainByKey.size > 0 || physicalGrid !== undefined;
 
   const resetMapToMode = (nextMode?:GenerationMode) => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
@@ -17538,15 +17535,17 @@ export function App() {
               </label>
             </div>
             : null}
-            {regions.length > 0 ? (
+            {hasResettableMap ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                {hasRegions && <>
                   <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
                   <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
+                </>}
               </div>
             ) : null}
             <div className="control-block controls controls--display">
