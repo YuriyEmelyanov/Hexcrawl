@@ -1,0 +1,190 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "run_id": "2026-11-25T0900-reviewer-PR516-reset",
+  "pr": 516,
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+  "tree_sha": "d49053a2b68b2c572afe20aff536c00f869cab2a",
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "verdict": "changes_requested",
+  "verified_at": "2026-11-25T06:05:26.160Z",
+  "checks": {
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45550921979",
+    "jobs": [
+      {
+        "name": "browser",
+        "id": 138991621733,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "world-random",
+        "id": 138991622160,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "check",
+        "id": 138991622234,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 138991624102,
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "ci_node": {
+      "executed": 453,
+      "passed": 453,
+      "failed": 0,
+      "skipped": 0
+    },
+    "independent_node": {
+      "sources": [
+        "test/saveSafety.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/regionEditing.test.mjs"
+      ],
+      "selection_a": {
+        "assertion_cases_executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "runner_file_wrapper_without_matching_cases": 1
+      },
+      "selection_b": {
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "scope": "пустой сброс, блокировка во время импорта и последовательность 100 снимков истории"
+      }
+    },
+    "independent_browser": {
+      "chromium": "151.0.7922.34",
+      "normal_maps": [
+        {
+          "locale": "ru",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "regions_before": 2,
+          "lakes_before": 1,
+          "fine_edits_before": 1,
+          "notes_before": 1,
+          "author_name": "Stilt Village",
+          "knave_content_restored": true,
+          "reset_removed_layers": true,
+          "undo_redo_exact": true,
+          "history_steps_import_reset": 2,
+          "dialogs": 0,
+          "page_errors": 0
+        },
+        {
+          "locale": "en",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "regions_before": 2,
+          "lakes_before": 1,
+          "fine_edits_before": 1,
+          "notes_before": 1,
+          "author_name": "Stilt Village",
+          "knave_content_restored": true,
+          "reset_removed_layers": true,
+          "undo_redo_exact": true,
+          "history_steps_import_reset": 2,
+          "dialogs": 0,
+          "page_errors": 0
+        }
+      ],
+      "zero_region_map": {
+        "version": 10,
+        "regions": 0,
+        "lake_hex": "0,0",
+        "water_poi": "shipwreck",
+        "authored_name": "Wreck",
+        "notes": "GM note",
+        "dialogs": [],
+        "errors": [],
+        "reset_buttons": 0
+      },
+      "build_index_sha256": "1f3d3378859ad9c350fd34979022cf790719f207756412a6fb41f500dbf9b80e"
+    }
+  },
+  "independent_review": {
+    "agent": "reset516_independent",
+    "context": "fresh",
+    "verdict": "Подтвердил точную транзакцию в активном одномильном режиме, необходимость двух тестов и независимым поиском обнаружил пробел на принятом v10 без регионов. Результат браузера перепроверен владельцем запуска."
+  },
+  "findings": [
+    {
+      "id": "HX076-RESET-RV01-01",
+      "severity": "P2",
+      "blocking": true,
+      "requirement": "F1 / SURFACE-Q01",
+      "classification": "preexisting_scope_gap_verified",
+      "title": "Команда «Сбросить» недоступна на сохранении с водой без регионов",
+      "source_path": "src/App.tsx",
+      "source_line": 17541,
+      "source_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/749397bff60f6d0fe2233073db9baa93801a9029/src/App.tsx#L17541",
+      "baseline_guard_same": true,
+      "steps": [
+        "Открыть приложенный JSON v10 из штатной команды импорта.",
+        "Сохранить JSON и убедиться, что lakeId 1, именованный shipwreck и заметка приняты при нуле регионов.",
+        "В панели карты найти кнопку «Сбросить»."
+      ],
+      "actual": "Импорт и экспорт работают, карта содержит озеро, именованную водную точку и заметку. Кнопка отсутствует, потому что вся группа действий скрывается при regions.length === 0.",
+      "expected": "Пользователь может очистить любую принятую непустую карту одним сбросом без диалогов и затем восстановить точные данные через Undo/Redo.",
+      "fixture_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/lake-without-regions.json",
+      "screenshot_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/reset-control-absent.jpg",
+      "verified_observation": {
+        "version": 10,
+        "regions": 0,
+        "lake_hex": "0,0",
+        "water_poi": "shipwreck",
+        "authored_name": "Wreck",
+        "notes": "GM note",
+        "dialogs": [],
+        "errors": [],
+        "reset_buttons": 0
+      },
+      "fix_acceptance": "Показать сброс при наличии данных карты без регионов. Отдельно сохранить условия появления «Перегенерировать» и «Удалить последний регион», защиту черновиков и no-op настоящей пустой карты. Повторить сценарий файла через обычную кнопку и сверить Undo/Redo с полными JSON."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Node saveSafety",
+    "scenario": "Сброс малого озера и локальных правок, сброс авторских имён, заметок и Knave. В обоих случаях — без подтверждения и одна точная транзакция.",
+    "reuse_or_new_reason": "Это два прежних сценария намерений владельца. Их прежние утверждения о блокировке стали противоположными F1; каждое дополнение проверяет другой набор данных и обе стороны истории. Пакетные тесты видят реальный обработчик, но не проверяют наличие кнопки при 0 регионах.",
+    "source": "Сопоставление двух деклараций test в test/saveSafety.test.mjs между base и exact head; переименование не засчитано добавлением."
+  },
+  "nonblocking_observations": [
+    "После снятия последнего вызова confirmNotesRemoval в src/App.tsx остался без потребителей; при правке стоит удалить мёртвый helper после проверки ссылок."
+  ],
+  "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/score-assessment.json",
+  "publication_ready": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T06:00:04.881Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T06:05:26.160Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
