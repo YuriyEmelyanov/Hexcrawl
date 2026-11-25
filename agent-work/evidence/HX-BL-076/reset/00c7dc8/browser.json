@@ -1,0 +1,110 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "finding_id": "HX076-RESET-RV01-01",
+  "pr": 516,
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "previous_head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+  "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+  "checked_tree_sha": "61df548eb51a9120a36caf2ac2af908fef4653f4",
+  "fixture_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/lake-without-regions.json",
+  "method": "Playwright Chromium 151, previously reviewed build and candidate built from identical Git tree as the remote PR head. Imported the reviewer fixture and compared downloaded map JSON across import, reset, undo and redo, excluding savedAt only. Reset hides after clearing the map. Region commands stay hidden throughout the regionless cases. Recorded captures use the product build from the previous fix commit. The final candidate changes only the smoke script, shares the app source tree and build output, and passed the entire save/history browser scenario.",
+  "canonical_empty_after_reset": true,
+  "undo_across_reset_and_import_exact": true,
+  "dist_index_html_sha256": "bd3493c9c741fb448e2cd87a3491ae58b3f9631f942c85627fdc731fec201f9a",
+  "cases": [
+    {
+      "label": "before-desktop",
+      "viewport": {
+        "width": 1500,
+        "height": 1000
+      },
+      "imported": true,
+      "regions": 0,
+      "lake": 1,
+      "namedWaterPOI": "Wreck",
+      "note": "GM note",
+      "reset_visible": false,
+      "region_actions_visible": false,
+      "undo_redo_exact": false,
+      "dialog_count": 0,
+      "page_errors": 0
+    },
+    {
+      "label": "fixed-desktop",
+      "viewport": {
+        "width": 1500,
+        "height": 1000
+      },
+      "imported": true,
+      "regions": 0,
+      "lake": 1,
+      "namedWaterPOI": "Wreck",
+      "note": "GM note",
+      "reset_visible": true,
+      "region_actions_visible": false,
+      "undo_redo_exact": true,
+      "dialog_count": 0,
+      "page_errors": 0
+    },
+    {
+      "label": "fixed-narrow",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "imported": true,
+      "regions": 0,
+      "lake": 1,
+      "namedWaterPOI": "Wreck",
+      "note": "GM note",
+      "reset_visible": true,
+      "region_actions_visible": false,
+      "undo_redo_exact": true,
+      "dialog_count": 0,
+      "page_errors": 0
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "before-desktop.jpg",
+      "sha": "72908021024edf3177bff5e85ddfaf791ec23f14",
+      "bytes": 29837,
+      "path": "agent-work/evidence/HX-BL-076/reset/00c7dc8/before-desktop.jpg"
+    },
+    {
+      "name": "fixed-desktop.jpg",
+      "sha": "297a4b13387784aef9ad0a896cdd7e82444efcd2",
+      "bytes": 30062,
+      "path": "agent-work/evidence/HX-BL-076/reset/00c7dc8/fixed-desktop.jpg"
+    },
+    {
+      "name": "fixed-narrow.jpg",
+      "sha": "cc0d63141f2d0470b496b13ebc04e0a5e1b9e678",
+      "bytes": 21671,
+      "path": "agent-work/evidence/HX-BL-076/reset/00c7dc8/fixed-narrow.jpg"
+    },
+    {
+      "name": "after-cleared.jpg",
+      "sha": "4b7ec4d1751e4a4b3a3af007551502d5525c9b17",
+      "bytes": 24453,
+      "path": "agent-work/evidence/HX-BL-076/reset/00c7dc8/after-cleared.jpg"
+    }
+  ],
+  "targeted_capture_source_head_sha": "f71e965e7d412adfb76695a474ccc35958b80a05",
+  "targeted_capture_tree_sha": "e503313d72f442c70cf4ad69294709b39861e41b",
+  "source_tree_sha": "9fc323f6a029ef4f07c30b6ab0db4607969608ce",
+  "prior_evidence_ref": "agent-work/evidence/HX-BL-076/reset/f71e965/browser.json",
+  "local_browser_smoke": {
+    "command": "node test/browser/save-history.smoke.mjs",
+    "browser": "Chromium 151.0.7922.34",
+    "exit_code": 0,
+    "log_sha256": "69787757b6b660323b16b6b1062b03cb7c69abd958d7ba7ca22473876e642a5c"
+  },
+  "ci_first_attempt": {
+    "head_sha": "f71e965e7d412adfb76695a474ccc35958b80a05",
+    "run_id": 45566244926,
+    "job_id": 139041637484,
+    "result": "SyntaxError from duplicate fixture binding in the expanded smoke test; renamed binding and checked module before full local browser smoke."
+  }
+}
