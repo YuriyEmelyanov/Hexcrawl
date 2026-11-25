@@ -14842,12 +14842,7 @@ export function App() {
       && seaIdentityRef.current.nextSeaId===1 && !seaIdentityRef.current.seas.length
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
       && !knaveRef.current && !physicalGridRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
-    if(Object.keys(editorNamesRef.current).length){setEditError(language==='ru'?`Сброс удалит авторское имя «${Object.values(editorNamesRef.current)[0]?.ru}». Сначала очистите его явно.`:`Reset would remove the authored name “${Object.values(editorNamesRef.current)[0]?.en}”. Clear it explicitly first.`);return;}
-    if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(discoveries.current).length||Object.keys(knaveRef.current.content?.byPoi??{}).length)&&!window.confirm(language==='ru'?'Сброс удалит содержимое точек, проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave point content, terrain and discovery data. Undo can restore them.'))return;
-    if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
-    if(Object.keys(physicalGridRef.current?.fineCellEdits??{}).length&&!window.confirm(language==='ru'?'Удалить локальные правки одномильных гексов? Отмена вернёт их.':'Remove local one-mile edits? Undo restores them.'))return;
-    if(physicalGridRef.current?.smallLakes?.lakes.length&&!window.confirm(language==='ru'?'Удалить малые озёра при сбросе карты? «Отменить» восстановит их.':'Remove the small lakes when resetting the map? Undo restores them.'))return;
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
