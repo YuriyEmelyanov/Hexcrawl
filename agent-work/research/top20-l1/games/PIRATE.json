@@ -196,6 +196,337 @@
         "when": "Применить критерий тематической пригодности L1.",
         "expected": "Правило не меняет видимость гексов, не скрывает региональные объекты и не формирует представление карты игрока."
       }
+    },
+    {
+      "id": "PIRATE-CORE-L1-001",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Pirate Borg Core, Limithron / Free League, ©2022, ISBN 978-91-89143-80-7, EN",
+        "locator": "с. 122, Uncharted Islands: Size, Terrain, Vegetation, Prominent Natural Feature",
+        "source_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "primary_url": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "publisher_url": "https://www.limithron.com/pirateborg",
+        "author_project_key": "limithron:pirate-borg:core-isbn-9789189143807",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Jacob Hurst задаёт качественный размер, общий рельеф, растительность и природный ориентир отдельными таблицами. Один результат рельефа создаёт две суши, другой задаёт атолл."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C03",
+          "S01-C05",
+          "S05-C01"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Размещение результатов на гексах — способ применения в HexCrawl. Книга задаёт признаки острова, не алгоритм разбивки на гексы."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.land_water_shapes",
+          "map.terrain_zones",
+          "content.landmarks"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/ — с. 122, Uncharted Islands: Size, Terrain, Vegetation, Prominent Natural Feature",
+        "normative_kind": "optional_generation",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "По результатам таблиц нанести остров или группу островов в выбранной акватории и сохранить физические признаки.",
+        "inputs_and_units": {
+          "size": "d6",
+          "terrain": "2d6",
+          "vegetation": "2d6",
+          "feature": "2d6",
+          "geometry": "гексы, границы и масштаб выбирает мастер"
+        },
+        "product_operation": "По результатам таблиц нанести остров или группу островов в выбранной акватории и сохранить физические признаки.",
+        "expected_output": "Остров либо группа островов с сохранёнными контурами, рельефом, растительностью и адресуемым ориентиром.",
+        "constraints_and_exceptions": [
+          "В книге размер качественный.",
+          "Лагуну, берега и расстояние между островами размещает мастер."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Размер 2, рельеф 3, растительность 12, ориентир 8.",
+            "when": "Мастер применяет результаты и сохраняет карту.",
+            "expected": "Две отдельные суши в указанной акватории, размер категории small, тропическая растительность и нанесённый водопад."
+          }
+        ],
+        "source_vs_product_interpretation": "Размещение результатов на гексах — способ применения в HexCrawl. Книга задаёт признаки острова, не алгоритм разбивки на гексы.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "map.terrain_zones",
+          "content.landmarks"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
+    },
+    {
+      "id": "PIRATE-CORE-L1-002",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Pirate Borg Core, Limithron / Free League, ©2022, ISBN 978-91-89143-80-7, EN",
+        "locator": "с. 122–123, Uncharted Islands: Inhabitants, treasure sites, notable resources, Natural Hazards",
+        "source_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "primary_url": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "publisher_url": "https://www.limithron.com/pirateborg",
+        "author_project_key": "limithron:pirate-borg:core-isbn-9789189143807",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Таблицы дают постоянные объекты острова: поселения, места клада, гавани, подводные и береговые препятствия. В таблице опасностей есть пустой результат."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Типизированные места отображают географические результаты таблиц. Место клада и видимость объектов задаёт мастер."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.place_description",
+          "content.landmarks",
+          "content.static_hazard"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/ — с. 122–123, Uncharted Islands: Inhabitants, treasure sites, notable resources, Natural Hazards",
+        "normative_kind": "optional_generation",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "Нанести постоянные места и опасности на выбранные адреса острова и соседних вод.",
+        "inputs_and_units": {
+          "inhabitants": "2d6",
+          "treasure_site": "2d6",
+          "resource": "2d6",
+          "natural_hazard": "2d6",
+          "placement": "мастер указывает адрес"
+        },
+        "product_operation": "Нанести постоянные места и опасности на выбранные адреса острова и соседних вод.",
+        "expected_output": "Каждое принятое постоянное место связано с конкретным гексом или участком побережья и сохраняет тип и название.",
+        "constraints_and_exceptions": [
+          "Учитываются пространственные результаты.",
+          "Результат 7 в Natural Hazards не создаёт опасность.",
+          "Текущие конфликты, реакции и разрешение угроз вне этой операции."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На карте есть остров. Броски: жители 12, место клада 2, интересная находка 6, опасность 7.",
+            "when": "Разместить выбранные постоянные объекты и повторно открыть карту.",
+            "expected": "Три позиции сохраняют свои адреса: скрытый пиратский город, древние руины и природная гавань. Маркер опасности отсутствует."
+          }
+        ],
+        "source_vs_product_interpretation": "Типизированные места отображают географические результаты таблиц. Место клада и видимость объектов задаёт мастер.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.landmarks",
+          "content.static_hazard"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
+    },
+    {
+      "id": "PIRATE-DATD-L1-001",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Down Among the Dead, Limithron / Free League, ©2025, ISBN 978-91-90079-03-4, EN",
+        "locator": "с. 26–27, Dark Caribbean Island Generator",
+        "source_ref": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025",
+        "primary_url": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025",
+        "publisher_url": "https://freeleaguepublishing.com/shop/pirate-borg/down-among-the-dead/",
+        "author_project_key": "limithron:pirate-borg:down-among-the-dead-isbn-9789190079034",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Бросок семи разных кубов задаёт положение объектов. Ведущий очерчивает от одной до семи суш. На каждом кубе различаются результат для острова и локальный результат."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C03",
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Цифровой перенос авторского картографического приёма. Не устанавливает автоматическую группировку или особый масштаб."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.land_water_shapes",
+          "content.feature_distribution",
+          "content.landmarks"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025 — с. 26–27, Dark Caribbean Island Generator",
+        "normative_kind": "optional_generation",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "Перенести положения кубов и очертания суши на выбранную гекс-акваторию, нанести локальные результаты и сохранить карту.",
+        "inputs_and_units": {
+          "dice": "7 стандартных кубов; дополнительные и перебросы разрешены",
+          "position": "геометрия наброска; отображение в адреса гексов — выбор мастера",
+          "landmasses": "1–7 в исходной процедуре"
+        },
+        "product_operation": "Перенести положения кубов и очертания суши на выбранную гекс-акваторию, нанести локальные результаты и сохранить карту.",
+        "expected_output": "Сохранены отдельные суши, общее название и локальные объекты на адресах из наброска.",
+        "constraints_and_exceptions": [
+          "Погода и общее имя не порождают локальных POI.",
+          "Граница и размер гекса — решение мастера.",
+          "Применение на гексах показано независимым автором, порт в его примере добавлен отдельно."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Один контур, d4=1 в гексе A, d20=8 в соседнем водном гексе B.",
+            "when": "Мастер переносит результаты и сохраняет карту.",
+            "expected": "В A записан небольшой холм, в B — коралловый риф. После повторного открытия адреса различаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Цифровой перенос авторского картографического приёма. Не устанавливает автоматическую группировку или особый масштаб.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "content.feature_distribution",
+          "content.landmarks"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
+    },
+    {
+      "id": "PIRATE-DATD-L1-002",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Down Among the Dead, Limithron / Free League, ©2025, ISBN 978-91-90079-03-4, EN",
+        "locator": "с. 28–29, Coral Reef Generator, шаги 1–5",
+        "source_ref": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025",
+        "primary_url": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025",
+        "publisher_url": "https://freeleaguepublishing.com/shop/pirate-borg/down-among-the-dead/",
+        "author_project_key": "limithron:pirate-borg:down-among-the-dead-isbn-9789190079034",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Кубы располагают элементы. Общая география зависит от d4. Контуры рисуются вокруг групп по одному–три куба. Дополнительные d6 добавляют рифы, d20 — точки интереса."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C03",
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Подготовка препятствия и географии. Обход, столкновение и проверка судна относятся к ведению."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.land_water_shapes",
+          "content.static_hazard",
+          "content.feature_distribution"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://www.scribd.com/document/1054098270/Pirate-Borg-MORK-BORG-Limithron-Down-Among-the-Dead-OEF-2025 — с. 28–29, Coral Reef Generator, шаги 1–5",
+        "normative_kind": "optional_generation",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить региональный риф на морских и береговых гексах, выбрав его форму, глубину и места объектов.",
+        "inputs_and_units": {
+          "geography": "d4",
+          "cluster": "1–3 куба",
+          "extra_reefs": "d6 на элемент",
+          "extra_poi": "d20 на объект"
+        },
+        "product_operation": "Подготовить региональный риф на морских и береговых гексах, выбрав его форму, глубину и места объектов.",
+        "expected_output": "Контуры рифа, географический тип и адреса локальных элементов сохранены.",
+        "constraints_and_exceptions": [
+          "Применяется к рифу как части региональной карты.",
+          "Глубина относительная, без придуманной длины или численного порога.",
+          "Обитатели и эффекты опасностей не разыгрываются."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "d4=3, дополнительный d6=2 задан в группе морских гексов вдали от берега.",
+            "when": "Мастер строит географию и переносит элемент на карту.",
+            "expected": "Между сушей и удалённым барьерным рифом остаётся полоса воды; вытянутый элемент рифа сохраняется в выбранной группе."
+          }
+        ],
+        "source_vs_product_interpretation": "Подготовка препятствия и географии. Обход, столкновение и проверка судна относятся к ведению.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "content.static_hazard",
+          "content.feature_distribution"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
     }
   ],
   "independent_projection_example": {
@@ -206,5 +537,6 @@
     "finding": "Автор описывает создание острова по отдельному дополнению Down Among the Dead, перенос результата в Tiled и добавление порта. Это связанный сценарий подготовки, но он происходит из другого источника и не подтверждает три строки Treasure Maps."
   },
   "latest_formalization_base_sha": "0c7b578eaba0ce420cf1d9c4cab43e71c43a4504",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-maritime-1930"
+  "latest_formalization_run_id": "2026-11-24-top20-l1-maritime-1930",
+  "latest_source_coverage_review_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json"
 }

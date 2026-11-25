@@ -4,10 +4,588 @@
   "research_sha": "f1171afb87ada1e372fb15812746aac73dec5cb7",
   "game_matrix_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json",
   "rows": [
-    {"id":"MAUS-obs-01","game_id":"MAUS","disposition":"keep_L1","source":{"edition":"Mausritter, официальный веб-SRD; печатная редакция не приписана","locator":"Making a hexcrawl §1 Fill hexes","source_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","recorded_facts":"Рекомендуемая начальная заготовка 5×5 с дружественным поселением в центре.","access_level":"publisher_web_srd","verification":"verified_in_this_run"},"model":{"game_unit_id":"MAUS","operation_id":"MAUS-obs-01","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-01","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05","S04-C04"]},"canonical":{"binding_id":null,"common_rule_ids":["map.physical_hex_scale"],"candidate_binding":true},"formalization":"primary_verified_candidate","operational_requirement":{"source_rule_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","normative_kind":"procedure_with_GM_choices","applicability":"Подготовка региональной карты выбранной кампании","layer":"L1","trigger_or_user_action":"Создать стартовую область Mausritter","inputs_and_units":{"rows":5,"columns":5,"scale":{"value":1,"unit":"mile","axis":null},"center_index_1_based":[3,3]},"product_operation":"Создать стартовую область Mausritter","expected_output":"25 различимых адресов. На центральном адресе находится дружественное поселение.","constraints_and_exceptions":["Размер относится к стартовой области. Участок можно расширять. Источник не задаёт физическую ось измерения мили."],"acceptance_cases":[{"given":"Пустой документ; стартовая область 5×5; шаг профиля 1 миля","when":"Создать область, сохранить и открыть","expected":"Доступны 25 уникальных адресов. Дружественное поселение в третьем ряду и третьем столбце; масштаб возвращён без подмены оси."}],"source_vs_product_interpretation":"Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.physical_hex_scale"],"unresolved_parameters":["Конвенция измерения 1 мили в SRD не указана. Координаты примера — индекс ряда и столбца, не требование к системе координат."]},"model_fixture":{"user_action":"Начать карту 5×5 одномильных гексов с дружественным поселением в центре.","expected_output":"Получаются 25 адресуемых клеток, поселение стоит в центральной.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"docs/one-mile-state.md","sha":null,"model_reported_status":"partial","finding":"Одномильная сетка и поселения работают. Подготовка именно этой области и размещение по мелкому адресу в центре не проверены сквозным тестом.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"MAUS-obs-02","game_id":"MAUS","disposition":"keep_L1","source":{"edition":"Mausritter, официальный веб-SRD; печатная редакция не приписана","locator":"Making a hexcrawl §1; Hex contents → Hex type, Landmarks, Landmark details","source_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","recorded_facts":"Тип и ориентир связаны таблицами. Мастер может бросить, выбрать или придумать результат и дать клетке краткое описание.","access_level":"publisher_web_srd","verification":"verified_in_this_run"},"model":{"game_unit_id":"MAUS","operation_id":"MAUS-obs-02","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-02","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":null,"common_rule_ids":["content.roll_table_resolution"],"candidate_binding":true},"formalization":"primary_verified_candidate","operational_requirement":{"source_rule_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","normative_kind":"procedure_with_GM_choices","applicability":"Подготовка региональной карты выбранной кампании","layer":"L1","trigger_or_user_action":"Заполнить выбранный гекс типом, ориентиром и деталью","inputs_and_units":{"hex_type":"1d6, 1–2 Countryside; 3–4 Forest; 5 River; 6 Human town","landmark":"1d20 по колонке типа","detail":"1d6; 1d8 только для строк с подтаблицей"},"product_operation":"Заполнить выбранный гекс типом, ориентиром и деталью","expected_output":"В выбранном гексе есть тип, подходящий ориентир, привязанная к нему деталь и краткое описание.","constraints_and_exceptions":["Разрешён ручной выбор. Деталь d6=1 ведёт к поселению без d8. Речная категория сама по себе не задаёт новое русло через соседние клетки."],"acceptance_cases":[{"given":"Пустой гекс H; тип d6=5, ориентир d20=1, деталь d6=2 и d8=1","when":"Заполнить H и записать краткое описание, затем сохранить и открыть","expected":"H: River, Canal lock, Small mouse farm; деталь связана с этим ориентиром, описание H сохранено."},{"given":"Выбрана деталь d6=1","when":"Применить результат","expected":"Выбран вариант мышиного поселения, d8 не запрошен."}],"source_vs_product_interpretation":"Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution"],"unresolved_parameters":[]},"model_fixture":{"user_action":"Заполнить клетку местностью, зависящим от неё ориентиром и деталью.","expected_output":"При d6=5 и d20=1 получается речная клетка с шлюзом, деталь относится к этому ориентиру.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-013-L1-v2","sha":null,"model_reported_status":"unknown","finding":"Биом, реки и места доступны. Результат заданной пары бросков в таблице Mausritter не воспроизведён.","scope":"unresolved_or_analogy","matching_prior_operation":"PF2-RM-013-L1-v2"}},"open_checks":["Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"MAUS-obs-03","game_id":"MAUS","disposition":"keep_L1","source":{"edition":"Mausritter, официальный веб-SRD; печатная редакция не приписана","locator":"Making a hexcrawl §3 Detail adventure sites","source_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","recorded_facts":"Мастер выбирает 2–4 разнесённых ориентира и назначает темы. Одно место раскрывается подробно сразу, остальные можно развить позднее.","access_level":"publisher_web_srd","verification":"verified_in_this_run"},"model":{"game_unit_id":"MAUS","operation_id":"MAUS-obs-03","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-03","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":null,"common_rule_ids":["content.site_density"],"candidate_binding":true},"formalization":"primary_verified_candidate","operational_requirement":{"source_rule_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","normative_kind":"procedure_with_GM_choices","applicability":"Подготовка региональной карты выбранной кампании","layer":"L1","trigger_or_user_action":"Назначить ориентиры местами приключений и подготовить ключ одного места","inputs_and_units":{"selected_landmark_count":[2,4],"fully_keyed_minimum":1,"test_hex_addresses":["H1","H3","H5"]},"product_operation":"Назначить ориентиры местами приключений и подготовить ключ одного места","expected_output":"Сохраняются три разных места с темами и адресами. Полный ключ привязан только к выбранному месту.","constraints_and_exceptions":["Места выбирает мастер. Геометрический минимум разнесения не задан. Подготовка внутренних сцен отложена."],"acceptance_cases":[{"given":"Три ориентира на H1, H3, H5 и по теме для каждого","when":"Назначить их местами приключений, заполнить ключ H3, сохранить и открыть","expected":"Все три места доступны по старым адресам. Ключ H3 не добавлен к H1 или H5."}],"source_vs_product_interpretation":"Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.site_density"],"unresolved_parameters":["Порог расстояния между местами источник не задаёт."]},"model_fixture":{"user_action":"Выбрать 2–4 разных ориентира для приключений и подробно подготовить один.","expected_output":"Выбранные места разнесены на карте, подготовленное описание относится к одному из них.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft","sha":null,"model_reported_status":"partial","finding":"Можно разместить и назвать объекты. Принадлежность подготовленного описания объекту при перемещении в чистом Classic не подтверждена.","scope":"unresolved_or_analogy","matching_prior_operation":"DND5-2014-017-L1-v2-draft"}},"open_checks":["Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"MAUS-obs-04","game_id":"MAUS","disposition":"keep_L1","source":{"edition":"Mausritter, официальный веб-SRD; печатная редакция не приписана","locator":"Making a hexcrawl §4 Seed rumours","source_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","recorded_facts":"Таблица d6 даёт подсказки о местах или действиях фракций. В L1 входит подготовка слуха о конкретном месте.","access_level":"publisher_web_srd","verification":"verified_in_this_run"},"model":{"game_unit_id":"MAUS","operation_id":"MAUS-obs-04","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-04","related_common_criterion_ids":[]},"canonical":{"binding_id":null,"common_rule_ids":["content.site_links"],"candidate_binding":true},"formalization":"primary_verified_candidate","operational_requirement":{"source_rule_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","normative_kind":"procedure_with_GM_choices","applicability":"Подготовка региональной карты выбранной кампании","layer":"L1","trigger_or_user_action":"Записать в таблицу слух о выбранном месте","inputs_and_units":{"table":"1d6","test_slot":3,"test_target_id":"POI-A"},"product_operation":"Записать в таблицу слух о выбранном месте","expected_output":"В строке 3 сохранены текст слуха и однозначный адрес выбранного места.","constraints_and_exceptions":["Достаточна подсказка о месте. Разные записи могут вести к одной цели. Слухи о фракциях без места и выдача слуха на игре вне этого L1-теста."],"acceptance_cases":[{"given":"Таблица на 6 исходов; строка 3 указывает на POI-A; POI-B имеет то же имя","when":"Переименовать POI-A, сохранить и открыть","expected":"Строка 3 ведёт к POI-A. POI-B не становится целью слуха."}],"source_vs_product_interpretation":"Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.site_links"],"unresolved_parameters":[]},"model_fixture":{"user_action":"Подготовить таблицу d6 слухов, ведущих к событиям или местам карты.","expected_output":"Для слуха, относящегося к выбранному месту, после открытия сохраняется однозначная ссылка.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-013-L1-v2-draft","sha":null,"model_reported_status":"unknown","finding":"Связь записи таблицы d6 с конкретным местом не проверена.","scope":"unresolved_or_analogy","matching_prior_operation":"DND5-2014-013-L1-v2-draft"}},"open_checks":["Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"MAUS-obs-05","game_id":"MAUS","disposition":"keep_L1","source":{"edition":"Mausritter, официальный веб-SRD; печатная редакция не приписана","locator":"Mouse settlements → Settlement size","source_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","recorded_facts":"Для размера мышиного поселения используют меньший из двух d6.","access_level":"publisher_web_srd","verification":"verified_in_this_run"},"model":{"game_unit_id":"MAUS","operation_id":"MAUS-obs-05","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-05","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":null,"common_rule_ids":["map.settlement_density"],"candidate_binding":true},"formalization":"primary_verified_candidate","operational_requirement":{"source_rule_ref":"https://mausritter.com/srd/hexcrawl-toolbox/","normative_kind":"procedure_with_GM_choices","applicability":"Подготовка региональной карты выбранной кампании","layer":"L1","trigger_or_user_action":"Определить и сохранить размер мышиного поселения","inputs_and_units":{"dice":"2d6","selection":"minimum","categories":{"1":"Farm/manor","2":"Crossroads","3":"Hamlet","4":"Village","5":"Town","6":"City"}},"product_operation":"Определить и сохранить размер мышиного поселения","expected_output":"Поселение сохраняет ID и адрес. Поле категории получает результат по меньшему кубу.","constraints_and_exceptions":["Размер поселения применяется к выбранному мышиному поселению. Генерация населения в пределах диапазона не требуется этим шагом."],"acceptance_cases":[{"given":"Поселение S в гексе H; броски 2 и 5","when":"Применить таблицу, сохранить и открыть","expected":"S остаётся в H; категория Crossroads, справочный диапазон 3–5 семей."},{"given":"То же поселение; броски 6 и 6","when":"Применить таблицу","expected":"Категория City."},{"given":"То же поселение; броски 0 и 5","when":"Попытаться применить результат","expected":"Отказ до правки поселения."}],"source_vs_product_interpretation":"Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.settlement_density"],"unresolved_parameters":[]},"model_fixture":{"user_action":"Определить размер конкретного поселения мышей по меньшему из 2d6.","expected_output":"При 2 и 5 получается категория Crossroads. Поселение с этим типом находится на прежней клетке.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-ST-009-v2","sha":null,"model_reported_status":"partial","finding":"Адрес и имя поселения сохраняются. Категория и правило выбора нижнего куба профиля не подтверждены.","scope":"unresolved_or_analogy","matching_prior_operation":"PF2-RM-ST-009-v2"}},"open_checks":["Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]}
-  ]
+    {
+      "id": "MAUS-obs-01",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD; печатная редакция не приписана",
+        "locator": "Making a hexcrawl §1 Fill hexes",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "recorded_facts": "Рекомендуемая начальная заготовка 5×5 с дружественным поселением в центре.",
+        "access_level": "publisher_web_srd",
+        "verification": "verified_in_this_run"
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": "MAUS-obs-01",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-01",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05",
+          "S04-C04"
+        ]
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.physical_hex_scale"
+        ],
+        "candidate_binding": true
+      },
+      "formalization": "primary_verified_candidate",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "normative_kind": "procedure_with_GM_choices",
+        "applicability": "Подготовка региональной карты выбранной кампании",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать стартовую область Mausritter",
+        "inputs_and_units": {
+          "rows": 5,
+          "columns": 5,
+          "scale": {
+            "value": 1,
+            "unit": "mile",
+            "axis": null
+          },
+          "center_index_1_based": [
+            3,
+            3
+          ]
+        },
+        "product_operation": "Создать стартовую область Mausritter",
+        "expected_output": "25 различимых адресов. На центральном адресе находится дружественное поселение.",
+        "constraints_and_exceptions": [
+          "Размер относится к стартовой области. Участок можно расширять. Источник не задаёт физическую ось измерения мили."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Пустой документ; стартовая область 5×5; шаг профиля 1 миля",
+            "when": "Создать область, сохранить и открыть",
+            "expected": "Доступны 25 уникальных адресов. Дружественное поселение в третьем ряду и третьем столбце; масштаб возвращён без подмены оси."
+          }
+        ],
+        "source_vs_product_interpretation": "Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Конвенция измерения 1 мили в SRD не указана. Координаты примера — индекс ряда и столбца, не требование к системе координат."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Начать карту 5×5 одномильных гексов с дружественным поселением в центре.",
+        "expected_output": "Получаются 25 адресуемых клеток, поселение стоит в центральной.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "docs/one-mile-state.md",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Одномильная сетка и поселения работают. Подготовка именно этой области и размещение по мелкому адресу в центре не проверены сквозным тестом.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        }
+      },
+      "open_checks": [
+        "Confirm applicable binding and canonical mapping before adoption.",
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "MAUS-obs-02",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD; печатная редакция не приписана",
+        "locator": "Making a hexcrawl §1; Hex contents → Hex type, Landmarks, Landmark details",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "recorded_facts": "Тип и ориентир связаны таблицами. Мастер может бросить, выбрать или придумать результат и дать клетке краткое описание.",
+        "access_level": "publisher_web_srd",
+        "verification": "verified_in_this_run"
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": "MAUS-obs-02",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-02",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ]
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": true
+      },
+      "formalization": "primary_verified_candidate",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "normative_kind": "procedure_with_GM_choices",
+        "applicability": "Подготовка региональной карты выбранной кампании",
+        "layer": "L1",
+        "trigger_or_user_action": "Заполнить выбранный гекс типом, ориентиром и деталью",
+        "inputs_and_units": {
+          "hex_type": "1d6, 1–2 Countryside; 3–4 Forest; 5 River; 6 Human town",
+          "landmark": "1d20 по колонке типа",
+          "detail": "1d6; 1d8 только для строк с подтаблицей"
+        },
+        "product_operation": "Заполнить выбранный гекс типом, ориентиром и деталью",
+        "expected_output": "В выбранном гексе есть тип, подходящий ориентир, привязанная к нему деталь и краткое описание.",
+        "constraints_and_exceptions": [
+          "Разрешён ручной выбор. Деталь d6=1 ведёт к поселению без d8. Речная категория сама по себе не задаёт новое русло через соседние клетки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Пустой гекс H; тип d6=5, ориентир d20=1, деталь d6=2 и d8=1",
+            "when": "Заполнить H и записать краткое описание, затем сохранить и открыть",
+            "expected": "H: River, Canal lock, Small mouse farm; деталь связана с этим ориентиром, описание H сохранено."
+          },
+          {
+            "given": "Выбрана деталь d6=1",
+            "when": "Применить результат",
+            "expected": "Выбран вариант мышиного поселения, d8 не запрошен."
+          }
+        ],
+        "source_vs_product_interpretation": "Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Заполнить клетку местностью, зависящим от неё ориентиром и деталью.",
+        "expected_output": "При d6=5 и d20=1 получается речная клетка с шлюзом, деталь относится к этому ориентиру.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-013-L1-v2",
+          "sha": null,
+          "model_reported_status": "unknown",
+          "finding": "Биом, реки и места доступны. Результат заданной пары бросков в таблице Mausritter не воспроизведён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "PF2-RM-013-L1-v2"
+        }
+      },
+      "open_checks": [
+        "Confirm applicable binding and canonical mapping before adoption.",
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "MAUS-obs-03",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD; печатная редакция не приписана",
+        "locator": "Making a hexcrawl §3 Detail adventure sites",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "recorded_facts": "Мастер выбирает 2–4 разнесённых ориентира и назначает темы. Одно место раскрывается подробно сразу, остальные можно развить позднее.",
+        "access_level": "publisher_web_srd",
+        "verification": "verified_in_this_run"
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": "MAUS-obs-03",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-03",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ]
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_density"
+        ],
+        "candidate_binding": true
+      },
+      "formalization": "primary_verified_candidate",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "normative_kind": "procedure_with_GM_choices",
+        "applicability": "Подготовка региональной карты выбранной кампании",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить ориентиры местами приключений и подготовить ключ одного места",
+        "inputs_and_units": {
+          "selected_landmark_count": [
+            2,
+            4
+          ],
+          "fully_keyed_minimum": 1,
+          "test_hex_addresses": [
+            "H1",
+            "H3",
+            "H5"
+          ]
+        },
+        "product_operation": "Назначить ориентиры местами приключений и подготовить ключ одного места",
+        "expected_output": "Сохраняются три разных места с темами и адресами. Полный ключ привязан только к выбранному месту.",
+        "constraints_and_exceptions": [
+          "Места выбирает мастер. Геометрический минимум разнесения не задан. Подготовка внутренних сцен отложена."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Три ориентира на H1, H3, H5 и по теме для каждого",
+            "when": "Назначить их местами приключений, заполнить ключ H3, сохранить и открыть",
+            "expected": "Все три места доступны по старым адресам. Ключ H3 не добавлен к H1 или H5."
+          }
+        ],
+        "source_vs_product_interpretation": "Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density"
+        ],
+        "unresolved_parameters": [
+          "Порог расстояния между местами источник не задаёт."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Выбрать 2–4 разных ориентира для приключений и подробно подготовить один.",
+        "expected_output": "Выбранные места разнесены на карте, подготовленное описание относится к одному из них.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Можно разместить и назвать объекты. Принадлежность подготовленного описания объекту при перемещении в чистом Classic не подтверждена.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-017-L1-v2-draft"
+        }
+      },
+      "open_checks": [
+        "Confirm applicable binding and canonical mapping before adoption.",
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "MAUS-obs-04",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD; печатная редакция не приписана",
+        "locator": "Making a hexcrawl §4 Seed rumours",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "recorded_facts": "Таблица d6 даёт подсказки о местах или действиях фракций. В L1 входит подготовка слуха о конкретном месте.",
+        "access_level": "publisher_web_srd",
+        "verification": "verified_in_this_run"
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": "MAUS-obs-04",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-04",
+        "related_common_criterion_ids": []
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_links"
+        ],
+        "candidate_binding": true
+      },
+      "formalization": "primary_verified_candidate",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "normative_kind": "procedure_with_GM_choices",
+        "applicability": "Подготовка региональной карты выбранной кампании",
+        "layer": "L1",
+        "trigger_or_user_action": "Записать в таблицу слух о выбранном месте",
+        "inputs_and_units": {
+          "table": "1d6",
+          "test_slot": 3,
+          "test_target_id": "POI-A"
+        },
+        "product_operation": "Записать в таблицу слух о выбранном месте",
+        "expected_output": "В строке 3 сохранены текст слуха и однозначный адрес выбранного места.",
+        "constraints_and_exceptions": [
+          "Достаточна подсказка о месте. Разные записи могут вести к одной цели. Слухи о фракциях без места и выдача слуха на игре вне этого L1-теста."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Таблица на 6 исходов; строка 3 указывает на POI-A; POI-B имеет то же имя",
+            "when": "Переименовать POI-A, сохранить и открыть",
+            "expected": "Строка 3 ведёт к POI-A. POI-B не становится целью слуха."
+          }
+        ],
+        "source_vs_product_interpretation": "Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Подготовить таблицу d6 слухов, ведущих к событиям или местам карты.",
+        "expected_output": "Для слуха, относящегося к выбранному месту, после открытия сохраняется однозначная ссылка.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-013-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "unknown",
+          "finding": "Связь записи таблицы d6 с конкретным местом не проверена.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-013-L1-v2-draft"
+        }
+      },
+      "open_checks": [
+        "Confirm applicable binding and canonical mapping before adoption.",
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "MAUS-obs-05",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD; печатная редакция не приписана",
+        "locator": "Mouse settlements → Settlement size",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "recorded_facts": "Для размера мышиного поселения используют меньший из двух d6.",
+        "access_level": "publisher_web_srd",
+        "verification": "verified_in_this_run"
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": "MAUS-obs-05",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/MAUS.json#MAUS-obs-05",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ]
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.settlement_density"
+        ],
+        "candidate_binding": true
+      },
+      "formalization": "primary_verified_candidate",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "normative_kind": "procedure_with_GM_choices",
+        "applicability": "Подготовка региональной карты выбранной кампании",
+        "layer": "L1",
+        "trigger_or_user_action": "Определить и сохранить размер мышиного поселения",
+        "inputs_and_units": {
+          "dice": "2d6",
+          "selection": "minimum",
+          "categories": {
+            "1": "Farm/manor",
+            "2": "Crossroads",
+            "3": "Hamlet",
+            "4": "Village",
+            "5": "Town",
+            "6": "City"
+          }
+        },
+        "product_operation": "Определить и сохранить размер мышиного поселения",
+        "expected_output": "Поселение сохраняет ID и адрес. Поле категории получает результат по меньшему кубу.",
+        "constraints_and_exceptions": [
+          "Размер поселения применяется к выбранному мышиному поселению. Генерация населения в пределах диапазона не требуется этим шагом."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поселение S в гексе H; броски 2 и 5",
+            "when": "Применить таблицу, сохранить и открыть",
+            "expected": "S остаётся в H; категория Crossroads, справочный диапазон 3–5 семей."
+          },
+          {
+            "given": "То же поселение; броски 6 и 6",
+            "when": "Применить таблицу",
+            "expected": "Категория City."
+          },
+          {
+            "given": "То же поселение; броски 0 и 5",
+            "when": "Попытаться применить результат",
+            "expected": "Отказ до правки поселения."
+          }
+        ],
+        "source_vs_product_interpretation": "Требование к подготовке карты. Входы тестов и хранение в приложении — предлагаемая проверка.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_density"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Определить размер конкретного поселения мышей по меньшему из 2d6.",
+        "expected_output": "При 2 и 5 получается категория Crossroads. Поселение с этим типом находится на прежней клетке.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-ST-009-v2",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Адрес и имя поселения сохраняются. Категория и правило выбора нижнего куба профиля не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "PF2-RM-ST-009-v2"
+        }
+      },
+      "open_checks": [
+        "Confirm applicable binding and canonical mapping before adoption.",
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "MAUS-SRD-L1-001",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD, EN",
+        "locator": "Hexcrawl toolbox → Running a hexcrawl → Exploring the map, первый абзац",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "primary_url": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "publisher_url": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "author_project_key": "isaac-williams:mausritter:srd",
+        "access_level": "official_public_srd",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Ведущий делает доступным пустой вариант карты с дружественным поселением, стартовым местом и несколькими общеизвестными местами."
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S04-C03"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "L1 создаёт начальную версию для игроков; в игре мастер решает, когда её показать."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.audience_views"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/ — Hexcrawl toolbox → Running a hexcrawl → Exploring the map, первый абзац",
+        "normative_kind": "preparation_guidance",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить карту для игроков, выбрав известные им точки на карте мастера.",
+        "inputs_and_units": {
+          "visible": "поселение, стартовая точка и выбранные известные места",
+          "address": "исходный адрес гекса"
+        },
+        "product_operation": "Подготовить карту для игроков, выбрав известные им точки на карте мастера.",
+        "expected_output": "Карта для игроков показывает только выбранные отметки на правильных адресах. Карта мастера сохраняет остальные объекты.",
+        "constraints_and_exceptions": [
+          "Момент показа и последующее раскрытие относятся к L2.",
+          "Две дополнительные точки — пример проверки, не жёсткий лимит."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поселение C3, старт A1, известные точки B2 и D4, скрытая точка E5.",
+            "when": "Открыть предназначенное для игроков представление.",
+            "expected": "Видны четыре указанные отметки. Скрытая E5 и её описание доступны только на карте мастера."
+          }
+        ],
+        "source_vs_product_interpretation": "L1 создаёт начальную версию для игроков; в игре мастер решает, когда её показать.",
+        "canonical_rule_refs": [
+          "map.audience_views"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
+    },
+    {
+      "id": "MAUS-SRD-L1-002",
+      "game_id": "MAUS",
+      "disposition": "keep_L1",
+      "disposition_reason": "Результат создаёт или изменяет географию, адресуемое содержимое либо представление региональной карты.",
+      "source": {
+        "edition": "Mausritter, официальный веб-SRD, EN",
+        "locator": "Hexcrawl toolbox → Running a hexcrawl → Expanding the map",
+        "source_ref": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "primary_url": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "publisher_url": "https://mausritter.com/srd/hexcrawl-toolbox/",
+        "author_project_key": "isaac-williams:mausritter:srd",
+        "access_level": "official_public_srd",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "По мере появления новых зацепок автор предлагает добавлять места приключений и расширять начальную карту."
+      },
+      "model": {
+        "game_unit_id": "MAUS",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Запись расширения карты — L1. Игровая причина расширения не требует автоматического ведения зацепок."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.extend_preserving_content",
+          "content.place_description"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://mausritter.com/srd/hexcrawl-toolbox/ — Hexcrawl toolbox → Running a hexcrawl → Expanding the map",
+        "normative_kind": "preparation_guidance",
+        "applicability": "existing_or_authored_regional_hex_map",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить гексы в край существующей карты и нанести новое место, связанное с новой зацепкой.",
+        "inputs_and_units": {
+          "scale": "1 миля на гекс стартовой карты",
+          "expansion": "выбранные мастером адреса гексов"
+        },
+        "product_operation": "Добавить гексы в край существующей карты и нанести новое место, связанное с новой зацепкой.",
+        "expected_output": "Новый гекс и место доступны по новым адресам. Стартовые 25 гексов и их ключи сохраняются.",
+        "constraints_and_exceptions": [
+          "Правило не задаёт точной формы расширения, числа добавлений или автоматической связи с зацепкой."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Есть карта 5×5 с поселением C3 и ключом A1; выбран свободный гекс F3.",
+            "when": "Мастер добавляет F3, помещает туда новое место и повторно открывает сохранение.",
+            "expected": "В карте 26 гексов, F3 содержит новое место; C3 и A1 сохранились."
+          }
+        ],
+        "source_vs_product_interpretation": "Запись расширения карты — L1. Игровая причина расширения не требует автоматического ведения зацепок.",
+        "canonical_rule_refs": [
+          "map.extend_preserving_content",
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null
+      },
+      "open_checks": [
+        "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
+      ]
+    }
+  ],
+  "latest_source_coverage_review_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json"
 }
