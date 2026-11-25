@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T02:54:25.994Z",
+  "updated_at": "2026-11-25T03:00:02.475Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -42,15 +42,35 @@
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "draft_ready_for_interview",
+      "execution_state": "awaiting_owner_answers",
       "next_role": "interviewer",
-      "next_step": "Уточнить обработку уже записанных в старые сохранения точек на неподходящей поверхности и передать решения аналитику.",
+      "next_step": "После решения владельца по SURFACE-Q01–Q05 интервьюер сверит последствия и передаст решения аналитику для чистовой спецификации. Пункт сброса малых озёр с Undo/Redo аналитик может подготовить отдельно.",
       "ready_for_development": false,
       "implementation_authorized": false,
       "release_authorized": false,
-      "updated_at": "2026-11-25T02:54:25.994Z",
+      "updated_at": "2026-11-25T03:00:02.475Z",
       "priority": 1,
-      "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json"
+      "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
+      "interview_status": "awaiting_owner_answers",
+      "interview_completed": false,
+      "interview_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
+      "interview_round_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/round-001.json",
+      "open_question_ids": [
+        "SURFACE-Q01",
+        "SURFACE-Q02",
+        "SURFACE-Q03",
+        "SURFACE-Q04",
+        "SURFACE-Q05"
+      ],
+      "next_role_after_answers": "business_analyst",
+      "independent_reset_handoff": {
+        "role": "business_analyst",
+        "status": "ready_for_bounded_specification",
+        "ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
+        "scope": "Сброс очищает карту и малые озёра одной операцией. Отдельного диалога об озёрах нет; Undo восстанавливает прежнюю карту с озёрами, Redo возвращает пустую карту."
+      },
+      "ui_preview_pending": true,
+      "ui_preview_owner": "business_analyst"
     },
     {
       "task_id": "HX-BL-021",
