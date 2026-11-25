@@ -4,6 +4,119 @@
   "research_sha": "f1171afb87ada1e372fb15812746aac73dec5cb7",
   "game_matrix_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/DCC.json",
   "rows": [
-    {"id":"DCC-obs-01","game_id":"DCC","disposition":"keep_L1","source":{"edition":"Dungeon Crawl Classics, приключение Terry Olson на Purple Planet, вводная с. 2, размещение Crescent Cliff; частный модуль","locator":"Dungeon Crawl Classics, приключение Terry Olson на Purple Planet, вводная с. 2, размещение Crescent Cliff; частный модуль","source_ref":"https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/164946-sample.pdf","recorded_facts":null,"access_level":"издательское превью","verification":"reused_from_existing_research"},"model":{"game_unit_id":"DCC","operation_id":"DCC-obs-01","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/DCC.json#DCC-obs-01","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05"]},"canonical":{"binding_id":null,"common_rule_ids":["content.landmarks"],"candidate_binding":true},"formalization":"model_fixture_only","operational_requirement":null,"model_fixture":{"user_action":"Поместить руины у Crescent Cliff в выбранное место пустошей плато.","expected_output":"Руины сохраняют свой тип, имя и положение внутри выбранной пустоши. Близость к горам предпочтительна по модулю.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft","sha":null,"model_reported_status":"partial","finding":"Тип руин, авторское имя, биом и адрес поддерживаются. Совместный сценарий с плато и расположением относительно гор в этой карте модуля не воспроизведён.","scope":"unresolved_or_analogy","matching_prior_operation":"DND5-2014-017-L1-v2-draft"}},"open_checks":["Resolve inputs, source conditions and precise acceptance cases.","Confirm applicable binding and canonical mapping before adoption.","Confirm historical evidence at a source-specific product SHA."]}
-  ]
+    {
+      "id": "DCC-obs-01",
+      "game_id": "DCC",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Dungeon Crawl Classics #84.1: The Rock Awakens, Terry Olson, Goodman Games, © 2015, EN",
+        "primary_url": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/164946-sample.pdf",
+        "source_ref": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/164946-sample.pdf",
+        "locator": "DCC #84.1 The Rock Awakens, Terry Olson, Goodman Games, © 2015, с. 2, Adventure Summary",
+        "access_level": "official_pdf_preview",
+        "author_project_key": "goodman-games:terry-olson:dcc-84-1-the-rock-awakens",
+        "recorded_facts": "Мастер может поставить Crescent Cliff и его разрушенный город в любом месте пустошей плато Purple Planet. Видимость Ancestor Peaks предпочтительна. С. 2 не задаёт координаты, ширину гекса, радиус, алгоритм видимости или требование соседства с горами.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "DCC",
+        "operation_id": "DCC-obs-01",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/DCC.json#DCC-obs-01",
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "legacy_related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Применим только пространственный шаг переноса места на карту этой кампании. Близость к горам в старой строке уточнена до предпочтительной видимости из источника; это не проверка линии видимости приложения и не общее правило DCC.",
+          "model_operation_id": "DCC-obs-01"
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.landmarks",
+          "content.place_description"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/164946-sample.pdf (DCC #84.1 The Rock Awakens, Terry Olson, Goodman Games, © 2015, с. 2, Adventure Summary)",
+        "normative_kind": "module_specific_authored_site_placement",
+        "applicability": "Мастер готовит региональную гекс-карту кампании Purple Planet с площадкой из модуля #84.1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать гекс в обозначенных пустошах плато и поставить на нём точку руин.",
+        "inputs_and_units": {
+          "region": "ID авторской области пустошей плато",
+          "anchor": "выбранные q/r в гексах",
+          "site": "тип руины, имя по выбору мастера и имя ориентира Crescent Cliff",
+          "mountain_preference": "оценка видимости Ancestor Peaks самим мастером; числовой порог отсутствует"
+        },
+        "product_operation": "Поставить и сохранить конкретную точку руин в явно выбранном гексе с сохранением существующего типа местности.",
+        "expected_output": "После открытия одна точка руин имеет заданное имя, тип и координаты внутри выбранных пустошей. Контуры плато, пустошей и гор не изменились.",
+        "constraints_and_exceptions": [
+          "Место подбирает мастер; правило относится к частному модулю, а не базовой книге DCC.",
+          "Видимость гор — рекомендация, не условие обязательной смежности. Автоматическое поле видимости, генерация города или перенос готовой карты не нужны.",
+          "Если исходная карта не размечена как пустоши плато, мастер сначала выбирает или сам размечает область; из названий местностей редактор не должен выводить размещение автоматически."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Мастер выбрал гекс H в пустошах плато, обозначил Ancestor Peaks и считает их видимыми из H.",
+            "when": "Поставить Crescent Cliff как точку руин и повторно открыть карту.",
+            "expected": "Точка находится в H, имеет имя и тип руин; исходная местность H и геометрия гор совпадают."
+          },
+          {
+            "given": "Гекс Q принадлежит выбранным пустошам, но мастер не подтверждал видимость гор.",
+            "when": "Явно выбрать Q и поставить в нём точку.",
+            "expected": "Руины сохраняются в Q. Предпочтение вида на горы не переписывает выбор и не переносит объект в соседнюю клетку."
+          }
+        ],
+        "source_vs_product_interpretation": "Размещение в пустошах и предпочтение наблюдать горы следуют из модуля. Координаты, тип точки и сохранение после открытия — критерий переноса в продукт.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.landmarks",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Поместить руины у Crescent Cliff в выбранное место пустошей плато.",
+        "expected_output": "Руины сохраняют свой тип, имя и положение внутри выбранной пустоши. Близость к горам предпочтительна по модулю.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Тип руин, авторское имя, биом и адрес поддерживаются. Совместный сценарий с плато и расположением относительно гор в этой карте модуля не воспроизведён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": "DND5-2014-017-L1-v2-draft"
+        },
+        "adjacent_evidence": [
+          {
+            "sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+            "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft",
+            "scope": "other_game_analogy",
+            "finding": "В DND5 подтверждено сохранение типа руин, имени и адреса. Выбранный участок пустошей Purple Planet в этой пробе не использовался."
+          }
+        ]
+      },
+      "open_checks": [
+        "На опубликованном SHA проверить постановку и повторное открытие обеих карт."
+      ],
+      "disposition_reason": "Применим только пространственный шаг переноса места на карту этой кампании. Близость к горам в старой строке уточнена до предпочтительной видимости из источника; это не проверка линии видимости приложения и не общее правило DCC."
+    }
+  ],
+  "latest_formalization_base_sha": "ea3b35774d88d7023643dbabaf6d6fcbf57c9b1c",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-salv-dcc-0430"
 }
