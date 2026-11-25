@@ -45,11 +45,6 @@ for (const filename of ['lake-reentry-map','sea-pocket-map','terrain-display-map
   test(`supported corpus: ${filename}`, () => {
     const data = JSON.parse(fs.readFileSync(new URL(`./fixtures/${filename}.json`, import.meta.url)));
     assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
-    if(filename==='lake-reentry-map'){
-      // Recreate the original fixture's two POIs without changing its geometry.
-      data.map.waterPoiByHexKey['-3,11']='rocks';
-      assert.throws(() => h.geometry.assertHexcrawlSaveData(data),/multiple points of interest on one hex/);
-    }
   });
 }
 
@@ -227,20 +222,12 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
 });
 test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
  const {g,alerts,data,key}=await loadAuthoredMap();
- for(const mutate of [d=>d.map.editorNames=null,d=>d.map.editorNames=[],d=>d.map.editorNames[key].ru='',d=>d.map.editorNames['poi:999:999,0']={en:'X',ru:'Х'},d=>d.version=7]){
+ for(const mutate of [d=>d.map.editorNames=null,d=>d.map.editorNames=[],d=>d.map.editorNames[key].ru='',d=>d.map.editorNames['poi:999:999,0']={en:'X',ru:'Х'},d=>d.version=7,d=>{const r=d.map.regions[0];r.isTract=false;r.suppressCentralPoi=false;r.centralPoiKind='lair';r.pointsOfInterest.push({...r.centerHex});r.pointOfInterestKinds[`${r.centerHex.q},${r.centerHex.r}`]='ruins';d.map.editorNames[`poi:${r.id}:${r.centerHex.q},${r.centerHex.r}`]={en:'Ambiguous',ru:'Неоднозначное'};}]){
   const bad=structuredClone(data);mutate(bad);const before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
   await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:'x'}});
   assert.match(alerts.pop(),/map.editorNames/);assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
- const legacy=regionFixture(),r=legacy.map.regions[0];
- r.suppressCentralPoi=false;r.centralPoiKind='lair';r.pointsOfInterest.push({...r.centerHex});
- r.pointOfInterestKinds[`${r.centerHex.q},${r.centerHex.r}`]='village';
- const before=structuredClone(g.render().captureDocument());
- const stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- await g.render().handleImportJson({target:{files:[{text:JSON.stringify(legacy)}],value:'x'}});
- assert.match(alerts.pop(),/multiple points of interest on one hex|на одном гексе несколько точек интереса/);
- assert.deepEqual(structuredClone(g.render().captureDocument()),before);
- assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
+ const legacy=regionFixture();legacy.map.regions[0].suppressCentralPoi=false;legacy.map.regions[0].centralPoiKind='lair';legacy.map.regions[0].pointsOfInterest.push({q:0,r:0});legacy.map.regions[0].pointOfInterestKinds['0,0']='village';await g.render().handleImportJson({target:{files:[{text:JSON.stringify(legacy)}],value:'x'}});assert.deepEqual(alerts,[]);g.render().setEditMode(true);assert.equal(g.render().nameTargets.some(t=>t.poiLocator==='poi:1:0,0'),false);const unchanged=structuredClone(g.render().captureDocument());g.render().showNameTarget('poi:1:0,0');assert.equal(g.render().nameDraft,null);assert.deepEqual(structuredClone(g.render().captureDocument()),unchanged);
 });
 test('E8 type change preserves paired settlement name before entity reconciliation',async()=>{
  const {g,alerts,data,point}=await loadAuthoredMap();delete data.map.editorNames;

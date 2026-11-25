@@ -15,6 +15,30 @@ test('production document exports RNG and undo restores continuation',()=>{
 const options={targetSize:8,coastalPreference:'mainland'};
 function setup(seed){const h=createGenerationHarness(seed);h.render();h.guardRandom();h.setWindow({alert:()=>{},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);return h;}
 async function load(h,data){await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'map'}});}
+test('generated Classic POIs match the final surface after river and lake completion',()=>{
+ const key=h=>`${h.q},${h.r}`;
+ const h=setup(10);
+ for(const [index,targetSize] of [12,17,16,10,19].entries()){
+  const app=h.render();
+  const anchor=app.candidateHexes[Math.floor(app.candidateHexes.length*.72)]??{q:0,r:0};
+  const result=app.safelyAddRegionToMap(anchor,{targetSize,coastalPreference:index%2===0?'coastal':'mainland'});
+  assert.equal(result.success,true,JSON.stringify(result));
+ }
+ const map=stable(h.render()).map, region=map.regions.at(-1);
+ assert.equal(map.terrainByHexKey['-3,3']?.terrainOverride,'lake','late lake in the regression seed');
+ const landPoints=region.centralPoiKind&&!region.suppressCentralPoi&&!region.isTract
+  ? [region.centerHex,...region.pointsOfInterest] : region.pointsOfInterest;
+ assert.ok(landPoints.length,'the new region still has land points');
+ for(const point of landPoints) assert.equal(map.terrainByHexKey[key(point)]?.terrainOverride,undefined,`land POI at ${key(point)}`);
+
+ const coastal=setup(0);
+ const result=coastal.render().safelyAddRegionToMap({q:0,r:0},{targetSize:12,coastalPreference:'coastal'});
+ assert.equal(result.success,true,JSON.stringify(result));
+ const coast=stable(coastal.render()).map;
+ const waterKeys=Object.keys(coast.waterPoiByHexKey);
+ assert.ok(waterKeys.length,'the coastal seed generates a water point');
+ for(const cell of waterKeys) assert.ok(['sea','lake'].includes(coast.terrainByHexKey[cell]?.terrainOverride),`water POI at ${cell}`);
+});
 function unit(h,mode){const a=h.render();const anchor=a.candidateHexes[0]??{q:0,r:0};if(mode==='mythic'){
  a.startKingdom(anchor);for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();
  assert.equal(h.render().kingdomJob,null);assert.equal(h.render().generationError,null,JSON.stringify(h.render().generationError));
