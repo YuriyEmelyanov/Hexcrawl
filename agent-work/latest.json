@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-25",
-  "branch": "feat/hx073-split-regions-on-import",
+  "branch": "agent-operations",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -29,7 +29,7 @@
   "run_id": "2026-11-25T0400-interviewer-HX064",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "interview_preparation",
+  "status": "awaiting_owner_answers",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,7 +40,7 @@
   "unverified_weight": null,
   "last_completed_task": "HX-BL-056",
   "operational_state_write": {
-    "run_id": "2026-11-25T0300-reviewer-HX073",
+    "run_id": "2026-11-25T0400-interviewer-HX064",
     "status": "result_verified_claim_released_latest_last"
   },
   "budget_status": "owner_waived_usage_gate",
@@ -50,14 +50,14 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "interviewer",
-  "next_role": "owner",
+  "next_role": "interviewer",
   "current_task_id": "HX-BL-064",
-  "spec_path": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "spec_path": "agent-work/specs/HX-BL-064-classic-marine-start-D1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-25T0300-reviewer-HX073.json",
+  "result_path": "agent-work/results/2026-11-25T0400-interviewer-HX064.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": "agent-work/claims/2026-11-25T0400-interviewer-HX064.json",
-  "next_step": "Сформулировать и предъявить владельцу решения по HX-BL-064.",
+  "active_claim": null,
+  "next_step": "После ответов по MARINE-Q01–Q06 интервьюер зафиксирует решения и проверит зависимые вопросы. Затем аналитик подготовит чистовую спецификацию и покажет предлагаемый интерфейс.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-073",
@@ -65,18 +65,31 @@
       "pr": 515,
       "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
       "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2"
+    },
+    {
+      "task_id": "HX-BL-064",
+      "type": "interview_answers",
+      "question_ids": [
+        "MARINE-Q01",
+        "MARINE-Q02",
+        "MARINE-Q03",
+        "MARINE-Q04",
+        "MARINE-Q05",
+        "MARINE-Q06"
+      ],
+      "interview_ref": "agent-work/interviews/HX-BL-064/MARINE-START/decisions.json"
     }
   ],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-073/review-cae2b48/review.json",
-  "branch_name": "feat/hx073-split-regions-on-import",
-  "pr": 515,
-  "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "evidence_path": "agent-work/interviews/HX-BL-064/MARINE-START/round-001.json",
+  "branch_name": "agent-operations",
+  "pr": null,
+  "head_sha": null,
   "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
-  "checks_status": "success",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
-  "review_verdict": "accepted",
+  "checks_status": null,
+  "checks_url": null,
+  "review_verdict": null,
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -97,7 +110,7 @@
   "score_update_delta": 0.21470746108427266,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/backlog.json",
-  "next_task_id": "HX-BL-073",
+  "next_task_id": "HX-BL-064",
   "approval_ref": "agent-work/decisions/owner-2026-11-24-switch-HX069-to-HX067.json",
   "last_completed_stage": "Самостоятельное одномильное место и проекция в одной клетке",
   "previous_release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
@@ -105,12 +118,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-25T00:01:23.517Z",
+      "at": "2026-11-25T01:01:02.768Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-25T00:07:45.807Z",
+      "at": "2026-11-25T01:04:27.638Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -718,7 +731,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-25T01:02:01.866Z",
+  "updated_at": "2026-11-25T01:04:41.010Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1793,7 +1806,13 @@
     "condition": "Не приглашать ведущих к использованию до подтверждённой пригодности редактора; наличие кнопок само по себе не прохождение. Подготовка материалов продвижения допустима без отправки.",
     "MB_content_requirement": "Связанный второй приоритет; минимально достаточный MB-набор и критерий готовности к демонстрации зафиксировать в спецификации, не считать «и т.д.» готовым закрытым перечнем."
   },
-  "pending_publication": null,
+  "pending_publication": {
+    "task_id": "HX-BL-073",
+    "pr": 515,
+    "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "next_step": "Отдельное разрешение владельца на публикацию принятого SHA.",
+    "publication_authorized": false
+  },
   "previous_pending_publication_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-release.json",
   "release_score_event": {
     "task_id": "HX-BL-021",
@@ -2140,7 +2159,7 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "spec_ref": "agent-work/specs/HX-BL-064-classic-marine-start-D1.md",
   "spec_blob_sha": "00d4375cca9214296ead9bc7755869cd47497450",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
@@ -5116,7 +5135,7 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+  "pr_url": null,
   "active_claim_scope": null,
   "other_active_claims": [
     {
@@ -7721,7 +7740,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-25T0300-reviewer-HX073.json",
+  "result_ref": "agent-work/results/2026-11-25T0400-interviewer-HX064.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -13114,16 +13133,15 @@
   },
   "interview_status": "awaiting_owner_decisions",
   "interview_required": false,
-  "interview_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/decisions.json",
+  "interview_ref": "agent-work/interviews/HX-BL-064/MARINE-START/decisions.json",
   "previous_run_before_GEO2_interview": "2026-11-14T0912-programmer-ONE-MILE1-GEO2",
   "open_question_ids": [
-    "SPLIT-Q01",
-    "SPLIT-Q02",
-    "SPLIT-Q03",
-    "SPLIT-Q04",
-    "SPLIT-Q05",
-    "SPLIT-Q06",
-    "SPLIT-Q07"
+    "MARINE-Q01",
+    "MARINE-Q02",
+    "MARINE-Q03",
+    "MARINE-Q04",
+    "MARINE-Q05",
+    "MARINE-Q06"
   ],
   "latest_GEO2_interview": {
     "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
@@ -15073,7 +15091,7 @@
     "history_reset": false
   },
   "delivery_contract_decision_required": true,
-  "ready_for_development": true,
+  "ready_for_development": false,
   "last_visible_release_draft": {
     "run_id": "2026-11-15T1404-analyst-GEO2-visible-draft",
     "draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
@@ -15089,7 +15107,7 @@
     "result_ref": "agent-work/results/2026-11-15T1404-analyst-GEO2-visible-draft.json",
     "next_role": "interviewer"
   },
-  "interview_round_ref": "agent-work/interviews/HX-BL-073/REGION-SPLIT/round-001.json",
+  "interview_round_ref": "agent-work/interviews/HX-BL-064/MARINE-START/round-001.json",
   "interview_completed": false,
   "questionnaire_presented": true,
   "presented_in_chat_at": "2026-11-22T05:03:29.088Z",
@@ -16339,7 +16357,7 @@
   "execution_lock_generation": 746,
   "execution_lock_released": true,
   "acceptance_trace_ref": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/review.json",
-  "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "accepted_sha": null,
   "release_approval_request_id": null,
   "latest_HX_BL_059_review": {
     "run_id": "2026-11-17T2103-reviewer-PR505",
@@ -16624,7 +16642,7 @@
   "review_status": "accepted",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
   "review_ref": "agent-work/results/2026-11-24T0300-reviewer-HX062.json",
-  "score_assessment_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/score-assessment.json",
+  "score_assessment_ref": null,
   "publication_gate": {
     "pr": 513,
     "head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
@@ -18254,7 +18272,7 @@
       "errors": []
     }
   },
-  "active_claim_run_id": "2026-11-25T0400-interviewer-HX064",
+  "active_claim_run_id": null,
   "implementation_head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
   "review_fix_ref": "agent-work/results/2026-11-24T0200-programmer-HX062-RV05.json",
   "latest_HX_BL_069_city_reroll": {
@@ -18346,7 +18364,7 @@
     "fix_ref": "HX073-RV02-01",
     "result_commit_sha": "1130452c25d43e07a1454b5b8991655671a0bc9e"
   },
-  "reviewed_head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "reviewed_head_sha": null,
   "latest_HX_BL_073_review": {
     "task_id": "HX-BL-073",
     "role": "reviewer",
@@ -18384,5 +18402,35 @@
     "approved_stage": "draft_ready_for_interview",
     "spec_ref": "agent-work/specs/HX-BL-064-classic-marine-start-D1.md",
     "next_step": "Интервьюер уточняет выбор морского старта, параметры первого участка и правила продолжения с морской границы."
+  },
+  "latest_HX_BL_064_interview": {
+    "task_id": "HX-BL-064",
+    "role": "interviewer",
+    "status": "awaiting_owner_answers",
+    "spec_ref": "agent-work/specs/HX-BL-064-classic-marine-start-D1.md",
+    "interview_ref": "agent-work/interviews/HX-BL-064/MARINE-START/decisions.json",
+    "interview_round_ref": "agent-work/interviews/HX-BL-064/MARINE-START/round-001.json",
+    "open_question_ids": [
+      "MARINE-Q01",
+      "MARINE-Q02",
+      "MARINE-Q03",
+      "MARINE-Q04",
+      "MARINE-Q05",
+      "MARINE-Q06"
+    ],
+    "publication_authorized": false,
+    "ready_for_development": false,
+    "next_role": "interviewer",
+    "next_task_id": "HX-BL-064",
+    "next_step": "После ответов по MARINE-Q01–Q06 интервьюер зафиксирует решения и проверит зависимые вопросы. Затем аналитик подготовит чистовую спецификацию и покажет предлагаемый интерфейс.",
+    "pending_publication": {
+      "task_id": "HX-BL-073",
+      "pr": 515,
+      "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+      "next_step": "Отдельное разрешение владельца на публикацию принятого SHA.",
+      "publication_authorized": false
+    },
+    "result_ref": "agent-work/results/2026-11-25T0400-interviewer-HX064.json",
+    "result_commit_sha": "1bceda6f4babd737c1c4538f1cef5f66d19ffb57"
   }
 }
