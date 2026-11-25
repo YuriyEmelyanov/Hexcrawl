@@ -390,10 +390,23 @@ test('ONE-MILE1 rejects private versions, foreign layers and invalid fine data a
  assert.equal(alerts.length,wrong.length);
 });
 
-test('ONE-MILE1 reset refuses authored loss without consent and undo restores a consented reset',()=>{
- const {g}=fineSetup();fineActivate(g);const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'author'}}};g.render().applyDocument(doc);
- const before=fineStable(g);g.render().resetMap();assert.deepEqual(fineStable(g),before);
- g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().resetMap();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+test('reset clears small lakes and local one-mile edits with exact undo and redo',()=>{
+ const {g}=fineSetup();fineActivate(g);
+ const doc=g.render().captureDocument();
+ const lake={id:1,origin:'manual',cells:[{q:1,r:0}]};
+ doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},
+   fineCellEdits:{'0,0':{note:'author'}},smallLakes:{nextId:2,lakes:[lake]}};
+ g.render().applyDocument(doc);
+ const before=fineSave(g),depth=g.render().undoHistory.length;
+ assert.deepEqual(before.map.physicalGrid.smallLakes.lakes,[lake]);
+ g.setWindow({confirm:message=>assert.fail(message),matchMedia:()=>({matches:false})});
+ g.render().resetMap();
+ const reset=fineSave(g);
+ assert.equal(reset.map.physicalGrid,undefined);
+ assert.equal(reset.map.regions.length,0);
+ assert.equal(g.render().undoHistory.length,depth+1);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);
+ g.render().redoMap();assert.deepEqual(fineSave(g),reset);
 });
 
 test('ONE-MILE1 older generation checkpoints cannot silently discard later local edits',()=>{
@@ -521,19 +534,31 @@ test('Classic places on mixed maps retain valid discovery records through deleti
  assert.deepEqual(alerts,[]);assert.deepEqual(JSON.parse(JSON.stringify(app().createSaveData().map)),JSON.parse(JSON.stringify(saved.map)));
 });
 
-test('a migrated Knave secret can veto reset and undo an accepted reset',async()=>{
+test('reset clears authored names, notes and migrated Knave data with one undo and redo',async()=>{
  const {g,data,key}=await loadAuthoredMap();
- const app=()=>g.render(),source=structuredClone(data);
- source.version=10;source.map.knave=newKnaveLayer();source.map.knave.discoveryByPoi[key]={mode:'interaction',clueText:'old'};
- source.map.editorNames={};source.map.gmNotesByHexKey={};
- let consent=false,prompts=0;
- g.setWindow({alert:message=>assert.fail(message),confirm:()=>{prompts++;return consent},matchMedia:()=>({matches:false})});
+ const app=()=>g.render(),source=structuredClone(data),hex=key.split(':')[2];
+ source.version=10;source.map.knave=newKnaveLayer();
+ source.map.knave.discoveryByPoi[key]={mode:'interaction',clueText:'old'};
+ source.map.knave.content=knaveContentFixture(key,{kind:'settlement'});
+ source.map.knave.difficultyByHex[hex]='difficult';
+ source.map.gmNotesByHexKey={[hex]:'GM note'};
+ g.setWindow({alert:message=>assert.fail(message),confirm:message=>assert.fail(message),matchMedia:()=>({matches:false})});
  await app().handleImportJson({target:{files:[{text:JSON.stringify(source)}],value:''}});
- const before=structuredClone(app().createSaveData().map),depth=app().undoHistory.length;
- assert.equal(before.poiDiscovery[key],'interaction');app().resetMap();
- assert.equal(prompts,1);assert.deepEqual(structuredClone(app().createSaveData().map),before);assert.equal(app().undoHistory.length,depth);
- consent=true;app().resetMap();assert.equal(app().regions.length,0);
- app().undoMap();assert.deepEqual(structuredClone(app().createSaveData().map),before);
+ const before=fineSave(g),depth=app().undoHistory.length;
+ assert.equal(before.map.editorNames[key].ru,'Авторское имя');
+ assert.equal(before.map.poiDiscovery[key],'interaction');
+ assert.equal(before.map.gmNotesByHexKey[hex],'GM note');
+ assert.ok(before.map.knave.content.byPoi[key]);
+ app().resetMap();
+ const reset=fineSave(g);
+ assert.equal(reset.map.regions.length,0);
+ assert.deepEqual(reset.map.editorNames,{});
+ assert.deepEqual(reset.map.gmNotesByHexKey,{});
+ assert.equal(reset.map.knave,undefined);
+ assert.equal(reset.map.poiDiscovery?.[key],undefined);
+ assert.equal(app().undoHistory.length,depth+1);
+ app().undoMap();assert.deepEqual(fineSave(g),before);
+ app().redoMap();assert.deepEqual(fineSave(g),reset);
 });
 
 test('opening a disconnected region preserves numbered parts and authored addresses across JSON', async () => {

@@ -404,6 +404,99 @@ try {
  await select('0,0');await transaction(()=>poi('city'));
  await select('0,1');await transaction(()=>poi('underwater_ruins'));await transaction(()=>poi('rocks'));await transaction(()=>poi(''));
  await transaction(()=>load(fixture));await transaction(()=>button('Сбросить').click());
+ // HX-BL-076: a valid imported map can contain data even without regions.
+ assert.equal(await button('Сбросить').count(),0);
+ const regionlessEmpty = await snapshot();
+ const regionlessSave = structuredClone(regionlessEmpty);
+ regionlessSave.map.terrainByHexKey['0,0']={terrainOverride:'lake',lakeId:1};
+ regionlessSave.map.waterPoiByHexKey['0,0']='shipwreck';
+ regionlessSave.map.editorNames['waterPoi:0,0']={ru:'Корабль',en:'Wreck'};
+ regionlessSave.map.gmNotesByHexKey['0,0']='GM note';
+ regionlessSave.counters.nextLakeId=2;
+ await load(regionlessSave);
+ const acceptedWaterOnly = await snapshot();
+ assert.equal(acceptedWaterOnly.map.regions.length,0);
+ assert.equal(acceptedWaterOnly.map.terrainByHexKey['0,0'].lakeId,1);
+ assert.deepEqual(acceptedWaterOnly.map.editorNames,regionlessSave.map.editorNames);
+ assert.deepEqual(acceptedWaterOnly.map.gmNotesByHexKey,regionlessSave.map.gmNotesByHexKey);
+ assert.deepEqual(acceptedWaterOnly.map.waterPoiByHexKey,regionlessSave.map.waterPoiByHexKey);
+ assert.equal(await button('Сбросить').isVisible(),true);
+ assert.equal(await button('Удалить последний регион').count(),0);
+ assert.equal(await button('Перегенерировать регион').count(),0);
+ const resetDialogs = [];
+ const observeResetDialog = dialog=>resetDialogs.push(dialog.message());
+ page.on('dialog',observeResetDialog);
+ try {
+   const cleared = await transaction(()=>button('Сбросить').click());
+   assert.deepEqual(cleared.map.terrainByHexKey,{});
+   assert.deepEqual(cleared.map.waterPoiByHexKey,{});
+   assert.deepEqual(cleared.map.editorNames,{});
+   assert.deepEqual(cleared.map.gmNotesByHexKey,{});
+   assert.equal(await button('Сбросить').count(),0);
+   for (const [layer, objects] of [
+     ['obstacles', [{"id":1,"hex":{"q":1,"r":0},"neighborHex":{"q":2,"r":0},"edgeKey":"72.746,-14|72.746,14"}]],
+     ['kingdoms', [{"id":1,"origin":{"q":0,"r":0},"anchor":{"q":0,"r":0},"regionIds":[],"name":{"en":"Bergvang","ru":"Бергванг","kind":"region","model":"germanic","revision":0},"color":"hsl(138 65% 68%)"}]]
+   ]) {
+     const save = structuredClone(regionlessEmpty);
+     save.map[layer] = objects;
+     if (layer === 'obstacles') save.counters.nextObstacleId = 2;
+     if (layer === 'kingdoms') save.ui.generationMode = 'mythic';
+     await load(save);
+     const accepted = await snapshot();
+     assert.deepEqual(accepted.map[layer], objects, layer + ' accepted');
+     assert.deepEqual(accepted.map.regions, []);
+     assert.deepEqual(accepted.map.terrainByHexKey, {});
+     assert.equal(accepted.map.physicalGrid, undefined);
+     assert.equal(await button('Сбросить').isVisible(), true, layer + ' can be reset');
+     assert.equal(await page.locator('.controls--region-management button').count(), 1);
+     const reset = await transaction(() => button('Сбросить').click());
+     assert.deepEqual(reset.map[layer], [], layer + ' cleared');
+     assert.equal(await button('Сбросить').count(), 0);
+   }
+   await load(regionlessEmpty);
+   const knaveProfile = page.getByRole('checkbox',{name:'Knave 2e',exact:true});
+   await knaveProfile.check();
+   assert.ok(await button('Сбросить').isVisible());
+   await knaveProfile.uncheck();
+   const profileOnly = await snapshot();
+   assert.ok(profileOnly.map.knave);
+   assert.equal(profileOnly.ui.knaveEnabled,false);
+   assert.deepEqual(profileOnly.map.regions,[]);
+   await load(profileOnly);
+   assert.deepEqual(await snapshot(),profileOnly);
+   assert.equal(await page.locator('.controls--region-management button').count(),1);
+   const withoutProfile = await transaction(() => button('Сбросить').click());
+   assert.equal(withoutProfile.map.knave,undefined);
+   assert.equal(await button('Сбросить').count(),0);
+
+   await load(fixture);
+   const resetScale = page.locator('[data-fine-step]');
+   const firstHex = page.locator('polygon.hex.candidate[data-hex-key="0,0"]');
+   await resetScale.selectOption('1');
+   await page.locator('[data-fine-world]').waitFor();
+   const oldMap = await snapshot();
+   await button('Сбросить').click();
+   const newMap = await snapshot();
+   assert.deepEqual(newMap.map.regions,[]);
+   assert.equal(await resetScale.inputValue(),'6');
+   assert.ok(await firstHex.isVisible());
+   await button('Отменить').click();
+   await page.locator('[data-fine-world]').waitFor();
+   assert.equal(await resetScale.inputValue(),'1');
+   assert.deepEqual(await snapshot(),oldMap);
+   await button('Повторить').click();
+   assert.equal(await resetScale.inputValue(),'6');
+   assert.deepEqual(await snapshot(),newMap);
+   await firstHex.click();
+   await page.waitForFunction(()=>!document.querySelector('[data-fine-step]').disabled);
+   assert.ok((await snapshot()).map.regions.length > 0);
+   await button('Отменить').click();
+   assert.deepEqual(await snapshot(),newMap);
+   assert.deepEqual(resetDialogs,[]);
+   console.log('HX076 reset verified: regionless layers, retained Knave profile, one-mile restart and exact Undo/Redo without dialogs.');
+ } finally {
+   page.off('dialog',observeResetDialog);
+ }
  // Failed JSON, read and preparation keep A, view, and redo intact; same file can be retried.
  await load(fixture);await select('1,0');await biome('open_hills');await button('Отменить').click();
  let before=await snapshot();assert.equal(await button('Повторить').isDisabled(),false);
