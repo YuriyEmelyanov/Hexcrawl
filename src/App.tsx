@@ -16129,9 +16129,11 @@ export function App() {
     {selectedPoiLocators.flatMap(key=>{
       const content=knave?.content?.byPoi[key];
       const mode=knaveDraft&&knaveDraft.poiKey===key?knaveDraft.mode:discoveries.current[key]??'passage';
-      const target=selectedPoiLocators.length>1?nameTargets.find(t=>t.poiLocator===key):undefined;
+      const shared=selectedPoiLocators.length>1;
+      const target=shared?nameTargets.find(t=>t.poiLocator===key):undefined;
       const poiLabel=target?.[language]||target?.fallback?.[language];
-      const discoveryLabel=(language==='ru'?'Обнаружение':'Discovery')+(poiLabel?` · ${poiLabel}`:'');
+      const classLabel=key.startsWith('waterPoi:')?(language==='ru'?'Водная точка':'Water point'):(language==='ru'?'Наземная точка':'Land point');
+      const discoveryLabel=(language==='ru'?'Обнаружение':'Discovery')+(shared?` · ${classLabel}${poiLabel?` · ${poiLabel}`:''}`:'');
       return [
         content?<div key={`${key}:content`} className="knave-results"><KnaveContentRow content={content} owner={key} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${key}`]} onRoll={part=>mutateKnaveContent(key,part)}/></div>:null,
         <div key={key} className="direct-line" data-poi-discovery={key}><label>{discoveryLabel}: {editMode?<select aria-label={discoveryLabel} value={mode}
