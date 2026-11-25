@@ -1,0 +1,309 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "pr": 516,
+  "scope": "F1 / SURFACE-Q01",
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+  "tree_sha": "e914c67bf1a9783782d0cf8c03656c9031fe981d",
+  "review_verdict": "accepted",
+  "verified_fixed_findings": [
+    "HX076-RESET-RV01-01",
+    "HX076-RESET-RV02-01",
+    "HX076-RESET-RV03-01",
+    "HX076-RESET-RV03-02"
+  ],
+  "findings": [],
+  "known_limitations": [
+    {
+      "id": "HX076-RESET-COMPAT-01",
+      "severity": "P3",
+      "blocking": false,
+      "classification": "existing_presentation_behavior_verified_on_base",
+      "summary": "На старом v15, сохранённом с physicalGrid.viewStep=1, перед сбросом можно переключиться на 5–6 миль. Undo восстанавливает точный JSON и открывает записанный одномильный вид. Это воспроизведено и на базовой версии, и на PR.",
+      "fixture_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/review/accepted-fine-v15.json",
+      "base_result": {
+        "scale_before": "6",
+        "scale_after_undo": "1",
+        "exact_json": true,
+        "small_lake_and_local_note_restored": true,
+        "blank_start_visible": true,
+        "dialogs": 2,
+        "errors": 0
+      },
+      "candidate_result": {
+        "scale_before": "6",
+        "scale_after_undo": "1",
+        "exact_json": true,
+        "small_lake_and_local_note_restored": true,
+        "blank_start_visible": true,
+        "dialogs": 0,
+        "errors": 0
+      }
+    }
+  ],
+  "independent_review": {
+    "agent": "review_516_4d1a975",
+    "context": "fresh",
+    "result": "Проверил точный исходный код и отдельно воспроизвёл поведение старого сохранённого масштаба через обработчики. Проверяющий подтвердил это в Chromium на PR и базовом SHA."
+  },
+  "checks": {
+    "browser": {
+      "chromium": "158.0.8127.0",
+      "cases": [
+        {
+          "name": "obstacle",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 1,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "kingdom",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 94,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "kingdom-narrow",
+          "viewport": {
+            "width": 390,
+            "height": 900
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 94,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "lake",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": null,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "ordinary",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 1,
+          "controls": 3,
+          "rendered_elements": null,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "knave-profile-only",
+          "regions": 0,
+          "persisted_profile": true,
+          "checkbox_enabled_on_fresh_map": true,
+          "profile_retained_after_uncheck": true,
+          "exact_export_after_import": true,
+          "reset_visible_enabled": true,
+          "reset_visible_disabled": true,
+          "reset_visible_reopened": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "one-mile-reset",
+          "scale_before": "1",
+          "scale_after": "6",
+          "scale_disabled": true,
+          "regions_after": 0,
+          "coarse_start_candidates": 1,
+          "fine_candidates": 0,
+          "undo_redo_exact": true,
+          "new_regions_after_click": 1,
+          "dialogs": 0,
+          "errors": 0
+        }
+      ],
+      "dist_index_sha256": "1535599d5699bea8e432b324b83a686de5dc112c4879518eb157440bc1597fcd",
+      "method": "Сборка exact HEAD, обычный браузерный импорт и экспорт JSON. Сравнение полных документов без savedAt. Фактическая генерация первого региона после сброса.",
+      "accepted_fine_v15": [
+        {
+          "scale_before": "1",
+          "scale_after_undo": "1",
+          "exact_json": true,
+          "small_lake_and_local_note_restored": true,
+          "blank_start_visible": true,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "scale_before": "6",
+          "scale_after_undo": "1",
+          "exact_json": true,
+          "small_lake_and_local_note_restored": true,
+          "blank_start_visible": true,
+          "dialogs": 0,
+          "errors": 0
+        }
+      ],
+      "accepted_fine_v15_baseline": [
+        {
+          "scale_before": "6",
+          "scale_after_undo": "1",
+          "exact_json": true,
+          "small_lake_and_local_note_restored": true,
+          "blank_start_visible": true,
+          "dialogs": 2,
+          "errors": 0
+        }
+      ]
+    },
+    "focused_node": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0
+    },
+    "ci": {
+      "jobs": [
+        [
+          139160817444,
+          "check",
+          "completed",
+          "success"
+        ],
+        [
+          139160817736,
+          "browser",
+          "completed",
+          "success"
+        ],
+        [
+          139160818014,
+          "world-random",
+          "completed",
+          "success"
+        ],
+        [
+          139160820096,
+          "engraved-map-comparison",
+          "completed",
+          "skipped"
+        ]
+      ],
+      "logs": [
+        {
+          "id": 139160817444,
+          "name": "check",
+          "matched": [
+            "2026-11-25T11:07:02.8017720Z HEAD is now at fe90572 Merge 4d1a975d79b53859ab166b34cc8fad3fdcc90c16 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+            "2026-11-25T11:17:23.6734061Z ℹ tests 453",
+            "2026-11-25T11:17:23.6734709Z ℹ pass 453",
+            "2026-11-25T11:17:23.6735076Z ℹ fail 0",
+            "2026-11-25T11:17:23.6735724Z ℹ skipped 0"
+          ],
+          "exact_merge": true
+        },
+        {
+          "id": 139160817736,
+          "name": "browser",
+          "matched": [
+            "2026-11-25T11:06:57.8071894Z HEAD is now at fe90572 Merge 4d1a975d79b53859ab166b34cc8fad3fdcc90c16 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+            "2026-11-25T11:13:27.1849961Z HX076 reset verified: regionless layers, retained Knave profile, one-mile restart and exact Undo/Redo without dialogs.",
+            "2026-11-25T11:15:09.8263020Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+          ],
+          "exact_merge": true
+        },
+        {
+          "id": 139160818014,
+          "name": "world-random",
+          "matched": [
+            "2026-11-25T11:06:56.8631950Z HEAD is now at fe90572 Merge 4d1a975d79b53859ab166b34cc8fad3fdcc90c16 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9"
+          ],
+          "exact_merge": true
+        }
+      ],
+      "checkout_sha": "fe9057238e0d9989e2122e8c274b2aca6e4a942b",
+      "tree_sha": "e914c67bf1a9783782d0cf8c03656c9031fe981d",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45601360788",
+      "node": {
+        "tests": 453,
+        "pass": 453,
+        "fail": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+    "added": 0,
+    "removed": 0,
+    "modified": 3,
+    "suites": [
+      {
+        "suite": "Node saveSafety",
+        "modified": 2,
+        "scenario": "Полный Undo/Redo для малых озёр и локальных правок, а также имен, заметок и данных Knave."
+      },
+      {
+        "suite": "Browser save-history",
+        "modified": 1,
+        "scenario": "Штатный сброс без регионов, восстановление масштаба и первая генерация после очистки.",
+        "parameter_cases": [
+          "water-only",
+          "obstacle-only",
+          "kingdom-only",
+          "retained Knave",
+          "one-mile restart"
+        ]
+      }
+    ],
+    "reuse_or_new_reason": "Обновлены две существующие проверки сохранности. Расширена существующая цепочка через UI, которая покрывает видимость кнопки и доступность стартового гекса вне сериализованного снимка. Временные сценарии приёмки отделены от diff.",
+    "source": "Сопоставлены test/saveSafety.test.mjs (две переименованные декларации) и test/browser/save-history.smoke.mjs (одна цепочка) на b1b8c1b..4d1a975."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/review/score-assessment.json",
+  "before_after_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json",
+  "publication_authorized": false
+}
