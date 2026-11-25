@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-25T0600-interviewer-HX076",
+  "task_id": "HX-BL-076",
+  "role": "interviewer",
+  "claim_ref": "agent-work/claims/2026-11-25T0600-interviewer-HX076.json",
+  "status": "awaiting_owner_answers",
+  "execution_running": false,
+  "role_selection_reason": "Свежий прямой приоритет владельца по HX-BL-076, черновик D1 готов к интервью. Отдельный учёт уже опубликованного PR515 готов к передаче проверяющему.",
+  "source_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "ops_base_sha": "6e36b7b9b240f52ac778524d1baa39147400c3cc",
+  "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
+  "owner_priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
+  "result": "Весь D1 проверен. В существующем чате предъявлены варианты SURFACE-Q01–Q05. Удаление вопроса о малых озёрах при сбросе выделено в независимую часть с проверкой Undo/Redo.",
+  "interview_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
+  "interview_round_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/round-001.json",
+  "open_question_ids": [
+    "SURFACE-Q01",
+    "SURFACE-Q02",
+    "SURFACE-Q03",
+    "SURFACE-Q04",
+    "SURFACE-Q05"
+  ],
+  "owner_answers": [],
+  "interview_completed": false,
+  "independent_reset_handoff": {
+    "ref": "D1: Сброс карты",
+    "status": "contract_confirmed",
+    "owner_quote": "Вопроса в команде сбросить быть не должно.",
+    "behavior": "Сброс очищает карту и малые озёра одной операцией. Отдельного диалога об озёрах нет; Undo восстанавливает прежнюю карту с озёрами, Redo возвращает пустую карту.",
+    "acceptance": [
+      "Карта с малым озером и без иных запросов защиты. Сбросить, проверить отсутствие диалога о водоёме и очистку.",
+      "Сверить покрытие малого озера, содержимое карты и историю до сброса, после Undo и после Redo."
+    ],
+    "scope_boundary": "SURFACE-Q01 касается только остальных подтверждений. Эта развилка не блокирует подготовку пункта об озёрах. Аналитик может проработать этот ограниченный пункт без ответа по POI. Переход к реализации через чистовую спецификацию.",
+    "role": "business_analyst",
+    "next_step": "Уточнить чистовой контракт ограниченного исправления, пройти актуальную проверку наличия макета при необходимости UI и сохранить правила Undo/Redo."
+  },
+  "release_score_handoff": {
+    "task_id": "HX-BL-073",
+    "pr": 515,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+    "release_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "status": "published_score_pending",
+    "publication_verified": true,
+    "publication_authorized": true,
+    "publication_evidence_ref": "agent-work/results/2026-11-25-PR515-publication.json",
+    "publication_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45531047117",
+    "site": "https://app.hexcrawl.ru/",
+    "live_index_sha256": "32da231c27ff684af9f82c379f60f96dbc27c74aa710ef0cdfe6f7f00f2294e9",
+    "current_observation": "Свежий HTTP-ответ сайта совпал по SHA-256 HTML с подтверждённой публикацией.",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/score-assessment.json",
+    "score_update_status": "pending",
+    "score_update_responsible": "reviewer",
+    "model_version": "1.3-rc8",
+    "next_step": "Проверяющему независимо сопоставить опубликованную сборку с принятым SHA, проверить отсутствие дубля в истории и зафиксировать VAL-04 по 1.3-rc8."
+  },
+  "blocking": "По обработке существующих точек, изменению берега, проверке размера и поведению генератора нужны решения владельца. Вопрос о других подтверждениях сброса касается только расширения границ.",
+  "next_role": "business_analyst",
+  "next_role_for_interview": "interviewer",
+  "next_step": "После решения владельца по SURFACE-Q01–Q05 интервьюер сверит последствия и передаст решения аналитику для чистовой спецификации. Пункт сброса малых озёр с Undo/Redo аналитик может подготовить отдельно.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T02:56:13.374Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T03:00:30.878Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T03:00:30.878Z"
+}
