@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T14:38:31Z",
+  "updated_at": "2026-11-25T15:06:10.663Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -34,23 +34,23 @@
       "approved_at": "2026-11-25T02:52:25.057Z",
       "requirements": [
         "Сбрасывать карту без диалогов и без блокировки из-за авторских имён. Undo/Redo восстанавливают и повторяют сброс, включая авторские имена.",
-        "При открытии сохранять существующие точки на исходных местах. Для новых и перемещаемых точек проверять поверхность опорной клетки. При конфликте ручной правки поверхности дать мастеру явно удалить или перенести точку.",
-        "Пропускать необязательную генерируемую точку без подходящего места."
+        "При открытии сохранять существующие точки на исходных местах, включая несколько точек одного гекса. На карте и в PNG показывать значок первой, в информации — все точки. При конфликте ручной правки поверхности дать мастеру явно удалить или перенести точку.",
+        "При генерации водные и наземные точки ставятся на соответствующую итоговую поверхность. Необязательную точку без подходящего места пропускать."
       ],
       "acceptance_outline": [
         "Сбросить карту с авторским именем, озёрами, заметками, Knave и локальными правками без вопросов и блокировки. Проверить восстановление всех данных через Undo и повторный сброс через Redo.",
-        "Открыть карту с деревней на воде и водной точкой на суше. Проверить сохранение точек, повторный импорт и PNG.",
-        "Проверить ручную смену поверхности без автоматического удаления точки, прибрежный контур на одномильной карте и пропуск необязательной точки."
+        "Открыть JSON с авторскими исключениями поверхности и двумя точками одного гекса. Проверить один значок на карте и в PNG, обе точки в информации и обе записи после повторного открытия.",
+        "Сгенерировать регион Classic с сушей и водой. Сверить поверхность всех автоматически добавленных точек. Проверить ручную правку, прибрежный контур и пропуск точки без места по F1."
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "poi_open_review_ready",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить новый SHA PR517 по HX076-POI-RV01-01. Сверить сухой и мокрый совместные гексы в карте, карточке, PNG и JSON, управление способами обнаружения и повторное открытие. Затем сохранить предварительную оценку 1.3-rc8.",
+      "execution_state": "poi_open_owner_changes_requested",
+      "next_role": "programmer",
+      "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку.",
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T14:38:31Z",
+      "updated_at": "2026-11-25T15:06:10.663Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
       "interview_status": "completed",
@@ -237,13 +237,13 @@
       "remaining_poi_stage": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-SURFACES",
-        "status": "coarse_slice_in_review",
+        "status": "changes_requested",
         "next_role": "programmer",
         "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
         "anchor_witness": "Деревня 7 / гекс 5,1 на озере и водная точка на суше",
         "start_after": "Сброс передан на независимую приёмку. Разрешение публикации сброса не является зависимостью.",
         "note": "В базовом src/saveValidation.ts:143 общий валидатор отклоняет водный POI без lake/sea. Разделить совместимость принятого сохранения и правила новых изменений, сохранив структурную проверку типов и координат.",
-        "next_step": "Реализовать SURFACE-Q02–Q05 отдельным пакетом. Первый сквозной сценарий — повторное открытие карты с двумя авторскими исключениями поверхности, с исходными координатами, полями и PNG. Проверить, что общая валидация ручного размещения и генерации при этом сохраняет запрет новых несовместимых точек.",
+        "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку.",
         "authorization": "approved_in_F1_scope",
         "publication_authorized": false,
         "blocked_by_publication": false,
@@ -254,7 +254,8 @@
         ],
         "next_after_coarse_acceptance": "Продолжить сквозной сценарий сохранённых исключений в одномильном виде, включая карту, карточку и экспорт.",
         "review_result_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
-        "fix_handoff_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json"
+        "fix_handoff_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
+        "owner_direction_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json"
       },
       "reset_fix_handoff": {
         "task_id": "HX-BL-076",
@@ -346,10 +347,10 @@
       "poi_open_stage": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-OPEN-COARSE",
-        "scope": "Classic, 5–6 миль. SURFACE-Q02, видимость и доступ к данным двух сохранённых точек на одном гексе.",
+        "scope": "Открытие авторских точек и проверка поверхности при генерации региона",
         "run_id": "2026-11-25T1700-programmer-PR517-RV01",
-        "status": "review_ready",
-        "review_ready": true,
+        "status": "changes_requested",
+        "review_ready": false,
         "branch": "feat/hx076-poi-open",
         "pr": 517,
         "pr_number": 517,
@@ -369,18 +370,19 @@
           "HX076-POI-RV01-01"
         ],
         "next_role": "reviewer",
-        "next_step": "Независимо проверить новый SHA PR517 по HX076-POI-RV01-01. Сверить сухой и мокрый совместные гексы в карте, карточке, PNG и JSON, управление способами обнаружения и повторное открытие. Затем сохранить предварительную оценку 1.3-rc8.",
+        "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку.",
         "authorization": "approved_in_F1_scope",
         "publication_authorized": false,
         "blocked_by_publication": false,
-        "score_assessment_status": "pending_independent_assessment"
+        "score_assessment_status": "pending_independent_assessment",
+        "owner_direction_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json"
       },
       "poi_open_fix_handoff": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-OPEN-COARSE",
-        "status": "fix_delivered_for_review",
+        "status": "fix_ready",
         "next_role": "reviewer",
-        "next_step": "Исправить HX076-POI-RV01-01 в PR517. На сохранении dry-pair.json обе точки должны быть видны на карте и в PNG, а карточка должна давать доступ к обнаружению каждой точки. Перепроверить добавление через UI, отдельные точки и повторное открытие, затем передать новый SHA.",
+        "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку.",
         "authorization": "approved_in_F1_scope",
         "blocking_finding_ids": [
           "HX076-POI-RV01-01"
@@ -401,7 +403,16 @@
         "publication_authorized": false,
         "blocked_by_publication": false,
         "candidate_head_sha": "814abe2e7e08bf64685efe5e0696b64a310dd9d9",
-        "programmer_result_ref": "agent-work/results/2026-11-25T1700-programmer-PR517-RV01.json"
+        "programmer_result_ref": "agent-work/results/2026-11-25T1700-programmer-PR517-RV01.json",
+        "owner_direction_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json"
+      },
+      "poi_owner_revision": {
+        "pr": 517,
+        "decision_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json",
+        "spec_revision": "be95080d9b5fc4dda00c9e26b079def6969116b9",
+        "status": "changes_requested",
+        "next_role": "programmer",
+        "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку."
       }
     },
     {
