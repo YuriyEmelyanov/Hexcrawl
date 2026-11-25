@@ -1,3 +1,5 @@
+import { EMPTY_CROWS_SETTLEMENTS, rebindCrowsSettlements, starterCrowsSettlement, validCrowsSettlements, villageBeaconRadius, type CrowsSettlement, type CrowsSettlements } from './crowsSettlements';
+import { CrowsVillageInfo } from './CrowsVillageInfo';
 import { fillCornathWorld, type MapWorld } from './crowsWorld';
 import { MapWorldInfo } from './MapWorldInfo';
 import {assignDiscovery, type DiscoveryMap} from './poiDiscovery';
@@ -507,6 +509,7 @@ type HexcrawlSaveData = {
   map: {
     physicalGrid?:Detail1State;
     world?: MapWorld;
+    crowsSettlements?: CrowsSettlements;
     knave?: KnaveLayer;
     riverFeatures?: RiverFeatures;
     tags?: TagState;
@@ -1020,6 +1023,10 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
+  if (data.map.crowsSettlements !== undefined && !validCrowsSettlements(data.map.crowsSettlements,
+    crowsSettlementCheck({regions:data.map.regions, hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}))) {
+    throw new SaveValidationError('map.crowsSettlements', 'invalid settlement owner, prosperity or building');
+  }
   if (data.map.poiDiscovery !== undefined) {
     const live = poiNameLocators({regions:data.map.regions, waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))});
     if (!isRecord(data.map.poiDiscovery) || Array.isArray(data.map.poiDiscovery) || Object.entries(data.map.poiDiscovery).some(([key, mode]) =>
@@ -1155,6 +1162,7 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
   const imported:ValidatedHexcrawlSaveData={...data,map:{...map,regions,roads,rivers,kingdoms,tags,knave,
     physicalGrid:map.physicalGrid && remapDetail(map.physicalGrid),
     poiDiscovery:map.poiDiscovery && rekey(map.poiDiscovery,'map.poiDiscovery'),
+    crowsSettlements:map.crowsSettlements && {...map.crowsSettlements,byPoi:rekey(map.crowsSettlements.byPoi,'map.crowsSettlements.byPoi')},
     editorNames:map.editorNames && rekey(map.editorNames,'map.editorNames'),
     toponyms:{seed,model:DEFAULT_TOPONYM_MODEL,names}
   }};
@@ -1431,8 +1439,28 @@ function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: Readon
   return {...after, poiDiscovery: values};
 }
 
+const CROWS_SETTLEMENT_KINDS = new Set<string>(['village', 'town', 'city', 'capital']);
+
+function crowsSettlementCheck(map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) {
+  const live = poiNameLocators({ regions: map.regions, waterPoiByKey: new Map() });
+  const byId = new Map(map.regions.map(region => [String(region.id), region]));
+  return (owner: string) => {
+    if (!live.has(owner)) return false;
+    const [, id, key] = owner.split(':');
+    const region = byId.get(id);
+    const central = region && hasCentralPoi(region) && hexKey(region.centerHex) === key;
+    const kind = central ? region.centralPoiKind : region?.pointOfInterestKinds?.[key];
+    return kind !== undefined && CROWS_SETTLEMENT_KINDS.has(kind) && waterKindAt(map.hexTerrainByKey, key) === 'land';
+  };
+}
+
+function retainCrowsSettlements(map: MapSnapshot, moves: ReadonlyMap<string, string | null> = new Map()): MapSnapshot {
+  if (!map.crowsSettlements) return map;
+  return {...map,crowsSettlements:rebindCrowsSettlements(map.crowsSettlements,crowsSettlementCheck(map),moves)};
+}
+
 function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={},creationMode?:GenerationMode):MapSnapshot{
- candidate=withPoiDiscovery(before,candidate,moves,creationMode);
+ candidate=retainCrowsSettlements(withPoiDiscovery(before,candidate,moves,creationMode),moves);
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
@@ -2318,6 +2346,7 @@ type MapSnapshot = {
   poiDiscovery?: DiscoveryMap;
   physicalGrid?:Detail1State;
   world?: MapWorld;
+  crowsSettlements?: CrowsSettlements;
   knave?: KnaveLayer;
   seas:SeaRecord[];
   nextSeaId:number;
@@ -12450,6 +12479,12 @@ export function App() {
     setWorld(value);
   };
   const [crowsEnabled, setCrowsEnabled] = useState(false);
+  const [crowsSettlements, setCrowsSettlements] = useState<CrowsSettlements>();
+  const crowsSettlementsRef = useRef<CrowsSettlements>();
+  const updateCrowsSettlements = (value: CrowsSettlements | undefined) => {
+    crowsSettlementsRef.current = value;
+    setCrowsSettlements(value);
+  };
   const [knaveEnabled,setKnaveEnabled]=useState(false);
   const knaveEnabledRef=useRef(knaveEnabled);knaveEnabledRef.current=knaveEnabled;
   const updateKnaveEnabled=(value:boolean)=>{knaveEnabledRef.current=value;setKnaveEnabled(value);};
@@ -13041,7 +13076,7 @@ export function App() {
     const snapshot: MapSnapshot = {
       physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},world:worldRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13131,7 +13166,7 @@ export function App() {
     setCandidateHexes(finalCandidateHexes);
     setNextRiverId(allocatedTractRivers.nextRiverId);
     setRivers(riversAfterTractGeneration);
-    setToponyms(finalToponyms);
+    setToponyms(committedMap.toponyms);
     setHexTerrainByKey(finalHexTerrainByKey);
     setWaterPoiByKey(finalWaterPoi);
     setNextLakeId(finalNextLakeId);
@@ -13921,7 +13956,7 @@ export function App() {
       const snapshot: MapSnapshot = {
         physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},world:worldRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13962,7 +13997,7 @@ export function App() {
 
       setNextRiverId(allocatedRegionRivers.nextRiverId);
       setRivers(riversWithDeltas);
-      setToponyms(finalToponyms);
+      setToponyms(committedMap.toponyms);
       setRoads(roadResult.roads);
       setCrossings(finalCrossings);
       setNextRoadId(roadResult.nextRoadId);
@@ -13981,7 +14016,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,world:worldRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ requiresFineAdaptation:fineLegacyRef.current,map: captureMap(), generationHistory: history, selectedHex,
     // Camera coordinates belong to the accepted document, not its detached
@@ -14033,6 +14068,7 @@ export function App() {
     map=withLegacySeas(map);updateSeaIdentity(map);
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
     updateWorld(map.world);
+    updateCrowsSettlements(map.crowsSettlements);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -14468,11 +14504,23 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history, lakeRegions:readonly Region[] = []) => {
+    const starter = lakeRegions[0];
+    if (crowsEnabled && generationMode === 'classic' && !kingdomJob && starter &&
+        !map.crowsSettlements?.starterGranted && hasCentralPoi(starter) &&
+        waterKindAt(map.hexTerrainByKey, hexKey(starter.centerHex)) === 'land' &&
+        poiNameLocators(map).has(`poi:${starter.id}:${hexKey(starter.centerHex)}`)) {
+      const owner = `poi:${starter.id}:${hexKey(starter.centerHex)}`;
+      const regions = map.regions.map(region => region.id === starter.id ? {...region,centralPoiKind:'village' as const} : region);
+      const village = starterCrowsSettlement(map.generation.masterSeed, starter.id, starter.centerHex);
+      map = {...map,regions,crowsSettlements:{starterGranted:true,byPoi:{...map.crowsSettlements?.byPoi,[owner]:village}},
+        toponyms:synchronizeToponyms(map.toponyms,getToponymEntities(regions,map.rivers,map.hexTerrainByKey),map.toponymSeed)};
+    }
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
     }
     if(generationMode==='classic'&&!kingdomJob)map=withPoiDiscovery(checkpoint,map);
+    map=retainCrowsSettlements(map);
     const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
@@ -14541,7 +14589,7 @@ export function App() {
     const generationHistory = [...checkpoints, savedCheckpoint];
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection, generationHistory }, {preparedScene});
     setHistory(generationHistory);
-    fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
+    fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);updateCrowsSettlements(map.crowsSettlements);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
@@ -14617,6 +14665,7 @@ export function App() {
     updateSeaIdentity(map);
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
     updateWorld(map.world);
+    updateCrowsSettlements(map.crowsSettlements);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -14986,14 +15035,23 @@ export function App() {
     const reconciled=reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removals);
     const next={...candidate,physicalGrid:reconciled};checkedRiverMap(next);return next;
   };
+  const retainedCrowsCheckpoint = (snapshot: MapSnapshot): CrowsSettlements | undefined => {
+    const current = crowsSettlementsRef.current;
+    if (!current && !snapshot.crowsSettlements) return undefined;
+    const saved = snapshot.crowsSettlements ?? EMPTY_CROWS_SETTLEMENTS;
+    const owns = crowsSettlementCheck(snapshot);
+    const live = Object.fromEntries(Object.entries(current?.byPoi ?? {}).filter(([owner]) => owns(owner)));
+    return {...saved,byPoi:{...saved.byPoi,...live}};
+  };
+
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
     snapshot=deferFineRegeneration?{...snapshot,physicalGrid:undefined}:retainFineCheckpoint(snapshot);
-    snapshot={...snapshot,world:worldRef.current};
+    snapshot={...snapshot,world:worldRef.current,crowsSettlements:retainedCrowsCheckpoint(snapshot)};
     snapshot={...snapshot,poiDiscovery:retainedDiscoveryCheckpoint(snapshot),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
-    updateSeaIdentity(snapshot);discoveries.current=snapshot.poiDiscovery??{};updateKnave(snapshot.knave);updatePhysicalGrid(snapshot.physicalGrid);
+    updateSeaIdentity(snapshot);discoveries.current=snapshot.poiDiscovery??{};updateKnave(snapshot.knave);updateCrowsSettlements(snapshot.crowsSettlements);updatePhysicalGrid(snapshot.physicalGrid);
     const retainedPoiNames=retainPoiNames(snapshot,editorNamesRef.current);
     updateTags(reconcileTags(tagsRef.current,snapshot,captureMap(),generationRef.current.masterSeed,false));
     restoreGeneration(snapshot.generation);
@@ -15109,6 +15167,7 @@ export function App() {
     map.poiDiscovery=retainedDiscoveryCheckpoint(map);
     map.knave=retainedKnaveCheckpoint(map);
     map.world=before.map.world;
+    map.crowsSettlements=retainedCrowsCheckpoint(map);
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
       const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
@@ -15265,7 +15324,39 @@ export function App() {
     && poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)
     ? {kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey} : null;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !selectedSurfaceIsWater && (!selectedWaterPoiKind || selectedLandPoi));
-  const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
+  const crowsVillageOwner = crowsEnabled && generationMode === 'classic' && selectedLandPoi && !selectedSurfaceIsWater
+    ? poiLocatorKey(selectedLandPoi) : undefined;
+  const selectedCrowsVillage = crowsVillageOwner ? crowsSettlements?.byPoi[crowsVillageOwner] : undefined;
+  const crowsMiasma = crowsEnabled && generationMode === 'classic' && selectedHex &&
+    !isSelectedCandidate && (selectedRegion || isSelectedLake || isSelectedSea)
+    ? !Object.entries(crowsSettlements?.byPoi ?? {}).some(([owner, village]) => {
+      const radius = villageBeaconRadius(village);
+      if (radius === 0) return false;
+      const [q, r] = owner.split(':')[2].split(',').map(Number);
+      return hexDistance(selectedHex, {q, r}) <= radius;
+    })
+    : undefined;
+  const editCrowsVillage = (village: CrowsSettlement) => {
+    if (!crowsVillageOwner || !editMode || mutationBlocked() || !selectedCrowsVillage ||
+        notesSelectionRef.current !== selectedHexKey) return;
+    const map = captureMap();
+    const layer = map.crowsSettlements ?? EMPTY_CROWS_SETTLEMENTS;
+    commitManualMap({...map,crowsSettlements:{...layer,byPoi:{...layer.byPoi,[crowsVillageOwner]:village}}},false);
+  };
+  const setCrowsHome = (home: boolean) => {
+    if (!crowsVillageOwner || !editMode || mutationBlocked() || !selectedRegion || !selectedHexKey ||
+        notesSelectionRef.current !== selectedHexKey) return;
+    if (selectedCrowsVillage?.home === home) return;
+    const map = captureMap();
+    const layer = map.crowsSettlements ?? EMPTY_CROWS_SETTLEMENTS;
+    const row = selectedCrowsVillage ?? {home:false,prosperity:0,buildings:[]};
+    const regions = !home ? map.regions : map.regions.map(region => region.id !== selectedRegion.id ? region :
+      selectedHasCentralPoi ? {...region,centralPoiKind:'village' as const} :
+        {...region,pointOfInterestKinds:{...region.pointOfInterestKinds,[selectedHexKey]:'village' as const}});
+    commitManualMap({...map,regions,crowsSettlements:{...layer,byPoi:{...layer.byPoi,[crowsVillageOwner]:{...row,home}}}});
+  };
+
+  const waterPoiKindOrder = generationMode === 'mythic'  ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !isBiomeId(biomeId)) return;
     if(biomeOverrideByHexKey.get(selectedHexKey)===biomeId) { closeEditors(); return; }
@@ -15729,6 +15820,7 @@ export function App() {
       ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
       ...(doc.map.knave===undefined?{}:{knave:structuredClone(doc.map.knave)}),
       ...(doc.map.world?{world:{...doc.map.world}}:{}),
+      ...(doc.map.crowsSettlements?{crowsSettlements:structuredClone(doc.map.crowsSettlements)}:{}),
       seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
       nextSeaId:doc.map.nextSeaId,
       editorNames:structuredClone(doc.map.editorNames??{}),
@@ -15855,7 +15947,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,
+        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,crowsSettlements:imported.map.crowsSettlements,
           poiDiscovery:{...Object.fromEntries(Object.entries(imported.map.knave?.discoveryByPoi??{}).map(([key,value])=>[key,value.mode])),...imported.map.poiDiscovery},
           knave:imported.map.knave?{...imported.map.knave,discoveryByPoi:{}}:undefined,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
@@ -17764,6 +17856,9 @@ export function App() {
                   : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{renderWaterPoi()}</div></>
                   : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
+                {crowsMiasma !== undefined && <p data-crows-miasma={crowsMiasma ? 'present' : 'clear'}>
+                  {language === 'ru' ? (crowsMiasma ? 'Миазма' : 'Нет Миазмы') : (crowsMiasma ? 'Miasma' : 'No miasma')}
+                </p>}
                 {!poiDraft&&waterPanel}{poiPanel}{knavePanel}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
@@ -17798,6 +17893,8 @@ export function App() {
                     {selectedHasCentralPoi && selectedHasSecondaryPoi && selectedHex ? <div className="direct-line">
                       {selectedPoiKind ? POI_DETAILS[selectedPoiKind].emoji + ' ' : ''}{getPoiLabelForHex(selectedRegion, selectedHex, language)}
                     </div> : null}
+                    {crowsVillageOwner && <CrowsVillageInfo village={selectedCrowsVillage} language={language} editing={editMode}
+                      disabled={mutationBlocked(false)} onHomeChange={setCrowsHome} onChange={editCrowsVillage} />}
                     {selectedWaterPoiKind || (selectedSurfaceIsWater && !selectedLandPoi) ? <div className="direct-line">{renderWaterPoi()}</div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId} {renderName(`road:${roadId}`,'selected-road')}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId} {selectedHexRoadIds.includes(trailId)?null:renderName(`road:${trailId}`,'selected-road')}</p>)}

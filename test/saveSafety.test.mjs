@@ -1,3 +1,4 @@
+import { villageBeaconRadius } from '../src/crowsSettlements.ts';
 import {projectOneMile} from '../src/oneMile.ts';
 import {newKnaveLayer,validateKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
@@ -62,6 +63,36 @@ test('save validation accepts blank world text and rejects contradictory Classic
 
   data.ui.knaveEnabled = true;
   assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /ui.crowsEnabled/);
+});
+
+test('Crows save validates home settlement ownership and building limits', () => {
+  const data = structuredClone(valid);
+  const region = data.map.regions[0];
+  region.centralPoiKind = 'village';
+  region.isTract = false;
+  region.suppressCentralPoi = false;
+  region.pointsOfInterest = region.pointsOfInterest.filter(h => h.q !== region.centerHex.q || h.r !== region.centerHex.r);
+  delete region.pointOfInterestKinds;
+  const owner = `poi:${region.id}:${region.centerHex.q},${region.centerHex.r}`;
+  data.map.crowsSettlements = {starterGranted: true, byPoi: {
+    [owner]: {home: true, prosperity: 0, buildings: [{type: 'smithy', level: 4}]}
+  }};
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  const invalidLevel = structuredClone(data);
+  invalidLevel.map.crowsSettlements.byPoi[owner].buildings[0].level = 5;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(invalidLevel), /map.crowsSettlements/);
+  region.centralPoiKind = 'ruins';
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /map.crowsSettlements/);
+});
+
+test('Crows village beacon extends to radius six only at level five and prosperity ten', () => {
+  const beacon = level => ({type: 'beacon', level});
+  const radius = (prosperity, buildings) => villageBeaconRadius({home: false, prosperity, buildings});
+  assert.equal(radius(10, []), 0);
+  assert.equal(radius(10, [beacon(1), beacon(4)]), 4);
+  assert.equal(radius(9, [beacon(5)]), 5);
+  assert.equal(radius(10, [beacon(5), beacon(3)]), 6);
 });
 
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {
