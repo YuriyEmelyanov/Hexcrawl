@@ -16103,7 +16103,7 @@ export function App() {
     ? <button type="button" className="direct-value" aria-label={label} onClick={() => {if (!mutationBlocked()) { clearNotesDraft(); closeEditors(); open(); }}}>{value}</button>
     : <span>{value}</span>;
   const renderWaterPoi = () => {
-    const name = selectedWaterPoiKind ? renderName(`waterPoi:${selectedHexKey}`) : null;
+    const name = selectedWaterPoiKind ? <>{' '}{renderName(`waterPoi:${selectedHexKey}`)}</> : null;
     const label = selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi;
     if (!selectedSurfaceIsWater) return selectedWaterPoiKind ? <><span>{label}</span>{name}</> : null;
     return <>{isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
