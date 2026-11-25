@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T17:05:54Z",
+  "updated_at": "2026-11-25T18:14:32Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -44,13 +44,13 @@
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "poi_open_changes_requested",
-      "next_role": "programmer",
-      "next_step": "Сохранить существующие водные точки и связанные данные при достройке на неизменившихся гексах. Проверять итоговую поверхность и расстояния у новых точек. Повторить контроль, безымянное и подписанное кораблекрушение и передать новый SHA.",
+      "execution_state": "poi_open_review_ready",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T17:05:54Z",
+      "updated_at": "2026-11-25T18:14:32Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
       "interview_status": "completed",
@@ -352,203 +352,171 @@
       "poi_open_stage": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-OPEN-COARSE",
-        "run_id": "2026-11-25T1904-programmer-PR517-poi-surface",
+        "run_id": "2026-11-25T2055-programmer-PR517-preserve-authored-poi",
         "role": "programmer",
-        "role_selection_reason": "Прямое уточнение владельца по HX-BL-076 и PR517, утверждённому для доработки.",
-        "status": "changes_requested",
-        "review_ready": false,
+        "role_selection_reason": "Утверждённый HX-BL-076 возвращён программисту с подтверждённым замечанием HX076-POI-RV02-01.",
         "pr": 517,
         "pr_number": 517,
         "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
         "branch": "feat/hx076-poi-open",
         "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-        "head_sha": "074117e14da0af363c80accc902678afb163dc49",
-        "tree_sha": "430daed98e7f9d12052fa116f8a91bd184ad7986",
-        "previous_head_sha": "63d6d194acfc6df61d6d0572edf6365450092f68",
-        "previous_result_ref": "agent-work/results/2026-11-25T1744-programmer-PR517-single-POI.json",
+        "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+        "tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
+        "previous_head_sha": "074117e14da0af363c80accc902678afb163dc49",
+        "previous_review_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR517-surface.json",
+        "claim_ref": "agent-work/claims/2026-11-25T2055-programmer-PR517-preserve-authored-poi.json",
         "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
-        "spec_revision": "F1 owner clarification 2026-11-25",
         "owner_decision_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json",
-        "result_ref": "agent-work/results/2026-11-25T1904-programmer-PR517-poi-surface.json",
-        "claim_ref": "agent-work/claims/2026-11-25T1904-programmer-PR517-poi-surface.json",
-        "evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/browser.json",
-        "evidence_commit_sha": "f96e1c32010bc63da4d487c95f9a2faa09f13720",
-        "before_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/before.jpg",
-        "after_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/after.jpg",
-        "saved_pair_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/saved-pair.jpg",
-        "actual_png_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/saved-pair-export.png",
+        "result_ref": "agent-work/results/2026-11-25T2055-programmer-PR517-preserve-authored-poi.json",
+        "evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/manifest.json",
+        "evidence_commit_sha": "1912f1a9af2cae66f17f00faa4ce96833ebaf844",
+        "before_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/browser-growth.json",
+        "browser_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/browser-growth.json",
+        "after_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/named-growth.jpg",
+        "actual_png_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/named-growth.png",
+        "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117",
+        "test_change_summary": {
+          "base_sha": "074117e14da0af363c80accc902678afb163dc49",
+          "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+          "added": 0,
+          "removed": 0,
+          "modified": 1,
+          "suites": [
+            {
+              "runner": "Node.js",
+              "path": "test/worldContinuation.test.mjs",
+              "added": 0,
+              "removed": 0,
+              "modified": 1,
+              "scenario": "Reuse Classic final-surface generation test: no-POI control, unnamed and named authored shipwreck plus adjacent existing sea POI; exact history/export and new-water surface checks.",
+              "reuse_or_new_reason": "Directly reproduces HX076-POI-RV02-01 on the previous SHA. Extends the existing generation test rather than creating a second test for the same production callback."
+            }
+          ],
+          "source": "Logical test cases in exact incremental diff 074117e..79a6df4, temporary Chromium/tract diagnostic excluded.",
+          "pr_total": {
+            "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+            "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+            "added": 2,
+            "removed": 0,
+            "modified": 1
+          }
+        },
+        "publication_authorized": false,
+        "scope": "Замечание HX076-POI-RV02-01. Сохранение уже принятых водных точек при достройке карты. Ограничения итоговой поверхности, типа, расстояния и профиля применяются к новым точкам.",
+        "result": [
+          "Старый SHA воспроизвёл исчезновение кораблекрушения. На новом SHA контрольная карта, карта с безымянной точкой и карта с меткой мастера все расширились с одного региона до двух.",
+          "Кораблекрушение осталось на сухом 1/0. Имя и обнаружение сохранились, резервные отмена/повтор и повторный импорт совпали с принятым состоянием, PNG содержит нужный значок.",
+          "Урочища Classic и Mythic сохранили именованное кораблекрушение. Расширенная постоянная проверка также оставляет ранее принятые соседние водные точки на море."
+        ],
+        "addressed_findings_pending_review": [
+          "HX076-POI-RV02-01"
+        ],
+        "score_evidence": {
+          "status": "pending_independent_assessment",
+          "model_version": "1.3-rc8",
+          "criterion_ids": [
+            "S02-C03",
+            "S02-C05",
+            "S04-C04"
+          ],
+          "rule_ids": [
+            "SAVE-04"
+          ],
+          "confirmed_delta": null
+        },
+        "next_role": "reviewer",
+        "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
+        "remaining": {
+          "independent_review": "Один проход по точному SHA; затем отдельное решение о выпуске",
+          "other_f1_stages": "SURFACE-Q03–Q05 и одномильный вариант по действующей передаче"
+        },
+        "execution_running": false,
+        "status": "review_ready",
+        "review_ready": true,
         "checks": {
           "status": "success",
-          "head_sha": "074117e14da0af363c80accc902678afb163dc49",
+          "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
           "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-          "tree_sha": "430daed98e7f9d12052fa116f8a91bd184ad7986",
-          "merge_simulation": "8452269a71c0efa9ecd990479710dee93995fb7c",
-          "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177",
+          "tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
+          "merge_simulation": "0777c3f685fb029f5e8fc38093b26db92d8ff306",
+          "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117",
+          "conditional_skip": "engraved-map-comparison",
           "jobs": [
             {
-              "id": 139339004635,
+              "id": 139404331654,
               "name": "browser",
-              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339004635",
+              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404331654",
               "status": "completed",
               "conclusion": "success",
               "summary": [
-                "2026-11-25T16:15:16.4312660Z HEAD is now at 8452269 Merge 074117e14da0af363c80accc902678afb163dc49 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-                "2026-11-25T16:20:10.2101784Z POI display passed: 39 SVGs, one SVG presentation, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.",
-                "2026-11-25T16:23:05.5617580Z HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.",
-                "2026-11-25T16:23:18.0439771Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+                "2026-11-25T17:59:57.2805427Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+                "2026-11-25T18:04:19.1924685Z POI display passed: 39 SVGs, one SVG presentation, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.",
+                "2026-11-25T18:07:11.6449309Z HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.",
+                "2026-11-25T18:07:24.0971512Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
               ]
             },
             {
-              "id": 139339005075,
-              "name": "check",
-              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339005075",
-              "status": "completed",
-              "conclusion": "success",
-              "summary": [
-                "2026-11-25T16:15:10.2504482Z HEAD is now at 8452269 Merge 074117e14da0af363c80accc902678afb163dc49 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-                "2026-11-25T16:29:14.5411572Z ✔ generated Classic POIs match the final surface after river and lake completion (4342.992406ms)",
-                "2026-11-25T16:29:14.6730310Z ℹ tests 454",
-                "2026-11-25T16:29:14.6730840Z ℹ pass 454",
-                "2026-11-25T16:29:14.6731081Z ℹ fail 0",
-                "2026-11-25T16:29:14.6731530Z ℹ skipped 0"
-              ]
-            },
-            {
-              "id": 139339005094,
+              "id": 139404332290,
               "name": "world-random",
-              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339005094",
+              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404332290",
               "status": "completed",
               "conclusion": "success",
               "summary": [
-                "2026-11-25T16:15:09.9432420Z HEAD is now at 8452269 Merge 074117e14da0af363c80accc902678afb163dc49 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-                "2026-11-25T16:15:56.5425801Z world RNG production UI classic/0: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:16:02.0928510Z world RNG production UI classic/1: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:16:07.3762319Z world RNG production UI classic/123456789: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:16:13.0261913Z world RNG production UI classic/4294967295: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:17:23.0689685Z world RNG production UI mythic/0: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:18:27.9874401Z world RNG production UI mythic/1: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:20:06.0757953Z world RNG production UI mythic/123456789: fresh, continuation, undo-repeat, invalid import passed",
-                "2026-11-25T16:22:45.2746768Z world RNG production UI mythic/4294967295: fresh, continuation, undo-repeat, invalid import passed"
+                "2026-11-25T17:59:57.5247927Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+                "2026-11-25T18:00:46.4599283Z world RNG production UI classic/0: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:00:51.6431975Z world RNG production UI classic/1: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:00:56.7797712Z world RNG production UI classic/123456789: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:01:03.0108202Z world RNG production UI classic/4294967295: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:02:14.3323512Z world RNG production UI mythic/0: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:03:19.4123971Z world RNG production UI mythic/1: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:04:56.5848938Z world RNG production UI mythic/123456789: fresh, continuation, undo-repeat, invalid import passed",
+                "2026-11-25T18:07:31.9939456Z world RNG production UI mythic/4294967295: fresh, continuation, undo-repeat, invalid import passed"
+              ]
+            },
+            {
+              "id": 139404332433,
+              "name": "check",
+              "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404332433",
+              "status": "completed",
+              "conclusion": "success",
+              "summary": [
+                "2026-11-25T17:59:56.8006818Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+                "2026-11-25T18:14:02.9152285Z ✔ generated Classic POIs match the final surface and existing points survive map growth (6100.484963ms)",
+                "2026-11-25T18:14:03.0061942Z ℹ tests 454",
+                "2026-11-25T18:14:03.0062800Z ℹ pass 454",
+                "2026-11-25T18:14:03.0063114Z ℹ fail 0",
+                "2026-11-25T18:14:03.0063739Z ℹ skipped 0"
               ]
             }
           ],
-          "conditional_skip": "engraved-map-comparison",
           "node": {
             "executed": 454,
             "passed": 454,
             "skipped": 0
           },
-          "local_regression": "agent-work/evidence/HX-BL-076/poi-open/074117e/surface/browser.json"
+          "targeted": {
+            "old_sha": "failed as expected: unnamed point removed",
+            "new_sha": "passed",
+            "chromium": "3 matched variants, card + PNG + exact map Undo/Redo/reopen",
+            "tract": "Classic and Mythic fallback"
+          }
         },
-        "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177",
-        "test_change_summary": {
-          "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-          "head_sha": "074117e14da0af363c80accc902678afb163dc49",
-          "added": 2,
-          "removed": 0,
-          "modified": 1,
-          "suites": [
-            {
-              "runner": "Node",
-              "path": "test/worldContinuation.test.mjs",
-              "added": 1,
-              "removed": 0,
-              "modified": 0,
-              "scenario": "Classic seed 10 floods an early town location; seed 0 provides actual generated water POI",
-              "reuse_or_new_reason": "Existing continuation tests compared whole saved state with replay but did not check POI types against the final wet cells."
-            },
-            {
-              "runner": "Node",
-              "path": "test/mapTransactions.test.mjs",
-              "added": 0,
-              "removed": 0,
-              "modified": 1,
-              "scenario": "A valid endpoint uses an existing central POI",
-              "reuse_or_new_reason": "Reuse the road draft case without an artificial extra point."
-            },
-            {
-              "runner": "browser",
-              "path": "test/browser/save-history.smoke.mjs",
-              "added": 1,
-              "removed": 0,
-              "modified": 0,
-              "scenario": "Authored off-surface positions and saved pair, one marker in map/PNG, two names and discovery values, exact reopen",
-              "reuse_or_new_reason": "Extend runner with distinct SURFACE-Q02 contract; updated existing PR517 coverage to match owner clarification."
-            }
-          ],
-          "source": "Exact diff from PR517 base to candidate, counting logical cases; temporary before/after probe excluded."
-        },
-        "publication_authorized": false,
-        "scope": "SURFACE-Q02 opening and coarse region generation (SURFACE-Q04/Q05)",
-        "result": [
-          "Classic seed 10 selected a town at -3/3 before river completion; that hex became lake 3. At the new SHA the lake remains, the town is on dry -3/4 and every new land POI in region 5 is dry.",
-          "Classic seed 0 generated a water POI at 0/1 on water; the final pass only considers actual lake/sea cells and valid types.",
-          "A saved village/wreck on 1/0 displayed the first point only on the coarse map and exported PNG, with both names and distinct discovery values in the open card and unchanged data on JSON reopen."
-        ],
-        "score_evidence": {
-          "model_version": "1.3-rc8",
-          "status": "pending_independent_assessment",
-          "criteria": [
-            "S02-C05",
-            "S02-C03",
-            "S04-C04"
-          ],
-          "regression_review_criteria": [
-            "S01-C01",
-            "S01-C04"
-          ],
-          "confirmed_delta": null
-        },
-        "remaining": {
-          "review": "Independent review on this SHA and preliminary assessment",
-          "publication": "Separate owner decision",
-          "manual_surface_fine": "Keep the existing follow-up from F1",
-          "pr516_score_update": "Pending release verification by reviewer in the existing handoff"
-        },
-        "next_role": "programmer",
-        "next_step": "Сохранить существующие водные точки и связанные данные при достройке на неизменившихся гексах. Проверять итоговую поверхность и расстояния у новых точек. Повторить контроль, безымянное и подписанное кораблекрушение и передать новый SHA.",
         "automation_health": {
           "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "start": {
-            "at": "2026-11-25T16:04:29Z",
+            "at": "2026-11-25T17:56:22Z",
             "status": "checked",
             "is_enabled": true
           },
           "end": {
-            "at": "2026-11-25T16:30:10Z",
+            "at": "2026-11-25T18:14:32Z",
             "status": "checked",
             "is_enabled": true
           },
           "restored": false,
           "errors": []
         },
-        "execution_running": false,
-        "completed_at": "2026-11-25T16:30:10Z",
-        "review_verdict": "changes_requested",
-        "review_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR517-surface.json",
-        "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/review.json",
-        "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/score-assessment.json",
-        "open_findings": [
-          {
-            "id": "HX076-POI-RV02-01",
-            "severity": "blocking",
-            "status": "confirmed",
-            "title": "Достройка карты теряет сохранённое кораблекрушение на суше",
-            "code": "src/App.tsx:9104–9118, 13115, 13945 (assignWaterPoiLayer); src/saveValidation.ts:142–148",
-            "reproduction": "Карта Classic seed 0 с кораблекрушением на сухом 1/0. Режим Материк, размер Малый регион, нажать −1/0.",
-            "actual": "Без имени второй регион создаётся, кораблекрушение и способ обнаружения исчезают. При авторском имени добавление откатывается с предупреждением об удалении имени. Контроль без кораблекрушения расширяется до двух регионов. Undo восстанавливает исходную карту после успешного расширения.",
-            "expected": "Сохранить уже принятые точки и связанные данные на неизменившихся существующих гексах. Ограничения поверхности и расстояния применяются к новым точкам.",
-            "evidence": [
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/browser-growth.json",
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/independent-growth.json",
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-input.json",
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-export.json",
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-name-guard-input.json",
-              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-control.json"
-            ],
-            "related": "В том же проходе фильтр расстояния отбросил соседнюю ранее сохранённую водную точку на море (1/1 рядом с 0/1), при неизменном слое моря. Этот фильтр существовал до PR."
-          }
-        ]
+        "completed_at": "2026-11-25T18:14:32Z"
       },
       "poi_open_fix_handoff": {
         "task_id": "HX-BL-076",
@@ -586,8 +554,8 @@
         "spec_revision": "F1 owner clarification 2026-11-25",
         "status": "review_ready",
         "next_role": "reviewer",
-        "next_step": "Независимо проверить точный SHA PR517: на итоговой карте водные и наземные точки соответствуют поверхности, в сохранённой паре один значок, обе карточки и точный JSON round-trip. Зафиксировать предварительную оценку 1.3-rc8.",
-        "head_sha": "074117e14da0af363c80accc902678afb163dc49"
+        "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
+        "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620"
       }
     },
     {
