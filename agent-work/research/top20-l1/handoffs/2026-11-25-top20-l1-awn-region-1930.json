@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-25-top20-l1-awn-region-1930",
+  "base_sha": "a0cc6a5febb6603f2c59e265b8df0947766fe6c9",
+  "game_id": "AWN",
+  "audiences": [
+    "product_model",
+    "strategist_for_development"
+  ],
+  "status": "bounded_regional_preparation_requirements_complete",
+  "corpus": {
+    "source": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+    "edition": "Ashes Without Number, Kevin Crawford, Sine Nomine Publishing, Free Edition, файл 071025, EN",
+    "read": [
+      "с. 143, Exploration Campaigns, шаги 2–4",
+      "с. 144–145, Creating Your Region, включая карту, анклавы, руины, стартовую локацию и подготовку мест",
+      "с. 152–153, выбор способа наполнения и карточка места",
+      "с. 172, Encounter Site Features: таблица d100 и исключение незаполненных областей",
+      "с. 249, Handling Hexcrawls, участок и маршрутная полоса"
+    ],
+    "existing_analysis": [
+      "agent-work/research/top20-l1/games/AWN.json",
+      "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/AWN.json",
+      "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json"
+    ]
+  },
+  "reused_operations": [
+    "AWN-obs-01",
+    "AWN-obs-02",
+    "AWN-obs-03",
+    "AWN-obs-04"
+  ],
+  "new_operations": [
+    {
+      "id": "AWN-REGION-L1-001",
+      "ref": "agent-work/research/top20-l1/games/AWN.json",
+      "rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S03-C01",
+        "S05-C01"
+      ],
+      "binding_id": null,
+      "requirement_status": "new_primary_verified_draft",
+      "implementation_status": "unknown",
+      "evidence_sha": null
+    },
+    {
+      "id": "AWN-REGION-L1-002",
+      "ref": "agent-work/research/top20-l1/games/AWN.json",
+      "rule_ids": [
+        "content.site_density",
+        "content.feature_distribution"
+      ],
+      "criterion_ids": [
+        "S03-C01",
+        "S05-C01"
+      ],
+      "binding_id": null,
+      "requirement_status": "new_primary_verified_draft",
+      "implementation_status": "unknown",
+      "evidence_sha": null
+    },
+    {
+      "id": "AWN-REGION-L1-003",
+      "ref": "agent-work/research/top20-l1/games/AWN.json",
+      "rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "binding_id": null,
+      "requirement_status": "new_primary_verified_draft",
+      "implementation_status": "unknown",
+      "evidence_sha": null
+    },
+    {
+      "id": "AWN-REGION-L1-004",
+      "ref": "agent-work/research/top20-l1/games/AWN.json",
+      "rule_ids": [
+        "map.audience_views"
+      ],
+      "criterion_ids": [
+        "S04-C03",
+        "S04-C04"
+      ],
+      "binding_id": null,
+      "requirement_status": "new_primary_verified_draft",
+      "implementation_status": "unknown",
+      "evidence_sha": null
+    }
+  ],
+  "scope_decisions": [
+    {
+      "disposition": "keep_L1",
+      "locator": "с. 143, Exploration Campaigns, шаг 3",
+      "reason": "Нанесение главных рек и обычных ориентиров входит в общую подготовку. Переиспользовать map.river_network → S01-C02 и content.landmarks для ручной картографии. У AWN нет отдельной геометрии или параметров из этого абзаца."
+    },
+    {
+      "disposition": "needs_owner_decision",
+      "locator": "с. 145, Choosing a Starting Location",
+      "reason": "Книга рекомендует старт ближе к центру и предлагает выбор известного места. Новое поле/выделенный маркер старта как функция из этого абзаца не следует. Мастер может использовать карту и конкретное уже нанесённое место."
+    },
+    {
+      "disposition": "defer_L2",
+      "locator": "с. 145, Creating Encounter Sites / Making Travel Encounters; с. 152, Stocking a Hex Map With Sites, способ 1",
+      "reason": "Два запасных места (городское и сельское) готовят для подстановки. При полной разведке d6=1–2 ведёт к выбору подходящего заготовленного места; 3–6 не добавляют открытие. Случайные дорожные встречи и момент появления относятся к ведению; запас не означает нарисованный объект."
+    },
+    {
+      "disposition": "out_of_scope",
+      "locator": "с. 144, Creating the Base Map; с. 145–146, Creating the Intro Adventure / Building Crises; с. 153, шаги 3–8",
+      "reason": "Физическая печать, вступительный сценарий, кризисы и локальные планы/существа не дают отдельной операции региональной карты. Шаг 3 и таблица качеств места требуют только тематической проверки отдельных региональных признаков."
+    }
+  ],
+  "product_boundary": {
+    "binding_registry_ref": "agent-work/rules/game-bindings.json",
+    "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422",
+    "matching_AWN_bindings": 0,
+    "criterions_component_only": true,
+    "operations_verified_on_product": 0,
+    "acceptance_priority": "Проверить черновики через ручное создание, сохранение и открытие. Отдельно проверить заданные броски 1–2 / 3–6, d100 и экспорт игрокам. Не переносить аналогичное evidence из других игр без совпадения режима и ожидаемого выхода.",
+    "owner_decisions_needed": []
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-25-top20-l1-awn-region-1930",
+    "result_ref": "agent-work/research/runs/2026-11-25-top20-l1-awn-region-1930.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-awn-region-1930.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Сверены пять картографических разделов AWN. Уточнены масштаб и границы подготовки, добавлены крупные руины, предыгровая расстановка, привязка места и начальная карта игроков. Семь сценариев для новых требований и один дополнительный для существующего.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2."
+    },
+    "next": "Pirate Borg: сверить Core, с. 116–123 и 132–155, по сохранённым четырём требованиям, начиная с разделов, где мастер наносит устойчивые места. Отдельно отметить готовые карты, тактические гексы и события плавания.",
+    "needs_owner_action": false
+  }
+}

@@ -92,7 +92,7 @@
       },
       "model_fixture": {
         "user_action": "Разметить регион выбранной физической сеткой.",
-        "expected_output": "Для примера источника 23×28 гексов при шаге 5 км карта покрывает 115×140 км. После открытия шаг сохраняется.",
+        "expected_output": "Для примера 23×28 при шаге 5 км номинальный ориентир подложки 115×140 км. После открытия шаг сохраняется.",
         "previous_checks": null
       },
       "implementation": {
@@ -302,8 +302,8 @@
         "access_level": "public_primary_text_third_party_host_selected_sections",
         "source_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
         "primary_url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
-        "locator": "с. 143–144, Exploration Campaigns, шаг 3; с. 144, Creating the Base Map, вводный абзац",
-        "recorded_facts": "Начинают с ограниченной области и подготавливают окрестности в трёх–четырёх гексах от стартового места. Позднее наполняют клетки в выбранном группой направлении; при росте масштаба кампании к области можно добавлять территорию.",
+        "locator": "с. 143–144, Exploration Campaigns, шаг 3; с. 144, Creating the Base Map, вводный абзац; с. 249, Handling Hexcrawls",
+        "recorded_facts": "Начинают с ограниченной области и подготавливают окрестности в трёх–четырёх гексах от стартового места. Позднее наполняют клетки в выбранном группой направлении; при росте масштаба кампании к области можно добавлять территорию. На с. 249 при подготовке следующей сессии различаются область исследования 6×6 гексов и полоса шириной три гекса вдоль разумного маршрута к известной цели. В области 6×6 советуют разместить не более одной–двух крупных руин.",
         "verification": "selected_source_sections_rechecked"
       },
       "model": {
@@ -335,7 +335,7 @@
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
-        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 143–144, Exploration Campaigns, шаг 3; с. 144, Creating the Base Map, вводный абзац)",
+        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 143–144, Exploration Campaigns, шаг 3; с. 144, Creating the Base Map, вводный абзац; с. 249, Handling Hexcrawls)",
         "normative_kind": "campaign_preparation_guideline",
         "applicability": "Мастер готовит или редактирует региональную гекс-карту кампании Ashes Without Number.",
         "layer": "L1",
@@ -350,13 +350,18 @@
           },
           "prepared": "ID существующих объектов и адреса q/r",
           "new_cells": "выбранные пустые клетки на направлении группы, адреса q/r",
-          "change_mode": "stock_existing | extend_footprint"
+          "change_mode": "stock_existing | extend_footprint",
+          "prep_footprints": {
+            "exploration": "6×6 гексов, до 1–2 крупных руин",
+            "known_destination": "полоса шириной три гекса"
+          }
         },
         "product_operation": "Заполнить выбранные пустые гексы внутри рамки или расширить границу. Сохранить ранее подготовленные гексы, геометрию и места без внесённых в них правок.",
         "expected_output": "Появляется только выбранное наполнение и, если нужно, соседние гексы. После открытия старые координаты и объекты совпадают с исходными.",
         "constraints_and_exceptions": [
           "Уже имеющийся пустой гекс и гекс за границей — разные ветки.",
-          "Другая область карты не заполняется автоматически. 3–4 гекса — стартовая рекомендация, не максимальный радиус карты."
+          "Другая область карты не заполняется автоматически. 3–4 гекса — стартовая рекомендация, не максимальный радиус карты.",
+          "Полоса указывает объём подготовки. Мастер выбирает маршрут; правило не запрещает партии выйти за границу."
         ],
         "acceptance_cases": [
           {
@@ -368,6 +373,11 @@
             "given": "На восточной границе ранее созданная точка P; группа выбрала восток.",
             "when": "Добавить прилегающий участок за границей, нанести на него руины R, сохранить и открыть.",
             "expected": "P и прежняя геометрия сохранены; R есть только в новом участке, западная область не изменилась."
+          },
+          {
+            "given": "Уже подготовлен участок к югу от предполагаемого маршрута к известной цели.",
+            "when": "Выбрать полосу шириной три гекса вдоль пути, разместить в ней места, сохранить и открыть.",
+            "expected": "Новые записи только на указанных адресах полосы. Южный участок и прочая география сохранены."
           }
         ],
         "source_vs_product_interpretation": "Источник разрешает рост карты и направленное наполнение. Сохранение адресов и отдельных состояний — критерий продукта.",
@@ -404,8 +414,346 @@
         "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта."
       ],
       "disposition_reason": "Контроль адресной правки и целостности документа после сохранения. Правило не определяет автоматический поиск маршрута."
+    },
+    {
+      "id": "AWN-REGION-L1-001",
+      "game_id": "AWN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Выбранные зоны руин и отдельные значимые места должны оставаться адресуемыми из карты и её ключа.",
+      "source": {
+        "url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "edition": "Ashes Without Number, Kevin Crawford, Sine Nomine Publishing, Free Edition, файл 071025, EN",
+        "author_project_key": "sine-nomine:kevin-crawford:ashes-without-number:free-071025",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "source_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "primary_url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "locator": "с. 145, Placing Major Ruins",
+        "recorded_facts": "Отмечают гексы центров крупных поселений и важных комплексов; пригороды можно пропускать. Около десяти гексов — ориентир для средней карты с одним–двумя крупными городами. В After the Fall и Deadlands это могут быть ещё не разрушенные зоны. Обитатели руин в Mutant Wasteland не обязательно считаются анклавом.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "AWN",
+        "operation_id": "AWN-REGION-L1-001",
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S03-C01",
+          "S05-C01"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Выбранные зоны руин и отдельные значимые места должны оставаться адресуемыми из карты и её ключа.",
+          "model_operation_id": null
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_density",
+          "content.place_description"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 145, Placing Major Ruins)",
+        "normative_kind": "campaign_preparation_guideline",
+        "applicability": "Мастер готовит региональную гекс-карту кампании Ashes Without Number.",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить выбранные гексы центра и место отдельного крупного комплекса.",
+        "inputs_and_units": {
+          "hexes": "набор координат q/r по выбору мастера",
+          "labels": "названия и текущий статус мест",
+          "context": "жанр, определяемый мастером"
+        },
+        "product_operation": "Сохранить выбранные отметки и их адреса в карте мастера.",
+        "expected_output": "После открытия у выбранных гексов доступны прежние отметки и названия.",
+        "constraints_and_exceptions": [
+          "Ориентир по числу гексов не является обязательной квотой. Пригороды отмечают по выбору мастера.",
+          "Будущие руины могут ещё быть действующим городом. Присутствие обитателей само по себе не создаёт анклав."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Два гекса центра A и B, пригород C, база D и ранее нанесённая река.",
+            "when": "Отметить A и B как руины, D как крупный комплекс, сохранить и открыть.",
+            "expected": "A, B и D отмечены; C без новых отметок, река и иная география прежние."
+          },
+          {
+            "given": "Город E в After the Fall пока цел.",
+            "when": "Отметить E как будущие руины, сохранить и открыть.",
+            "expected": "E адресуем и остаётся действующим городом. Новый анклав не появляется."
+          }
+        ],
+        "source_vs_product_interpretation": "Выбор зон и исключения взяты из книги. Вид цифровой отметки и проверка сохранения — продуктовая интерпретация. Новая геометрия и несколько POI в одном гексе не требуются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null
+      },
+      "open_checks": [
+        "Отдельного binding AWN на исходном SHA нет. Сценарий на опубликованном SHA пока не проверен."
+      ]
+    },
+    {
+      "id": "AWN-REGION-L1-002",
+      "game_id": "AWN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Броски при подготовке и ручной выбор дают наполнение конкретных гексов до игры.",
+      "source": {
+        "url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "edition": "Ashes Without Number, Kevin Crawford, Sine Nomine Publishing, Free Edition, файл 071025, EN",
+        "author_project_key": "sine-nomine:kevin-crawford:ashes-without-number:free-071025",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "source_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "primary_url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "locator": "с. 152, Building Encounter Sites → Stocking a Hex Map With Sites, способы 2–3; с. 249, Handling Hexcrawls",
+        "recorded_facts": "При подготовке мастер бросает d6 для каждого выбранного гекса: 1–2 ведут к добавлению места, 3–6 — без добавления по этому способу. При ручной расстановке ориентир — около трети выбранной зоны. Способы можно сочетать. Пример для 36 гексов — до 12 мест при ручной расстановке. Бросок при полной разведке во время игры — отдельный способ.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "AWN",
+        "operation_id": "AWN-REGION-L1-002",
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S03-C01",
+          "S05-C01"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Броски при подготовке и ручной выбор дают наполнение конкретных гексов до игры.",
+          "model_operation_id": null
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_density",
+          "content.feature_distribution"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 152, Building Encounter Sites → Stocking a Hex Map With Sites, способы 2–3; с. 249, Handling Hexcrawls)",
+        "normative_kind": "campaign_preparation_guideline",
+        "applicability": "Мастер готовит региональную гекс-карту кампании Ashes Without Number.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать участок и применить подготовительный бросок либо разместить места вручную.",
+        "inputs_and_units": {
+          "hexes": "выбранные q/r",
+          "roll": "d6; целое 1–6 на выбранный гекс",
+          "places": "места, подтверждённые мастером"
+        },
+        "product_operation": "Нанести подтверждённые места на выбранные адреса и сохранить карту.",
+        "expected_output": "После открытия наполнение относится к гексам, назначенным в ходе подготовки.",
+        "constraints_and_exceptions": [
+          "Одна треть — ориентир, место выбирают с учётом окружения. Бросок не задаёт вид объекта.",
+          "Подбор из резерва во время разведки относится к L2. Отрицательный результат подготовки не удаляет уже размещённые места."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Четыре пустых гекса A–D; броски соответственно 1, 2, 3, 6. За участком уже нанесено место E.",
+            "when": "Подтвердить места по результатам, сохранить и открыть.",
+            "expected": "Новые места только в A и B; C и D остаются пустыми; E сохранилось."
+          },
+          {
+            "given": "Есть участок 6×6; мастер выбрал 12 адресов для мест.",
+            "when": "Разместить места, сохранить и открыть.",
+            "expected": "В 12 выбранных гексах есть новые места, в остальных 24 — нет. Если мастер убирает одно, 11 мест также допустимы."
+          }
+        ],
+        "source_vs_product_interpretation": "Порог d6 и приблизительная доля взяты из книги. Выбор адресов и сохранение подтверждённого результата описывают проверку продукта.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density",
+          "agent-work/rules/common-rules.json#content.feature_distribution"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null
+      },
+      "open_checks": [
+        "Отдельного binding AWN на исходном SHA нет. Сценарий на опубликованном SHA пока не проверен."
+      ]
+    },
+    {
+      "id": "AWN-REGION-L1-003",
+      "game_id": "AWN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Основная особенность конкретного места доступна из ключа выбранного гекса.",
+      "source": {
+        "url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "edition": "Ashes Without Number, Kevin Crawford, Sine Nomine Publishing, Free Edition, файл 071025, EN",
+        "author_project_key": "sine-nomine:kevin-crawford:ashes-without-number:free-071025",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "source_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "primary_url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "locator": "с. 153, Encounter Site Creation Steps, шаг 2; с. 172, Encounter Site Features, таблица d100",
+        "recorded_facts": "Выбранную или выпавшую основную особенность места записывают вместе с адресом на гекс-карте. Таблица d100 задаёт вид объекта. В удалённых областях мастер может оставить гексы без таких мест.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "AWN",
+        "operation_id": "AWN-REGION-L1-003",
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Основная особенность конкретного места доступна из ключа выбранного гекса.",
+          "model_operation_id": null
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 153, Encounter Site Creation Steps, шаг 2; с. 172, Encounter Site Features, таблица d100)",
+        "normative_kind": "campaign_preparation_guideline",
+        "applicability": "Мастер готовит региональную гекс-карту кампании Ashes Without Number.",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать адрес места, выбрать вид вручную или получить его по таблице d100.",
+        "inputs_and_units": {
+          "hex": "координаты q/r",
+          "feature": "ручной выбор или целое 1–100",
+          "name": "имя места",
+          "table": "Encounter Site Features, Free Edition 071025"
+        },
+        "product_operation": "Сохранить имя и вид этого места по выбранному адресу.",
+        "expected_output": "Ключ гекса после открытия показывает тот же адрес и ту же основную особенность.",
+        "constraints_and_exceptions": [
+          "Источник допускает пустые области. Размер физической карточки не переносится в цифровой критерий.",
+          "Локальный план, угрозы, существа и добыча не участвуют в этой картографической операции."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Для гекса 4/−2 введён результат d100=57.",
+            "when": "Назвать место «Северная шахта», сохранить и открыть.",
+            "expected": "У 4/−2 отображается «Северная шахта», вид Mine по строке 57; в соседних гексах шахта не создаётся."
+          },
+          {
+            "given": "В 5/−2 мастер вручную выбрал ферму. Гекс 6/−2 намеренно пуст.",
+            "when": "Сохранить и открыть.",
+            "expected": "Ферма доступна в 5/−2. В 6/−2 новый объект не появится."
+          }
+        ],
+        "source_vs_product_interpretation": "Адрес и способ выбора взяты из книги. Повторное открытие и проверка табличного результата операционализируют сохранение.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Не установлено, какие части крупных комплексов имеют отдельный региональный адрес. Внутреннюю схему не переносить автоматически."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null
+      },
+      "open_checks": [
+        "Отдельного binding AWN на исходном SHA нет. Сценарий на опубликованном SHA пока не проверен."
+      ]
+    },
+    {
+      "id": "AWN-REGION-L1-004",
+      "game_id": "AWN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Подготавливается отдельное представление региона с выбранным составом известных мест.",
+      "source": {
+        "url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "edition": "Ashes Without Number, Kevin Crawford, Sine Nomine Publishing, Free Edition, файл 071025, EN",
+        "author_project_key": "sine-nomine:kevin-crawford:ashes-without-number:free-071025",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "source_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "primary_url": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025",
+        "locator": "с. 143, Exploration Campaigns, шаг 4; с. 144, Creating the Base Map; с. 145, Placing Major Ruins, абзац о знании персонажей",
+        "recorded_facts": "К началу исследования готовят карту игроков с основными известными поселениями и несколькими ориентирами или руинами возле старта. Детальность и знание мест различаются по кампании.",
+        "verification": "selected_source_sections_rechecked"
+      },
+      "model": {
+        "game_unit_id": "AWN",
+        "operation_id": "AWN-REGION-L1-004",
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S04-C03",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "bounded_component_only",
+          "basis": "Подготавливается отдельное представление региона с выбранным составом известных мест.",
+          "model_operation_id": null
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.audience_views"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://ru.scribd.com/document/888183808/AshesWithoutNumber-FreeVersion-071025 (с. 143, Exploration Campaigns, шаг 4; с. 144, Creating the Base Map; с. 145, Placing Major Ruins, абзац о знании персонажей)",
+        "normative_kind": "campaign_preparation_guideline",
+        "applicability": "Мастер готовит региональную гекс-карту кампании Ashes Without Number.",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить карту игроков из полной карты ведущего и выбранного списка известных мест.",
+        "inputs_and_units": {
+          "master_map": "карта с полным ключом",
+          "known_places": "ID выбранных мест",
+          "audience": "игроки"
+        },
+        "product_operation": "Показать и экспортировать выделенное представление, сохранив полный ключ ведущего.",
+        "expected_output": "Игроки получают карту с разрешёнными обозначениями. У ведущего остаётся полный набор.",
+        "constraints_and_exceptions": [
+          "Источник оставляет детализацию и знание мест на выбор мастера. Динамическое открытие при путешествии относится к ведению."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В полном ключе город E, известная руина R, неизвестная база B.",
+            "when": "Экспортировать карту игроков с E и R и открыть сохранение ведущего.",
+            "expected": "На экспортном изображении обозначены E и R; B не отмечена. У ведущего сохранены E, R, B."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник задаёт отдельную карту игроков. Выбор представления, цифровой экспорт и повторное открытие — продуктовые проверки.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.audience_views"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null
+      },
+      "open_checks": [
+        "Отдельного binding AWN на исходном SHA нет. Сценарий на опубликованном SHA пока не проверен."
+      ]
     }
   ],
-  "latest_formalization_base_sha": "26611e367554b4f4fcfb65681314870a5177d12c",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-awn-bsh-2230"
+  "latest_formalization_base_sha": "a0cc6a5febb6603f2c59e265b8df0947766fe6c9",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-awn-region-1930"
 }
