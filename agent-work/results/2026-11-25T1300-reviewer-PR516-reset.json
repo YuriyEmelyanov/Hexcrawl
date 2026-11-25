@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "role": "reviewer",
+  "run_id": "2026-11-25T1300-reviewer-PR516-reset",
+  "result": "Сброс препятствия, королевства и водной карты подтверждён. Карта с одним сохранённым профилем Knave не показывает сброс. Сброс из режима 1 мили очищает JSON, но не оставляет доступного старта генерации.",
+  "status": "changes_requested",
+  "review_verdict": "changes_requested",
+  "role_selection_reason": "В очереди приоритетная согласованная HX-BL-076 на точном SHA с успешным CI. Завершённый claim программиста и отсутствие других актуальных владений сверены по реестру и изменениям после предыдущего сканирования.",
+  "execution_running": false,
+  "claim_ref": "agent-work/claims/2026-11-25T1300-reviewer-PR516-reset.json",
+  "pr": 516,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/516",
+  "branch": "feat/hx076-reset-map",
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+  "tree_sha": "713ce34c0b55522331df8fdba382329eb818ae21",
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "review_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/score-assessment.json",
+  "publication_authorized": false,
+  "evidence_commit_sha": "62116dbbf26a8c7f185aeb9fde2448bdc0c30253",
+  "verified_fixed_findings": [
+    "HX076-RESET-RV01-01",
+    "HX076-RESET-RV02-01"
+  ],
+  "findings": [
+    {
+      "id": "HX076-RESET-RV03-01",
+      "severity": "P2",
+      "blocking": true,
+      "classification": "preexisting_scope_gap_verified",
+      "requirement": "SURFACE-Q01",
+      "title": "Сохранённый профиль Knave без геометрии нельзя сбросить кнопкой",
+      "source_path": "src/App.tsx",
+      "source_line": 14831,
+      "steps": [
+        "На свежей Classic-карте включить Knave 2e до генерации и выгрузить JSON.",
+        "Снять флажок. Экспорт сохраняет map.knave при ui.knaveEnabled=false.",
+        "Повторно открыть файл."
+      ],
+      "actual": "Кнопки сброса нет во всех трёх состояниях. Импорт сохраняет профиль и состояние флажка.",
+      "expected": "При сохранённом профиле доступен сброс, который одной транзакцией очищает слой. Undo и Redo точно возвращают и повторяют сохранённое состояние. Пустая карта без профиля остаётся без команды.",
+      "fixture_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/knave-only.json",
+      "screenshot_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/knave-only-checked.jpg",
+      "documentation": "docs/knave-classic-checkpoint.md:76–77",
+      "test_reuse": "Расширить save-history UI. Имеющийся тест пустого Knave вызывает обработчик напрямую."
+    },
+    {
+      "id": "HX076-RESET-RV03-02",
+      "severity": "P2",
+      "blocking": true,
+      "classification": "preexisting_reset_workflow_gap_verified",
+      "requirement": "SURFACE-Q01",
+      "title": "После сброса с 1 мили нельзя начать новую карту",
+      "source_path": "src/App.tsx",
+      "source_line": 13996,
+      "steps": [
+        "Открыть test/fixtures/import-v2/manual-edit-map.json.",
+        "Выбрать 1 милю, дождаться реальной одномильной отрисовки и нажать «Сбросить»."
+      ],
+      "actual": "Экспорт очищен. Вид остаётся 1 миля, переключатель заблокирован, стартовых гексов нет ни на одной сетке. Undo/Redo точно возвращают и повторяют очистку JSON.",
+      "expected": "На очищенной карте доступно штатное первое действие генерации, Undo возвращает карту, Redo снова даёт пригодную для начала пустую карту.",
+      "fixture_ref": "test/fixtures/import-v2/manual-edit-map.json",
+      "screenshot_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/one-mile-after-reset.jpg",
+      "test_reuse": "Расширить существующий браузерный сценарий масштаба/истории реальным стартом новой карты после сброса."
+    }
+  ],
+  "independent_review": {
+    "agent": "review_516_a726d46",
+    "context": "fresh",
+    "result": "Проверил код и обработчики независимо. Оба найденных состояния повторены через реальный браузер с точной сборкой."
+  },
+  "checks": {
+    "browser": {
+      "chromium": "158.0.8127.0",
+      "cases": [
+        {
+          "name": "obstacle",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 1,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "kingdom",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 94,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "kingdom-narrow",
+          "viewport": {
+            "width": 390,
+            "height": 900
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": 94,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "lake",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 0,
+          "controls": 1,
+          "rendered_elements": null,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "ordinary",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "regions": 1,
+          "controls": 3,
+          "rendered_elements": null,
+          "reset_visible": true,
+          "cleared": true,
+          "undo_redo_exact": true,
+          "one_transaction": true,
+          "blank_reset_visible": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "knave-profile-only",
+          "regions": 0,
+          "persisted_profile": true,
+          "checkbox_enabled_on_fresh_map": true,
+          "profile_retained_after_uncheck": true,
+          "exact_export_after_import": true,
+          "reset_visible_enabled": false,
+          "reset_visible_disabled": false,
+          "reset_visible_reopened": false,
+          "dialogs": 0,
+          "errors": 0
+        },
+        {
+          "name": "one-mile-reset",
+          "scale_before": "1",
+          "scale_after": "1",
+          "scale_disabled": true,
+          "regions_after": 0,
+          "coarse_start_candidates": 0,
+          "fine_candidates": 0,
+          "undo_redo_exact": true,
+          "dialogs": 0,
+          "errors": 0
+        }
+      ],
+      "build_index_sha256": "10196bde6b74c4aeebae3a8a42ccfa703237d3f9ad99a4cd6c237ea1c671cd16",
+      "method": "Собран exact HEAD; обычный импорт/экспорт полного JSON, сравнение без savedAt. Независимый Chromium 158; версия в CI 151."
+    },
+    "node_focused": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0
+    },
+    "ci": {
+      "run_id": 45583649258,
+      "node": {
+        "tests": 453,
+        "pass": 453,
+        "fail": 0,
+        "skipped": 0
+      },
+      "job_logs": [
+        [
+          "2026-11-25T09:15:31.9058970Z HEAD is now at 4c28608 Merge a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+          "2026-11-25T09:25:47.4321233Z ℹ tests 453",
+          "2026-11-25T09:25:47.4322070Z ℹ pass 453",
+          "2026-11-25T09:25:47.4322291Z ℹ fail 0",
+          "2026-11-25T09:25:47.4322779Z ℹ skipped 0"
+        ],
+        [
+          "2026-11-25T09:15:28.1508939Z HEAD is now at 4c28608 Merge a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9"
+        ],
+        [
+          "2026-11-25T09:15:29.0025731Z HEAD is now at 4c28608 Merge a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+          "2026-11-25T09:21:34.8906407Z HX076 reset verified: water-only, obstacle-only and kingdom-only maps; exact Undo/Redo; no dialogs.",
+          "2026-11-25T09:23:15.8161283Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+        ]
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+    "added": 0,
+    "removed": 0,
+    "modified": 3,
+    "suites": [
+      {
+        "suite": "Node saveSafety",
+        "modified": 2,
+        "risk": "Малые озёра, локальные правки, авторские имена, заметки и данные Knave."
+      },
+      {
+        "suite": "Browser save-history",
+        "modified": 1,
+        "risk": "Доступность команды и точная история.",
+        "parameter_cases": [
+          "water-only",
+          "obstacle-only",
+          "kingdom-only"
+        ]
+      }
+    ],
+    "reuse_or_new_reason": "Два существующих Node-сценария проверяют транзакцию по разным слоям. Действующий браузерный сценарий проверяет доступность команды, которую вызов обработчика не охватывает. Временная диагностика в diff не входит.",
+    "source": "Сопоставление деклараций test/saveSafety.test.mjs и действующего сценария test/browser/save-history.smoke.mjs b1b8c1b..a726d46."
+  },
+  "remaining_stage": {
+    "task_id": "HX-BL-076",
+    "stage_id": "POI-SURFACES",
+    "status": "remaining_owner_approved",
+    "next_role": "programmer",
+    "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+    "anchor_witness": "Деревня 7 / гекс 5,1 на озере и водная точка на суше",
+    "start_after": "Сброс передан на независимую приёмку. Разрешение публикации сброса не является зависимостью.",
+    "note": "В базовом src/saveValidation.ts:143 общий валидатор отклоняет водный POI без lake/sea. Разделить совместимость принятого сохранения и правила новых изменений, сохранив структурную проверку типов и координат.",
+    "next_step": "Реализовать SURFACE-Q02–Q05 отдельным пакетом. Первый сквозной сценарий — повторное открытие карты с двумя авторскими исключениями поверхности, с исходными координатами, полями и PNG. Проверить, что общая валидация ручного размещения и генерации при этом сохраняет запрет новых несовместимых точек."
+  },
+  "next_role": "programmer",
+  "next_step": "Сделать сброс доступным при сохранённом слое Knave даже без геометрии и с выключенным флажком. После сброса с 1 мили вернуть возможность начать новую карту. Проверить оба сценария через UI: одна транзакция, точные Undo/Redo, после сброса доступна первая генерация. Исправить два устаревших описания сброса и передать новый SHA на приёмку.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T10:01:51Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T10:08:32Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T10:08:32Z"
+}
