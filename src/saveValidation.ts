@@ -71,7 +71,7 @@ export function validateSaveStructure(value: unknown, domain: {
   }else if(map.physicalGrid!==undefined)fail('map.physicalGrid','Physical grid requires version15 or16');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
-  const land=new Set<string>(), regionNumbers=new Set<string>();
+  const land=new Set<string>(), regionNumbers=new Set<string>(), landPoiHexes=new Set<string>();
   for (const [i,v] of regions.entries()) {
     const p=`map.regions[${i}]`, r=record(v,p), own=new Set<string>();
     let number=String(r.id);
@@ -98,10 +98,17 @@ export function validateSaveStructure(value: unknown, domain: {
     if(r.woodlandStyle!==undefined && !['islands','clearings'].includes(r.woodlandStyle as string)) fail(p+'.woodlandStyle','Некорректный вариант редколесья');
     for(const f of ['suppressCentralPoi','isCoastal','isTract']) if(r[f]!==undefined) bool(r[f],p+'.'+f);
     const poi=new Set<string>();
-    for(const [j,h] of array(r.pointsOfInterest,p+'.pointsOfInterest').entries()) {
-      const k=key(hex(h,`${p}.pointsOfInterest[${j}]`)); if(!own.has(k)||poi.has(k)) fail(`${p}.pointsOfInterest[${j}]`,'outside region or duplicate'); poi.add(k);
-    }
     if(r.centralPoiKind!==undefined&&!domain.centralPoi(r.centralPoiKind)) fail(p+'.centralPoiKind','unknown POI');
+    const centralKey=r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract?key(hex(r.centerHex,p+'.centerHex')):null;
+    if(centralKey!==null)landPoiHexes.add(centralKey);
+    for(const [j,h] of array(r.pointsOfInterest,p+'.pointsOfInterest').entries()) {
+      const path=`${p}.pointsOfInterest[${j}]`;
+      const k=key(hex(h,path));
+      if(!own.has(k))fail(path,'outside region');
+      if(landPoiHexes.has(k))fail(path,'multiple points of interest on one hex');
+      poi.add(k);
+      landPoiHexes.add(k);
+    }
     if(r.pointOfInterestKinds!==undefined) for(const [k,kind] of Object.entries(record(r.pointOfInterestKinds,p+'.pointOfInterestKinds'))) {
       hexKey(k,p+'.pointOfInterestKinds'); if(!poi.has(k)||!domain.poi(kind)) fail(p+'.pointOfInterestKinds.'+k,'invalid POI');
     }
@@ -143,6 +150,7 @@ export function validateSaveStructure(value: unknown, domain: {
     if(f==='waterPoiByHexKey') {
       const override = (terrain[k] as RecordValue | undefined)?.terrainOverride;
       if (!domain.waterPoi(v)) fail(p,'unknown water POI');
+      if (landPoiHexes.has(k)) fail(p,'multiple points of interest on one hex');
       // A saved point may be an authored exception. Require a real map cell;
       // creation and relocation still check the destination surface.
       if (!land.has(k) && override !== 'lake' && override !== 'sea') fail(p,'water POI requires an existing hex');

@@ -757,53 +757,26 @@ try {
    const exported = await snapshot();
    await load(exported);
    assert.deepEqual(await snapshot(),exported);
-   // HX076-POI-RV01-01: ordinary placement can share a dry hex with an imported wreck.
-   await select('1,0');
-   await poi('village');
-   const paired = await snapshot();
-   assert.equal(paired.map.regions[0].pointOfInterestKinds['1,0'],'village');
-   assert.equal(paired.map.waterPoiByHexKey['1,0'],'shipwreck');
-   paired.map.editorNames['poi:1:1,0']={ru:'Деревня у обломков',en:'Wreckside Village'};
-   paired.map.poiDiscovery['poi:1:1,0']='exploration';
-   await load(paired);
-   await select('1,0');
-   const cell=page.locator('[data-engraved-poi="1,0"] .poi-marker');
-   const land=page.locator('[data-poi-discovery="poi:1:1,0"]');
-   const water=page.locator('[data-poi-discovery="waterPoi:1,0"]');
-   await ensureEdit();
-   assert.deepEqual(await cell.evaluateAll(xs=>xs.map(x=>x.getAttribute('aria-label'))),['Деревня','Кораблекрушение']);
-   assert.match(await land.textContent(),/Деревня у обломков/);
-   assert.match(await water.textContent(),/Крушение на суше/);
-   assert.equal(await land.getByRole('combobox').inputValue(),'exploration');
-   assert.equal(await water.getByRole('combobox').inputValue(),'interaction');
-   await page.evaluate(()=>{
-     const serialize=XMLSerializer.prototype.serializeToString;
-     XMLSerializer.prototype.serializeToString=function(node){
-       if(node instanceof SVGElement){
-         const markers=node.querySelectorAll('[data-engraved-poi="1,0"] .poi-marker');
-         if(markers.length)window.__hx076PngPoints=Array.from(markers,marker=>marker.getAttribute('aria-label'));
-       }
-       return serialize.call(this,node);
-     };
-   });
-   const download=page.waitForEvent('download');
-   const menu=page.locator('details.export-menu');
-   if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
-   await button('PNG').click();
-   const png=await fs.readFile(await (await download).path());
-   assert.equal(png.subarray(1,4).toString(),'PNG');
-   assert.deepEqual(await page.evaluate(()=>window.__hx076PngPoints),['Деревня','Кораблекрушение']);
-   const reopenedPair=await snapshot();
-   await load(reopenedPair);
-   assert.deepEqual(await snapshot(),reopenedPair);
-   await select('1,0');
-   await ensureEdit();
-   await land.getByRole('combobox').selectOption('passage');
-   assert.equal(await water.getByRole('combobox').isDisabled(),true);
-   await button('Готово').click();
-   assert.deepEqual((await snapshot()).map.poiDiscovery,{...reopenedPair.map.poiDiscovery,'poi:1:1,0':'passage'});
-   await button('Отменить').click();
-   assert.deepEqual(await snapshot(),reopenedPair);
+   for(const key of ['0,1','1,0']){
+     await select(key);
+     await ensureEdit();
+     assert.equal(await button('Редактировать точку интереса').count(),0,'existing exception occupies the hex');
+     assert.equal(await page.locator(`[data-engraved-poi="${key}"] .poi-marker`).count(),1);
+   }
+   const beforeRejectedImport=await snapshot();
+   const conflicts=['1,0','0,1'];
+   for(const key of conflicts){
+     const conflicting=structuredClone(exported);
+     if(key==='1,0'){
+       conflicting.map.regions[0].pointsOfInterest.push({q:1,r:0});
+       conflicting.map.regions[0].pointOfInterestKinds[key]='village';
+     }else conflicting.map.waterPoiByHexKey[key]='shipwreck';
+     const previousAlerts=alerts.length;
+     await load(conflicting);
+     assert.equal(alerts.length,previousAlerts+1);
+     assert.match(alerts.pop(),/на одном гексе несколько точек интереса/);
+     assert.deepEqual(await snapshot(),beforeRejectedImport);
+   }
    console.log('HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.');
  }
  await runEntityNameLifecycle({page,load,snapshot,ensureEdit,button,select,root});
