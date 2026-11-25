@@ -1,0 +1,217 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "POI-OPEN-COARSE",
+  "scope": "Classic, 5–6 миль. SURFACE-Q02, видимость и доступ к данным двух сохранённых точек на одном гексе.",
+  "run_id": "2026-11-25T1700-programmer-PR517-RV01",
+  "status": "review_ready",
+  "review_ready": true,
+  "branch": "feat/hx076-poi-open",
+  "pr": 517,
+  "pr_number": 517,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
+  "head_sha": "814abe2e7e08bf64685efe5e0696b64a310dd9d9",
+  "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+  "tree_sha": "2bf44ebb19d3d7ce52e74851efccd6b403f025b9",
+  "prior_reviewed_sha": "40aae78aeebdf51a98acbcfc2907d79ebdd99c91",
+  "previous_review_result_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
+  "result_ref": "agent-work/results/2026-11-25T1700-programmer-PR517-RV01.json",
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/814abe2/rv01/browser.json",
+  "evidence_commit_sha": "1e6ba696cc10d8aa05cffc09aa8f267672bf6ba1",
+  "fixture_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.json",
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45634225997",
+  "addressed_findings_pending_review": [
+    "HX076-POI-RV01-01"
+  ],
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить новый SHA PR517 по HX076-POI-RV01-01. Сверить сухой и мокрый совместные гексы в карте, карточке, PNG и JSON, управление способами обнаружения и повторное открытие. Затем сохранить предварительную оценку 1.3-rc8.",
+  "authorization": "approved_in_F1_scope",
+  "publication_authorized": false,
+  "blocked_by_publication": false,
+  "score_assessment_status": "pending_independent_assessment",
+  "schema_version": 1,
+  "role": "programmer",
+  "role_selection_reason": "Приоритет владельца HX-BL-076. Есть подтверждённое замечание по точному SHA утверждённого Q02, независимое от решения о выпуске сброса.",
+  "claim_ref": "agent-work/claims/2026-11-25T1700-programmer-PR517-RV01.json",
+  "result": "Два сохранённых POI на общем гексе имеют отдельные значки и оба попадают в PNG. Карточка показывает два способа обнаружения, включая точки с одинаковым авторским именем. Редактирование и отмена изменяют только выбранный адрес POI. Сведения и координаты сохраняются при повторном открытии.",
+  "accepted_mapping": "До исправления на сухом 1/0 был только значок кораблекрушения. После исправления на этом же сохранении видны деревня и кораблекрушение. Проверено также на карте с 18 регионами на суше 5/1 и озере 2/−2.",
+  "reuse": "Сохранены существующие форматы JSON, адреса точек и управляющие команды. Графика сопряжённой пары ограничена масштабом 5–6 миль.",
+  "photos": {
+    "before": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.png",
+    "after": "agent-work/evidence/HX-BL-076/poi-open/814abe2/rv01/dry-pair.png",
+    "desktop": "agent-work/evidence/HX-BL-076/poi-open/814abe2/rv01/dry-coincident.jpg",
+    "narrow": "agent-work/evidence/HX-BL-076/poi-open/814abe2/rv01/dry-pair-390.jpg"
+  },
+  "limitations": [
+    "Исходный файл владельца с Валькенпласом недоступен. Проверка проведена на сохранении приёмки и на карте из репозитория.",
+    "SURFACE-Q02, одномильный вид и уточнённая геометрия",
+    "SURFACE-Q03–Q05, смена поверхности, размещение и генерация"
+  ],
+  "scope_remaining": [
+    "SURFACE-Q02, одномильный вид и уточнённая геометрия",
+    "SURFACE-Q03–Q05, смена поверхности, размещение и генерация"
+  ],
+  "checks": {
+    "status": "success",
+    "head_sha": "814abe2e7e08bf64685efe5e0696b64a310dd9d9",
+    "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "tree_sha": "2bf44ebb19d3d7ce52e74851efccd6b403f025b9",
+    "checkout_sha": "14d42846bd063b3d41a4fc6ea183c3d7935d3ee8",
+    "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45634225997",
+    "jobs": [
+      {
+        "name": "browser",
+        "id": 139275236447,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45634225997/job/139275236447",
+        "checkout": "HEAD is now at 14d4284 Merge 814abe2e7e08bf64685efe5e0696b64a310dd9d9 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+        "summary": [
+          "HX076 reset verified: regionless layers, retained Knave profile, one-mile restart and exact Undo/Redo without dialogs.",
+          "HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.",
+          "Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+        ]
+      },
+      {
+        "name": "check",
+        "id": 139275236978,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45634225997/job/139275236978",
+        "checkout": "HEAD is now at 14d4284 Merge 814abe2e7e08bf64685efe5e0696b64a310dd9d9 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+        "summary": [
+          "ℹ tests 453",
+          "ℹ pass 453",
+          "ℹ fail 0",
+          "ℹ cancelled 0",
+          "ℹ skipped 0"
+        ]
+      },
+      {
+        "name": "world-random",
+        "id": 139275237324,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45634225997/job/139275237324",
+        "checkout": "HEAD is now at 14d4284 Merge 814abe2e7e08bf64685efe5e0696b64a310dd9d9 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+        "summary": []
+      }
+    ],
+    "node_runner": {
+      "tests": 453,
+      "pass": 453,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "conditional_ci_skip": "engraved-map-comparison",
+    "browser_and_rng_separate": true,
+    "local": {
+      "exact_checkout_build": "passed on Node 24",
+      "browser_fixture_pair": "passed 1500 and 390",
+      "browser_minimal_review_fixture": "passed",
+      "combined_reset_undo_redo": "passed in the combined browser run",
+      "separate_discovery_edit_undo": "passed in rehearsed existing browser scenario",
+      "duplicate_names": "distinct land/water rows",
+      "test_change_review": "modified 1 behaviour scenario; diagnostic probes excluded"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "head_sha": "814abe2e7e08bf64685efe5e0696b64a310dd9d9",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "correction_on_pr": {
+      "previous_reviewed_sha": "40aae78aeebdf51a98acbcfc2907d79ebdd99c91",
+      "corrected_before_integration_sha": "451928d985e9545abf2132347b1b1dac63f090ed",
+      "added": 0,
+      "removed": 0,
+      "modified": 1
+    },
+    "suite": "test/browser/save-history.smoke.mjs",
+    "scenario": "Расширен действующий сквозной сценарий Q02: добавить деревню к загруженному кораблекрушению, увидеть оба маркера и способа обнаружения, проверить экспорт PNG, повторный импорт и отдельную отменяемую правку способа обнаружения.",
+    "risk": "Данные обоих объектов могли остаться в JSON при пропаже одного значка и его деталей на экране и в PNG.",
+    "reuse_or_new_reason": "Сценарий импорта уже пользуется настоящей картой, JSON и карточкой. Проверки добавлены в тот же жизненный цикл.",
+    "count_source": "Точный diff 58b0000d → совместный проверенный head содержит один добавленный сценарий Q02. Прогон сброса унаследован из принятого base. Само исправление расширило этот Q02 сценарий."
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "status": "pending_independent_assessment",
+    "criteria": [
+      "S04-C04",
+      "S02-C05",
+      "S02-C03"
+    ],
+    "forecast": "Прирост не заявлен до независимой приёмки. VAL-02 и SAVE-04 уже зачтены в L1.",
+    "before_review_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/score-assessment.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/814abe2/rv01/browser.json"
+  },
+  "pending_publication": {
+    "task_id": "HX-BL-076",
+    "stage_id": "RESET",
+    "type": "publication_approval",
+    "status": "merged_deploy_completed_pending_live_verification",
+    "pr": 516,
+    "pr_number": 516,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/516",
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+    "tree_sha": "e914c67bf1a9783782d0cf8c03656c9031fe981d",
+    "scope": "F1 / SURFACE-Q01",
+    "review_result_ref": "agent-work/results/2026-11-25T1500-reviewer-PR516-reset.json",
+    "review_evidence_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/review/review.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/review/score-assessment.json",
+    "before_after_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json",
+    "publication_authorized": true,
+    "published": true,
+    "publication_verified": true,
+    "release_authorized": true,
+    "release_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "published_ref": "agent-work/results/2026-11-25-PR516-publication.json",
+    "publication_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45631879435",
+    "release_approval_ref": "agent-work/decisions/owner-2026-11-25-publish-PR516-4d1a975.json",
+    "score_update_status": "pending",
+    "next_role": "reviewer",
+    "verified_at": "2026-11-25T14:33:49.614Z",
+    "updated_at": "2026-11-25T14:33:49.614Z",
+    "previous_status": "published",
+    "merged_by": "YuriyEmelyanov",
+    "merge_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "merged_at": "2026-11-25T14:14:21Z",
+    "deploy_workflow": {
+      "id": 45631879435,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45631879435",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "owner_merged_exact_package": true,
+    "score_accounting_role": "reviewer",
+    "live_verification_required": true,
+    "release_verification_next_step": "Сверить опубликованные assets с проверенным деревом PR516 на точном SHA, затем зафиксировать итог 1.3-rc8 по решению 21.11.2026."
+  },
+  "base_integration": {
+    "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "pr": 516,
+    "previous_candidate_sha": "451928d985e9545abf2132347b1b1dac63f090ed",
+    "testing": "Reset and both saved POIs verified in the combined suite"
+  },
+  "forecast": {
+    "current_review": "1 запуск плюс исправление и повторная проверка, если появятся замечания",
+    "next_user_result": "Совместные точки в опубликованном Classic 5–6 миль после независимой приёмки и решения владельца. Следующий отдельный результат — тот же сценарий на масштабе 1 миля."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T14:03:33Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T14:38:31Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "execution_running": false,
+  "completed_at": "2026-11-25T14:38:31Z"
+}
