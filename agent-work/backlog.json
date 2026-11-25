@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T04:28:16.274Z",
+  "updated_at": "2026-11-25T04:36:29.969Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -24,8 +24,8 @@
   "tasks": [
     {
       "task_id": "HX-BL-076",
-      "title": "Сброс без вопроса об озёрах и точки интереса на подходящей поверхности",
-      "status": "Согласована",
+      "title": "Сброс без подтверждений и размещение точек интереса",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md"
@@ -33,44 +33,38 @@
       "approval_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "approved_at": "2026-11-25T02:52:25.057Z",
       "requirements": [
-        "Убрать отдельный вопрос об удалении малых озёр в команде «Сбросить».",
-        "Создавать и переносить наземные точки на сушу, водные — на воду. При открытии файла сохранять уже записанные точки на исходных местах, включая замыслы мастера вроде деревни на сваях.",
-        "Если мастер вручную меняет поверхность и точка больше ей не соответствует, удалить точку в той же операции. Undo восстанавливает поверхность и точку."
+        "Убрать все диалоги подтверждения у команды «Сбросить». Сохранить Undo/Redo и действующую блокировку при авторских именах.",
+        "При открытии сохранять существующие точки на исходных местах. Для новых и перемещаемых точек проверять поверхность опорной клетки. При конфликте ручной правки поверхности дать мастеру явно удалить или перенести точку.",
+        "Пропускать необязательную генерируемую точку без подходящего места."
       ],
       "acceptance_outline": [
-        "Сбросить карту с малыми озёрами без отдельного вопроса об озёрах. Проверить Undo и Redo.",
-        "Открыть карту с деревней региона №7 в озере на гексе 5/1 и контрольный файл с водной точкой на суше. Обе точки остаются видимыми на исходных координатах, включая повторное открытие.",
-        "Вручную сменить поверхность гекса с точкой. Убедиться, что несовместимая точка удаляется, а Undo возвращает её вместе с прежней поверхностью."
+        "Сбросить карту с озёрами, заметками, Knave и локальными правками без диалогов. Проверить Undo/Redo и блокировку при авторских именах.",
+        "Открыть карту с деревней на воде и водной точкой на суше. Проверить сохранение точек, повторный импорт и PNG.",
+        "Проверить ручную смену поверхности без автоматического удаления точки, прибрежный контур на одномильной карте и пропуск необязательной точки."
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "awaiting_owner_answers",
-      "next_role": "interviewer",
-      "next_step": "Ожидаются ответы по SURFACE-Q01, SURFACE-Q04 и SURFACE-Q05. Ответы по SURFACE-Q02 и SURFACE-Q03 зафиксированы.",
-      "ready_for_development": false,
-      "implementation_authorized": false,
+      "execution_state": "ready_for_development",
+      "next_role": "programmer",
+      "next_step": "Реализовать правила сброса и размещения точек интереса по чистовой спецификации F1.",
+      "ready_for_development": true,
+      "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T04:28:16.274Z",
+      "updated_at": "2026-11-25T04:36:29.969Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
-      "interview_status": "awaiting_owner_answers",
-      "interview_completed": false,
+      "interview_status": "completed",
+      "interview_completed": true,
       "interview_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
       "interview_round_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/round-001.json",
-      "open_question_ids": [
-        "SURFACE-Q01",
-        "SURFACE-Q04",
-        "SURFACE-Q05"
-      ],
+      "open_question_ids": [],
       "next_role_after_answers": "business_analyst",
-      "independent_reset_handoff": {
-        "role": "business_analyst",
-        "status": "ready_for_bounded_specification",
-        "ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
-        "scope": "Сброс очищает карту и малые озёра одной операцией. Отдельного диалога об озёрах нет; Undo восстанавливает прежнюю карту с озёрами, Redo возвращает пустую карту."
-      },
       "ui_preview_pending": true,
-      "ui_preview_owner": "business_analyst"
+      "ui_preview_owner": "business_analyst",
+      "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+      "final_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+      "spec_version": "F1",
+      "final_spec_version": "F1"
     },
     {
       "task_id": "HX-BL-021",
