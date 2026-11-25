@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "status": "reset_review_ready",
+  "next_role": "reviewer",
+  "pr_number": 516,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/516",
+  "branch": "feat/hx076-reset-map",
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+  "tree_sha": "e914c67bf1a9783782d0cf8c03656c9031fe981d",
+  "scope": "F1 / SURFACE-Q01",
+  "finding_id": "HX076-RESET-RV03-01",
+  "finding_ids": [
+    "HX076-RESET-RV03-01",
+    "HX076-RESET-RV03-02"
+  ],
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "result_ref": "agent-work/results/2026-11-25T1400-programmer-PR516-RV03.json",
+  "fixture_refs": [
+    "agent-work/evidence/HX-BL-076/reset/a726d46/review/knave-only.json",
+    "test/fixtures/import-v2/manual-edit-map.json"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json",
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45601360788",
+  "authorization": "independent_review_authorized_in_f1_scope",
+  "publication_authorized": false,
+  "next_step": "Независимо проверить PR №516 на 4d1a975 по SURFACE-Q01. Повторить сброс сохранённого Knave без геометрии, создание первого региона после сброса с 1 мили, точную отмену и повтор. Зафиксировать вывод и предварительную оценку 1.3-rc8.",
+  "date": "2026-11-25",
+  "run_id": "2026-11-25T1400-programmer-PR516-RV03",
+  "role": "programmer",
+  "claim_ref": "agent-work/claims/2026-11-25T1400-programmer-PR516-RV03.json",
+  "review_status": "ready_for_independent_review",
+  "review_ready": true,
+  "execution_running": false,
+  "role_selection_reason": "Приоритетная согласованная HX-BL-076 возвращена проверяющим с двумя воспроизводимыми дефектами SURFACE-Q01. Реестр, предыдущие claims, проверенная голова и актуальные замечания сверены.",
+  "result": "При сохранённом профиле Knave кнопка сброса доступна до генерации, после снятия флажка и повторного открытия JSON. После сброса из масштаба 1 миля видна стартовая клетка на масштабе 5–6 миль. Нажатие создаёт первый регион. Undo возвращает карту и прежний одномильный вид, Redo возвращает пустую карту со стартовой клеткой.",
+  "previous_head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+  "previous_review_result_ref": "agent-work/results/2026-11-25T1300-reviewer-PR516-reset.json",
+  "previous_review_evidence_ref": "agent-work/evidence/HX-BL-076/reset/a726d46/review/review.json",
+  "addressed_findings_pending_review": [
+    "HX076-RESET-RV03-01",
+    "HX076-RESET-RV03-02"
+  ],
+  "verified_fixed_findings": [
+    "HX076-RESET-RV01-01",
+    "HX076-RESET-RV02-01"
+  ],
+  "browser_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json",
+  "evidence_commit_sha": "51d6a80df3b21f2f204ef9f721adee4f7c0b57ab",
+  "figures": {
+    "before": [
+      "agent-work/evidence/HX-BL-076/reset/a726d46/review/knave-only-checked.jpg",
+      "agent-work/evidence/HX-BL-076/reset/a726d46/review/one-mile-after-reset.jpg"
+    ],
+    "after": [
+      "agent-work/evidence/HX-BL-076/reset/4d1a975/knave-only-checked.jpg",
+      "agent-work/evidence/HX-BL-076/reset/4d1a975/one-mile-after-reset.jpg",
+      "agent-work/evidence/HX-BL-076/reset/4d1a975/one-mile-new-region.jpg"
+    ]
+  },
+  "checks": {
+    "typescript": "passed",
+    "build": "passed",
+    "local_browser": {
+      "case_count": 7,
+      "new_regions_after_reset": 1,
+      "save_history_full": "passed",
+      "evidence_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json"
+    },
+    "focused_node": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0
+    },
+    "ci": {
+      "validated": true,
+      "run_id": 45601360788,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45601360788",
+      "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+      "checkout_sha": "fe9057238e0d9989e2122e8c274b2aca6e4a942b",
+      "checkout_tree_sha": "e914c67bf1a9783782d0cf8c03656c9031fe981d",
+      "observed_at": "2026-11-25T11:18:28Z",
+      "node": {
+        "tests": 453,
+        "pass": 453,
+        "fail": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "job_id": 139160817736,
+        "tree_confirmed": true,
+        "matched": [
+          "2026-11-25T11:06:57.8071894Z HEAD is now at fe90572 Merge 4d1a975d79b53859ab166b34cc8fad3fdcc90c16 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+          "2026-11-25T11:13:27.1849961Z HX076 reset verified: regionless layers, retained Knave profile, one-mile restart and exact Undo/Redo without dialogs.",
+          "2026-11-25T11:15:09.8263020Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+        ]
+      },
+      "jobs": [
+        {
+          "id": 139160817444,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 139160817736,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 139160818014,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 139160820096,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+    "head_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Browser save-history",
+    "scenario": "Две новые конфигурации встроены в действующую браузерную цепочку: сохранённый Knave без геометрии и первая генерация из пустой карты после сброса с 1 мили.",
+    "parameter_cases": [
+      "Knave: включён, выключен с сохранённым слоем, повторный импорт",
+      "Карта 1 миля: сброс, Undo на 1 милю, Redo на 5–6 миль, реальная генерация первого региона"
+    ],
+    "reuse_or_new_reason": "Дополнен существующий сценарий сброса. Прямой тест обработчика не проверяет кнопку Knave и доступность стартового гекса после очистки.",
+    "source": "git diff a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9..4d1a975d79b53859ab166b34cc8fad3fdcc90c16 по test/browser/save-history.smoke.mjs; одна существующая браузерная цепочка."
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S02-C01",
+    "rule_id": "SEED-03",
+    "accepted_weight_percent": 15,
+    "forecast_delta": 0,
+    "status": "pending_independent_assessment"
+  },
+  "remaining_stage": {
+    "task_id": "HX-BL-076",
+    "stage_id": "POI-SURFACES",
+    "status": "remaining_owner_approved",
+    "next_role": "programmer",
+    "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+    "anchor_witness": "Деревня 7 / гекс 5,1 на озере и водная точка на суше",
+    "start_after": "Сброс передан на независимую приёмку. Разрешение публикации сброса не является зависимостью.",
+    "note": "В базовом src/saveValidation.ts:143 общий валидатор отклоняет водный POI без lake/sea. Разделить совместимость принятого сохранения и правила новых изменений, сохранив структурную проверку типов и координат.",
+    "next_step": "Реализовать SURFACE-Q02–Q05 отдельным пакетом. Первый сквозной сценарий — повторное открытие карты с двумя авторскими исключениями поверхности, с исходными координатами, полями и PNG. Проверить, что общая валидация ручного размещения и генерации при этом сохраняет запрет новых несовместимых точек."
+  },
+  "forecast": {
+    "reset": "Независимая приёмка нового SHA, затем отдельное решение владельца по выпуску и один запуск на публикацию при согласии.",
+    "poi_surfaces": "Оставшаяся согласованная часть SURFACE-Q02–Q05. Выпуск сброса не является зависимостью."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T11:02:15Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T11:18:33Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T11:18:33Z"
+}
