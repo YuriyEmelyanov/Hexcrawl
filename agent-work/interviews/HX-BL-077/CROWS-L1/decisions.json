@@ -24,15 +24,10 @@
   "round_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.json",
   "questionnaire_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.md",
   "questionnaire_commit": "3c5c5b141be3a7b9095c239fadbea54af95d456d",
-  "status": "awaiting_owner_answers",
-  "open_question_ids": [
-    "CROWS-Q01",
-    "CROWS-Q02",
-    "CROWS-Q04",
-    "CROWS-Q06"
-  ],
-  "next_role": "interviewer",
-  "next_step": "После ответов на четыре вопроса сверить решения и передать аналитику чистовую спецификацию полного режима Crows.",
+  "status": "interview_completed",
+  "open_question_ids": [],
+  "next_role": "business-analyst",
+  "next_step": "Бизнес-аналитик готовит чистовую спецификацию всего режима Crows одним пакетом по D2, ответам владельца и ТЗ2. Включить явную приёмку смены типа точки по Q04.",
   "rounds": [
     {
       "id": "round-001",
@@ -43,8 +38,104 @@
       "ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.json"
     }
   ],
-  "owner_answers": [],
-  "owner_decisions": [],
+  "owner_answers": [
+    {
+      "question_id": "CROWS-Q01",
+      "owner_answer": "Q01 A",
+      "selected_option": "A",
+      "decision": "Один активный профиль Classic. Выбор Crows останавливает применение Knave 2e к новой генерации. При переключении данные обоих профилей сохраняются.",
+      "requirement_refs": [
+        "001",
+        "CROWS-01",
+        "CROWS-09"
+      ],
+      "source": "Прямой ответ владельца в текущем чате 25.11.2026, идентификатор сообщения недоступен.",
+      "answered_at": "2026-11-25T20:30:13.751Z"
+    },
+    {
+      "question_id": "CROWS-Q02",
+      "owner_answer": "Q02 A",
+      "selected_option": "A",
+      "decision": "Один раздел «Мир» на карту. В Crows шаблон Корната заполняет только нетронутые поля. Авторский текст и намеренно очищенные поля сохраняются при переключении и повторном открытии.",
+      "requirement_refs": [
+        "001",
+        "CROWS-02",
+        "CROWS-09"
+      ],
+      "source": "Прямой ответ владельца в текущем чате 25.11.2026, идентификатор сообщения недоступен.",
+      "answered_at": "2026-11-25T20:30:13.751Z"
+    },
+    {
+      "question_id": "CROWS-Q04",
+      "owner_answer": "Q04 точка интереса, назначенная домашней деревней, становится деревней.",
+      "selected_option": null,
+      "decision": "При назначении домашней деревней существующая наземная точка интереса меняет тип на деревню и получает статус домашней. Это изменение данных карты. Обычное переключение профилей не превращает её обратно в прежний тип. Снять домашний статус можно по ТЗ.",
+      "requirement_refs": [
+        "011",
+        "CROWS-01",
+        "CROWS-05",
+        "CROWS-06",
+        "CROWS-09"
+      ],
+      "source": "Прямой ответ владельца в текущем чате 25.11.2026, идентификатор сообщения недоступен.",
+      "answered_at": "2026-11-25T20:30:13.751Z"
+    },
+    {
+      "question_id": "CROWS-Q06",
+      "owner_answer": "Q06 A",
+      "selected_option": "A",
+      "decision": "Все 13 отдельных построек Crows участвуют в выборе там, где Classic выбрал бы строение и выполняется условие размещения: освоенная территория или гекс с дорогой в диком регионе. Шанс выбора категории строения остаётся классическим, прочие точки следуют Classic.",
+      "requirement_refs": [
+        "011",
+        "CROWS-07"
+      ],
+      "source": "Прямой ответ владельца в текущем чате 25.11.2026, идентификатор сообщения недоступен.",
+      "answered_at": "2026-11-25T20:30:13.751Z"
+    }
+  ],
+  "owner_decisions": [
+    {
+      "question_id": "CROWS-Q01",
+      "decision": "Один активный профиль Classic. Выбор Crows останавливает применение Knave 2e к новой генерации. При переключении данные обоих профилей сохраняются.",
+      "requirement_refs": [
+        "001",
+        "CROWS-01",
+        "CROWS-09"
+      ],
+      "answer_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
+    },
+    {
+      "question_id": "CROWS-Q02",
+      "decision": "Один раздел «Мир» на карту. В Crows шаблон Корната заполняет только нетронутые поля. Авторский текст и намеренно очищенные поля сохраняются при переключении и повторном открытии.",
+      "requirement_refs": [
+        "001",
+        "CROWS-02",
+        "CROWS-09"
+      ],
+      "answer_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
+    },
+    {
+      "question_id": "CROWS-Q04",
+      "decision": "При назначении домашней деревней существующая наземная точка интереса меняет тип на деревню и получает статус домашней. Это изменение данных карты. Обычное переключение профилей не превращает её обратно в прежний тип. Снять домашний статус можно по ТЗ.",
+      "requirement_refs": [
+        "011",
+        "CROWS-01",
+        "CROWS-05",
+        "CROWS-06",
+        "CROWS-09"
+      ],
+      "answer_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
+    },
+    {
+      "question_id": "CROWS-Q06",
+      "decision": "Все 13 отдельных построек Crows участвуют в выборе там, где Classic выбрал бы строение и выполняется условие размещения: освоенная территория или гекс с дорогой в диком регионе. Шанс выбора категории строения остаётся классическим, прочие точки следуют Classic.",
+      "requirement_refs": [
+        "011",
+        "CROWS-07"
+      ],
+      "answer_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
+    }
+  ],
   "resolved_by_existing_sources": [
     {
       "refs": [
@@ -90,8 +181,8 @@
     }
   ],
   "distinct_from_owner_approval": "Рекомендации вариантов и трактовки текста не являются новыми ответами владельца.",
-  "interview_completed": false,
-  "updated_at": "2026-11-25T20:24:56.582Z",
+  "interview_completed": true,
+  "updated_at": "2026-11-25T20:30:13.751Z",
   "draft_history": [
     {
       "draft_spec_ref": "agent-work/specs/HX-BL-077-crows-D1.md",
@@ -127,5 +218,9 @@
       "source": "ТЗ2 CROWS 003",
       "text": "Можно добавлять признаки вручную и снимать собственные добавления. Автоматические признаки следуют биому и воде. Пункт 003 прямо предусматривает ручное добавление, поэтому отдельный режим подавления автоматических признаков не требуется."
     }
+  ],
+  "interview_completed_at": "2026-11-25T20:30:13.751Z",
+  "answer_refs": [
+    "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
   ]
 }
