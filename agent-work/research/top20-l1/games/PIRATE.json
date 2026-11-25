@@ -294,7 +294,7 @@
         "author_project_key": "limithron:pirate-borg:core-isbn-9789189143807",
         "access_level": "public_primary_text_third_party_host_selected_sections",
         "verification": "selected_sections_rechecked",
-        "recorded_facts": "Таблицы дают постоянные объекты острова: поселения, места клада, гавани, подводные и береговые препятствия. В таблице опасностей есть пустой результат."
+        "recorded_facts": "Таблицы дают постоянные объекты острова: поселения, места клада, гавани, подводные и береговые препятствия. В таблице опасностей есть пустой результат. При Anything here worth a fortune?=8 торговый путь существует неподалёку без заданных координат. При 6 источник предлагает построить город у гавани. Это предложение мастеру."
       },
       "model": {
         "game_unit_id": "PIRATE",
@@ -338,13 +338,25 @@
         "constraints_and_exceptions": [
           "Учитываются пространственные результаты.",
           "Результат 7 в Natural Hazards не создаёт опасность.",
-          "Текущие конфликты, реакции и разрешение угроз вне этой операции."
+          "Текущие конфликты, реакции и разрешение угроз вне этой операции.",
+          "Результат 8 говорит о соседстве торгового маршрута. Если геометрия неизвестна, мастер может указать только известную связь; линии и конечные точки из текста не выводятся.",
+          "Наличие природной гавани не размещает поселение без решения мастера."
         ],
         "acceptance_cases": [
           {
             "given": "На карте есть остров. Броски: жители 12, место клада 2, интересная находка 6, опасность 7.",
             "when": "Разместить выбранные постоянные объекты и повторно открыть карту.",
             "expected": "Три позиции сохраняют свои адреса: скрытый пиратский город, древние руины и природная гавань. Маркер опасности отсутствует."
+          },
+          {
+            "given": "Мастер разместил природную гавань H (результат 6) у выбранного берега, оставил остров без города и не указал морских маршрутов.",
+            "when": "Сохранить и открыть карту.",
+            "expected": "H сохранена в указанном месте. На острове нет нового города, у гавани нет дорисованной линии торгового пути."
+          },
+          {
+            "given": "На карте существует трасса T возле острова, для острова подтверждён результат 8. Мастер не вводит новых маршрутов.",
+            "when": "Повторно открыть карту после подготовки острова.",
+            "expected": "Единственная трасса T сохраняет исходные координаты и концы; новые маршруты не создаются."
           }
         ],
         "source_vs_product_interpretation": "Типизированные места отображают географические результаты таблиц. Место клада и видимость объектов задаёт мастер.",
@@ -527,6 +539,209 @@
       "open_checks": [
         "Сверить способ выполнения и сохранение результата на конкретном опубликованном SHA."
       ]
+    },
+    {
+      "id": "PIRATE-CORE-L1-003",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Размер морского гекса — сохраняемый физический параметр региональной карты. Критерий S04-C04 связан с сохранением и переносом этого параметра.",
+      "source": {
+        "edition": "Pirate Borg Core, Limithron / Free League, ©2022, ISBN 978-91-89143-80-7, EN",
+        "locator": "с. 76, Maritime Travel; с. 74, Naval Combat / Movement для границы применения",
+        "source_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "primary_url": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "publisher_url": "https://www.limithron.com/pirateborg",
+        "author_project_key": "limithron:pirate-borg:core-isbn-9789189143807",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Морские переходы считают в гексах по 50 миль. Поправка на три восточных направления в Dark Caribbean относится к перемещению за день. В разделе морского боя используется отдельная тактическая сетка примерно 50 футов на дюйм."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Размер морского гекса — сохраняемый физический параметр региональной карты. Критерий S04-C04 связан с сохранением и переносом этого параметра."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "map.physical_hex_scale"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/ (с. 76, Maritime Travel; с. 74, Naval Combat / Movement для границы применения)",
+        "normative_kind": "fixed_regional_scale",
+        "applicability": "Мастер готовит региональную морскую гекс-карту Pirate Borg.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать или открыть региональную морскую карту и установить физический шаг 50 миль на гекс.",
+        "inputs_and_units": {
+          "hex_length": 50,
+          "unit": "мили на морской гекс",
+          "hex_address": "q/r",
+          "orientation": "выбор мастера или приложения; раздел не задаёт обязательную ориентацию"
+        },
+        "product_operation": "Сохранить физический масштаб вместе с географией и адресами. Считать зум независимым от масштаба.",
+        "expected_output": "После экспорта и повторного открытия у той же карты сохраняются размер гекса 50 миль, его единица и нанесённые адреса.",
+        "constraints_and_exceptions": [
+          "Раздел не уточняет геометрическую ось измерения. 50 миль остаётся номинальной длиной до определения формата геометрии.",
+          "Общая карта острова, сетка морского боя, скорость корабля и поправки направления не наследуют это требование."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Море с двумя различимыми адресами A (0/0) и B (1/0), в настройках выбрано 50 миль на гекс.",
+            "when": "Экспортировать JSON, открыть его заново и изменить зум.",
+            "expected": "Адреса A и B прежние, единица «миля» и число 50 сохранены. Изменился только визуальный зум."
+          },
+          {
+            "given": "Сохранение другого региона имеет собственный масштаб 5–6 миль.",
+            "when": "Открыть его после карты Pirate Borg.",
+            "expected": "Открытая карта сохраняет собственный масштаб; 50 миль не применяется глобально."
+          }
+        ],
+        "source_vs_product_interpretation": "Число и единица взяты из правила плавания. Задание, сохранение и проверка параметра — форма реализации для картографического этапа. Новая кнопка режима или обязательная геометрическая конвенция не следуют из книги.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "В книге не установлено, измеряются ли 50 миль между центрами, гранями или вершинами. Проверка не требует расстояния между геометрическими координатами до выбора конвенции."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null,
+        "adjacent_evidence": [
+          {
+            "sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+            "scope": "main_static_controls_and_executed_detail_grid_component_only",
+            "refs": [
+              "https://github.com/YuriyEmelyanov/Hexcrawl/blob/6a1bebc61fbb401c5491bea98c6471486a7bbc47/src/App.tsx#L17624",
+              "https://github.com/YuriyEmelyanov/Hexcrawl/blob/6a1bebc61fbb401c5491bea98c6471486a7bbc47/src/detailGrid.ts#L4"
+            ],
+            "method": "Исходник селектора и вызов createDetailGrid из файла, извлечённого на этом SHA.",
+            "finding": "В селекторе 1 и 5–6 миль. Вызов createDetailGrid(24) сохраняет шаг 24, createDetailGrid(50) отвергнут с ошибкой «Unknown detail grid». Полный сценарий импорта/экспорта или работа опубликованного сайта не проверялись."
+          }
+        ]
+      },
+      "open_checks": [
+        "Приёмка полного сценария на опубликованном SHA открыта."
+      ]
+    },
+    {
+      "id": "PIRATE-CORE-L1-004",
+      "game_id": "PIRATE",
+      "disposition": "keep_L1",
+      "disposition_reason": "Мастер наносит конкретное устойчивое кораблекрушение в подходящем месте и повторно открывает его из ключа. У таблицы есть самостоятельный пространственный выход.",
+      "source": {
+        "edition": "Pirate Borg Core, Limithron / Free League, ©2022, ISBN 978-91-89143-80-7, EN",
+        "locator": "с. 116, Derelict Ship Generator → Where is it? (d12); с. 117, локальные детали",
+        "source_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "primary_url": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+        "publisher_url": "https://www.limithron.com/pirateborg",
+        "author_project_key": "limithron:pirate-borg:core-isbn-9789189143807",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "selected_sections_rechecked",
+        "recorded_facts": "Таблица задаёт подвижные, привязанные к местности и сверхъестественные варианты. На отмели (2), выброшенное на берег судно (3) и высохшее русло (7) допускают устойчивый адрес. Дрейф в открытом море (4) сам по себе координату не задаёт."
+      },
+      "model": {
+        "game_unit_id": "PIRATE",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S03-C01",
+          "S05-C01"
+        ],
+        "criterion_fit": {
+          "status": "related_existing_criteria_candidate_game_operation",
+          "basis": "Мастер наносит конкретное устойчивое кораблекрушение в подходящем месте и повторно открывает его из ключа. У таблицы есть самостоятельный пространственный выход."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/ (с. 116, Derelict Ship Generator → Where is it? (d12); с. 117, локальные детали)",
+        "normative_kind": "optional_generation",
+        "applicability": "Мастер готовит региональную морскую гекс-карту Pirate Borg.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать либо бросить местоположение судна и, если это устойчивый объект, нанести его на выбранный гекс.",
+        "inputs_and_units": {
+          "where_d12": "результат 1–12 или явный выбор строки",
+          "hex": "q/r; требуется только для нанесённого постоянного объекта",
+          "surface": "вода/суша или береговой участок, выбранный по исходу",
+          "entity": "одна запись выбранного кораблекрушения"
+        },
+        "product_operation": "Сохранить адрес и положение устойчивого объекта вместе с типом. Для результата без фиксированного места оставить карту без нового постоянного маркера.",
+        "expected_output": "После открытия кораблекрушение доступно по выбранному адресу и сохраняет условие размещения. Подвижный результат не закрепляется автоматически.",
+        "constraints_and_exceptions": [
+          "Ситуации на границе воды и суши разрешает мастер. Гекс должен быть подходящим на масштабе карты; снятие с мели или динамика приливов сюда не входят.",
+          "Гибель судна, каюты, экипаж, содержимое и сражение на обломках относятся к другим уровням. Локальный результат не обязан становиться самостоятельной отметкой.",
+          "В сценариях один новый объект на выбранный гекс. Существующие объекты не перезаписываются."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Выбран свободный водный гекс A с отмелью. Где судно: d12=2.",
+            "when": "Отметить судно на отмели, сохранить и открыть.",
+            "expected": "В A одна постоянная запись кораблекрушения на отмели. Соседние гексы прежние."
+          },
+          {
+            "given": "Выбран свободный сухопутный B с высохшим руслом. Где судно: d12=7.",
+            "when": "Нанести постоянный объект и открыть сохранение.",
+            "expected": "Ключ B показывает кораблекрушение в высохшем русле. Водный маркер рядом автоматически не создаётся."
+          },
+          {
+            "given": "В карте уже есть два фиксированных кораблекрушения; выпало d12=4.",
+            "when": "Принять результат без ручного назначения адреса, сохранить и открыть.",
+            "expected": "По карте остаются два прежних фиксированных места. Дрейфующий корабль не становится третьей постоянной точкой."
+          }
+        ],
+        "source_vs_product_interpretation": "Варианты места взяты из таблицы. Мастер присваивает адрес, а приёмка проверяет сохранение условий места. Отдельная механика движения, новое поле морского боя и автоматическая привязка не требуются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "На конкретной опубликованной версии проверить, можно ли сохранить результат для суши через существующую карточку или общий тип руин, сохранив точный смысл исхода и привязку."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "evidence_sha": null,
+        "adjacent_evidence": [
+          {
+            "sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+            "scope": "main_static_water_marker_component_only",
+            "refs": [
+              "https://github.com/YuriyEmelyanov/Hexcrawl/blob/6a1bebc61fbb401c5491bea98c6471486a7bbc47/src/App.tsx#L453",
+              "https://github.com/YuriyEmelyanov/Hexcrawl/blob/6a1bebc61fbb401c5491bea98c6471486a7bbc47/src/App.tsx#L15261"
+            ],
+            "method": "Просмотр исходника",
+            "finding": "Есть водный тип shipwreck и запись типа по координате водного гекса. Указанный setter ограничен водой. Сценарии фиксированного объекта на суше, условий Where is it? и сохранения на опубликованной версии не проверены."
+          }
+        ]
+      },
+      "open_checks": [
+        "Приёмка полного сценария на опубликованном SHA открыта."
+      ]
     }
   ],
   "independent_projection_example": {
@@ -536,7 +751,7 @@
     "ref": "agent-work/research/market/PIRATE-map-practice-2026-11-09.json#obs-PIRATE-JAKE-map-recheck-20261109",
     "finding": "Автор описывает создание острова по отдельному дополнению Down Among the Dead, перенос результата в Tiled и добавление порта. Это связанный сценарий подготовки, но он происходит из другого источника и не подтверждает три строки Treasure Maps."
   },
-  "latest_formalization_base_sha": "0c7b578eaba0ce420cf1d9c4cab43e71c43a4504",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-maritime-1930",
+  "latest_formalization_base_sha": "e2a56d0289de1f494be199507f4a5bb65bd68b4d",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-pirate-core-2230",
   "latest_source_coverage_review_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json"
 }
