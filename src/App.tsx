@@ -2343,11 +2343,14 @@ type MapSnapshot = {
 // bounded Undo stack. Manual actions may add history without changing lakes.
 type GenerationCheckpoint = MapSnapshot & { generatedLakeLayer?: SmallLakeLayer };
 
+type OneMileView = Pick<Detail1State, 'selectedCell' | 'selectedWorldPoint'>;
 // Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
 type DocumentSnapshot = {
   requiresFineAdaptation?:boolean;
   map: MapSnapshot; generationHistory: GenerationCheckpoint[]; selectedHex: AxialHex | null;
   generationMode: GenerationMode; knaveEnabled?: boolean; isMapRotated: boolean; mapScale: number;
+  // Reset snapshots remember the detached view without adding it to the save format.
+  oneMileView?: OneMileView | false;
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
@@ -13979,7 +13982,8 @@ export function App() {
     if(lakeState?.smallLakes?.lakes.length)validateSmallLakeSupport(lakeState.smallLakes,projectOneMile(oneMileSources(after.map),lakeState.grid.origin));
     // Source edits while viewing one mile must also have a complete next
     // display. A preparation failure occurs before either history is changed.
-    let scene=automaticFineSceneRef.current?.viewStep===1?(options.preparedScene??prepareAutomaticOneMileScene(after.map)):null;
+    const keepOneMile = after.oneMileView !== false && automaticFineSceneRef.current?.viewStep === 1;
+    let scene = keepOneMile ? options.preparedScene ?? prepareAutomaticOneMileScene(after.map) : null;
     const target=fineGenerationTargetRef.current;
     if(scene&&target&&projectOneMile(oneMileSources(after.map),scene.grid.origin).some(row=>isSameHex(row.cell,target.cell)))scene={...scene,selectedCell:target.cell,selectedWorldPoint:target.point};
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
@@ -13988,16 +13992,19 @@ export function App() {
     setUndoHistory(current => [...current, transaction].slice(-100));
     setRedoHistory([]);
   };
-  const applyExactMap = (map: MapSnapshot) => {
+  const applyExactMap = (map: MapSnapshot, oneMileView?: OneMileView | false) => {
     cancelAutomaticFinePreparation();
     // A document replacement cannot keep artwork derived from another map.
     setAutomaticFineError(null);
     let nextScene:Detail1State|null=null;
-    if(automaticFineSceneRef.current?.viewStep===1||map.physicalGrid?.viewStep===1){
+    const showOneMile = oneMileView === undefined
+      ? automaticFineSceneRef.current?.viewStep === 1 || map.physicalGrid?.viewStep === 1
+      : oneMileView !== false;
+    if(showOneMile){
       try{nextScene=preparedAutomaticSceneRef.current?.map===map?preparedAutomaticSceneRef.current.state:prepareAutomaticOneMileScene(map);}
       catch(error){nextScene=map.physicalGrid?{...map.physicalGrid,viewStep:6}:null;setAutomaticFineError(automaticSceneFailureMessage(error,language,true));console.error('One-mile scene preparation failed',error);}
     }
-    const selected=automaticFineSceneRef.current;
+    const selected=oneMileView || automaticFineSceneRef.current;
     if(nextScene?.viewStep===1&&selected?.selectedCell&&projectOneMile(oneMileSources(map),nextScene.grid.origin).some(row=>isSameHex(row.cell,selected.selectedCell!)))nextScene={...nextScene,selectedCell:selected.selectedCell,selectedWorldPoint:selected.selectedWorldPoint};
     preparedAutomaticSceneRef.current=null;updateAutomaticFineScene(nextScene);
     updatePhysicalGrid(map.physicalGrid);
@@ -14030,7 +14037,7 @@ export function App() {
     tagLocks.current.clear();setTagAnimations({});
     documentRevision.current++;
     updateWaterDraft(null); updateRiverDraft(null); updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
-    applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
+    applyExactMap(doc.map, doc.oneMileView); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); updateKnaveEnabled(doc.knaveEnabled??!!doc.map.knave); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale*(doc.map.physicalGrid?.viewStep??6)/((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6)); setPendingRegen(null); closeEditors();
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
@@ -14829,7 +14836,7 @@ export function App() {
 
   const hasRegions = regions.length > 0;
   const hasResettableMap = hasRegions || hexTerrainByKey.size > 0 || physicalGrid !== undefined
-    || obstacles.length > 0 || kingdoms.length > 0;
+    || obstacles.length > 0 || kingdoms.length > 0 || knave !== undefined;
 
   const resetMapToMode = (nextMode?:GenerationMode) => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
@@ -14840,12 +14847,16 @@ export function App() {
       && seaIdentityRef.current.nextSeaId===1 && !seaIdentityRef.current.seas.length
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
       && !knaveRef.current && !physicalGridRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
-    const before=captureDocument();
+    const view = automaticFineSceneRef.current ?? physicalGridRef.current;
+    const oneMileView = view?.viewStep === 1
+      ? {selectedCell:view.selectedCell, selectedWorldPoint:view.selectedWorldPoint}
+      : false;
+    const before: DocumentSnapshot = {...captureDocument(), oneMileView};
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
-      requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false };
+      requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false,oneMileView:false };
     recordTransaction(before,after,{replaceMap:true}); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 

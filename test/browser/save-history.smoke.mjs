@@ -453,8 +453,47 @@ try {
      assert.deepEqual(reset.map[layer], [], layer + ' cleared');
      assert.equal(await button('Сбросить').count(), 0);
    }
+   await load(regionlessEmpty);
+   const knaveProfile = page.getByRole('checkbox',{name:'Knave 2e',exact:true});
+   await knaveProfile.check();
+   assert.ok(await button('Сбросить').isVisible());
+   await knaveProfile.uncheck();
+   const profileOnly = await snapshot();
+   assert.ok(profileOnly.map.knave);
+   assert.equal(profileOnly.ui.knaveEnabled,false);
+   assert.deepEqual(profileOnly.map.regions,[]);
+   await load(profileOnly);
+   assert.deepEqual(await snapshot(),profileOnly);
+   assert.equal(await page.locator('.controls--region-management button').count(),1);
+   const withoutProfile = await transaction(() => button('Сбросить').click());
+   assert.equal(withoutProfile.map.knave,undefined);
+   assert.equal(await button('Сбросить').count(),0);
+
+   await load(fixture);
+   const resetScale = page.locator('[data-fine-step]');
+   const firstHex = page.locator('polygon.hex.candidate[data-hex-key="0,0"]');
+   await resetScale.selectOption('1');
+   await page.locator('[data-fine-world]').waitFor();
+   const oldMap = await snapshot();
+   await button('Сбросить').click();
+   const newMap = await snapshot();
+   assert.deepEqual(newMap.map.regions,[]);
+   assert.equal(await resetScale.inputValue(),'6');
+   assert.ok(await firstHex.isVisible());
+   await button('Отменить').click();
+   await page.locator('[data-fine-world]').waitFor();
+   assert.equal(await resetScale.inputValue(),'1');
+   assert.deepEqual(await snapshot(),oldMap);
+   await button('Повторить').click();
+   assert.equal(await resetScale.inputValue(),'6');
+   assert.deepEqual(await snapshot(),newMap);
+   await firstHex.click();
+   await page.waitForFunction(()=>!document.querySelector('[data-fine-step]').disabled);
+   assert.ok((await snapshot()).map.regions.length > 0);
+   await button('Отменить').click();
+   assert.deepEqual(await snapshot(),newMap);
    assert.deepEqual(resetDialogs,[]);
-   console.log('HX076 reset verified: water-only, obstacle-only and kingdom-only maps; exact Undo/Redo; no dialogs.');
+   console.log('HX076 reset verified: regionless layers, retained Knave profile, one-mile restart and exact Undo/Redo without dialogs.');
  } finally {
    page.off('dialog',observeResetDialog);
  }
