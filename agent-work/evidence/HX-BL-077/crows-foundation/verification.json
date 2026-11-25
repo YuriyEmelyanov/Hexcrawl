@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "status": "implementation_in_progress",
+  "working_branch": "feat/hx077-crows",
+  "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+  "wip_head_sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+  "wip_tree_sha": "5e255636a0caf9d84f66dbcd6221818244c20390",
+  "final_spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+  "final_spec_version": "F1",
+  "final_spec_blob_sha": "0626eb96d0312ee7983ceea9c61b57f787a7c71a",
+  "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
+  "ready_for_development": true,
+  "review_ready": false,
+  "release_authorized": false,
+  "implementation_authorized": true,
+  "next_role": "programmer",
+  "next_step": "На существующей ветке реализовать стартовую домашнюю деревню и преобразование выбранной наземной точки в деревню (CROWS-05, Q04), проверить в JSON и Undo/Redo. Далее завершить поселения, отдельные постройки, среду и Миазму. Все пункты F1 проходят одну приёмку.",
+  "result_ref": "agent-work/results/2026-11-26T0056-programmer-HX077-crows-foundation.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-077/crows-foundation/verification.json",
+  "recorded_at": "2026-11-25T22:07:17.009Z",
+  "checks": {
+    "typecheck": {
+      "status": "passed",
+      "command": "tsc --noEmit",
+      "node": "24.22.3"
+    },
+    "build": {
+      "status": "passed",
+      "ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-build.log"
+    },
+    "node": {
+      "suite": "saveSafety.test.mjs",
+      "status": "passed",
+      "executed": 56,
+      "passed": 56,
+      "skipped": 0,
+      "ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-save-final.log"
+    },
+    "browser": {
+      "status": "passed_scoped",
+      "evidence_ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-browser-final.log",
+      "scale_success_ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-scale-classic-six.log",
+      "separate_from_node": true,
+      "fixtures": [
+        "two-region production save from PR517 acceptance; growth to three",
+        "classic-six-regions-seed42.json"
+      ]
+    },
+    "full_check": {
+      "status": "interrupted_at_intermediate_checkpoint",
+      "exit_code": 130,
+      "passed_printed_before_interruption": 413,
+      "scope_note": "Полный набор повторить на связанном пакете F1."
+    },
+    "known_limitations": [
+      {
+        "case": "two-region PR517 save",
+        "effect": "Одномильная проекция возвращает несовместимость исходной геометрии. Идентичный отказ на SHA базы без изменений Crows, исходная карта сохраняется.",
+        "baseline_ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-scale-base-final.log",
+        "branch_ref": "agent-work/evidence/HX-BL-077/crows-foundation/crows-scale-retry.log"
+      }
+    ]
+  },
+  "cases": {
+    "included": [
+      "CROWS-01 profile selection, preservation and reopen",
+      "CROWS-02 world-first card and shared field handling",
+      "CROWS-03 scale selector and compatible view round trip",
+      "CROWS-09 targeted JSON/undo/reset/atomic invalid import"
+    ],
+    "remaining": [
+      "CROWS-04",
+      "CROWS-05",
+      "CROWS-06",
+      "CROWS-07",
+      "CROWS-08",
+      "Complete-package CROWS-01–09"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+    "head_sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node saveSafety",
+    "scenario": "JSON сохраняет пустое описание; обе одновременно активные опции Classic и нетекстовое описание отклоняются.",
+    "reuse_or_new_reason": "Продолжает существующий набор проверки импорта, отдельный контракт сохранения новых полей и взаимоисключения.",
+    "source": "Diff on test/saveSafety.test.mjs, one new logical test; JSX mock for the generation harness only."
+  },
+  "artifacts": [
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-foundation/crows-profile-map.jpg",
+      "sha": "88ce00c5eb797eedc1e1651a2d1ee33753611919"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-foundation/crows-profile-narrow.jpg",
+      "sha": "2ceb18cf8378cb15b481ff6e1490d9588a2132cf"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-foundation/crows-profile-map.png",
+      "sha": "21491f9d8c891334bda47d165182b040342179d7"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-foundation/crows-roundtrip.json",
+      "sha": "5b7d4b6ff56fbe531b889bdd7fb7ddf53bfc332c"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-foundation/crows-browser-final.log",
+      "sha": "f447302d88af4f45e9c4a99b07418a82b2e25244"
+    }
+  ],
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "status": "partial_implementation",
+    "qualified_delta": null
+  }
+}
