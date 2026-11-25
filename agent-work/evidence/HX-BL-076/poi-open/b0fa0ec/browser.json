@@ -1,0 +1,84 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "POI-OPEN-COARSE",
+  "scope": "First releasable slice of SURFACE-Q02: opening previously saved positions at 5–6 miles",
+  "pr": 517,
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "b0fa0ec4cbd0656d1727a5c5bb0e2c82afb88df5",
+  "tree_sha": "19063c775a85d1deef6fcc81229ca3ae2dd80e73",
+  "dist_index_sha256": "30a16fae1c6a66d3052358ee85db14c5af8c716f83afb2c60a30d4fb51b15b89",
+  "original_map_png_sha256": "c72cda7c9b1602d625a64b0c8a0fea1be44ac68ccc811260cb9c934843795862",
+  "fixture_ref": "agent-work/evidence/HX-BL-076/poi-open/b0fa0ec/surface-exceptions.json",
+  "source": "An accepted 18-region Classic fixture from test/fixtures/lake-reentry-map.json, with two intentional authored positions added, including the owner's 5/1 wet coordinate. Region number and source file differ from the owner's original.",
+  "method": "Actual imported/exported JSON and PNG in Chromium. The downloaded PNG includes both exact anchors in the serialized SVG; downloaded PNG bytes match after reopening. Independently confirmed labels/marker presence, original topology, names and discovery.",
+  "browser": {
+    "chromium": "158.0.8127.0",
+    "positions": {
+      "wetKey": "5,1",
+      "dryKey": "2,1",
+      "region": 2,
+      "lakeId": 11,
+      "locators": [
+        "poi:2:5,1",
+        "waterPoi:2,1"
+      ],
+      "mapSource": "test/fixtures/lake-reentry-map.json"
+    },
+    "results": [
+      {
+        "mode": "baseline",
+        "viewport": 1500,
+        "accepted": false,
+        "dialogs": [
+          "Не удалось загрузить JSON: некорректные данные (map.waterPoiByHexKey.2,1: water POI requires water). Текущая карта сохранена."
+        ]
+      },
+      {
+        "mode": "candidate",
+        "viewport": 1500,
+        "accepted": true,
+        "regions": 18,
+        "wet_anchor": "5,1",
+        "dry_anchor": "2,1",
+        "authored_fields_exact": true,
+        "roads_rivers_exact": true,
+        "json_roundtrip_exact": true,
+        "png_roundtrip_exact": true,
+        "png_markers": [
+          "5,1",
+          "2,1"
+        ],
+        "png_bytes": 2439997,
+        "dialogs": 0,
+        "page_errors": 0
+      },
+      {
+        "mode": "candidate",
+        "viewport": 390,
+        "accepted": true,
+        "regions": 18,
+        "wet_anchor": "5,1",
+        "dry_anchor": "2,1",
+        "authored_fields_exact": true,
+        "roads_rivers_exact": true,
+        "json_roundtrip_exact": true,
+        "png_roundtrip_exact": true,
+        "png_markers": [
+          "5,1",
+          "2,1"
+        ],
+        "png_bytes": 2439997,
+        "dialogs": 0,
+        "page_errors": 0
+      }
+    ]
+  },
+  "figures": [
+    "agent-work/evidence/HX-BL-076/poi-open/b0fa0ec/before-import-rejected.jpg",
+    "agent-work/evidence/HX-BL-076/poi-open/b0fa0ec/stilt-village-1500.jpg",
+    "agent-work/evidence/HX-BL-076/poi-open/b0fa0ec/inland-wreck-1500.jpg",
+    "agent-work/evidence/HX-BL-076/poi-open/b0fa0ec/stilt-village-390.jpg"
+  ],
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621309329",
+  "remaining": "Preservation in one-mile presentation and attached fine geometry, surface changes, new placement/relocation, optional generation (rest of Q02, Q03–Q05)."
+}
