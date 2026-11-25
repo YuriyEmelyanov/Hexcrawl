@@ -4,7 +4,645 @@
   "research_sha": "f1171afb87ada1e372fb15812746aac73dec5cb7",
   "game_matrix_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/VAARN.json",
   "rows": [
-    {"id":"VAARN-HF2024-001-L1","game_id":"VAARN","disposition":"keep_L1","source":{"edition":"Author blog variant2024-04-11; not identified as core1e/2e","locator":null,"source_ref":"agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-001-L1","recorded_facts":"Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"VAARN","operation_id":"VAARN-HF2024-001-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/VAARN.json#VAARN-HF2024-001-L1","related_common_criterion_ids":["S05-C01","S05-C03"]},"canonical":{"binding_id":"VAARN-HF2024-001-L1","common_rule_ids":["content.feature_distribution"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001","normative_kind":"optional_author_blog_procedure","applicability":"Явно выбранный ведущим Hexfill2024 для уже нарисованной карты Vaarn; не профиль ядра игры.","layer":"L1","trigger_or_user_action":"Ведущий выбирает гекс подготовленной карты и запускает первый этап наполнения по Hexfill2024.","inputs_and_units":{"hexes":"идентификаторы гексов существующей карты","roll":"целый исход d6,1–6; один на гекс","profile":"Vaarn author Hexfill2024, отдельно от1e/2e"},"product_operation":"Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.","expected_output":"nothing/inhabited/hazardous/special по заданному исходу; география и ранее подготовленное содержимое сохранены.","constraints_and_exceptions":["Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.","Из подтипов позднее извлечена только таблица inhabited d10; hazardous/special и связанные генераторы не закрыты. Category-only не завершает наполнение.","Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.","Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.","Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение.","Применимость к карте не равна утверждению разработки или фактической поддержке; source evidence не runtime."],"acceptance_cases":[{"id":"VAARN-HF2024-001-L1-AC01","given":"Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].","when":"Подготовить по одной категории содержимого для каждого гекса.","expected":"A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."},{"id":"VAARN-HF2024-001-L1-AC02","given":"Лесной гекс, проходимость difficult, исход d6=5.","when":"Назначить категорию содержимого.","expected":"Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."},{"id":"VAARN-HF2024-001-L1-AC03","given":"Гекс с ручной башней и рекой; исход d6=1.","when":"Явно применить первый этап наполнения.","expected":"По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."},{"id":"VAARN-HF2024-001-L1-AC04","given":"Категория special уже принята из d6=6.","when":"Сохранить и снова открыть карту.","expected":"Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."},{"id":"VAARN-HF2024-001-L1-AC05","given":"Предложены исходы0,7,2.5.","when":"Применить исход как d6.","expected":"Ни один исход не принят, карта прежняя."}],"source_vs_product_interpretation":"Автор задаёт предпосылку готовой карты, один d6 и интервалы. Явный запуск, сохранение происхождения, неразрушающее применение и валидация — перевод в проверяемое поведение продукта, не дополнительные правила Vaarn.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.feature_distribution"],"unresolved_parameters":["Размер гекса не указан.","Hazardous/special и связанные генераторы не прочитаны; inhabited d10 уже сохранён отдельной строкой002.","Политика явного повторного наполнения/конфликтов остаётся выбором аналитика после согласования."]},"model_fixture":{"user_action":"Ведущий выбирает гекс подготовленной карты и запускает первый этап наполнения по Hexfill2024.","expected_output":"nothing/inhabited/hazardous/special по заданному исходу; география и ранее подготовленное содержимое сохранены.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-001-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"VAARN-HF2024-002-L1","game_id":"VAARN","disposition":"keep_L1","source":{"edition":"Author blog variant2024-04-11; not identified as core1e/2e","locator":null,"source_ref":"agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-002-L1","recorded_facts":"Определить подтип нового места по исходу и позволить мастеру продолжить описание вручную либо обратиться к авторской ссылке.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"VAARN","operation_id":"VAARN-HF2024-002-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/VAARN.json#VAARN-HF2024-002-L1","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":"VAARN-HF2024-002-L1","common_rule_ids":["content.roll_table_resolution"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002","normative_kind":"optional_author_blog_procedure","applicability":"После выбора inhabited по первому d6 в явно выбранном Hexfill2024.","layer":"L1","trigger_or_user_action":"Мастер определяет вид нового места для inhabited-гекса.","inputs_and_units":{"category":"inhabited","roll":"один целый исход d10 от1 до10","ordered_subtypes":["архив","аркология","лагерь охотника за головами","лагерь кочевников Faa","лагерь Гегемонии","святое место","оазис","обитель учёного-мистика","поселение","торговый пост"],"hex_scale":null},"product_operation":"Определить вид нового конкретного места по d10; дать мастеру принять и сохранить его расположение, название и простые сведения, без загрузки содержания неизвестного генератора.","expected_output":"Один подтип по профилю, сохранённый исход и существующая география. Полное содержимое связанного генератора не обещается.","constraints_and_exceptions":["Только необязательный авторский Hexfill2024, не core1e/2e.","Только гексы inhabited; hazardous/special и их сочетания вне этого прохода.","Текст связанных генераторов не прочитан; автоматическая загрузка, параметры и лицензия интеграции unknown.","Источник не задаёт диаметр гекса, повторную генерацию и размещение нескольких мест.","Наличие святого места не создаёт обязательной связи с MB Seer; одинаковое название не доказывает общий профиль.","Применимость к карте не равна утверждению разработки или фактической поддержке; source evidence не runtime.","Имена обитателей/услуга/известная добыча допустимы только как простое содержание выбранного места; это не общий NPC/боевой/экономический генератор."],"acceptance_cases":[{"id":"VAARN-HF2024-002-L1-AC01","given":"Десять гексов с категорией inhabited и заданными исходами d10 от1 до10.","when":"Определить по одному подтипу.","expected":"Каждый исход даёт соответствующий подтип из упорядоченного профиля;1 — архив,7 — оазис,10 — торговый пост. География не меняется."},{"id":"VAARN-HF2024-002-L1-AC02","given":"Категория hazardous или special либо категории ещё нет.","when":"Запустить шаг inhabited.","expected":"Эта ветка не применяется автоматически; подтип и категория не подменяются. Иные ветки остаются неразобранными."},{"id":"VAARN-HF2024-002-L1-AC03","given":"Исход0,11 или1.5 при категории inhabited.","when":"Принять исход d10.","expected":"Недопустимый исход не меняет карту."},{"id":"VAARN-HF2024-002-L1-AC04","given":"Вручную подготовленный гекс с рекой; принят исход7.","when":"Сохранить и снова открыть карту.","expected":"Оазис и исход7 сохранены без нового броска; река и другие ручные места не удалены."},{"id":"VAARN-HF2024-002-L1-AC05","given":"Исход1; связанный генератор архива недоступен.","when":"Принять подтип.","expected":"Подтип архива остаётся пригоден для ручного описания; население, сокровища и прочие детали не выдуманы. Ссылка не считается сгенерированным содержимым."}],"source_vs_product_interpretation":"Автор задаёт условную таблицу и ссылки. Явное применение, проверка входа, неразрушающая правка и сохранение — продуктовая интерпретация. Ссылка не является доказательством обязательного автоматического вызова генератора.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution"],"unresolved_parameters":["Содержимое и стабильность связанных генераторов.","Политика явной замены ранее принятого места.","Эквивалентность переводов типов интерфейсу нуждается в редакторской проверке."]},"model_fixture":{"user_action":"Мастер определяет вид нового места для inhabited-гекса.","expected_output":"Один подтип по профилю, сохранённый исход и существующая география. Полное содержимое связанного генератора не обещается.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-002-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]}
-  ]
+    {
+      "id": "VAARN-HF2024-001-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Author blog variant2024-04-11; not identified as core1e/2e",
+        "locator": null,
+        "source_ref": "agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-001-L1",
+        "recorded_facts": "Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.",
+        "access_level": "unknown",
+        "verification": "reused_from_existing_research"
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": "VAARN-HF2024-001-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/VAARN.json#VAARN-HF2024-001-L1",
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S05-C03"
+        ]
+      },
+      "canonical": {
+        "binding_id": "VAARN-HF2024-001-L1",
+        "common_rule_ids": [
+          "content.feature_distribution"
+        ],
+        "candidate_binding": false
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001",
+        "normative_kind": "optional_author_blog_procedure",
+        "applicability": "Явно выбранный ведущим Hexfill2024 для уже нарисованной карты Vaarn; не профиль ядра игры.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий выбирает гекс подготовленной карты и запускает первый этап наполнения по Hexfill2024.",
+        "inputs_and_units": {
+          "hexes": "идентификаторы гексов существующей карты",
+          "roll": "целый исход d6,1–6; один на гекс",
+          "profile": "Vaarn author Hexfill2024, отдельно от1e/2e"
+        },
+        "product_operation": "Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.",
+        "expected_output": "nothing/inhabited/hazardous/special по заданному исходу; география и ранее подготовленное содержимое сохранены.",
+        "constraints_and_exceptions": [
+          "Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.",
+          "Из подтипов позднее извлечена только таблица inhabited d10; hazardous/special и связанные генераторы не закрыты. Category-only не завершает наполнение.",
+          "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
+          "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
+          "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение.",
+          "Применимость к карте не равна утверждению разработки или фактической поддержке; source evidence не runtime."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "VAARN-HF2024-001-L1-AC01",
+            "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
+            "when": "Подготовить по одной категории содержимого для каждого гекса.",
+            "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC02",
+            "given": "Лесной гекс, проходимость difficult, исход d6=5.",
+            "when": "Назначить категорию содержимого.",
+            "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC03",
+            "given": "Гекс с ручной башней и рекой; исход d6=1.",
+            "when": "Явно применить первый этап наполнения.",
+            "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC04",
+            "given": "Категория special уже принята из d6=6.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC05",
+            "given": "Предложены исходы0,7,2.5.",
+            "when": "Применить исход как d6.",
+            "expected": "Ни один исход не принят, карта прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Автор задаёт предпосылку готовой карты, один d6 и интервалы. Явный запуск, сохранение происхождения, неразрушающее применение и валидация — перевод в проверяемое поведение продукта, не дополнительные правила Vaarn.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.feature_distribution"
+        ],
+        "unresolved_parameters": [
+          "Размер гекса не указан.",
+          "Hazardous/special и связанные генераторы не прочитаны; inhabited d10 уже сохранён отдельной строкой002.",
+          "Политика явного повторного наполнения/конфликтов остаётся выбором аналитика после согласования."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Ведущий выбирает гекс подготовленной карты и запускает первый этап наполнения по Hexfill2024.",
+        "expected_output": "nothing/inhabited/hazardous/special по заданному исходу; география и ранее подготовленное содержимое сохранены.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-001-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        }
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "VAARN-HF2024-002-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Author blog variant2024-04-11; not identified as core1e/2e",
+        "locator": null,
+        "source_ref": "agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-002-L1",
+        "recorded_facts": "Определить подтип нового места по исходу и позволить мастеру продолжить описание вручную либо обратиться к авторской ссылке.",
+        "access_level": "unknown",
+        "verification": "reused_from_existing_research"
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": "VAARN-HF2024-002-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/VAARN.json#VAARN-HF2024-002-L1",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ]
+      },
+      "canonical": {
+        "binding_id": "VAARN-HF2024-002-L1",
+        "common_rule_ids": [
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": false
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002",
+        "normative_kind": "optional_author_blog_procedure",
+        "applicability": "После выбора inhabited по первому d6 в явно выбранном Hexfill2024.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер определяет вид нового места для inhabited-гекса.",
+        "inputs_and_units": {
+          "category": "inhabited",
+          "roll": "один целый исход d10 от1 до10",
+          "ordered_subtypes": [
+            "архив",
+            "аркология",
+            "лагерь охотника за головами",
+            "лагерь кочевников Faa",
+            "лагерь Гегемонии",
+            "святое место",
+            "оазис",
+            "обитель учёного-мистика",
+            "поселение",
+            "торговый пост"
+          ],
+          "hex_scale": null
+        },
+        "product_operation": "Определить вид нового конкретного места по d10; дать мастеру принять и сохранить его расположение, название и простые сведения, без загрузки содержания неизвестного генератора.",
+        "expected_output": "Один подтип по профилю, сохранённый исход и существующая география. Полное содержимое связанного генератора не обещается.",
+        "constraints_and_exceptions": [
+          "Только необязательный авторский Hexfill2024, не core1e/2e.",
+          "Только гексы inhabited; hazardous/special и их сочетания вне этого прохода.",
+          "Текст связанных генераторов не прочитан; автоматическая загрузка, параметры и лицензия интеграции unknown.",
+          "Источник не задаёт диаметр гекса, повторную генерацию и размещение нескольких мест.",
+          "Наличие святого места не создаёт обязательной связи с MB Seer; одинаковое название не доказывает общий профиль.",
+          "Применимость к карте не равна утверждению разработки или фактической поддержке; source evidence не runtime.",
+          "Имена обитателей/услуга/известная добыча допустимы только как простое содержание выбранного места; это не общий NPC/боевой/экономический генератор."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "VAARN-HF2024-002-L1-AC01",
+            "given": "Десять гексов с категорией inhabited и заданными исходами d10 от1 до10.",
+            "when": "Определить по одному подтипу.",
+            "expected": "Каждый исход даёт соответствующий подтип из упорядоченного профиля;1 — архив,7 — оазис,10 — торговый пост. География не меняется."
+          },
+          {
+            "id": "VAARN-HF2024-002-L1-AC02",
+            "given": "Категория hazardous или special либо категории ещё нет.",
+            "when": "Запустить шаг inhabited.",
+            "expected": "Эта ветка не применяется автоматически; подтип и категория не подменяются. Иные ветки остаются неразобранными."
+          },
+          {
+            "id": "VAARN-HF2024-002-L1-AC03",
+            "given": "Исход0,11 или1.5 при категории inhabited.",
+            "when": "Принять исход d10.",
+            "expected": "Недопустимый исход не меняет карту."
+          },
+          {
+            "id": "VAARN-HF2024-002-L1-AC04",
+            "given": "Вручную подготовленный гекс с рекой; принят исход7.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Оазис и исход7 сохранены без нового броска; река и другие ручные места не удалены."
+          },
+          {
+            "id": "VAARN-HF2024-002-L1-AC05",
+            "given": "Исход1; связанный генератор архива недоступен.",
+            "when": "Принять подтип.",
+            "expected": "Подтип архива остаётся пригоден для ручного описания; население, сокровища и прочие детали не выдуманы. Ссылка не считается сгенерированным содержимым."
+          }
+        ],
+        "source_vs_product_interpretation": "Автор задаёт условную таблицу и ссылки. Явное применение, проверка входа, неразрушающая правка и сохранение — продуктовая интерпретация. Ссылка не является доказательством обязательного автоматического вызова генератора.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Содержимое и стабильность связанных генераторов.",
+          "Политика явной замены ранее принятого места.",
+          "Эквивалентность переводов типов интерфейсу нуждается в редакторской проверке."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Мастер определяет вид нового места для inhabited-гекса.",
+        "expected_output": "Один подтип по профилю, сохранённый исход и существующая география. Полное содержимое связанного генератора не обещается.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/VAARN-scope-audit.json#VAARN-HF2024-002-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        }
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA."
+      ]
+    },
+    {
+      "id": "VAARN-HF2024-003-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Меняет постоянное наполнение адресуемого регионального гекса.",
+      "source": {
+        "edition": "Vaults of Vaarn, авторский вариант Hexfill от 11.04.2024, EN",
+        "locator": "Hex Contents d6=5 → Hazardous Hex, d8=1–8",
+        "source_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "primary_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "author_project_key": "vaults-of-vaarn:author-hexfill:2024-04-11",
+        "access_level": "public_author_primary",
+        "verification": "sections_rechecked",
+        "recorded_facts": "Таблица наполняет гекс одним типом опасного места или зоны. Для логова можно воспользоваться генератором или региональной таблицей встреч."
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S05-C02",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Гекс хранит результаты подготовки; проверка профиля и его вклада в модель отдельно."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "content.static_hazard",
+          "content.place_description"
+        ],
+        "related_existing_binding_ids": [
+          "VAARN-HF2024-001-L1",
+          "VAARN-HF2024-002-L1"
+        ],
+        "candidate_binding": true,
+        "binding_status": "existing_parent_and_inhabited_only"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/ — Hex Contents d6=5 → Hazardous Hex, d8=1–8",
+        "normative_kind": "optional_author_procedure",
+        "applicability": "Hexfill 2024 после базового d6 по уже нарисованной региональной карте",
+        "layer": "L1",
+        "trigger_or_user_action": "Наполнить выбранный гекс после d6=5.",
+        "inputs_and_units": {
+          "hex": "адрес гекса",
+          "roll": "d8, целое 1–8",
+          "results_ru": {
+            "1": "бандитский лагерь",
+            "2": "логово Cacklemaw",
+            "3": "зона радиации",
+            "4": "логово чудовища",
+            "5": "руины",
+            "6": "очаг болезни",
+            "7": "источник токсинов",
+            "8": "хранилище"
+          }
+        },
+        "product_operation": "Разрешить нужную строку и записать пространственный тип опасности или места в выбранный гекс.",
+        "expected_output": "Гекс хранит категорию, тип и адрес результата; прежняя география сохранена.",
+        "constraints_and_exceptions": [
+          "Габариты зон и модификатор проходимости источник не задаёт.",
+          "Результат 4 допускает два источника описания логова. Оба служат наполнению места; броски встреч в сессии относятся к L2.",
+          "У результата 5 ссылка ведёт туда же, куда оазис в Inhabited. Сохранять тип по строке таблицы; содержимое перехода требует сверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В B4 исходная местность сохранена; d6=5, d8=3.",
+            "when": "Записать результат и открыть сохранение.",
+            "expected": "B4 содержит зону радиации. Местность и класс проходимости те же."
+          },
+          {
+            "given": "В B4 d6=5, d8=4; мастер указал существо из региональной таблицы.",
+            "when": "Сохранить описание логова.",
+            "expected": "У B4 есть постоянное логово с выбранным обитателем. Случайная игровая встреча не создаётся."
+          },
+          {
+            "given": "d6=5, d8=8.",
+            "when": "Записать и открыть ключ гекса.",
+            "expected": "В ключе тот же адрес и тип «хранилище»."
+          }
+        ],
+        "source_vs_product_interpretation": "Адрес и сохранение — продуктовый способ реализовать постоянное размещение результата.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.static_hazard",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Вложенные параметры генераторов, в том числе ссылка строки 5, не извлечены."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Связанные общие правила и старый аудит первых двух ветвей не доказывают поддержку этого профиля."
+      },
+      "open_checks": [
+        "Открыть поддерживаемый сценарий на опубликованном SHA, применить фиксированные исходы и проверить сохранение."
+      ]
+    },
+    {
+      "id": "VAARN-HF2024-004-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Меняет постоянное наполнение адресуемого регионального гекса.",
+      "source": {
+        "edition": "Vaults of Vaarn, авторский вариант Hexfill от 11.04.2024, EN",
+        "locator": "Hex Contents d6=6 → Special Hex, d10=1–7",
+        "source_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "primary_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "author_project_key": "vaults-of-vaarn:author-hexfill:2024-04-11",
+        "access_level": "public_author_primary",
+        "verification": "sections_rechecked",
+        "recorded_facts": "Первые семь строк дают особые особенности, места или возможность, связанную с конкретным гексом."
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Гекс хранит результаты подготовки; проверка профиля и его вклада в модель отдельно."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "content.landmarks",
+          "content.place_description"
+        ],
+        "related_existing_binding_ids": [
+          "VAARN-HF2024-001-L1",
+          "VAARN-HF2024-002-L1"
+        ],
+        "candidate_binding": true,
+        "binding_status": "existing_parent_and_inhabited_only"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/ — Hex Contents d6=6 → Special Hex, d10=1–7",
+        "normative_kind": "optional_author_procedure",
+        "applicability": "Hexfill 2024 после базового d6 по уже нарисованной региональной карте",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить особое содержимое выбранного гекса после d6=6 и d10=1–7.",
+        "inputs_and_units": {
+          "hex": "адрес гекса",
+          "roll": "d10, исход 1–7 для этой операции",
+          "results_ru": {
+            "1": "аномалия",
+            "2": "в этом месте доступен киберимплант",
+            "3": "в этом месте доступны экзотические предметы",
+            "4": "могила",
+            "5": "ориентир",
+            "6": "источник мистического дара",
+            "7": "обломки"
+          }
+        },
+        "product_operation": "Сохранить тип места либо конкретную возможность как особенность гекса с происхождением из строки таблицы.",
+        "expected_output": "Особая запись принадлежит выбранному гексу и читается после повторного открытия.",
+        "constraints_and_exceptions": [
+          "Наличие предмета, импланта или дара — сведения о месте. Механика приобретения, установки и эффекты относятся к другим слоям.",
+          "Для 8, 9 и 10 применяются отдельные операции."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В C2 d6=6, d10=5.",
+            "when": "Зафиксировать указанное мастером имя ориентира и открыть карту повторно.",
+            "expected": "C2 сохраняет тип «ориентир» и имя."
+          },
+          {
+            "given": "В C3 d6=6, d10=2; место доступности выбрано мастером.",
+            "when": "Дописать возможность в ключ C3.",
+            "expected": "C3 показывает возможность получить имплант. У персонажей не изменяются инвентарь и способности."
+          }
+        ],
+        "source_vs_product_interpretation": "Карта хранит локальное содержание, полученное броском. Выбор полей для необязательной детали — продуктовый.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.landmarks",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Подтаблицы связанных генераторов."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Связанные общие правила и старый аудит первых двух ветвей не доказывают поддержку этого профиля."
+      },
+      "open_checks": [
+        "Открыть поддерживаемый сценарий на опубликованном SHA, применить фиксированные исходы и проверить сохранение."
+      ]
+    },
+    {
+      "id": "VAARN-HF2024-005-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Меняет постоянное наполнение адресуемого регионального гекса.",
+      "source": {
+        "edition": "Vaults of Vaarn, авторский вариант Hexfill от 11.04.2024, EN",
+        "locator": "Special Hex d10=8–9 → подсказка или указатель на близлежащий гекс",
+        "source_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "primary_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "author_project_key": "vaults-of-vaarn:author-hexfill:2024-04-11",
+        "access_level": "public_author_primary",
+        "verification": "sections_rechecked",
+        "recorded_facts": "Исход 8 указывает на населённый гекс, исход 9 — на опасный. Дистанция и правило разрешения ничьей не заданы."
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S05-C02",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Гекс хранит результаты подготовки; проверка профиля и его вклада в модель отдельно."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "content.site_links"
+        ],
+        "related_existing_binding_ids": [
+          "VAARN-HF2024-001-L1",
+          "VAARN-HF2024-002-L1"
+        ],
+        "candidate_binding": true,
+        "binding_status": "existing_parent_and_inhabited_only"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/ — Special Hex d10=8–9 → подсказка или указатель на близлежащий гекс",
+        "normative_kind": "optional_author_procedure",
+        "applicability": "Hexfill 2024 после базового d6 по уже нарисованной региональной карте",
+        "layer": "L1",
+        "trigger_or_user_action": "Привязать подсказку или указатель особого гекса к выбранной мастером цели.",
+        "inputs_and_units": {
+          "origin": "адрес гекса подсказки",
+          "destination": "адрес гекса цели",
+          "roll": "d10=8 либо 9"
+        },
+        "product_operation": "Записать направленную ссылку на гекс нужной категории либо оставить целевой адрес на уточнение.",
+        "expected_output": "Ключ содержит подсказку и адрес подходящей цели. Если её нет или мастер её не выбрал, виден незаполненный адрес.",
+        "constraints_and_exceptions": [
+          "Критерий близости и выбор цели остаются у мастера.",
+          "Отсутствие цели не порождает сгенерированный гекс; незаполненный адрес — предлагаемое поведение продукта.",
+          "Момент раскрытия подсказки относится к L2."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "C2 особый, B2 населённый, D2 опасный; d10=8.",
+            "when": "Назначить B2 целью и открыть карту повторно.",
+            "expected": "Связь C2→B2 сохраняется, D2 не используется."
+          },
+          {
+            "given": "C2 особый, D2 опасный; d10=9.",
+            "when": "Назначить D2 целью.",
+            "expected": "Сохранена ссылка C2→D2 с типом «опасный»."
+          },
+          {
+            "given": "d10=9 и в выбранной области мастер не нашёл опасного гекса.",
+            "when": "Подготовить ключ C2.",
+            "expected": "Ключ сохраняет тип цели «опасный» и пустой адрес; новых мест нет."
+          }
+        ],
+        "source_vs_product_interpretation": "Явный адрес нужен редактору для сохранения связи, а не для автоматического расчёта дистанции.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Радиус, способ выбора при нескольких подходящих целях и обращение со связью при удалении гекса не определены источником."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Связанные общие правила и старый аудит первых двух ветвей не доказывают поддержку этого профиля."
+      },
+      "open_checks": [
+        "Открыть поддерживаемый сценарий на опубликованном SHA, применить фиксированные исходы и проверить сохранение."
+      ]
+    },
+    {
+      "id": "VAARN-HF2024-006-L1",
+      "game_id": "VAARN",
+      "disposition": "keep_L1",
+      "disposition_reason": "Меняет постоянное наполнение адресуемого регионального гекса.",
+      "source": {
+        "edition": "Vaults of Vaarn, авторский вариант Hexfill от 11.04.2024, EN",
+        "locator": "Special Hex d10=10 → два броска и объединение",
+        "source_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "primary_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "author_project_key": "vaults-of-vaarn:author-hexfill:2024-04-11",
+        "access_level": "public_author_primary",
+        "verification": "sections_rechecked",
+        "recorded_facts": "После 10 бросают ещё два раза и объединяют результаты. Текст не объясняет повторную 10, совпадение или конфликт исходов."
+      },
+      "model": {
+        "game_unit_id": "VAARN",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_game_operation",
+          "basis": "Гекс хранит результаты подготовки; проверка профиля и его вклада в модель отдельно."
+        }
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "content.site_links",
+          "content.place_description"
+        ],
+        "related_existing_binding_ids": [
+          "VAARN-HF2024-001-L1",
+          "VAARN-HF2024-002-L1"
+        ],
+        "candidate_binding": true,
+        "binding_status": "existing_parent_and_inhabited_only"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/ — Special Hex d10=10 → два броска и объединение",
+        "normative_kind": "optional_author_procedure",
+        "applicability": "Hexfill 2024 после базового d6 по уже нарисованной региональной карте",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить составное наполнение особого гекса после d10=10.",
+        "inputs_and_units": {
+          "hex": "один адрес для объединённого результата",
+          "rolls": "два дополнительных броска d10"
+        },
+        "product_operation": "Сохранить оба исхода у выбранного гекса и дать мастеру объединить их в одно наполнение, сохраняя связи при наличии.",
+        "expected_output": "Ключ гекса хранит оба исхода и объединённое описание. Подготовленный мастерский результат не теряет адреса связанных гексов.",
+        "constraints_and_exceptions": [
+          "Источник не предписывает автоматическое сочинение общего описания.",
+          "Повторная 10 либо противоречие передаются мастеру как неразрешённые; автоматическое поведение не следует из источника."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В C2 после 10 выпали 4 и 7.",
+            "when": "Объединить могилу с обломками и открыть карту повторно.",
+            "expected": "У C2 сохранились оба значения и описание объединённого места."
+          },
+          {
+            "given": "В C2 после 10 выпали 8 и 5; B2 населённый.",
+            "when": "Добавить ориентир с указателем на B2.",
+            "expected": "У C2 сохранились ориентир и ссылка на B2."
+          },
+          {
+            "given": "После первой 10 один из следующих бросков снова дал 10.",
+            "when": "Подготовить результат.",
+            "expected": "Открытое решение отмечено явно. Нет бесконечного авторозыгрыша или ошибки сохранения."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохранение пары и подтверждение мастером позволяют использовать общий механизм таблиц без догадки о значении сочетания.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.site_links",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Повторная 10, одинаковые и несовместимые исходы."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Связанные общие правила и старый аудит первых двух ветвей не доказывают поддержку этого профиля."
+      },
+      "open_checks": [
+        "Открыть поддерживаемый сценарий на опубликованном SHA, применить фиксированные исходы и проверить сохранение."
+      ]
+    }
+  ],
+  "latest_formalization_base_sha": "93dbc4e61e9baa63f3d240dbab52f036e83f5290",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-vaarn-0730",
+  "latest_source_coverage_review_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-vaarn-0730.json"
 }
