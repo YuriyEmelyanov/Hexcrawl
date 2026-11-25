@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T18:14:32Z",
+  "updated_at": "2026-11-25T19:04:34Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -44,13 +44,13 @@
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "poi_open_review_ready",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
+      "execution_state": "poi_open_accepted_followup_ready",
+      "next_role": "programmer",
+      "next_step": "Начать утверждённый одномильный сценарий SURFACE-Q02 в отдельной ветке от принятого SHA. На одной сохранённой карте показать обе авторские точки в информации, один первый значок при общем гексе, тот же экспорт и точное повторное открытие. Ожидание выпуска PR517 этому этапу не мешает.",
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T18:14:32Z",
+      "updated_at": "2026-11-25T19:04:34Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
       "interview_status": "completed",
@@ -242,13 +242,13 @@
       "remaining_poi_stage": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-SURFACES",
-        "status": "changes_requested",
+        "status": "ready_for_development",
         "next_role": "programmer",
         "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
         "anchor_witness": "Деревня 7 / гекс 5,1 на озере и водная точка на суше",
-        "start_after": "Сброс передан на независимую приёмку. Разрешение публикации сброса не является зависимостью.",
+        "start_after": "Coarse-пакет принят на 79a6df4. Отдельное согласование его публикации не блокирует разработку одномильного этапа.",
         "note": "В базовом src/saveValidation.ts:143 общий валидатор отклоняет водный POI без lake/sea. Разделить совместимость принятого сохранения и правила новых изменений, сохранив структурную проверку типов и координат.",
-        "next_step": "Привести PR517 к уточнению владельца. В открытом JSON сохранить обе точки одного гекса: один значок на карте и в PNG, обе записи в информации и при экспорте. В том же PR исправить генерацию водных и наземных POI по итоговой поверхности региона. Передать новый SHA на приёмку.",
+        "next_step": "Начать утверждённый одномильный сценарий SURFACE-Q02 в отдельной ветке от принятого SHA. На одной сохранённой карте показать обе авторские точки в информации, один первый значок при общем гексе, тот же экспорт и точное повторное открытие. Ожидание выпуска PR517 этому этапу не мешает.",
         "authorization": "approved_in_F1_scope",
         "publication_authorized": false,
         "blocked_by_publication": false,
@@ -258,9 +258,18 @@
           "SURFACE-Q03–Q05, смена поверхности, размещение и генерация"
         ],
         "next_after_coarse_acceptance": "Продолжить сквозной сценарий сохранённых исключений в одномильном виде, включая карту, карточку и экспорт.",
-        "review_result_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
+        "review_result_ref": "agent-work/results/2026-11-25T2158-reviewer-PR517-authored-growth.json",
         "fix_handoff_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
-        "owner_direction_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json"
+        "owner_direction_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json",
+        "role": "programmer",
+        "authority": "approved_in_F1_scope",
+        "implementation_authorized": true,
+        "base_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+        "pr_dependency": 517,
+        "separate_branch": true,
+        "scope": "SURFACE-Q02, одномильный вид и уточнённая геометрия",
+        "acceptance": "Сквозная проверка Classic на сохранённой паре: 5–6→1 миля, информация гекса, карта и PNG, JSON и повторное открытие",
+        "before_after_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/independent-review.json"
       },
       "reset_fix_handoff": {
         "task_id": "HX-BL-076",
@@ -352,9 +361,9 @@
       "poi_open_stage": {
         "task_id": "HX-BL-076",
         "stage_id": "POI-OPEN-COARSE",
-        "run_id": "2026-11-25T2055-programmer-PR517-preserve-authored-poi",
-        "role": "programmer",
-        "role_selection_reason": "Утверждённый HX-BL-076 возвращён программисту с подтверждённым замечанием HX076-POI-RV02-01.",
+        "run_id": "2026-11-25T2158-reviewer-PR517-authored-growth",
+        "role": "reviewer",
+        "role_selection_reason": "Утверждённый coarse-пакет PR517 имел review_ready и успешные проверки на точном SHA.",
         "pr": 517,
         "pr_number": 517,
         "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
@@ -364,16 +373,16 @@
         "tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
         "previous_head_sha": "074117e14da0af363c80accc902678afb163dc49",
         "previous_review_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR517-surface.json",
-        "claim_ref": "agent-work/claims/2026-11-25T2055-programmer-PR517-preserve-authored-poi.json",
+        "claim_ref": "agent-work/claims/2026-11-25T2158-reviewer-PR517-authored-growth.json",
         "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
         "owner_decision_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json",
-        "result_ref": "agent-work/results/2026-11-25T2055-programmer-PR517-preserve-authored-poi.json",
+        "result_ref": "agent-work/results/2026-11-25T2158-reviewer-PR517-authored-growth.json",
         "evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/manifest.json",
         "evidence_commit_sha": "1912f1a9af2cae66f17f00faa4ce96833ebaf844",
         "before_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/browser-growth.json",
         "browser_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/browser-growth.json",
         "after_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/named-growth.jpg",
-        "actual_png_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/authored-growth/named-growth.png",
+        "actual_png_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/after-pair.png",
         "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117",
         "test_change_summary": {
           "base_sha": "074117e14da0af363c80accc902678afb163dc49",
@@ -399,7 +408,13 @@
             "added": 2,
             "removed": 0,
             "modified": 1
-          }
+          },
+          "reviewer_only": {
+            "added": 0,
+            "removed": 0,
+            "modified": 0
+          },
+          "assessment": "Изменён существующий тест итоговой поверхности. Три сообщения проверки используют один совпадающий сценарий продолжения. Свежие Chromium и harness прогоны дополняют проверку и в исходники не включены."
         },
         "publication_authorized": false,
         "scope": "Замечание HX076-POI-RV02-01. Сохранение уже принятых водных точек при достройке карты. Ограничения итоговой поверхности, типа, расстояния и профиля применяются к новым точкам.",
@@ -424,33 +439,26 @@
           ],
           "confirmed_delta": null
         },
-        "next_role": "reviewer",
-        "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
+        "next_role": "programmer",
+        "next_step": "Начать утверждённый одномильный сценарий SURFACE-Q02 в отдельной ветке от принятого SHA. На одной сохранённой карте показать обе авторские точки в информации, один первый значок при общем гексе, тот же экспорт и точное повторное открытие. Ожидание выпуска PR517 этому этапу не мешает.",
         "remaining": {
           "independent_review": "Один проход по точному SHA; затем отдельное решение о выпуске",
           "other_f1_stages": "SURFACE-Q03–Q05 и одномильный вариант по действующей передаче"
         },
         "execution_running": false,
-        "status": "review_ready",
-        "review_ready": true,
+        "status": "accepted_awaiting_publication",
+        "review_ready": false,
         "checks": {
-          "status": "success",
-          "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
-          "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-          "tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
-          "merge_simulation": "0777c3f685fb029f5e8fc38093b26db92d8ff306",
-          "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117",
-          "conditional_skip": "engraved-map-comparison",
-          "jobs": [
+          "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117",
+          "exact_merge_tree_verified": true,
+          "ci": [
             {
               "id": 139404331654,
               "name": "browser",
+              "status": "success",
               "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404331654",
-              "status": "completed",
-              "conclusion": "success",
-              "summary": [
+              "lines": [
                 "2026-11-25T17:59:57.2805427Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
-                "2026-11-25T18:04:19.1924685Z POI display passed: 39 SVGs, one SVG presentation, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.",
                 "2026-11-25T18:07:11.6449309Z HX076 retained authored land-on-water and water-on-land POI through browser import and re-open.",
                 "2026-11-25T18:07:24.0971512Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
               ]
@@ -458,10 +466,9 @@
             {
               "id": 139404332290,
               "name": "world-random",
+              "status": "success",
               "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404332290",
-              "status": "completed",
-              "conclusion": "success",
-              "summary": [
+              "lines": [
                 "2026-11-25T17:59:57.5247927Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
                 "2026-11-25T18:00:46.4599283Z world RNG production UI classic/0: fresh, continuation, undo-repeat, invalid import passed",
                 "2026-11-25T18:00:51.6431975Z world RNG production UI classic/1: fresh, continuation, undo-repeat, invalid import passed",
@@ -476,10 +483,9 @@
             {
               "id": 139404332433,
               "name": "check",
+              "status": "success",
               "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45670544117/job/139404332433",
-              "status": "completed",
-              "conclusion": "success",
-              "summary": [
+              "lines": [
                 "2026-11-25T17:59:56.8006818Z HEAD is now at 0777c3f Merge 79a6df4dd2836032b21b6dbb1b21e5b212fe5620 into 58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
                 "2026-11-25T18:14:02.9152285Z ✔ generated Classic POIs match the final surface and existing points survive map growth (6100.484963ms)",
                 "2026-11-25T18:14:03.0061942Z ℹ tests 454",
@@ -489,34 +495,117 @@
               ]
             }
           ],
-          "node": {
+          "node_ci": {
             "executed": 454,
             "passed": 454,
             "skipped": 0
           },
-          "targeted": {
-            "old_sha": "failed as expected: unnamed point removed",
-            "new_sha": "passed",
-            "chromium": "3 matched variants, card + PNG + exact map Undo/Redo/reopen",
-            "tract": "Classic and Mythic fallback"
+          "reviewer_local_node": {
+            "executed": 1,
+            "passed": 1
+          },
+          "reviewer_chromium": "158.0.8127.0: контроль, безымянная точка, именованная пара и соседние водные точки, озёрная пара, PNG, JSON, Undo/Redo",
+          "fresh_context_reviewer": {
+            "fresh_context_reviewer": true,
+            "source_tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
+            "source_head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+            "node_version": "24.22.3",
+            "scenarios": [
+              {
+                "case": "Classic ordinary",
+                "new_regions": 1,
+                "pass": true
+              },
+              {
+                "case": "Classic fallback tract",
+                "new_regions": 1,
+                "pass": true
+              },
+              {
+                "case": "Mythic complete kingdom",
+                "new_regions": 30,
+                "pass": true
+              }
+            ],
+            "assertions": [
+              "Именованная деревня и кораблекрушение на одном сухом гексе, две соседние морские точки, обнаружение и существующий регион сохраняются.",
+              "Новые водные и наземные точки в проверенных случаях совпадают с итоговой поверхностью. Состояния после отмены, повтора и открытия совпадают точно.",
+              "Кораблекрушение не исчезло в проверенных гексах 3/−4 и 3/−5, которые вошли в новый регион и стали сушей.",
+              "Неизвестные типы не приняты, в том числе not-a-poi, toString, constructor, __proto__."
+            ],
+            "limits": "Проверка сохранности относится к существующим итоговым гексам. В пробе береговых карманов 5/−4 и 4/−4 исчезли из карты вместе с местами точек. Правила переноса при ликвидации гекса в этот этап не входят.",
+            "processes_finished": true
           }
         },
         "automation_health": {
           "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "start": {
-            "at": "2026-11-25T17:56:22Z",
+            "at": "2026-11-25T18:59:14Z",
             "status": "checked",
             "is_enabled": true
           },
           "end": {
-            "at": "2026-11-25T18:14:32Z",
+            "at": "2026-11-25T19:04:34Z",
             "status": "checked",
             "is_enabled": true
           },
           "restored": false,
           "errors": []
         },
-        "completed_at": "2026-11-25T18:14:32Z"
+        "completed_at": "2026-11-25T19:04:34Z",
+        "merge_simulation_sha": "0777c3f685fb029f5e8fc38093b26db92d8ff306",
+        "programmer_result_ref": "agent-work/results/2026-11-25T2055-programmer-PR517-preserve-authored-poi.json",
+        "verdict": "accepted",
+        "review_verdict": "accepted",
+        "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/review.json",
+        "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/score-assessment.json",
+        "before_after_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/independent-review.json",
+        "findings_closed": [
+          "HX076-POI-RV02-01"
+        ],
+        "open_findings": [],
+        "known_limitations": "Приёмка ограничена картой 5–6 миль. Отдельный одномильный этап указан в передаче.",
+        "preliminary_score_delta": 0,
+        "pending_publication": {
+          "task_id": "HX-BL-076",
+          "stage_id": "POI-OPEN-COARSE",
+          "type": "publication_approval",
+          "status": "awaiting_owner_publication_approval",
+          "pr": 517,
+          "pr_number": 517,
+          "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
+          "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+          "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+          "tree_sha": "681b4b71e3c89042ffffb9fe0afef8b6444c9bcb",
+          "scope": "Карта 5–6 миль. Сохранённые авторские точки, PNG и итоговая поверхность для новых точек",
+          "review_result_ref": "agent-work/results/2026-11-25T2158-reviewer-PR517-authored-growth.json",
+          "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/review.json",
+          "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/score-assessment.json",
+          "before_after_ref": "agent-work/evidence/HX-BL-076/poi-open/79a6df4/review/independent-review.json",
+          "publication_authorized": false
+        },
+        "next_ready_work": {
+          "task_id": "HX-BL-076",
+          "stage_id": "POI-SURFACES",
+          "role": "programmer",
+          "next_role": "programmer",
+          "status": "ready_for_development",
+          "authority": "approved_in_F1_scope",
+          "implementation_authorized": true,
+          "publication_authorized": false,
+          "blocked_by_publication": false,
+          "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+          "base_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+          "pr_dependency": 517,
+          "separate_branch": true,
+          "scope": "SURFACE-Q02, одномильный вид и уточнённая геометрия",
+          "acceptance": "Сквозная проверка Classic на сохранённой паре: 5–6→1 миля, информация гекса, карта и PNG, JSON и повторное открытие",
+          "next_step": "Начать утверждённый одномильный сценарий SURFACE-Q02 в отдельной ветке от принятого SHA. На одной сохранённой карте показать обе авторские точки в информации, один первый значок при общем гексе, тот же экспорт и точное повторное открытие. Ожидание выпуска PR517 этому этапу не мешает.",
+          "review_result_ref": "agent-work/results/2026-11-25T2158-reviewer-PR517-authored-growth.json"
+        },
+        "accepted_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+        "reviewed_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
+        "review_result_ref": "agent-work/results/2026-11-25T2158-reviewer-PR517-authored-growth.json"
       },
       "poi_open_fix_handoff": {
         "task_id": "HX-BL-076",
@@ -552,9 +641,9 @@
         "pr": 517,
         "decision_ref": "agent-work/decisions/owner-2026-11-25-pr517-poi-display-and-generation.json",
         "spec_revision": "F1 owner clarification 2026-11-25",
-        "status": "review_ready",
-        "next_role": "reviewer",
-        "next_step": "Независимо проверить точный SHA PR517 на продолжении одной карты в трёх вариантах: контроль, безымянное и именованное кораблекрушение на суше. Сверить координаты, метаданные, соседние сохранённые водные точки, PNG, повторное открытие и предварительную оценку 1.3-rc8.",
+        "status": "accepted_awaiting_publication",
+        "next_role": "programmer",
+        "next_step": "Начать утверждённый одномильный сценарий SURFACE-Q02 в отдельной ветке от принятого SHA. На одной сохранённой карте показать обе авторские точки в информации, один первый значок при общем гексе, тот же экспорт и точное повторное открытие. Ожидание выпуска PR517 этому этапу не мешает.",
         "head_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620"
       }
     },
