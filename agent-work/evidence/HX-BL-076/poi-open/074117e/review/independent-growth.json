@@ -1,0 +1,169 @@
+{
+  "tree": "430daed98e7f9d12052fa116f8a91bd184ad7986",
+  "head": "074117e14da0af363c80accc902678afb163dc49",
+  "seed": 0,
+  "home": {
+    "q": 0,
+    "r": 0
+  },
+  "first": {
+    "targetSize": 12,
+    "coastalPreference": "coastal"
+  },
+  "anchor": {
+    "q": -1,
+    "r": 0
+  },
+  "growth": {
+    "targetSize": 12,
+    "coastalPreference": "mainland"
+  },
+  "coordinate": "1,0",
+  "results": [
+    {
+      "label": "control",
+      "before": {
+        "terrain": null,
+        "kind": null,
+        "name": null,
+        "discovery": null
+      },
+      "after": {
+        "terrain": null,
+        "kind": null,
+        "name": null,
+        "discovery": null
+      },
+      "regions": 2,
+      "result": {
+        "success": true,
+        "fallbackReason": null
+      },
+      "afterSaveValid": true
+    },
+    {
+      "label": "dry",
+      "before": {
+        "terrain": null,
+        "kind": "shipwreck",
+        "name": null,
+        "discovery": null
+      },
+      "after": {
+        "terrain": null,
+        "kind": null,
+        "name": null,
+        "discovery": null
+      },
+      "regions": 2,
+      "result": {
+        "success": true,
+        "fallbackReason": null
+      },
+      "afterSaveValid": true
+    },
+    {
+      "label": "dry-discovery",
+      "before": {
+        "terrain": null,
+        "kind": "shipwreck",
+        "name": null,
+        "discovery": "interaction"
+      },
+      "after": {
+        "terrain": null,
+        "kind": null,
+        "name": null,
+        "discovery": null
+      },
+      "regions": 2,
+      "result": {
+        "success": true,
+        "fallbackReason": null
+      },
+      "afterSaveValid": true
+    },
+    {
+      "label": "dry-named",
+      "before": {
+        "terrain": null,
+        "kind": "shipwreck",
+        "name": {
+          "en": "Inland Wreck",
+          "ru": "Крушение на суше"
+        },
+        "discovery": "interaction"
+      },
+      "after": {
+        "terrain": null,
+        "kind": "shipwreck",
+        "name": {
+          "en": "Inland Wreck",
+          "ru": "Крушение на суше"
+        },
+        "discovery": "interaction"
+      },
+      "regions": 1,
+      "result": {
+        "success": false,
+        "diagnostic": {
+          "kind": "constraint-rejection",
+          "reason": "authored_name_loss",
+          "result": "rolled-back",
+          "action": "add",
+          "anchorHex": {
+            "q": -1,
+            "r": 0
+          },
+          "options": {
+            "mode": "classic",
+            "targetSize": 12,
+            "landType": "auto",
+            "biomeId": "auto",
+            "coastalPreference": "mainland"
+          },
+          "attempt": 1,
+          "tractAttempt": 0,
+          "stage": "prepare_commit",
+          "seaRecoveryAttempt": 0,
+          "reclaimedSeaKeys": [],
+          "random": {
+            "before": {
+              "generatorVersion": "regions-2026-10-24-rng.1",
+              "rngVersion": "mulberry32-v1",
+              "masterSeed": 0,
+              "streams": {
+                "geography": 2000660504,
+                "poi": 3726283518
+              }
+            },
+            "after": {
+              "generatorVersion": "regions-2026-10-24-rng.1",
+              "rngVersion": "mulberry32-v1",
+              "masterSeed": 0,
+              "streams": {
+                "geography": 2000660504,
+                "poi": 3726283518
+              }
+            }
+          },
+          "inputOptions": {
+            "sizeCategory": "auto",
+            "landType": "auto",
+            "biome": "auto",
+            "coastal": "mainland",
+            "mode": "classic"
+          },
+          "targetSize": 12,
+          "rejectionCounts": {},
+          "message": "AuthoredNameConflict: authored_name_loss:waterPoi:1,0",
+          "stack": "AuthoredNameConflict: authored_name_loss:waterPoi:1,0\n    at assertEditorNames (evalmachine.<anonymous>:1457:19)\n    at checkedRiverMap (evalmachine.<anonymous>:1325:5)\n    at prepareAutomaticOneMileScene (evalmachine.<anonymous>:1107:5)\n    at prepareGeneratedSmallLakes (evalmachine.<anonymous>:1293:17)\n    at recordGenerated (evalmachine.<anonymous>:13209:30)\n    at addRegionToMap (evalmachine.<anonymous>:12385:34)\n    at Object.safelyAddRegionToMap (evalmachine.<anonymous>:13442:13)\n    at file:///workspace/scratch/49d3935a0a3e/independent-pr517/authored-continuation.mjs:43:27",
+          "algorithmVersion": "regions-2026-10-24-rng.1",
+          "maxAttempts": 30,
+          "warningCounts": {}
+        }
+      },
+      "afterSaveValid": true
+    }
+  ]
+}

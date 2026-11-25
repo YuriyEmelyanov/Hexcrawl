@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T16:30:10Z",
+  "updated_at": "2026-11-25T17:05:54Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -44,13 +44,13 @@
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
-      "execution_state": "poi_open_review_ready",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить точный SHA PR517: на итоговой карте водные и наземные точки соответствуют поверхности, в сохранённой паре один значок, обе карточки и точный JSON round-trip. Зафиксировать предварительную оценку 1.3-rc8.",
+      "execution_state": "poi_open_changes_requested",
+      "next_role": "programmer",
+      "next_step": "Сохранить существующие водные точки и связанные данные при достройке на неизменившихся гексах. Проверять итоговую поверхность и расстояния у новых точек. Повторить контроль, безымянное и подписанное кораблекрушение и передать новый SHA.",
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T16:30:10Z",
+      "updated_at": "2026-11-25T17:05:54Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
       "interview_status": "completed",
@@ -85,7 +85,7 @@
         "review_ready": false,
         "review_status": "accepted",
         "publication_authorized": true,
-        "updated_at": "2026-11-25T14:33:49.614Z",
+        "updated_at": "2026-11-25T17:05:54Z",
         "review_verdict": "accepted",
         "reviewed_sha": "4d1a975d79b53859ab166b34cc8fad3fdcc90c16",
         "review_evidence_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/review/review.json",
@@ -187,14 +187,14 @@
         "published_ref": "agent-work/results/2026-11-25-PR516-publication.json",
         "publication_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45631879435",
         "release_approval_ref": "agent-work/decisions/owner-2026-11-25-publish-PR516-4d1a975.json",
-        "score_update_status": "pending",
-        "next_role": "reviewer",
+        "score_update_status": "completed",
+        "next_role": null,
         "verified_at": "2026-11-25T14:33:49.614Z",
         "publication_observation": {
           "task_id": "HX-BL-076",
           "stage_id": "RESET",
           "type": "publication_approval",
-          "status": "merged_deploy_completed_pending_live_verification",
+          "status": "published_score_completed",
           "pr": 516,
           "pr_number": 516,
           "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/516",
@@ -214,7 +214,7 @@
           "published_ref": "agent-work/results/2026-11-25-PR516-publication.json",
           "publication_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45631879435",
           "release_approval_ref": "agent-work/decisions/owner-2026-11-25-publish-PR516-4d1a975.json",
-          "score_update_status": "pending",
+          "score_update_status": "completed",
           "next_role": "reviewer",
           "verified_at": "2026-11-25T14:33:49.614Z",
           "updated_at": "2026-11-25T14:33:49.614Z",
@@ -230,9 +230,14 @@
           },
           "owner_merged_exact_package": true,
           "score_accounting_role": "reviewer",
-          "live_verification_required": true,
-          "release_verification_next_step": "Сверить опубликованные assets с проверенным деревом PR516 на точном SHA, затем зафиксировать итог 1.3-rc8 по решению 21.11.2026."
-        }
+          "live_verification_required": false,
+          "release_verification_next_step": "Сверить опубликованные assets с проверенным деревом PR516 на точном SHA, затем зафиксировать итог 1.3-rc8 по решению 21.11.2026.",
+          "live_verification_ref": "agent-work/evidence/HX-BL-076/reset/58b0000/release-review/live.json"
+        },
+        "live_verification_required": false,
+        "score_update_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR516-score.json",
+        "release_score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/58b0000/release-review/score-assessment.json",
+        "score_update_delta": 0
       },
       "remaining_poi_stage": {
         "task_id": "HX-BL-076",
@@ -350,8 +355,8 @@
         "run_id": "2026-11-25T1904-programmer-PR517-poi-surface",
         "role": "programmer",
         "role_selection_reason": "Прямое уточнение владельца по HX-BL-076 и PR517, утверждённому для доработки.",
-        "status": "review_ready",
-        "review_ready": true,
+        "status": "changes_requested",
+        "review_ready": false,
         "pr": 517,
         "pr_number": 517,
         "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
@@ -500,8 +505,8 @@
           "manual_surface_fine": "Keep the existing follow-up from F1",
           "pr516_score_update": "Pending release verification by reviewer in the existing handoff"
         },
-        "next_role": "reviewer",
-        "next_step": "Независимо проверить точный SHA PR517: на итоговой карте водные и наземные точки соответствуют поверхности, в сохранённой паре один значок, обе карточки и точный JSON round-trip. Зафиксировать предварительную оценку 1.3-rc8.",
+        "next_role": "programmer",
+        "next_step": "Сохранить существующие водные точки и связанные данные при достройке на неизменившихся гексах. Проверять итоговую поверхность и расстояния у новых точек. Повторить контроль, безымянное и подписанное кораблекрушение и передать новый SHA.",
         "automation_health": {
           "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "start": {
@@ -518,7 +523,32 @@
           "errors": []
         },
         "execution_running": false,
-        "completed_at": "2026-11-25T16:30:10Z"
+        "completed_at": "2026-11-25T16:30:10Z",
+        "review_verdict": "changes_requested",
+        "review_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR517-surface.json",
+        "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/review.json",
+        "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/score-assessment.json",
+        "open_findings": [
+          {
+            "id": "HX076-POI-RV02-01",
+            "severity": "blocking",
+            "status": "confirmed",
+            "title": "Достройка карты теряет сохранённое кораблекрушение на суше",
+            "code": "src/App.tsx:9104–9118, 13115, 13945 (assignWaterPoiLayer); src/saveValidation.ts:142–148",
+            "reproduction": "Карта Classic seed 0 с кораблекрушением на сухом 1/0. Режим Материк, размер Малый регион, нажать −1/0.",
+            "actual": "Без имени второй регион создаётся, кораблекрушение и способ обнаружения исчезают. При авторском имени добавление откатывается с предупреждением об удалении имени. Контроль без кораблекрушения расширяется до двух регионов. Undo восстанавливает исходную карту после успешного расширения.",
+            "expected": "Сохранить уже принятые точки и связанные данные на неизменившихся существующих гексах. Ограничения поверхности и расстояния применяются к новым точкам.",
+            "evidence": [
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/browser-growth.json",
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/independent-growth.json",
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-input.json",
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-export.json",
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-name-guard-input.json",
+              "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-control.json"
+            ],
+            "related": "В том же проходе фильтр расстояния отбросил соседнюю ранее сохранённую водную точку на море (1/1 рядом с 0/1), при неизменном слое моря. Этот фильтр существовал до PR."
+          }
+        ]
       },
       "poi_open_fix_handoff": {
         "task_id": "HX-BL-076",

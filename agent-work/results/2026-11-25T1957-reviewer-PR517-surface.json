@@ -1,0 +1,144 @@
+{
+  "task_id": "HX-BL-076",
+  "role": "reviewer",
+  "run_id": "2026-11-25T1957-reviewer-PR517-surface",
+  "stage_id": "POI-OPEN-COARSE",
+  "pr": 517,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
+  "branch": "feat/hx076-poi-open",
+  "head_sha": "074117e14da0af363c80accc902678afb163dc49",
+  "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+  "tree_sha": "430daed98e7f9d12052fa116f8a91bd184ad7986",
+  "merge_simulation_sha": "8452269a71c0efa9ecd990479710dee93995fb7c",
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-25T1904-programmer-PR517-poi-surface.json",
+  "verdict": "changes_requested",
+  "status": "changes_requested",
+  "role_selection_reason": "Утверждённый этап имел review_ready и зелёный CI. Учёт опубликованного RESET ведёт эта же роль по HX-BL-076.",
+  "result_path": "agent-work/results/2026-11-25T1957-reviewer-PR517-surface.json",
+  "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/074117e/review/score-assessment.json",
+  "pr516_release_score_result_ref": "agent-work/results/2026-11-25T1957-reviewer-PR516-score.json",
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177",
+  "checks": {
+    "jobs": [
+      [
+        139339004635,
+        "browser",
+        "success",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339004635"
+      ],
+      [
+        139339005075,
+        "check",
+        "success",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339005075"
+      ],
+      [
+        139339005094,
+        "world-random",
+        "success",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339005094"
+      ],
+      [
+        139339006528,
+        "engraved-map-comparison",
+        "skipped",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45652092177/job/139339006528"
+      ]
+    ],
+    "ci_node": {
+      "executed": 454,
+      "passed": 454,
+      "skipped": 0
+    },
+    "independent_runtime": "Chromium 158.0.8127.0 and Node 24.22.3",
+    "fresh_context_reviewer": true,
+    "results": [
+      "Пары на суше и на озере — один значок в карте/PNG, две записи и точный JSON после открытия",
+      "Seed 10: озеро на −3/3, городок повторно размещён на сухом −3/4",
+      "Seed 28: предварительная необязательная точка на позднем озере 4/−5 исключена",
+      "Проверены новые водные точки на море и озере. 48 расширений, включая 8 урочищ, сохранили все 372 проверенные прежние сухие точки",
+      "Достройка теряет сохранённое кораблекрушение или отказывается от операции"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "58b0000d246d4dc42d5b8708b2e40e5a07a95aba",
+    "head_sha": "074117e14da0af363c80accc902678afb163dc49",
+    "added": 2,
+    "removed": 0,
+    "modified": 1,
+    "suites": [
+      {
+        "runner": "Node",
+        "path": "test/worldContinuation.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Classic seed 10 floods an early town location; seed 0 provides actual generated water POI",
+        "reuse_or_new_reason": "Existing continuation tests compared whole saved state with replay but did not check POI types against the final wet cells."
+      },
+      {
+        "runner": "Node",
+        "path": "test/mapTransactions.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "A valid endpoint uses an existing central POI",
+        "reuse_or_new_reason": "Reuse the road draft case without an artificial extra point."
+      },
+      {
+        "runner": "browser",
+        "path": "test/browser/save-history.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Authored off-surface positions and saved pair, one marker in map/PNG, two names and discovery values, exact reopen",
+        "reuse_or_new_reason": "Extend runner with distinct SURFACE-Q02 contract; updated existing PR517 coverage to match owner clarification."
+      }
+    ],
+    "source": "Exact diff from PR517 base to candidate, counting logical cases; temporary before/after probe excluded.",
+    "independent_necessity": "Два новых сценария проверяют разные контракты. Продолжение с авторской точкой стоит добавить в существующий сценарий открытия. В Node-проверке coastalPreference:'coastal' идёт по умолчанию; явный режим принимает 'coast'. Явный берег проверялся существующим браузерным прогоном."
+  },
+  "open_findings": [
+    {
+      "id": "HX076-POI-RV02-01",
+      "severity": "blocking",
+      "status": "confirmed",
+      "title": "Достройка карты теряет сохранённое кораблекрушение на суше",
+      "code": "src/App.tsx:9104–9118, 13115, 13945 (assignWaterPoiLayer); src/saveValidation.ts:142–148",
+      "reproduction": "Карта Classic seed 0 с кораблекрушением на сухом 1/0. Режим Материк, размер Малый регион, нажать −1/0.",
+      "actual": "Без имени второй регион создаётся, кораблекрушение и способ обнаружения исчезают. При авторском имени добавление откатывается с предупреждением об удалении имени. Контроль без кораблекрушения расширяется до двух регионов. Undo восстанавливает исходную карту после успешного расширения.",
+      "expected": "Сохранить уже принятые точки и связанные данные на неизменившихся существующих гексах. Ограничения поверхности и расстояния применяются к новым точкам.",
+      "evidence": [
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/browser-growth.json",
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/independent-growth.json",
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-input.json",
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-silent-loss-export.json",
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-name-guard-input.json",
+        "agent-work/evidence/HX-BL-076/poi-open/074117e/review/growth-control.json"
+      ],
+      "related": "В том же проходе фильтр расстояния отбросил соседнюю ранее сохранённую водную точку на море (1/1 рядом с 0/1), при неизменном слое моря. Этот фильтр существовал до PR."
+    }
+  ],
+  "publication_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Сохранить существующие водные точки и связанные данные при достройке на неизменившихся гексах. Проверять итоговую поверхность и расстояния у новых точек. Повторить контроль, безымянное и подписанное кораблекрушение и передать новый SHA.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T16:57:49Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T17:05:54Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T17:05:54Z",
+  "execution_running": false
+}
