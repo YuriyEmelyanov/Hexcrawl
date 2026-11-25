@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-076",
+  "stage_id": "POI-OPEN-COARSE",
+  "role": "reviewer",
+  "run_id": "2026-11-25T1637-reviewer-PR517-POI-open",
+  "review_verdict": "changes_requested",
+  "pr": 517,
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "head_sha": "40aae78aeebdf51a98acbcfc2907d79ebdd99c91",
+  "tree_sha": "ea7c64e80696923429fce8edf2ac7e3495805ae1",
+  "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/decisions.json",
+  "scope": "SURFACE-Q02 Classic 5–6 миль, открытие, карточка, карта, PNG и повторное открытие доступных авторских точек",
+  "source_refs": [
+    "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/coarse-18-regions.json",
+    "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/fresh-review-browser.json",
+    "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.json",
+    "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.png"
+  ],
+  "independent_review": {
+    "fresh_context": true,
+    "mode": "read-only; two separately authored runtime checks",
+    "reviews_exact_tree": true,
+    "findings_agree": [
+      "HX076-POI-RV01-01"
+    ]
+  },
+  "checks": {
+    "run_id": 45621987228,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621987228",
+    "checkout_sha": "35a00048d6489ea9c60454c55bc661fad54ad3da",
+    "tree_sha": "ea7c64e80696923429fce8edf2ac7e3495805ae1",
+    "parents": [
+      "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+      "40aae78aeebdf51a98acbcfc2907d79ebdd99c91"
+    ],
+    "jobs": [
+      {
+        "name": "world-random",
+        "id": 139232484440,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621987228/job/139232484440"
+      },
+      {
+        "name": "browser",
+        "id": 139232485081,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621987228/job/139232485081"
+      },
+      {
+        "name": "check",
+        "id": 139232485132,
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621987228/job/139232485132"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 139232487715,
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45621987228/job/139232487715"
+      }
+    ],
+    "ci_node_cases": {
+      "executed": 453,
+      "passed": 453,
+      "skipped": 0
+    },
+    "local_browser": {
+      "engine": "158.0.8127.0",
+      "typed_points_separate_anchors": "passed at 1500 and 390",
+      "coincident_dry_anchors": "reproducible functional failure in two fixtures",
+      "dangling_coordinate_rejection": "passed",
+      "older_cases_checked_against_base": true,
+      "browser_dialog_errors_ordinary": 0
+    }
+  },
+  "findings": [
+    {
+      "id": "HX076-POI-RV01-01",
+      "severity": "P2",
+      "blocking": true,
+      "classification": "confirmed_visibility_and_detail_failure_for_newly_accepted_input",
+      "spec_requirement": "SURFACE-Q02 (карта, карточка и PNG)",
+      "title": "Кораблекрушение на сухом гексе скрывает вторую сохранённую точку",
+      "repro": [
+        "Загрузить dry-pair.json в Classic и выбрать сухой гекс 1/0.",
+        "Проверить значок на карте, два имени и свойство «Обнаружение» в карточке.",
+        "Выгрузить PNG. Сохранить JSON и сверить обе записи на гексе."
+      ],
+      "expected": "Обе сохранённые точки доступны по исходным координатам в карте, карточке и PNG, с отдельным доступом к их данным.",
+      "actual": "В JSON есть обе точки, оба имени и способы обнаружения. Карта и PNG показывают только кораблекрушение. Карточка содержит оба имени, а способ обнаружения показывает только для кораблекрушения.",
+      "independent_confirmation": "На карте из репозитория с 18 регионами аналогичный результат воспроизведён с монастырём на 5/1. На минимальной карте можно открыть только кораблекрушение и добавить деревню обычной командой редактора, что также сохраняет её в JSON без маркера.",
+      "source_locations": [
+        "src/App.tsx:16117–16130: единственный выбранный источник для данных карточки",
+        "src/App.tsx:17282–17301: один маркер, водный тип имеет приоритет",
+        "src/saveValidation.ts:143–148: вновь принимает водную точку на реальном сухом гексе"
+      ],
+      "fixture_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.json",
+      "png_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.png",
+      "evidence_refs": [
+        "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/coarse-18-regions.json",
+        "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/fresh-review-browser.json"
+      ],
+      "completion": "Открыть fixture и повторить добавление через UI. Подтвердить видимость и доступность обеих точек на карте, в карточке и PNG после повторного открытия. Не терять данные и не расширять правила размещения. Использовать существующий браузерный сценарий для проверки подтверждённого случая."
+    }
+  ],
+  "older_observations": [
+    {
+      "id": "HX076-POI-BASE-01",
+      "severity": "P3",
+      "classification": "preexisting_on_base",
+      "details": "На существующем озере с двумя точками карта и PNG на обеих версиях показывают один водный маркер. В новой версии карта по-прежнему теряет видимость второй точки, но карточка уже показывает оба имени. Учитывать при исправлении общей ветви отображения."
+    },
+    {
+      "id": "HX076-POI-BASE-02",
+      "severity": "P3",
+      "classification": "preexisting_on_base",
+      "details": "Наземная точка без явно заданного типа на озере сохраняет имя в JSON и рисуется общим маркером. Карточка на обеих версиях пропускает её авторское имя. Проверить сохранность доступной карточки для этого принятого варианта при работе над Q02."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "head_sha": "40aae78aeebdf51a98acbcfc2907d79ebdd99c91",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "test/browser/save-history.smoke.mjs",
+    "scenario": "Открытие и повторное сохранение двух авторских исключений на разных гексах Classic, проверка имён в реальной карточке и обоих маркеров в SVG карты",
+    "risk": "Регрессия допуска импорта или выпадение отдельной точки и её данных",
+    "reuse_or_new_reason": "Сценарий проверяет дополнительный пользовательский путь в существующем runner. Ранее проверки размещения и переноса не проверяли импорт таких исключений. Постоянная проверка полезна, но сравнение PNG и совместного гекса остаются за её пределами.",
+    "count_source": "GitHub diff между b1b8c1b и 40aae78, один логический сценарий с общей подготовкой и повторным открытием",
+    "temporary_reviewer_cases": "Засчитаны отдельно только как разовая диагностика."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/score-assessment.json",
+  "score_delta_preliminary": 0,
+  "result": "Подтверждено сохранение двух исключительных точек на разных клетках. Зафиксирован блокирующий случай двух точек на одной клетке и передан на исправление.",
+  "before_after": "На том же сухом гексе наземная точка сама по себе отображается; после импорта пары доминирует кораблекрушение. Файл с обеими точками отклонялся базой.",
+  "new_png_artifact": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.png",
+  "status": "changes_requested",
+  "role_selection_reason": "Пакет HX-BL-076 был готов к независимой проверке с точным SHA, закрытым интервью и зелёным CI. Оба сохранённых исключения входят в принятый объём F1. Разрешение выпуска сброса PR516 не относится к этому этапу.",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
+  "branch": "feat/hx076-poi-open",
+  "claim_ref": "agent-work/claims/2026-11-25T1637-reviewer-PR517-POI-open.json",
+  "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/review.json",
+  "evidence_commit_sha": "f4e45cb7a682ab61c4546d7d59bfd84a7902b6ea",
+  "publication_authorized": false,
+  "acceptance_status": "changes_requested",
+  "next_role": "programmer",
+  "next_step": "Исправить HX076-POI-RV01-01 в PR517. На сохранении dry-pair.json обе точки должны быть видны на карте и в PNG, а карточка должна давать доступ к обнаружению каждой точки. Перепроверить добавление через UI, отдельные точки и повторное открытие, затем передать новый SHA.",
+  "fix_handoff": {
+    "task_id": "HX-BL-076",
+    "stage_id": "POI-OPEN-COARSE",
+    "status": "fix_ready",
+    "next_role": "programmer",
+    "next_step": "Исправить HX076-POI-RV01-01 в PR517. На сохранении dry-pair.json обе точки должны быть видны на карте и в PNG, а карточка должна давать доступ к обнаружению каждой точки. Перепроверить добавление через UI, отдельные точки и повторное открытие, затем передать новый SHA.",
+    "authorization": "approved_in_F1_scope",
+    "blocking_finding_ids": [
+      "HX076-POI-RV01-01"
+    ],
+    "pr": 517,
+    "pr_number": 517,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/517",
+    "head_sha": "40aae78aeebdf51a98acbcfc2907d79ebdd99c91",
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+    "tree_sha": "ea7c64e80696923429fce8edf2ac7e3495805ae1",
+    "branch": "feat/hx076-poi-open",
+    "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+    "review_result_ref": "agent-work/results/2026-11-25T1637-reviewer-PR517-POI-open.json",
+    "review_evidence_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/review.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/score-assessment.json",
+    "fixture_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.json",
+    "png_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/dry-pair.png",
+    "publication_authorized": false,
+    "blocked_by_publication": false
+  },
+  "programmer_result_ref": "agent-work/results/2026-11-25T1600-programmer-HX076-POI-open.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T13:37:23Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T13:44:57Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "knowledge_update_ref": "agent-work/lessons.md",
+  "execution_running": false,
+  "completed_at": "2026-11-25T13:44:57Z"
+}
