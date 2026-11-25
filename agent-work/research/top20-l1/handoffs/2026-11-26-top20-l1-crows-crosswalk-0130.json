@@ -1,0 +1,630 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-26-top20-l1-crows-crosswalk-0130",
+  "task_id": "HX-RSR-001",
+  "base_sha": "7e14bd62764cc9a3b75ddfaaaefef7318ec00822",
+  "status": "bounded_crows_crosswalk_complete",
+  "edition": "October2026PublicPlaytest3",
+  "audiences": [
+    "product_model",
+    "strategist_for_development"
+  ],
+  "source": {
+    "analysis_ref": "agent-work/market/rules/CROWS-PT3.json",
+    "analysis_blob": "9309b002f9fbbdcdc7a80bee2d14170bec401fed",
+    "coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+    "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+    "historical_scope_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
+    "author_project_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+    "access_level": "owner_supplied_primary_packet",
+    "reused_primary_inventory": {
+      "source_clauses": 50,
+      "operations": 35,
+      "pages_in_previous_screen": 339
+    }
+  },
+  "target_product": {
+    "spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+    "spec_blob": "0626eb96d0312ee7983ceea9c61b57f787a7c71a",
+    "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
+    "backlog_task": "HX-BL-077",
+    "examples_are_not_full_coverage": true
+  },
+  "dispositions": [
+    {
+      "id": "CROWS-PT3-L1-001",
+      "source_clause_ids": [
+        "CROWS-R02-SETTING"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-001",
+      "disposition": "keep_L1",
+      "reason": "Карта собственного мира допустима без обязательного воспроизведения географии Cornath; это применимость набора данных, не новая подсистема.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-001-B",
+      "criteria": [
+        "S02-C03",
+        "S04-C04"
+      ],
+      "F1": [
+        "CROWS-01",
+        "CROWS-02",
+        "CROWS-09"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-001",
+      "implementation_status": "unknown",
+      "current_evidence": [
+        {
+          "sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+          "ref": "agent-work/evidence/HX-BL-077/crows-foundation/verification.json",
+          "scope": "programmer_wip_component_evidence",
+          "result": "Журнал подтверждает переключение, сохранение профиля и поля мира. Полный пакет не проверен."
+        }
+      ]
+    },
+    {
+      "id": "CROWS-PT3-L1-002",
+      "source_clause_ids": [
+        "CROWS-R24-SCALE"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-002",
+      "disposition": "keep_L1",
+      "reason": "Физический масштаб карты нужен, но владелец уже выбрал совместимый базовый режим5–6миль без отдельной5-мильной геометрии. Источник5across и неизвестная ось сохраняются отдельно.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-002-B",
+      "criteria": [
+        "S04-C04"
+      ],
+      "F1": [
+        "CROWS-03"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-002",
+      "implementation_status": "unknown",
+      "current_evidence": [
+        {
+          "sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+          "ref": "agent-work/evidence/HX-BL-077/crows-foundation/verification.json",
+          "scope": "programmer_wip_component_evidence",
+          "result": "Штатная смена проекции прошла на Classic seed 42 из шести регионов. Двухрегионный пример отказал и на той же базе без Crows. Отдельная пяти-мильная геометрия не проверялась."
+        }
+      ]
+    },
+    {
+      "id": "CROWS-PT3-L1-003",
+      "source_clause_ids": [
+        "CROWS-R24-HABITAT",
+        "CROWS-F10-HABITAT-DOMAINS"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-003",
+      "disposition": "keep_L1",
+      "reason": "Тип среды непосредственно задаёт местность; холодный климат не заменяет лес/горы. Таблицы встреч относятся к последующим слоям.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-003-B",
+      "criteria": [
+        "S05-C01",
+        "S07-C01"
+      ],
+      "F1": [
+        "CROWS-04"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-003",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-004",
+      "source_clause_ids": [
+        "CROWS-R24-ROUTE-DATA"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-004",
+      "disposition": "keep_L1",
+      "reason": "Дорога, река и место переправы — географические объекты с проверяемым пересечением; дневной темп не входит.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-004-B",
+      "criteria": [
+        "S01-C02",
+        "S01-C04",
+        "S04-C04"
+      ],
+      "F1": [],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-004",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-005",
+      "source_clause_ids": [
+        "CROWS-R26-EXISTING-PLACES",
+        "CROWS-DUN-002",
+        "CROWS-DUN-003"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
+      "disposition": "keep_L1",
+      "reason": "Известные игрокам региональные места и скрытое содержание разделяются в принятой обнаружимости. Локальные ловушки не требуют тактического редактора.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-005-B",
+      "criteria": [
+        "S04-C03",
+        "S05-C03"
+      ],
+      "F1": [],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-005",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-006",
+      "source_clause_ids": [
+        "CROWS-R26-SHELTER-SITE",
+        "CROWS-R27-MIASMA-SPACE",
+        "CH-L1-01",
+        "CH-L1-14"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-006",
+      "disposition": "defer_L2",
+      "reason": "Вместимость и защита помещения от Миазмы нужны при выборе ночлега, не при построении региональной геометрии. Руина может быть размещена общим механизмом мест.",
+      "prior_disposition": "defer_L2"
+    },
+    {
+      "id": "CROWS-PT3-L1-007",
+      "source_clause_ids": [
+        "CROWS-R29-POI",
+        "CROWS-DUN-008"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-007",
+      "disposition": "keep_L1",
+      "reason": "Выбранный ориентир/препятствие прямо наполняет карту; географическая привязка лесопилки к реке проверяема. Боевая детализация готовых мест исключена.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-007-B",
+      "criteria": [
+        "S05-C01",
+        "S01-C04"
+      ],
+      "F1": [
+        "CROWS-07"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-007",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-008",
+      "source_clause_ids": [
+        "CROWS-F02-NEAREST-DUNGEON"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-008",
+      "disposition": "integration_L3",
+      "reason": "Ближайшее населённое подземелье — внешний источник встречи по пути. Запись обитателей не самостоятельная L1-функция и не разрешение движка монстров.",
+      "prior_disposition": "integration_L3"
+    },
+    {
+      "id": "CROWS-PT3-L1-009",
+      "source_clause_ids": [
+        "CROWS-F13-MAP-REWARDS",
+        "CROWS-DUN-009",
+        "CROWS-DUN-010"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-009",
+      "disposition": "keep_L1",
+      "reason": "Источник и цель найденной карты — конкретные географические места; опциональный предел2гекса относится только к лесопилке. Задания/экономика добычи не требуются.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-009-B",
+      "criteria": [
+        "S05-C01"
+      ],
+      "F1": [],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-009",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-010",
+      "source_clause_ids": [
+        "CROWS-F09-INFORMATION",
+        "CROWS-F05-FALSE-CLAIMS"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-010",
+      "disposition": "out_of_scope",
+      "reason": "Сведения и ложь NPC — управление повествованием; возможность сохранить два текста у места не обосновывает отдельную систему истины/слухов.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-011",
+      "source_clause_ids": [
+        "CROWS-R04-HOME",
+        "CH-L1-02"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-011",
+      "disposition": "keep_L1",
+      "reason": "Домашняя деревня — стартовое место карты; перечень имеющихся услуг допустим как простое содержание. Уровни, развитие и экономика учреждений не становятся новой подсистемой.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-011-B",
+      "criteria": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "F1": [
+        "CROWS-05",
+        "CROWS-06",
+        "CROWS-09"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-011",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-012",
+      "source_clause_ids": [
+        "CH-L1-03"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-012",
+      "disposition": "out_of_scope",
+      "reason": "Вопросник о правителе/празднике/еде — общий совет подготовки. Географическая руина уже учтена у деревни; отдельная анкета не следует из возможности записать ответы.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-013",
+      "source_clause_ids": [
+        "CH-L1-04"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-013",
+      "disposition": "out_of_scope",
+      "reason": "Связь персонажа, отношение и игровая выгода — создание/развитие персонажа, а не создание карты.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-014",
+      "source_clause_ids": [
+        "CH-L1-05",
+        "CH-L1-06"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-014",
+      "disposition": "out_of_scope",
+      "reason": "Полный каталог уровней учреждений/управляющих требует симуляции деревни. Простое имя жителя/услуга не обосновывает этот движок.",
+      "prior_disposition": "out_of_scope",
+      "component": {
+        "disposition": "keep_L1",
+        "scope": "Типы и уровни построек в карточке места входят в F1 CROWS-05–07. Исторические данные об управляющих и развитие учреждений не входят. Отдельная строка не добавляется: профиль используется в уже сопоставленных операциях деревень.",
+        "refs": [
+          "CROWS-PT3-L1-011",
+          "CROWS-PT3-L1-023"
+        ],
+        "product_ids": [
+          "CROWS-05",
+          "CROWS-06",
+          "CROWS-07"
+        ]
+      }
+    },
+    {
+      "id": "CROWS-PT3-L1-015",
+      "source_clause_ids": [
+        "CH-L1-07"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-015",
+      "disposition": "out_of_scope",
+      "reason": "Оплата, ожидание и активация улучшений — инвестиционная/календарная симуляция учреждений; не L1-сохранение карты.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-016",
+      "source_clause_ids": [
+        "CH-L1-08"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-016",
+      "disposition": "keep_L1",
+      "reason": "В F1 утверждены редактируемое поле и его зависимость с зоной маяка. Игровое обновление и экономика остаются отдельно.",
+      "prior_disposition": "needs_owner_decision",
+      "binding_id": "CROWS-PT3-L1-016-B",
+      "criteria": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "F1": [
+        "CROWS-05",
+        "CROWS-06",
+        "CROWS-08",
+        "CROWS-09"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-016",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-017",
+      "source_clause_ids": [
+        "CH-L1-09"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-017",
+      "disposition": "keep_L1",
+      "reason": "Зона отсутствия Миазмы имеет конкретную региональную геометрию и меняет обозначение опасности участков карты. Сохраняется лишь отображение заданной зоны; покупка/уровни/эффекты для персонажей исключены.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-017-B",
+      "criteria": [
+        "S04-C04",
+        "S05-C01",
+        "S07-C01"
+      ],
+      "F1": [
+        "CROWS-08",
+        "CROWS-09"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-017",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-018",
+      "source_clause_ids": [
+        "CH-L1-10"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-018",
+      "disposition": "out_of_scope",
+      "reason": "Личное жильё, хранение снаряжения и расходы персонажа не требуют нового регионального объекта или подсистемы.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-019",
+      "source_clause_ids": [
+        "CH-L1-11"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-019",
+      "disposition": "keep_L1",
+      "reason": "После подтверждённого ведущим основания руина становится деревней на карте, прежняя деревня сохраняется. Списание денег, таймер строительства и управление NPC исключены.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-019-B",
+      "criteria": [
+        "S03-C01",
+        "S03-C04",
+        "S05-C01"
+      ],
+      "F1": [
+        "CROWS-05",
+        "CROWS-09"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-019",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-020",
+      "source_clause_ids": [
+        "CH-L1-12"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-020",
+      "disposition": "out_of_scope",
+      "reason": "Чужая деревня не требует самостоятельного профиля процветания/циклов. Простые сведения уже допустимы в существующем содержимом и готовых примерах.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-021",
+      "source_clause_ids": [
+        "CH-L1-13"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-021",
+      "disposition": "out_of_scope",
+      "reason": "Retirement и эффективное процветание управляющего — развитие персонажа и учреждений. Запись NPC не основание функции.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-022",
+      "source_clause_ids": [
+        "CROWS-DUN-001"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-022",
+      "disposition": "keep_L1",
+      "reason": "Выбранные готовые региональные места можно разместить в своей карте; это не перенос сцены вслед за партией ради сюжета.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-022-B",
+      "criteria": [
+        "S03-C01",
+        "S03-C04"
+      ],
+      "F1": [],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-022",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-023",
+      "source_clause_ids": [
+        "CROWS-DUN-004",
+        "CROWS-DUN-005",
+        "CROWS-DUN-006",
+        "CROWS-DUN-007"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-023",
+      "disposition": "keep_L1",
+      "reason": "Готовая деревня — конкретное место с исходным названием/средой и простыми услугами; не универсальная модель уровней/управляющих/благословений.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-023-B",
+      "criteria": [
+        "S05-C01"
+      ],
+      "F1": [
+        "CROWS-06"
+      ],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-023",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-024",
+      "source_clause_ids": [
+        "CROWS-DUN-011"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-024",
+      "disposition": "keep_L1",
+      "reason": "Региональные входы и условия подхода — географические места; комнаты и тактические планы не переводятся в региональные гексы.",
+      "prior_disposition": "keep_L1",
+      "binding_id": "CROWS-PT3-L1-024-B",
+      "criteria": [
+        "S05-C01"
+      ],
+      "F1": [],
+      "requirement_ref": "agent-work/research/top20-l1/games/CROWS.json#CROWS-PT3-L1-024",
+      "implementation_status": "unknown",
+      "current_evidence": []
+    },
+    {
+      "id": "CROWS-PT3-L1-025",
+      "source_clause_ids": [
+        "CROWS-DUN-012"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-025",
+      "disposition": "out_of_scope",
+      "reason": "Высота парения/опускание особняка — локальная магическая сцена. Запись состояния не обосновывает отдельную L1-механику.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-026",
+      "source_clause_ids": [
+        "CROWS-DUN-013"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-026",
+      "disposition": "defer_L2",
+      "reason": "Прокладка курса и доступ через известные входы относятся к движению/исследованию. Неизвестный радиус эффекта не создаёт новое географическое поле.",
+      "prior_disposition": "defer_L2"
+    },
+    {
+      "id": "CROWS-PT3-L1-027",
+      "source_clause_ids": [
+        "CROWS-DUN-014"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-027",
+      "disposition": "out_of_scope",
+      "reason": "Ритуальное уничтожение/восстановление храма описывает магический/сюжетный эффект внутри деревни; общий редактор места не обосновывает отдельный обработчик ритуала.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-028",
+      "source_clause_ids": [
+        "CROWS-DUN-015"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-028",
+      "disposition": "out_of_scope",
+      "reason": "Свет показан на локальной боевой карте и причиняет урон при подходе. Ссылка на изображение в заметке не делает тактическую область света L1-функцией.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-029",
+      "source_clause_ids": [
+        "CROWS-DUN-016"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-029",
+      "disposition": "defer_L2",
+      "reason": "Добыча20единиц/истощение/утреннее восстановление — состояние припасов при исследовании места. Наличие ресурса в содержимом не обосновывает новый L1-счётчик.",
+      "prior_disposition": "defer_L2"
+    },
+    {
+      "id": "CROWS-PT3-L1-030",
+      "source_clause_ids": [
+        "CROWS-DUN-017"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-030",
+      "disposition": "out_of_scope",
+      "reason": "Споры, отложенная атака и события деревни — сюжет/персонажные состояния; не отдельный картографический таймер.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-031",
+      "source_clause_ids": [
+        "CROWS-DUN-018"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-031",
+      "disposition": "out_of_scope",
+      "reason": "1000панелей, урон и месяцы ремонта — локальная боевая/строительная симуляция. Ручной текст состояния не основание функции.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-032",
+      "source_clause_ids": [
+        "CROWS-CARD-001"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-032",
+      "disposition": "out_of_scope",
+      "reason": "Создание Huge-дома предметом — локальный магический эффект; простое здание можно разместить общим редактором без реализации предмета.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-033",
+      "source_clause_ids": [
+        "CROWS-CARD-002"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-033",
+      "disposition": "defer_L2",
+      "reason": "Вместимость тента и защита от погоды относятся к лагерю/ночлегу; не защита целого гекса от Миазмы и не L1-геометрия.",
+      "prior_disposition": "defer_L2"
+    },
+    {
+      "id": "CROWS-PT3-L1-034",
+      "source_clause_ids": [
+        "CH-L1-15"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-034",
+      "disposition": "out_of_scope",
+      "reason": "Цикл деревенских событий меняет NPC, инвестиции и услуги. Возможность записать итог не разрешает экономико-сюжетную подсистему.",
+      "prior_disposition": "out_of_scope"
+    },
+    {
+      "id": "CROWS-PT3-L1-035",
+      "source_clause_ids": [
+        "CH-L1-16"
+      ],
+      "analysis_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-035",
+      "disposition": "defer_L2",
+      "reason": "Услуга гильдии раскрывает существующие места и расходует использования цикла: это состояние исследования, не создание новых мест.",
+      "prior_disposition": "defer_L2"
+    }
+  ],
+  "counts": {
+    "keep_L1": 14,
+    "defer_L2": 5,
+    "integration_L3": 1,
+    "out_of_scope": 15
+  },
+  "findings": [
+    "Первичный PT3: пять обязательных построек I уровня и шестая по выбору. В F1 шестая случайна с возможностью заменить, а при Q04 наземная точка меняет тип с сохранением адреса и имени.",
+    "В существующем каталоге 13 типов учреждений. F1 использует типы и уровни в данных карты. Управляющие, денежная экономика и игровые циклы не включены в этот картографический срез.",
+    "Процветание 0 при создании домашней деревни, целые −10…10 при правке. При маяке V и процветании 10 проверяется радиус 6; при 9 — радиус 5. Отдельно стоящий маяк предусмотрен именно F1.",
+    "Нанесённые известные места, связь карты с тайником и готовые именованные точки остаются источниковыми сценариями. Они не образуют автоматическое требование текущего выпуска F1."
+  ],
+  "evidence": {
+    "ref": "agent-work/evidence/HX-BL-077/crows-foundation/verification.json",
+    "wip_sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+    "baseline_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+    "observed_cases": [
+      "CROWS-01 profile selection, preservation and reopen",
+      "CROWS-02 world-first card and shared field handling",
+      "CROWS-03 scale selector and compatible view round trip",
+      "CROWS-09 targeted JSON/undo/reset/atomic invalid import"
+    ],
+    "remaining_F1": [
+      "CROWS-04",
+      "CROWS-05",
+      "CROWS-06",
+      "CROWS-07",
+      "CROWS-08",
+      "Complete-package CROWS-01–09"
+    ],
+    "verification_scope": "Записанные проверки разработчика на WIP SHA и исторические свидетельства сохранены отдельно. Проба двух регионов на одномильной проекции даёт такой же отказ на базе. Полной независимой приёмки и проверки сайта в этом запуске нет."
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-26-top20-l1-crows-crosswalk-0130",
+    "result_ref": "agent-work/research/runs/2026-11-26-top20-l1-crows-crosswalk-0130.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-crows-crosswalk-0130.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "50 положений и 35 операций Crows PT3 соотнесены с 14 строками рабочего L1, существующими bindings и F1. Редактируемое процветание перенесено из needs_owner_decision в рабочий набор. Два компонента F1 имеют WIP evidence.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2.",
+      "pirate": "Проверить на опубликованном SHA сценарии 50-мильной карты и кораблекрушений на суше/отмели. В Core с. 134–135 подтверждён ключ готовой карты Black Coral Bay, точные измерения подложки по HTML не установлены. С. 156–165 и правила Starter Set, Cabin Fever, Port Generator — отдельные корпуса или остаток; сканы нужны только при новом подходящем источнике. Не считать игровой балл пересчитанным.",
+      "crows": "Дождаться связанного SHA F1 для проверок CROWS-04–08 и полного CROWS-01–09. Селективная карта игроков, адресная связь карты с тайником и готовые места PT3 требуют отдельной проверки применимости и фактической поддержки. Спорные детали Best Steward Ever и локальных укрытий не считать невыполненными критериями F1."
+    },
+    "next": "Shadowdark Core: сверить рабочие требования L1 с сохранённым охватом и ревизией границ. Начать с постоянных препятствий и ориентиров на карте; дорожные встречи и следы, появляющиеся во время игры, отметить отдельно.",
+    "needs_owner_action": false
+  }
+}
