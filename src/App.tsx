@@ -9082,11 +9082,20 @@ function getRegionByHexKey(regions: Region[]): Map<string, Region> {
   return result;
 }
 
+function excludeWaterFromGeneratedLandPoi(region: Region, terrain: Map<string, HexTerrainData>): Region {
+  return {
+    ...region,
+    pointsOfInterest: region.pointsOfInterest.filter(hex => !terrain.get(hexKey(hex))?.terrainOverride)
+  };
+}
+
 function assignWaterPoiLayer(
   existingWaterPoiByKey: Map<string, WaterPoiKind>,
   regions: Region[],
   hexTerrainByKey: Map<string, HexTerrainData>,
-  newlyCheckedWaterHexKeys?: Iterable<string>, rng: RandomStreams = fallbackRandomStreams
+  newlyCheckedWaterHexKeys: Iterable<string>,
+  mode: GenerationMode | undefined,
+  rng: RandomStreams
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
   const waterHexKeySet = new Set(
@@ -9097,27 +9106,22 @@ function assignWaterPoiLayer(
   const next = new Map<string, WaterPoiKind>();
   const blockedKeys = new Set<string>();
 
-  const existingWaterPoiKeys = Array.from(existingWaterPoiByKey.keys())
-    .filter((key) => waterHexKeySet.has(key))
-    .sort();
-
+  const existingWaterPoiKeys = Array.from(existingWaterPoiByKey.keys()).sort();
   for (const key of existingWaterPoiKeys) {
-    const existingKind = existingWaterPoiByKey.get(key);
-    if (!existingKind || blockedKeys.has(key)) continue;
-    const hex = parseHexKey(key);
-    const terrain = hexTerrainByKey.get(key);
-    const region = terrain?.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const pool = getWaterPoiKindPool(terrain?.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild');
-    if (!pool.includes(existingKind)) continue;
-    next.set(key, existingKind);
+    const wet = waterHexKeySet.has(key);
+    if (!wet && !regionByHexKey.has(key)) continue;
+    // Saved points are data, including authored exceptions to type or spacing.
+    next.set(key, existingWaterPoiByKey.get(key)!);
+    if (!wet) continue;
     blockedKeys.add(key);
-    for (const neighbor of getHexNeighbors(hex)) blockedKeys.add(hexKey(neighbor));
+    for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
 
-  const keysToCheckForNewPoi = newlyCheckedWaterHexKeys
-    ? Array.from(new Set(newlyCheckedWaterHexKeys)).filter((key) => waterHexKeySet.has(key)).sort()
-    : [];
+  const keysToCheckForNewPoi = Array.from(new Set(newlyCheckedWaterHexKeys)).filter(key => waterHexKeySet.has(key)).sort();
 
+  const landPoiKeys = new Set(regions.flatMap(region => (
+    hasCentralPoi(region) ? [region.centerHex, ...region.pointsOfInterest] : region.pointsOfInterest
+  ).map(hexKey)));
   for (const key of keysToCheckForNewPoi) {
     if (next.has(key) || blockedKeys.has(key)) continue;
     const terrain = hexTerrainByKey.get(key);
@@ -9126,7 +9130,9 @@ function assignWaterPoiLayer(
     const context: 'sea' | BiomeLandType = terrain.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild';
     const chance = context === 'wild' ? 4 : 6;
     if (randomInt(1, chance, poiRandomStreams(rng)) !== 1) continue;
-    next.set(key, randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng)));
+    const kind = randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng));
+    // Keep the draw order for Mythic and for hexes with an authored land POI.
+    if (mode !== 'mythic' && !landPoiKeys.has(key)) next.set(key, kind);
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
@@ -13083,11 +13089,12 @@ export function App() {
     for (const [key, value] of completed.terrain) finalHexTerrainByKey.set(key, value);
     // Route tract roads against the actual water and final river geometry.
     tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
-      region: tractRegion, roads, rivers: riversAfterTractGeneration,
+      region: excludeWaterFromGeneratedLandPoi(tractRegion, finalHexTerrainByKey),
+      roads, rivers: riversAfterTractGeneration,
       hexTerrainByKey: finalHexTerrainByKey, nextRoadId
     }, rng);
     tractRoadResult = { ...tractRoadResult, ...completeRegionRoadConnections({
-      region: tractRegionWithPoiKinds, regions, roads: tractRoadResult.roads,
+      region: tractRoadResult.region, regions, roads: tractRoadResult.roads,
       hexTerrainByKey: finalHexTerrainByKey, nextRoadId: tractRoadResult.nextRoadId
     }) };
     finalRegions[finalRegions.length - 1] = {
@@ -13099,8 +13106,7 @@ export function App() {
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
-    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
-      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
+    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, options.mode, rng);
     const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings, rng);
     const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
     const finalRoadPairs = new Set(tractRoadResult.roads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
@@ -13834,6 +13840,12 @@ export function App() {
         generationLog.warning('River model rejected region attempt', { attempt, reason: modelResult.reason });
         continue;
       }
+      const finalHexTerrainByKey = modelResult.terrain;
+      if (hasCentralPoi(finalRegionAfterLandPockets) && finalHexTerrainByKey.get(hexKey(finalCenterHex))?.terrainOverride) {
+        rejectAttempt('central_poi_on_final_water');
+        continue;
+      }
+      const finalRegionForRoads = excludeWaterFromGeneratedLandPoi(finalRegionAfterLandPockets, finalHexTerrainByKey);
       riversWithDeltas = modelResult.rivers;
       // BR-009 is a coastal rendering/distributary rule, separate from RIV confluences.
       if (allNewSeaKeys.length > 0) {
@@ -13851,7 +13863,7 @@ export function App() {
       const hexTerrainByKeyForRoads = new Map(nextHexTerrainByKeyPreview);
       for (const key of finalSeaKeysToWrite) hexTerrainByKeyForRoads.set(key, { terrainOverride: 'sea' });
       const roadResult = generateRoadsForRegion({
-        region: finalRegionAfterLandPockets,
+        region: finalRegionForRoads,
         regions,
         roads,
         rivers: riversWithDeltas,
@@ -13867,9 +13879,9 @@ export function App() {
       }
 
       const finalRegionWithPoiKinds: Region = {
-        ...finalRegionAfterLandPockets,
+        ...finalRegionForRoads,
         pointOfInterestKinds: assignPoiKindsForRegion({
-          region: finalRegionAfterLandPockets,
+          region: finalRegionForRoads,
           roads: roadResult.roads,
           rivers: riversWithDeltas,
           hexTerrainByKey: hexTerrainByKeyForRoads
@@ -13914,7 +13926,6 @@ export function App() {
         nextLakeId,
         nextRoadId
       };
-      const finalHexTerrainByKey = modelResult.terrain;
       if (options.mode === 'mythic') {
         const full = buildRegionRiverNetwork(riversWithDeltas, [], finalRegions, finalCandidateHexes, finalHexTerrainByKey, true);
         if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('mythic_full_river_network'); continue; }
@@ -13924,8 +13935,7 @@ export function App() {
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
       generationProgress.stage = 'prepare_commit';
       const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed);
-      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
-      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
+      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, options.mode, rng);
       const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings, rng);
       const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
       const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
@@ -14753,19 +14763,16 @@ export function App() {
     const finalNextObstacleId=nextObstacleId+identifiedObstacles.length;
     const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
-    const water=new Map(waterPoiByKey);
-    for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
     const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings, rng);
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
-      waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
+      toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
       assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history,
       regions.slice(job.backup.map.regions.length).filter(r=>!r.isTract));
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
-    setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...identifiedObstacles]);setNextObstacleId(finalNextObstacleId);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
@@ -15142,6 +15149,7 @@ export function App() {
   const selectedWaterPoiKind = selectedHexKey ? waterPoiByKey.get(selectedHexKey) : undefined;
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedSea = selectedTerrain?.terrainOverride === 'sea';
+  const selectedSurfaceIsWater = isSelectedLake || isSelectedSea;
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
   const selectedHexRoadIds = selectedHex
     ? Array.from(new Set(roads
@@ -15212,12 +15220,16 @@ export function App() {
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
   // Geometry remains protected by E7 even when a legacy region has no central POI.
   const selectedHasCentralPoi = Boolean(selectedMeta?.isCenter && selectedRegion && hasCentralPoi(selectedRegion));
+  const selectedHasSecondaryPoi = selectedRegion?.pointsOfInterest.some(h => hexKey(h) === selectedHexKey);
   const selectedCentralCapital = selectedHasCentralPoi && generationMode === 'classic' && selectedRegion?.centralPoiKind === 'capital';
-  const editableCapital = selectedCentralCapital && !selectedRegion!.pointsOfInterest.some(h => hexKey(h) === selectedHexKey);
+  const editableCapital = selectedCentralCapital && !selectedHasSecondaryPoi;
   const selectedPoiKind = editableCapital ? 'capital' : selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
   const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>(k!=='capital'||selectedPoiKind==='capital')&&(!(k in MYTHIC_POI)||k==='ruins')),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const isEditingSelectedCentralPoi = selectedHasCentralPoi && editingCentralPoiRegionId === selectedRegion?.id;
-  const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
+  const selectedLandPoi: PoiLocator | null = selectedHexKey && selectedRegion
+    && poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)
+    ? {kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey} : null;
+  const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !selectedSurfaceIsWater && (!selectedWaterPoiKind || selectedLandPoi));
   const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !isBiomeId(biomeId)) return;
@@ -15247,7 +15259,7 @@ export function App() {
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id===selectedRegion.id?{...r,centralPoiKind:poiKind}:r)});
   };
   const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
-    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !(poiKind in WATER_POI_DETAILS) || !selectedHexKey || (!isSelectedLake && !isSelectedSea)) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !(poiKind in WATER_POI_DETAILS) || !selectedHexKey || !selectedSurfaceIsWater || (selectedLandPoi && !selectedWaterPoiKind)) return;
     if(waterPoiByKey.get(selectedHexKey)===poiKind) { closeEditors(); return; }
     const layer=new Map(waterPoiByKey); layer.set(selectedHexKey,poiKind);
     commitManualMap({...captureMap(),waterPoiByKey:layer});
@@ -15880,14 +15892,14 @@ export function App() {
     setPoiExitRequest(null);setTimeout(()=>request.action(),0);return true;
   };
   const currentKnaveDraft=(draft:KnaveDraft|null):draft is KnaveDraft=>!!draft&&knaveDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&draft.hexKey===notesSelectionRef.current&&!documentBusy();
-  const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'>>,expected=knaveDraft)=>{
+  const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'>>,expected=knaveDraft,poiKey=knaveDiscoveryKey)=>{
     if(!editMode||generationMode!=='classic'||!selectedHexKey)return false;
     if(expected?!currentKnaveDraft(expected):mutationBlocked()||notesComposingRef.current||obstacleDraftRef.current||!finishInlineName())return false;
     const context=knaveMapContext(captureMap());if(!context.hexes.has(selectedHexKey))return false;
-    const key=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
-    if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey)||('mode'in patch)&&!key)return false;
-    const previous=key?discoveries.current[key]:undefined;
-    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:knaveRef.current?.difficultyByHex[selectedHexKey]??'unspecified',mode:previous??'passage'};
+    if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey))return false;
+    if('mode' in patch&&(!poiKey||(expected&&expected.poiKey!==poiKey)))return false;
+    const previous=poiKey?discoveries.current[poiKey]:undefined;
+    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey,difficulty:knaveRef.current?.difficultyByHex[selectedHexKey]??'unspecified',mode:previous??'passage'};
     finishNotesGroup();clearNotesDraft();updateKnaveDraft({...draft,...patch});return true;
   };
   const resetKnaveDraft=(expected=knaveDraftRef.current)=>{if(knaveDraftRef.current!==expected)return false;updateKnaveDraft(null);return true;};
@@ -16105,27 +16117,45 @@ export function App() {
   const editableValue = (label: string, value: string, open: () => void) => editMode
     ? <button type="button" className="direct-value" aria-label={label} onClick={() => {if (!mutationBlocked()) { clearNotesDraft(); closeEditors(); open(); }}}>{value}</button>
     : <span>{value}</span>;
-  const renderWaterPoi = () => <>{isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
-    value={selectedWaterPoiKind ?? ''} onBlur={() => setEditingPoiHexKey(null)}
-    onChange={e => e.target.value ? setSelectedWaterPoiKind(e.target.value as WaterPoiKind) : deleteSelectedWaterPoi()}>
-    <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
-    {waterPoiKindOrder.map(kind => <option key={kind} value={kind}>{WATER_POI_DETAILS[kind].emoji} {WATER_POI_DETAILS[kind].label[language]}</option>)}
-  </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi,
-    selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
-    () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
-  const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
+  const renderWaterPoi = () => {
+    const name = selectedWaterPoiKind ? <>{' '}{renderName(`waterPoi:${selectedHexKey}`)}</> : null;
+    const label = selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi;
+    if (!selectedSurfaceIsWater) return selectedWaterPoiKind ? <><span>{label}</span>{name}</> : null;
+    if (selectedLandPoi && !selectedWaterPoiKind) return null;
+    return <>{isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+      value={selectedWaterPoiKind ?? ''} onBlur={() => setEditingPoiHexKey(null)}
+      onChange={e => e.target.value ? setSelectedWaterPoiKind(e.target.value as WaterPoiKind) : deleteSelectedWaterPoi()}>
+      <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
+      {waterPoiKindOrder.map(kind => <option key={kind} value={kind}>{WATER_POI_DETAILS[kind].emoji} {WATER_POI_DETAILS[kind].label[language]}</option>)}
+    </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi, label,
+      () => setEditingPoiHexKey(selectedHexKey)) : null}{name}</>;
+  };
+  const selectedWaterPoi:PoiLocator|null=selectedHexKey&&selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:null;
+  const selectedPoiSource=selectedWaterPoi??selectedLandPoi;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
-  const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
-  const acceptedDiscovery=knaveDiscoveryKey?discoveries.current[knaveDiscoveryKey]:undefined;
+  const selectedPoiLocators=[selectedLandPoi,selectedWaterPoi].flatMap(source=>source?[poiLocatorKey(source)]:[]);
   const knaveDifficulty=knaveDraft?.difficulty??(selectedHexKey?knave?.difficultyByHex[selectedHexKey]:undefined)??'unspecified';
-  const knaveDiscovery=knaveDraft?.mode??acceptedDiscovery??'passage';
   const knaveControlsBlocked=!!poiDraft||!!regionDraft||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||documentBusy()||dirtyNameDraft();
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секретное место'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret place'};
   const knavePanel=generationMode==='classic'&&(knave||knaveDiscoveryKey)&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
     {knave&&!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
-    {knaveDiscoveryKey&&<div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>}
+    {selectedPoiLocators.flatMap(key=>{
+      const content=knave?.content?.byPoi[key];
+      const mode=knaveDraft&&knaveDraft.poiKey===key?knaveDraft.mode:discoveries.current[key]??'passage';
+      const shared=selectedPoiLocators.length>1;
+      const target=shared?nameTargets.find(t=>t.poiLocator===key):undefined;
+      const poiLabel=target?.[language]||target?.fallback?.[language];
+      const classLabel=key.startsWith('waterPoi:')?(language==='ru'?'Водная точка':'Water point'):(language==='ru'?'Наземная точка':'Land point');
+      const discoveryLabel=(language==='ru'?'Обнаружение':'Discovery')+(shared?` · ${classLabel}${poiLabel?` · ${poiLabel}`:''}`:'');
+      return [
+        content?<div key={`${key}:content`} className="knave-results"><KnaveContentRow content={content} owner={key} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${key}`]} onRoll={part=>mutateKnaveContent(key,part)}/></div>:null,
+        <div key={key} className="direct-line" data-poi-discovery={key}><label>{discoveryLabel}: {editMode?<select aria-label={discoveryLabel} value={mode}
+          disabled={knaveControlsBlocked||!!knaveDraft&&knaveDraft.poiKey!==key} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft,key)}>
+          {Object.entries(discoveryLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+        </select>:discoveryLabels[mode]}</label></div>,
+      ];
+    })}
     {knaveError&&<p id="knave-clue-error" className="direct-error" role="alert">{knaveError}</p>}
     {knaveDraft&&<button type="button" className="direct-value knave-cancel" onClick={()=>resetKnaveDraft(knaveDraft)}>{language==='ru'?'Отмена':'Cancel'}</button>}
   </div>:null;
@@ -17285,16 +17315,17 @@ export function App() {
                 const region = meta?.regionId ? regions.find(item => item.id === meta.regionId) : undefined;
                 const central = region && meta?.isCenter && hasCentralPoi(region);
                 const other = region?.pointsOfInterest.some(poi => hexKey(poi) === hex.key);
-                const kind = waterKind ?? (central ? region.centralPoiKind : other && region ? getPoiKindForHex(region, hex) : undefined);
-                if (!waterKind && !central && !other) return null;
-                const title = waterKind ? getWaterPoiLabel(waterKind, language) : central ?
-                  getCentralPoiLabel(region, language) : region ? getPoiLabelForHex(region, hex, language) : undefined;
+                const land = region && (central || other);
+                if (!land && !waterKind) return null;
+                const kind = land ? (central ? region.centralPoiKind : getPoiKindForHex(region, hex)) : waterKind;
+                const title = land ? (central ? getCentralPoiLabel(region, language) : getPoiLabelForHex(region, hex, language))
+                  : getWaterPoiLabel(waterKind!, language);
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 const size = HEX_SIZE * .62;
                 return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
-                  <circle cx={position.x} cy={position.y} r={HEX_SIZE*.425} fill={engravingFor(id)!.poiColor}
+                  <circle cx={position.x} cy={position.y} r={HEX_SIZE * .425} fill={engravingFor(id)!.poiColor}
                     stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
-                  <image className="poi-marker" href={getPoiSvgHref(kind, !!waterKind)}
+                  <image className="poi-marker" href={getPoiSvgHref(kind, !land)}
                     x={position.x-size/2} y={position.y-size/2} width={size} height={size}
                     role="img" aria-label={title}/>
                 </g>;
@@ -17714,17 +17745,21 @@ export function App() {
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
-                    {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
-                      {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
+                    {(canEditSelectedPoi || selectedLandPoi) && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
+                      {!canEditSelectedPoi && selectedLandPoi ? <span>{selectedPoiKind?POI_DETAILS[selectedPoiKind].emoji+' ':''}{getPoiLabelForHex(selectedRegion,selectedHex,language)}</span>
+                      : isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
                         {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}
-                      </select> : selectedPoiKind || editMode ? editableValue(t.editPoi, selectedPoiKind
-                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : t.addPoi,
+                      </select> : selectedLandPoi || editMode ? editableValue(t.editPoi, selectedPoiKind
+                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : selectedLandPoi?t.poi:t.addPoi,
                         () => setEditingPoiHexKey(selectedHexKey)) : null}
-                      {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
+                      {' '}{selectedLandPoi ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
                     </div> : null}
+                    {selectedHasCentralPoi && selectedHasSecondaryPoi && selectedHex ? <div className="direct-line">
+                      {selectedPoiKind ? POI_DETAILS[selectedPoiKind].emoji + ' ' : ''}{getPoiLabelForHex(selectedRegion, selectedHex, language)}
+                    </div> : null}
+                    {selectedWaterPoiKind || (selectedSurfaceIsWater && !selectedLandPoi) ? <div className="direct-line">{renderWaterPoi()}</div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId} {renderName(`road:${roadId}`,'selected-road')}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId} {selectedHexRoadIds.includes(trailId)?null:renderName(`road:${trailId}`,'selected-road')}</p>)}
                     {editMode || selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (

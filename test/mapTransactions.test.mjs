@@ -763,7 +763,7 @@ test('road draft is ephemeral, blocks other writes, commits once and stale finis
  }
 
  data.map.roads=[];data.map.crossings=[];
- for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);const central=r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract&&r.centerHex.q===p.q&&r.centerHex.r===p.r;if(!central&&!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
  await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
  assert.equal(h.render().startRoadDraft(),true);

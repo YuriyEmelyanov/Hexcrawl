@@ -15,6 +15,64 @@ test('production document exports RNG and undo restores continuation',()=>{
 const options={targetSize:8,coastalPreference:'mainland'};
 function setup(seed){const h=createGenerationHarness(seed);h.render();h.guardRandom();h.setWindow({alert:()=>{},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);return h;}
 async function load(h,data){await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'map'}});}
+test('generated Classic POIs match the final surface and existing points survive map growth',async()=>{
+ const key=h=>`${h.q},${h.r}`;
+ const h=setup(10);
+ for(const [index,targetSize] of [12,17,16,10,19].entries()){
+  const app=h.render();
+  const anchor=app.candidateHexes[Math.floor(app.candidateHexes.length*.72)]??{q:0,r:0};
+  const result=app.safelyAddRegionToMap(anchor,{targetSize,coastalPreference:index%2===0?'auto':'mainland'});
+  assert.equal(result.success,true,JSON.stringify(result));
+ }
+ const map=stable(h.render()).map, region=map.regions.at(-1);
+ assert.equal(map.terrainByHexKey['-3,3']?.terrainOverride,'lake','late lake in the regression seed');
+ const landPoints=region.centralPoiKind&&!region.suppressCentralPoi&&!region.isTract
+  ? [region.centerHex,...region.pointsOfInterest] : region.pointsOfInterest;
+ assert.ok(landPoints.length,'the new region still has land points');
+ for(const point of landPoints) assert.equal(map.terrainByHexKey[key(point)]?.terrainOverride,undefined,`land POI at ${key(point)}`);
+
+ const coastal=setup(0);
+ const result=coastal.render().safelyAddRegionToMap({q:0,r:0},{targetSize:12,coastalPreference:'auto'});
+ assert.equal(result.success,true,JSON.stringify(result));
+ const original=stable(coastal.render()),coast=original.map;
+ const waterKeys=Object.keys(coast.waterPoiByHexKey);
+ assert.ok(waterKeys.length,'the coastal seed generates a water point');
+ for(const cell of waterKeys) assert.ok(['sea','lake'].includes(coast.terrainByHexKey[cell]?.terrainOverride),`water POI at ${cell}`);
+
+ const dry='1,0', adjacentWater='1,1', locator=`waterPoi:${dry}`;
+ assert.ok(coast.regions[0].hexes.some(hex=>key(hex)===dry));
+ assert.equal(coast.terrainByHexKey[dry],undefined);
+ assert.equal(coast.terrainByHexKey[adjacentWater]?.terrainOverride,'sea');
+ assert.ok(coast.waterPoiByHexKey['0,1']);
+ for(const variant of ['control','unnamed','named']){
+  const input=structuredClone(original);
+  if(variant!=='control'){
+   input.map.waterPoiByHexKey[dry]='shipwreck';
+   input.map.waterPoiByHexKey[adjacentWater]='rocks';
+   input.map.poiDiscovery[locator]='interaction';
+  }
+  if(variant==='named')input.map.editorNames[locator]={ru:'Метка мастера',en:'GM Marker'};
+  const world=setup(9);await load(world,input);
+  const before=stable(world.render());
+  assert.deepEqual(before.map.waterPoiByHexKey,input.map.waterPoiByHexKey,variant);
+  const extension=world.render().safelyAddRegionToMap({q:-1,r:0},{targetSize:12,coastalPreference:'mainland'});
+  assert.equal(extension.success,true,`${variant}: ${JSON.stringify(extension)}`);
+  const after=stable(world.render());
+  assert.equal(after.map.regions.length,2,variant);
+  assert.equal(after.map.terrainByHexKey[dry],undefined,variant);
+  for(const [cell,kind] of Object.entries(before.map.waterPoiByHexKey)){
+   assert.equal(after.map.waterPoiByHexKey[cell],kind,`${variant}: existing POI at ${cell}`);
+  }
+  assert.deepEqual(after.map.editorNames[locator],before.map.editorNames[locator],variant);
+  assert.equal(after.map.poiDiscovery[locator],before.map.poiDiscovery[locator],variant);
+  for(const cell of Object.keys(after.map.waterPoiByHexKey).filter(cell=>!Object.hasOwn(before.map.waterPoiByHexKey,cell))){
+   assert.ok(['sea','lake'].includes(after.map.terrainByHexKey[cell]?.terrainOverride),`${variant}: new water POI at ${cell}`);
+  }
+  world.render().undoMap();assert.deepEqual(stable(world.render()),before,variant);
+  world.render().redoMap();assert.deepEqual(stable(world.render()),after,variant);
+  const reopened=setup(10);await load(reopened,after);assert.deepEqual(stable(reopened.render()),after,variant);
+ }
+});
 function unit(h,mode){const a=h.render();const anchor=a.candidateHexes[0]??{q:0,r:0};if(mode==='mythic'){
  a.startKingdom(anchor);for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();
  assert.equal(h.render().kingdomJob,null);assert.equal(h.render().generationError,null,JSON.stringify(h.render().generationError));
