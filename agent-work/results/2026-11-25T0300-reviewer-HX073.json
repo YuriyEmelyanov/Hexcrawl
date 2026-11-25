@@ -1,0 +1,164 @@
+{
+  "task_id": "HX-BL-073",
+  "role": "reviewer",
+  "status": "accepted_awaiting_publication_approval",
+  "pr": 515,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/515",
+  "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "accepted_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+  "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+  "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2",
+  "branch": "feat/hx073-split-regions-on-import",
+  "spec_ref": "agent-work/specs/HX-BL-073-region-connectivity-import-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/review.json",
+  "result_ref": "agent-work/results/2026-11-25T0300-reviewer-HX073.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/score-assessment.json",
+  "accepted": true,
+  "review_ready": false,
+  "publication_authorized": false,
+  "next_role": "owner",
+  "next_task_id": "HX-BL-073",
+  "next_step": "Ожидается отдельное разрешение владельца на публикацию PR №515 на SHA cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b. Пока решение ожидается, готов независимый этап HX-BL-064 — интервью по черновику морского старта.",
+  "independent_ready": {
+    "task_id": "HX-BL-064",
+    "role": "interviewer",
+    "approved_stage": "draft_ready_for_interview",
+    "spec_ref": "agent-work/specs/HX-BL-064-classic-marine-start-D1.md",
+    "next_step": "Интервьюер уточняет выбор морского старта, параметры первого участка и правила продолжения с морской границы."
+  },
+  "run_id": "2026-11-25T0300-reviewer-HX073",
+  "generation": 782,
+  "claim_ref": "agent-work/claims/2026-11-25T0300-reviewer-HX073.json",
+  "completed_at": "2026-11-25T00:07:45.807Z",
+  "pr_draft": false,
+  "backlog_commit": "1c88b05fcbb47db361d74bb856d58d125404fa44",
+  "evidence_commit": "5f81c6b5391aab279f69220dfa2151667f2de05c",
+  "screenshot_ref": "agent-work/evidence/HX-BL-073/review-cae2b48/river-map.jpg",
+  "reason": "F1 на точном SHA был в review_ready с полным успешным CI и свободной записью владения; выбран ближайший шаг независимой приёмки.",
+  "result": "F1 принят на точном SHA. Река №5 остаётся у 1.2, её последний сектор принадлежит 1.1; путь сохранён при повторном открытии. При непереносимой ссылке импорт указывает сектор, карта и история сохранены. Проверены 8+1 и обычный следующий №8, дорога и королевство смешанной карты, водный гекс, Mythic-тег, полный и частичный одномильный слой, малые озёра и Undo/Redo. Предварительная дельта L1 +0,987654, учёт после подтверждённой публикации.",
+  "decision_required": {
+    "type": "explicit_publication_approval",
+    "pr": 515,
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "tree_sha": "3723a963c010e4099e48a322c8fed61e5a3a35c2"
+  },
+  "findings": [],
+  "resolved_finding": "HX073-RV02-01",
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45506901127",
+      "jobs": [
+        {
+          "id": 138844324778,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325544,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844325559,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 138844327563,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 453,
+        "passed": 453,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "reviewer_node": {
+      "executed": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exact_production_build": "passed",
+    "browser_flow": "passed in bounded paths",
+    "independence": {
+      "agent": "hx073_review_current_cae2b48",
+      "result": "Reproduced old invalid_owner; v2–v10 accepted with no physical ownership issues and v16 retained accepted full/scoped GeometryPlan. Legacy corpus comparison found no head-specific import rejection.",
+      "age_of_context": "fresh"
+    },
+    "limitation": "Отдельный широкий прогон свежего агента остановлен после направленных проб. Полный GitHub Check прошёл."
+  },
+  "test_change_summary": {
+    "base_sha": "48c679b5d8d069ea64c24ab3a82a8140a2d21958",
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "suite": "Node saveSafety",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "source": "Logical top-level node:test declaration from diff of previous reviewed SHA to current SHA",
+    "scenario": "Неправильное наследование владельца в старом сохранении, безопасный отказ и точный повторный импорт.",
+    "reuse_or_new_reason": "Этот случай воспроизводит invalid_owner на предыдущем SHA и защищает отдельный контракт географии, которого нет в проверках номера, тегов и принятого одномильного слоя.",
+    "pr_total_from_main": {
+      "base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+      "added": 4,
+      "removed": 0,
+      "modified": 0
+    }
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-073",
+    "pr": 515,
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S02-C05",
+    "rule_id": "VAL-04",
+    "head_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
+    "main_base_sha": "d8d8fe78637d6e514f6bfc3db908a4a4ababecfe",
+    "baseline_release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+    "status": "preliminary_accepted",
+    "before": {
+      "grade": "65/75 accepted criterion weight; VAL-04 10/20",
+      "rule_points": 0.9876543209876544,
+      "criterion_points": 6.419753086419753
+    },
+    "after": {
+      "grade": "75/75 accepted criterion weight; VAL-04 20/20",
+      "rule_points": 1.9753086419753088,
+      "criterion_points": 7.407407407407407
+    },
+    "delta": 0.9876543209876544,
+    "booked_delta": 0,
+    "published_l1": 195.81530713790318,
+    "projected_l1": 196.80296145889082,
+    "method": "15/675 × 1000/3 × (20−10)/75. The previously accepted part of VAL-04 is retained. New evidence covers 8+1 connected/external component split, original owned water bridge, duplicate ownership and invalid reference atomic rejection, identical coordinates and route/crossing geometry, and correct ordinary next number. Checked history has no matching HX-BL-073 event. PR511 is already booked by its existing rc8 reviewer event.",
+    "evidence": [
+      "agent-work/score/rules/S02-C05.md",
+      "agent-work/research/acceptance/L1-PR509/ledger.json#S02-C05",
+      "agent-work/evidence/HX-BL-073/review-cae2b48/review.json"
+    ],
+    "limitations": "Предварительное заключение для этого SHA, проверены ограниченные сценарии Classic и профили совместимости. Учёт только после проверки опубликованного пакета. L2/L3 не оценивались."
+  },
+  "remaining_forecast": "Один этап выпуска после решения владельца, затем сверка сборки и фиксация оценки проверяющим.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T00:01:23.517Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T00:07:45.807Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
