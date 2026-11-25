@@ -406,7 +406,8 @@ try {
  await transaction(()=>load(fixture));await transaction(()=>button('Сбросить').click());
  // HX-BL-076: a valid imported map can contain data even without regions.
  assert.equal(await button('Сбросить').count(),0);
- const regionlessSave = await snapshot();
+ const regionlessEmpty = await snapshot();
+ const regionlessSave = structuredClone(regionlessEmpty);
  regionlessSave.map.terrainByHexKey['0,0']={terrainOverride:'lake',lakeId:1};
  regionlessSave.map.waterPoiByHexKey['0,0']='shipwreck';
  regionlessSave.map.editorNames['waterPoi:0,0']={ru:'Корабль',en:'Wreck'};
@@ -432,7 +433,28 @@ try {
    assert.deepEqual(cleared.map.editorNames,{});
    assert.deepEqual(cleared.map.gmNotesByHexKey,{});
    assert.equal(await button('Сбросить').count(),0);
+   for (const [layer, objects] of [
+     ['obstacles', [{"id":1,"hex":{"q":1,"r":0},"neighborHex":{"q":2,"r":0},"edgeKey":"72.746,-14|72.746,14"}]],
+     ['kingdoms', [{"id":1,"origin":{"q":0,"r":0},"anchor":{"q":0,"r":0},"regionIds":[],"name":{"en":"Bergvang","ru":"Бергванг","kind":"region","model":"germanic","revision":0},"color":"hsl(138 65% 68%)"}]]
+   ]) {
+     const save = structuredClone(regionlessEmpty);
+     save.map[layer] = objects;
+     if (layer === 'obstacles') save.counters.nextObstacleId = 2;
+     if (layer === 'kingdoms') save.ui.generationMode = 'mythic';
+     await load(save);
+     const accepted = await snapshot();
+     assert.deepEqual(accepted.map[layer], objects, layer + ' accepted');
+     assert.deepEqual(accepted.map.regions, []);
+     assert.deepEqual(accepted.map.terrainByHexKey, {});
+     assert.equal(accepted.map.physicalGrid, undefined);
+     assert.equal(await button('Сбросить').isVisible(), true, layer + ' can be reset');
+     assert.equal(await page.locator('.controls--region-management button').count(), 1);
+     const reset = await transaction(() => button('Сбросить').click());
+     assert.deepEqual(reset.map[layer], [], layer + ' cleared');
+     assert.equal(await button('Сбросить').count(), 0);
+   }
    assert.deepEqual(resetDialogs,[]);
+   console.log('HX076 reset verified: water-only, obstacle-only and kingdom-only maps; exact Undo/Redo; no dialogs.');
  } finally {
    page.off('dialog',observeResetDialog);
  }

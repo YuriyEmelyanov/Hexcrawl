@@ -14828,7 +14828,8 @@ export function App() {
   }, [kingdomJob, detailedRenderReady]);
 
   const hasRegions = regions.length > 0;
-  const hasResettableMap = hasRegions || hexTerrainByKey.size > 0 || physicalGrid !== undefined;
+  const hasResettableMap = hasRegions || hexTerrainByKey.size > 0 || physicalGrid !== undefined
+    || obstacles.length > 0 || kingdoms.length > 0;
 
   const resetMapToMode = (nextMode?:GenerationMode) => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
