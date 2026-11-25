@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-076",
+  "stage_id": "POI-SURFACE-RESET",
+  "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
+  "draft_spec_version": "D1",
+  "source_owner_decision_refs": [
+    "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
+    "agent-work/decisions/owner-2026-11-25-priority-HX076.json"
+  ],
+  "interview_status": "awaiting_owner_answers",
+  "status": "awaiting_owner_answers",
+  "open_question_ids": [
+    "SURFACE-Q01",
+    "SURFACE-Q02",
+    "SURFACE-Q03",
+    "SURFACE-Q04",
+    "SURFACE-Q05"
+  ],
+  "owner_answers": [],
+  "next_role": "interviewer",
+  "next_role_after_answers": "business_analyst",
+  "next_step": "После решения владельца по SURFACE-Q01–Q05 сверить последствия и передать аналитику чистовую спецификацию. Независимая часть — убрать подтверждение малых озёр при сбросе с сохранением Undo/Redo.",
+  "rounds": [
+    "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/round-001.json"
+  ],
+  "decisions": [
+    {
+      "question_id": "SURFACE-Q01",
+      "status": "open",
+      "owner_answer": null,
+      "requirement_refs": [
+        "D1: Сброс карты",
+        "Приёмка: Сброс и Undo/Redo"
+      ]
+    },
+    {
+      "question_id": "SURFACE-Q02",
+      "status": "open",
+      "owner_answer": null,
+      "requirement_refs": [
+        "D1: Точки интереса",
+        "Приёмка: деревня региона 7, 5/1, озеро Валькенплас №5; обратный конфликт"
+      ]
+    },
+    {
+      "question_id": "SURFACE-Q03",
+      "status": "open",
+      "owner_answer": null,
+      "requirement_refs": [
+        "D1: Точки интереса · изменение поверхности",
+        "Приёмка: смена поверхности и сохранность остальных объектов"
+      ]
+    },
+    {
+      "question_id": "SURFACE-Q04",
+      "status": "open",
+      "owner_answer": null,
+      "requirement_refs": [
+        "D1: Точки интереса · итоговая поверхность",
+        "Приёмка: граница малого озера и PNG"
+      ]
+    },
+    {
+      "question_id": "SURFACE-Q05",
+      "status": "open",
+      "owner_answer": null,
+      "requirement_refs": [
+        "D1: Точки интереса · генерация, центральные и обычные точки",
+        "Приёмка: генерация на обеих сетках"
+      ]
+    }
+  ],
+  "interview_completed": false,
+  "remaining_requirements": [
+    {
+      "ref": "D1: Сброс карты",
+      "status": "contract_confirmed",
+      "owner_quote": "Вопроса в команде сбросить быть не должно.",
+      "behavior": "Сброс очищает карту и малые озёра одной операцией. Отдельного диалога об озёрах нет; Undo восстанавливает прежнюю карту с озёрами, Redo возвращает пустую карту.",
+      "acceptance": [
+        "Карта с малым озером и без иных запросов защиты. Сбросить, проверить отсутствие диалога о водоёме и очистку.",
+        "Сверить покрытие малого озера, содержимое карты и историю до сброса, после Undo и после Redo."
+      ],
+      "scope_boundary": "SURFACE-Q01 касается только остальных подтверждений. Эта развилка не блокирует подготовку пункта об озёрах. Аналитик может проработать этот ограниченный пункт без ответа по POI. Переход к реализации через чистовую спецификацию."
+    }
+  ],
+  "updated_at": "2026-11-25T02:59:31.293Z"
+}
