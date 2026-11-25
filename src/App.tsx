@@ -9093,7 +9093,9 @@ function assignWaterPoiLayer(
   existingWaterPoiByKey: Map<string, WaterPoiKind>,
   regions: Region[],
   hexTerrainByKey: Map<string, HexTerrainData>,
-  newlyCheckedWaterHexKeys?: Iterable<string>, rng: RandomStreams = fallbackRandomStreams
+  newlyCheckedWaterHexKeys: Iterable<string>,
+  mode: GenerationMode | undefined,
+  rng: RandomStreams
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
   const waterHexKeySet = new Set(
@@ -9104,26 +9106,18 @@ function assignWaterPoiLayer(
   const next = new Map<string, WaterPoiKind>();
   const blockedKeys = new Set<string>();
 
-  const existingWaterPoiKeys = Array.from(existingWaterPoiByKey.keys())
-    .filter((key) => waterHexKeySet.has(key))
-    .sort();
-
+  const existingWaterPoiKeys = Array.from(existingWaterPoiByKey.keys()).sort();
   for (const key of existingWaterPoiKeys) {
-    const existingKind = existingWaterPoiByKey.get(key);
-    if (!existingKind || blockedKeys.has(key)) continue;
-    const hex = parseHexKey(key);
-    const terrain = hexTerrainByKey.get(key);
-    const region = terrain?.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const pool = getWaterPoiKindPool(terrain?.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild');
-    if (!pool.includes(existingKind)) continue;
-    next.set(key, existingKind);
+    const wet = waterHexKeySet.has(key);
+    if (!wet && !regionByHexKey.has(key)) continue;
+    // Saved points are data, including authored exceptions to type or spacing.
+    next.set(key, existingWaterPoiByKey.get(key)!);
+    if (!wet) continue;
     blockedKeys.add(key);
-    for (const neighbor of getHexNeighbors(hex)) blockedKeys.add(hexKey(neighbor));
+    for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
 
-  const keysToCheckForNewPoi = newlyCheckedWaterHexKeys
-    ? Array.from(new Set(newlyCheckedWaterHexKeys)).filter((key) => waterHexKeySet.has(key)).sort()
-    : [];
+  const keysToCheckForNewPoi = Array.from(new Set(newlyCheckedWaterHexKeys)).filter(key => waterHexKeySet.has(key)).sort();
 
   const landPoiKeys = new Set(regions.flatMap(region => (
     hasCentralPoi(region) ? [region.centerHex, ...region.pointsOfInterest] : region.pointsOfInterest
@@ -9137,8 +9131,8 @@ function assignWaterPoiLayer(
     const chance = context === 'wild' ? 4 : 6;
     if (randomInt(1, chance, poiRandomStreams(rng)) !== 1) continue;
     const kind = randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng));
-    // Keep the draw order when an authored land POI already occupies this hex.
-    if (!landPoiKeys.has(key)) next.set(key, kind);
+    // Keep the draw order for Mythic and for hexes with an authored land POI.
+    if (mode !== 'mythic' && !landPoiKeys.has(key)) next.set(key, kind);
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
@@ -13112,8 +13106,7 @@ export function App() {
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
-    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
-      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
+    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, options.mode, rng);
     const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings, rng);
     const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
     const finalRoadPairs = new Set(tractRoadResult.roads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
@@ -13942,8 +13935,7 @@ export function App() {
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
       generationProgress.stage = 'prepare_commit';
       const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed);
-      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
-      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
+      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, options.mode, rng);
       const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings, rng);
       const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
       const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
@@ -14771,19 +14763,16 @@ export function App() {
     const finalNextObstacleId=nextObstacleId+identifiedObstacles.length;
     const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
-    const water=new Map(waterPoiByKey);
-    for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
     const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings, rng);
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
-      waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
+      toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
       assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history,
       regions.slice(job.backup.map.regions.length).filter(r=>!r.isTract));
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
-    setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...identifiedObstacles]);setNextObstacleId(finalNextObstacleId);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
