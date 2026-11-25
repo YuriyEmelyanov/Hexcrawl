@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T04:03:32.851Z",
+  "updated_at": "2026-11-25T04:28:16.274Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -34,21 +34,23 @@
       "approved_at": "2026-11-25T02:52:25.057Z",
       "requirements": [
         "Убрать отдельный вопрос об удалении малых озёр в команде «Сбросить».",
-        "Наземные точки интереса должны находиться на суше, водные — на воде. Проверять поверхность при генерации, редактировании и открытии карты."
+        "Создавать и переносить наземные точки на сушу, водные — на воду. При открытии файла сохранять уже записанные точки на исходных местах, включая замыслы мастера вроде деревни на сваях.",
+        "Если мастер вручную меняет поверхность и точка больше ей не соответствует, удалить точку в той же операции. Undo восстанавливает поверхность и точку."
       ],
       "acceptance_outline": [
         "Сбросить карту с малыми озёрами без отдельного вопроса об озёрах. Проверить Undo и Redo.",
-        "Воспроизвести случай деревни региона 7 на гексе озера 5/1 и обратный конфликт водной точки на суше. Проверить оба масштаба и повторное открытие."
+        "Открыть карту с деревней региона №7 в озере на гексе 5/1 и контрольный файл с водной точкой на суше. Обе точки остаются видимыми на исходных координатах, включая повторное открытие.",
+        "Вручную сменить поверхность гекса с точкой. Убедиться, что несовместимая точка удаляется, а Undo возвращает её вместе с прежней поверхностью."
       ],
       "draft_spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-D1.md",
       "draft_spec_version": "D1",
       "execution_state": "awaiting_owner_answers",
       "next_role": "interviewer",
-      "next_step": "После решения владельца по SURFACE-Q01–Q05 интервьюер сверит последствия и передаст решения аналитику для чистовой спецификации. Пункт сброса малых озёр с Undo/Redo аналитик может подготовить отдельно.",
+      "next_step": "Ожидаются ответы по SURFACE-Q01, SURFACE-Q04 и SURFACE-Q05. Ответы по SURFACE-Q02 и SURFACE-Q03 зафиксированы.",
       "ready_for_development": false,
       "implementation_authorized": false,
       "release_authorized": false,
-      "updated_at": "2026-11-25T03:00:02.475Z",
+      "updated_at": "2026-11-25T04:28:16.274Z",
       "priority": 1,
       "priority_ref": "agent-work/decisions/owner-2026-11-25-priority-HX076.json",
       "interview_status": "awaiting_owner_answers",
@@ -57,8 +59,6 @@
       "interview_round_ref": "agent-work/interviews/HX-BL-076/POI-SURFACE-RESET/round-001.json",
       "open_question_ids": [
         "SURFACE-Q01",
-        "SURFACE-Q02",
-        "SURFACE-Q03",
         "SURFACE-Q04",
         "SURFACE-Q05"
       ],
