@@ -10,14 +10,17 @@
       "disposition": "keep_L1",
       "source": {
         "edition": "Sundered Isles Guidebook, Shawn Tomkin, PDF MUH051V200, обновление июнь 2024, EN",
-        "locator": "с. 34, Charting Your Course; с. 100–102, Chart Your Course, шаги 1 и 3; с. 143, Nearby Islands",
+        "locator": "с. 34, Charting Your Course; с. 100–102, Chart Your Course, шаги 1 и 3; с. 143, Nearby Islands; с. 143, Nearby Islands: региональные столбцы",
         "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "recorded_facts": "Выбор морской области даёт ориентир стартового набора: Myriads 4, Margins 3, Reaches 2 главных острова. Мелкие соседи рисуются рядом с главным, в стартовое число не входят. Это стартовое наполнение, а не число всех островов.",
         "access_level": "public_primary_text_third_party_host_selected_sections",
-        "verification": "printed_sections_rechecked",
+        "verification": "guidebook_june2024_rechecked",
         "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
-        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124"
+        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124",
+        "collation_notes": [
+          "d100=65 даёт пару в Myriads и Margins, но изолированный остров в Reaches."
+        ]
       },
       "model": {
         "game_unit_id": "SI",
@@ -61,7 +64,60 @@
             "unit": "главные острова"
           },
           "geometry": "выбранные мастером непересекающиеся контуры; адреса q/r в гексах текущей карты",
-          "neighbors": "0 для isolated, 1 для pair, несколько для group; точное число в группе выбирает мастер"
+          "neighbors": "0 для isolated, 1 для pair, несколько для group; точное число в группе выбирает мастер",
+          "nearby_islands_d100": {
+            "Myriads": [
+              [
+                1,
+                50,
+                "isolated"
+              ],
+              [
+                51,
+                80,
+                "pair"
+              ],
+              [
+                81,
+                100,
+                "group"
+              ]
+            ],
+            "Margins": [
+              [
+                1,
+                60,
+                "isolated"
+              ],
+              [
+                61,
+                85,
+                "pair"
+              ],
+              [
+                86,
+                100,
+                "group"
+              ]
+            ],
+            "Reaches": [
+              [
+                1,
+                70,
+                "isolated"
+              ],
+              [
+                71,
+                90,
+                "pair"
+              ],
+              [
+                91,
+                100,
+                "group"
+              ]
+            ]
+          }
         },
         "product_operation": "Нанести отдельные острова и сохранить различие главных и добавленных соседей в данных выбранной карты.",
         "expected_output": "В сохранённом стартовом наборе ровно 4, 3 или 2 главных острова для выбранной ветки. Дополнительные островки имеют отдельные координаты и не расходуют квоту.",
@@ -89,6 +145,11 @@
             "given": "В существующей акватории уже есть один авторский остров.",
             "when": "Пропустить упражнение в этой акватории.",
             "expected": "Сохраняется один остров на исходном месте. Стартовые контуры не добавляются."
+          },
+          {
+            "given": "Одинаковый d100=65 у острова в каждой из трёх областей, для пары выбрана соседняя суша.",
+            "when": "Применить соответствующий столбец и открыть карту.",
+            "expected": "Myriads и Margins получают по одному соседу, Reaches — ни одного. Число главных островов остаётся 4/3/2."
           }
         ],
         "source_vs_product_interpretation": "Количество и роль соседей следуют из книги. Непересекающиеся контуры, адреса гексов и повторное открытие — продуктовая проверка выбранной проекции.",
@@ -132,14 +193,17 @@
       "disposition": "keep_L1",
       "source": {
         "edition": "Sundered Isles Guidebook, Shawn Tomkin, PDF MUH051V200, обновление июнь 2024, EN",
-        "locator": "с. 102, шаг 3; с. 142, Island Landscape (Size, Terrain, Vitality); с. 147, Island Name",
+        "locator": "с. 102, шаг 3; с. 142, Island Landscape (Size, Terrain, Vitality); с. 147, Island Name; с. 142, Size / Terrain / Vitality",
         "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "recorded_facts": "Размер, преобладающие рельеф и жизненность выбирают или определяют таблицами. Крупному острову можно задать неоднородный ландшафт. Размер описан временем обхода береговой линии, сама береговая линия рисуется приблизительно.",
         "access_level": "public_primary_text_third_party_host_selected_sections",
-        "verification": "printed_sections_rechecked",
+        "verification": "guidebook_june2024_rechecked",
         "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
-        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124"
+        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124",
+        "collation_notes": [
+          "Size измеряется оценкой времени обхода: часы, дни или недели. Рельеф и жизненность — доминирующие признаки, локальные исключения на больших островах допустимы."
+        ]
       },
       "model": {
         "game_unit_id": "SI",
@@ -201,6 +265,11 @@
             "given": "I с доминирующим Elevated и одним локальным прибрежным гексом иного биома.",
             "when": "Изменить местность этого гекса и открыть сохранение.",
             "expected": "Правка остаётся локальной; имя, размер, доминирующий рельеф и Vitality I совпадают с сохранёнными."
+          },
+          {
+            "given": "Myriads; Size=35, Terrain=35, Vitality=60. Выбраны контур и имя острова.",
+            "when": "Заполнить карточку острова и открыть сохранение.",
+            "expected": "Medium, Elevated, Lush сохраняются у того же контура. Из таких выходов не вычисляются мили или количество гексов."
           }
         ],
         "source_vs_product_interpretation": "Книга описывает атрибуты и эскиз. Модельная проверка связывает выбранные атрибуты с объектом острова и сохраняет геометрию независимо.",
@@ -237,14 +306,17 @@
       "disposition": "keep_L1",
       "source": {
         "edition": "Sundered Isles Guidebook, Shawn Tomkin, PDF MUH051V200, обновление июнь 2024, EN",
-        "locator": "с. 103, шаг 4 Build a Seaside Settlement; с. 164, Settlement Size; с. 168, Settlement Focus (Shore); с. 175, Settlement Name",
+        "locator": "с. 103, шаг 4 Build a Seaside Settlement; с. 164, Settlement Size; с. 168, Settlement Focus (Shore); с. 175, Settlement Name; с. 164, Settlement Size; с. 168, Settlement Focus",
         "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "recorded_facts": "Стартовое поселение размещается у береговой линии выбранного острова. Его размер, основное занятие и имя можно выбрать или получить из таблиц; в этом шаге используется столбец Shore. Источник также спрашивает о контролирующей фракции, что оставлено за пределами этой операции.",
         "access_level": "public_primary_text_third_party_host_selected_sections",
-        "verification": "printed_sections_rechecked",
+        "verification": "guidebook_june2024_rechecked",
         "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
-        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124"
+        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124",
+        "collation_notes": [
+          "В стартовом упражнении положение порта задаётся берегом. Выборы: размер по столбцу района, занятие по Shore. Эстетика, первое впечатление и местные сведения опциональны."
+        ]
       },
       "model": {
         "game_unit_id": "SI",
@@ -304,6 +376,11 @@
             "given": "Мастер выбрал внутренний C для стартового приморского порта, а A–B остаётся свободным.",
             "when": "Подтвердить положение без выбора берега.",
             "expected": "Для этого сценария приложение требует выбрать берег. Порт не сохраняется ни в C, ни на берегу без решения мастера."
+          },
+          {
+            "given": "Roll=40 на Settlement Size и тот же береговой сценарий для трёх районов.",
+            "when": "Выбрать размер по районному столбцу и открыть карту.",
+            "expected": "Myriads: городок с населением порядка сотен. Margins и Reaches: деревня или форпост с населением порядка десятков. Во всех случаях запись принадлежит выбранному береговому месту."
           }
         ],
         "source_vs_product_interpretation": "Берег и выбранная специализация происходят из книги. Ребро сетки, проверка валидности и адресуемая карточка — продуктовая проекция.",
@@ -348,14 +425,17 @@
       "disposition": "keep_L1",
       "source": {
         "edition": "Sundered Isles Guidebook, Shawn Tomkin, PDF MUH051V200, обновление июнь 2024, EN",
-        "locator": "с. 104–105, шаг 5 Add Notable Locations; заключение шага перед с. 105",
+        "locator": "с. 104–105, шаг 5 Add Notable Locations; заключение шага перед с. 105; с. 104–105, Location Details и Cursed Location Details",
         "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "recorded_facts": "Для стартовой акватории добавляют 1–3 локации, включая морские и сухопутные. У локации может быть открытый вопрос. Если положение пока не определено, источник предлагает оставить сведения как слух.",
         "access_level": "public_primary_text_third_party_host_selected_sections",
-        "verification": "printed_sections_rechecked",
+        "verification": "guidebook_june2024_rechecked",
         "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
         "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
-        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124"
+        "publisher_url": "https://shawn-tomkin.itch.io/sundered-isles-expansion-for-ironsworn-starforged/devlog/747441/sundered-isles-updates-061124",
+        "collation_notes": [
+          "Неизвестное место сохраняется как слух без адреса. Например, скрытый остров может остаться таким слухом. Постоянные точечные знаки отделены от известных маршрутов и русел."
+        ]
       },
       "model": {
         "game_unit_id": "SI",
@@ -419,6 +499,11 @@
             "given": "Маяк имеет адрес A; местоположение звона из глубины неизвестно.",
             "when": "Применить два выбранных результата упражнения.",
             "expected": "На карте отмечен только маяк в A; для неопределённого результата маркер или координаты не появились."
+          },
+          {
+            "given": "Выбран скрытый остров из Cursed Location Details; его адрес пока неизвестен, а ориентир на берегу A уже известен.",
+            "when": "Сохранить район.",
+            "expected": "На карте показан ориентир A. У слуха о скрытом острове адрес отсутствует; суша не добавлена."
           }
         ],
         "source_vs_product_interpretation": "Источник определяет число и допускает неизвестное положение. Координаты и проверка повторного открытия — продуктовый сценарий.",
@@ -505,14 +590,267 @@
         }
       },
       "open_checks": [],
-      "disposition_reason": "Ранги и бросок управляют ходом игры, не определяют границы или содержимое гекса. Факт контролирующей фракции может относиться к отдельному поселению при наличии решения о таком свойстве.",
+      "disposition_reason": "Ранги и бросок управляют ходом игры, не определяют границы или содержимое гекса. Факт контролирующей фракции может относиться к отдельному поселению при наличии решения о таком свойстве. Назначение конкретного контролёра в шаге 4 выделено отдельным кандидатом L1.",
       "scope_review_case": {
         "given": "Фракция указана в ранговой ячейке, границы на карте мастер не рисовал.",
         "when": "Проверить применение к региональной карте.",
         "expected": "Из ранга не выводятся гексагоны, территории или фракционное присутствие в гексах."
-      }
+      },
+      "partial_component_ref": "SI-CYC-SETTLEMENT-CONTROLLER-L1"
+    },
+    {
+      "id": "SI-CYC-SETTLEMENT-CONTROLLER-L1",
+      "game_id": "SI",
+      "disposition": "keep_L1",
+      "disposition_reason": "Фиксированная связь фракции с портом — часть подготовленного состояния адресуемого места. Критерий S06-C01 затронут только в части назначения контролёра.",
+      "source": {
+        "edition": "Sundered Isles Guidebook, Shawn Tomkin, EN, июнь 2024, MUH051V200-PDF",
+        "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "locator": "с. 101, Set Faction Influence; с. 103, Build a Seaside Settlement, Who is in control here?",
+        "publisher_url": "https://tomkinpress.com/products/sundered-isles-digital-edition",
+        "recorded_facts": "В шаге 4 выбирают контролирующую стартовое поселение фракцию. Ранговая таблица помогает сделать выбор; бросок опционален при неопределённости.",
+        "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "printed_sections_rechecked"
+      },
+      "canonical": {
+        "binding_id": null,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "candidate_binding": true,
+        "common_rule_ids": [
+          "map.faction_control",
+          "content.place_description"
+        ],
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json"
+      },
+      "model": {
+        "game_unit_id": "SI",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S06-C01",
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_component_only",
+          "basis": "Фиксированная связь фракции с портом — часть подготовленного состояния адресуемого места. Критерий S06-C01 затронут только в части назначения контролёра."
+        }
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles — с. 101, Set Faction Influence; с. 103, Build a Seaside Settlement, Who is in control here?",
+        "normative_kind": "optional_starting_area_procedure",
+        "applicability": "Подготовка стартовой акватории по шагам 4–5, если мастер выбрал представление на гексах",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить известную контролирующую фракцию конкретному береговому поселению и сохранить карту.",
+        "inputs_and_units": {
+          "settlement_id": "одна существующая точка приморского поселения",
+          "faction_id": "одна выбранная фракция",
+          "region": "район сохраняется как география, без конвертации рангов в территории"
+        },
+        "product_operation": "Назначить известную контролирующую фракцию конкретному береговому поселению и сохранить карту.",
+        "expected_output": "Карточка поселения хранит ссылку на эту фракцию и прежний адрес. Замена контролёра одного порта не меняет другие места.",
+        "constraints_and_exceptions": [
+          "Броски таблицы влияния, дипломатия и изменение контроля в ходе игры относятся к L2.",
+          "Это исследовательский кандидат на переиспользование действующей общей операции. Выбор интерфейса и объёма требует продуктовой сверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "У портов A и B разные контролёры F1 и F2.",
+            "when": "Назначить F3 только порту A и снова открыть карту.",
+            "expected": "Адреса A и B совпадают с исходными; у A F3, у B F2. Территории района не пересчитаны."
+          }
+        ],
+        "source_vs_product_interpretation": "Из источника следует тип места или отношение. Гексы, конкретное графическое представление, проверка сохранения и тестовые адреса относятся к HexCrawl.",
+        "canonical_rule_refs": [
+          "map.faction_control",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Не установлено, есть ли способ хранить эту связь в текущем продукте."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Опубликованный SHA для конкретного сценария не проверялся; общая поддержка географии/мест не доказывает этот профиль."
+      },
+      "open_checks": [
+        "Выполнить сценарии на опубликованном SHA и сопоставить выход с точным ожидаемым."
+      ]
+    },
+    {
+      "id": "SI-CYC-KNOWN-SEA-ROUTE-L1",
+      "game_id": "SI",
+      "disposition": "keep_L1",
+      "disposition_reason": "Линейный результат отличается от маркера точечного ориентира и переиспользует хранение пути.",
+      "source": {
+        "edition": "Sundered Isles Guidebook, Shawn Tomkin, EN, июнь 2024, MUH051V200-PDF",
+        "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "locator": "с. 104, Add Notable Locations, Location Details d100=16–19; с. 105, размещение известных/неизвестных результатов",
+        "publisher_url": "https://tomkinpress.com/products/sundered-isles-digital-edition",
+        "recorded_facts": "Обычная таблица допускает важный торговый маршрут. При неопределённом местоположении результат оставляют слухом.",
+        "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "printed_sections_rechecked"
+      },
+      "canonical": {
+        "binding_id": null,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "candidate_binding": true,
+        "common_rule_ids": [
+          "map.routes_and_barriers"
+        ],
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json"
+      },
+      "model": {
+        "game_unit_id": "SI",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C04",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_component_only",
+          "basis": "Линейный результат отличается от маркера точечного ориентира и переиспользует хранение пути."
+        }
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles — с. 104, Add Notable Locations, Location Details d100=16–19; с. 105, размещение известных/неизвестных результатов",
+        "normative_kind": "optional_starting_area_procedure",
+        "applicability": "Подготовка стартовой акватории по шагам 4–5, если мастер выбрал представление на гексах",
+        "layer": "L1",
+        "trigger_or_user_action": "Нанести известный торговый маршрут в акватории по выбранным мастером водным участкам и сохранить его.",
+        "inputs_and_units": {
+          "oracle": "d100=16–19 или прямой выбор",
+          "positions": "в тесте упорядоченные адреса трёх водных гексов",
+          "uncertain": "без геометрии, если адреса ещё неизвестны"
+        },
+        "product_operation": "Нанести известный торговый маршрут в акватории по выбранным мастером водным участкам и сохранить его.",
+        "expected_output": "Известный маршрут сохраняет имя и порядок участков. Для слуха линия не появляется.",
+        "constraints_and_exceptions": [
+          "Порядок участков — геометрия выбранного пути, не правило времени морского перехода.",
+          "Торговля, блокада и патрули в ходе игры не входят в проверку. S01-C04 только аналог связи пути; морской маршрут не считается наземной дорогой."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Выпало 18; мастер указал W1→W2→W3 и имя маршрута.",
+            "when": "Сохранить и открыть карту.",
+            "expected": "Одна связная линия с заданным именем и тремя адресами в исходном порядке."
+          },
+          {
+            "given": "Выпало 19; путь только известен по слухам.",
+            "when": "Сохранить без выбранных адресов.",
+            "expected": "Новой линии или точки с вымышленными координатами нет."
+          }
+        ],
+        "source_vs_product_interpretation": "Из источника следует тип места или отношение. Гексы, конкретное графическое представление, проверка сохранения и тестовые адреса относятся к HexCrawl.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Схема морских маршрутов на актуальном SHA не установлена."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Опубликованный SHA для конкретного сценария не проверялся; общая поддержка географии/мест не доказывает этот профиль."
+      },
+      "open_checks": [
+        "Выполнить сценарии на опубликованном SHA и сопоставить выход с точным ожидаемым."
+      ]
+    },
+    {
+      "id": "SI-CYC-KNOWN-RIVER-L1",
+      "game_id": "SI",
+      "disposition": "keep_L1",
+      "disposition_reason": "У результата есть русло и устье как географические объекты. Общую операцию реки можно повторно использовать; игровую судоходность следует проверить отдельно.",
+      "source": {
+        "edition": "Sundered Isles Guidebook, Shawn Tomkin, EN, июнь 2024, MUH051V200-PDF",
+        "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "primary_url": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+        "locator": "с. 104, Add Notable Locations, Location Details d100=98–100; с. 105, отметка на карте",
+        "publisher_url": "https://tomkinpress.com/products/sundered-isles-digital-edition",
+        "recorded_facts": "В обычной таблице один исход задаёт широкую судоходную реку. Вопрос о месте выше по реке допускает неопределённый ответ.",
+        "author_project_key": "shawn-tomkin:sundered-isles:guidebook-2024-06",
+        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "verification": "printed_sections_rechecked"
+      },
+      "canonical": {
+        "binding_id": null,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "candidate_binding": true,
+        "common_rule_ids": [
+          "map.river_network"
+        ],
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json"
+      },
+      "model": {
+        "game_unit_id": "SI",
+        "operation_id": null,
+        "operation_ref": null,
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "candidate_component_only",
+          "basis": "У результата есть русло и устье как географические объекты. Общую операцию реки можно повторно использовать; игровую судоходность следует проверить отдельно."
+        }
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles — с. 104, Add Notable Locations, Location Details d100=98–100; с. 105, отметка на карте",
+        "normative_kind": "optional_starting_area_procedure",
+        "applicability": "Подготовка стартовой акватории по шагам 4–5, если мастер выбрал представление на гексах",
+        "layer": "L1",
+        "trigger_or_user_action": "Нанести известную реку на остров и сохранить её связь с берегом и выделенным судоходным участком, если он задан мастером.",
+        "inputs_and_units": {
+          "oracle": "d100=98–100 или прямой выбор",
+          "geometry": "связная линия по острову до берега",
+          "navigable": "выбранный мастером участок, без численного порога"
+        },
+        "product_operation": "Нанести известную реку на остров и сохранить её связь с берегом и выделенным судоходным участком, если он задан мастером.",
+        "expected_output": "Русло сохраняет непрерывность и положение устья. Помеченный участок остаётся у той же линии. Открытый вопрос не создаёт место выше по течению автоматически.",
+        "constraints_and_exceptions": [
+          "Ширина в метрах, глубина и порог судоходности не заданы.",
+          "Броски плавания относятся к L2."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На острове выбран путь R1→R2→устье M; R2–M объявлен судоходным, место выше по реке неизвестно.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Геометрия до M и метка R2–M сохранены. Новая точка у R1 не добавлена."
+          }
+        ],
+        "source_vs_product_interpretation": "Из источника следует тип места или отношение. Гексы, конкретное графическое представление, проверка сохранения и тестовые адреса относятся к HexCrawl.",
+        "canonical_rule_refs": [
+          "map.river_network"
+        ],
+        "unresolved_parameters": [
+          "Способ хранения судоходности на нынешней версии не подтверждён."
+        ]
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "verified_sha": null,
+        "evidence": [],
+        "finding": "Опубликованный SHA для конкретного сценария не проверялся; общая поддержка географии/мест не доказывает этот профиль."
+      },
+      "open_checks": [
+        "Выполнить сценарии на опубликованном SHA и сопоставить выход с точным ожидаемым."
+      ]
     }
   ],
-  "latest_formalization_base_sha": "0c7b578eaba0ce420cf1d9c4cab43e71c43a4504",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-maritime-1930"
+  "latest_formalization_base_sha": "3a0c1561c16c0ad06a6a452e4999f527a1343978",
+  "latest_formalization_run_id": "2026-11-25-top20-l1-si-atlas-1630",
+  "latest_source_coverage_review_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-si-atlas-1630.json"
 }

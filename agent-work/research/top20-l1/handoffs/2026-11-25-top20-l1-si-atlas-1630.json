@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-25-top20-l1-si-atlas-1630",
+  "base_sha": "3a0c1561c16c0ad06a6a452e4999f527a1343978",
+  "game_id": "SI",
+  "audiences": [
+    "модель продукта",
+    "стратег и аналитик"
+  ],
+  "status": "bounded_starting_chart_requirements_complete",
+  "corpus": {
+    "edition": "Sundered Isles Guidebook, Shawn Tomkin, EN, июнь 2024, MUH051V200-PDF",
+    "source_ref": "https://studylib.net/doc/28483088/ironsworn-sundered-isles",
+    "publisher_ref": "https://tomkinpress.com/collections/downloads-for-sundered-isles",
+    "read": "Chart Your Course, с. 100–105; Island Landscape с. 142, Nearby Islands с. 143, Settlement Size с. 164 и сверка используемого столбца Settlement Focus с. 168.",
+    "boundary": "Страницы 147, 165–166, 170 и 175 использованы как локаторы зависимостей; полные таблицы не перенесены. Сам автор допускает простую карту и пропуск упражнения."
+  },
+  "reused_operations": [
+    {
+      "operation_id": "SI-obs-01",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-obs-01",
+      "disposition": "keep_L1",
+      "change": "Myriads и Margins получают по одному соседу, Reaches — ни одного. Число главных островов остаётся 4/3/2."
+    },
+    {
+      "operation_id": "SI-obs-02",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-obs-02",
+      "disposition": "keep_L1",
+      "change": "Medium, Elevated, Lush сохраняются у того же контура. Из таких выходов не вычисляются мили или количество гексов."
+    },
+    {
+      "operation_id": "SI-obs-03",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-obs-03",
+      "disposition": "keep_L1",
+      "change": "Myriads: городок с населением порядка сотен. Margins и Reaches: деревня или форпост с населением порядка десятков. Во всех случаях запись принадлежит выбранному береговому месту."
+    },
+    {
+      "operation_id": "SI-obs-04",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-obs-04",
+      "disposition": "keep_L1",
+      "change": "На карте показан ориентир A. У слуха о скрытом острове адрес отсутствует; суша не добавлена."
+    },
+    {
+      "operation_id": "SI-obs-05",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-obs-05",
+      "disposition": "defer_L2",
+      "change": "Ранговый оракул остаётся L2. Контроль конкретного порта выделен как отдельный L1 кандидат."
+    }
+  ],
+  "new_operations": [
+    {
+      "operation_id": "SI-CYC-SETTLEMENT-CONTROLLER-L1",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-CYC-SETTLEMENT-CONTROLLER-L1",
+      "criterion_ids": [
+        "S06-C01",
+        "S05-C01",
+        "S04-C04"
+      ],
+      "rule_ids": [
+        "map.faction_control",
+        "content.place_description"
+      ],
+      "exact_binding_id": null,
+      "implementation": "unknown"
+    },
+    {
+      "operation_id": "SI-CYC-KNOWN-SEA-ROUTE-L1",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-CYC-KNOWN-SEA-ROUTE-L1",
+      "criterion_ids": [
+        "S01-C04",
+        "S04-C04"
+      ],
+      "rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "exact_binding_id": null,
+      "implementation": "unknown"
+    },
+    {
+      "operation_id": "SI-CYC-KNOWN-RIVER-L1",
+      "ref": "agent-work/research/top20-l1/games/SI.json#SI-CYC-KNOWN-RIVER-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S04-C04"
+      ],
+      "rule_ids": [
+        "map.river_network"
+      ],
+      "exact_binding_id": null,
+      "implementation": "unknown"
+    }
+  ],
+  "scope_decisions": [
+    {
+      "item": "Влияние фракций на встречи, маршруты в ходе плавания, подвижные патрули",
+      "disposition": "defer_L2",
+      "basis": "Работают по событиям сессии."
+    },
+    {
+      "item": "Подготовка персонажа-связи, экономика портов, моделирование сюжета",
+      "disposition": "out_of_scope",
+      "basis": "Гекс-карте нужны география и конкретные места."
+    }
+  ],
+  "product_boundary": {
+    "existing_backlog": "HX-BL-064",
+    "finding": "Морской старт относится к общей функции карты. Проверка HX-BL-064 не приравнивается к реализации процедур Sundered Isles; пакет сохраняет самостоятельные критерии проверки и не меняет очередь."
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-25-top20-l1-si-atlas-1630",
+    "result_ref": "agent-work/research/runs/2026-11-25-top20-l1-si-atlas-1630.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-25-top20-l1-si-atlas-1630.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Сверены пять строк Sundered Isles по Guidebook июня 2024. Четыре прежние строки уточнены по оракулам и получили по дополнительной проверке. Контроль порта, морской путь и речное русло выделены как три кандидата L1.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата."
+    },
+    "next": "Ashes Without Number: сверить с. 143–145 и следующие относящиеся к карте разделы создания региона и ключей мест, отделив статические результаты карты от ведения и жанровых правил.",
+    "needs_owner_action": false
+  }
+}
