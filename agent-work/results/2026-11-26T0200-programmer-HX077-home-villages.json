@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "status": "implementation_in_progress",
+  "working_branch": "feat/hx077-crows",
+  "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+  "wip_head_sha": "d115c79006c17b1f97892ddeb7138361c0391b3d",
+  "wip_tree_sha": "7c8904d30507d92c856734ff2183c0023b9dd81c",
+  "final_spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+  "final_spec_version": "F1",
+  "final_spec_blob_sha": "0626eb96d0312ee7983ceea9c61b57f787a7c71a",
+  "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
+  "ready_for_development": true,
+  "review_ready": false,
+  "release_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Продолжить Crows F1 с распределения четырёх категорий поселений и отдельных построек (CROWS-06/07, Q06), затем добавить признаки среды и самостоятельные маяки. Подготовить единый пакет и полный прогон.",
+  "result_ref": "agent-work/results/2026-11-26T0200-programmer-HX077-home-villages.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-077/crows-home-villages/verification.json",
+  "run_id": "2026-11-26T0200-programmer-HX077-home-villages",
+  "role": "programmer",
+  "claim_ref": "agent-work/claims/2026-11-26T0200-programmer-HX077-home-villages.json",
+  "generation": 861,
+  "role_selection_reason": "Приоритет владельца HX-BL-077, свободный слот, готовое продолжение с точным SHA.",
+  "result": "Стартовая домашняя деревня, назначение второй через редактирование точки, правка построек и пересчёт Миазмы от деревенского маяка. Проверены классический профиль, JSON, Undo/Redo и PNG.",
+  "scope": {
+    "verified": [
+      "CROWS-05 first home in newly generated region on empty and populated maps",
+      "CROWS-05/Q04 conversion keeps name and position; Undo/Redo, multiple homes, unassign",
+      "CROWS-08 village beacons and recomputation",
+      "CROWS-09 save/reopen, profile round trip"
+    ],
+    "remaining": [
+      "CROWS-04 natural traits",
+      "CROWS-06 ordinary settlements",
+      "CROWS-07 separate buildings and placement",
+      "CROWS-08 freestanding beacons and full radius/overlap acceptance",
+      "CROWS-01–09 full package acceptance"
+    ]
+  },
+  "forecast": {
+    "remaining_team_runs": [
+      8,
+      14
+    ],
+    "confidence": "low_until_standalone_buildings",
+    "basis": "Предварительный F1, второй шаг реализован на реальной карте; оставшиеся цифры уточнить после CROWS-06/07.",
+    "owner_decision_wait_excluded": true
+  },
+  "checks": {
+    "typecheck": {
+      "status": "passed",
+      "command": "tsc --noEmit",
+      "node": "24.22.3"
+    },
+    "build": {
+      "status": "passed",
+      "ref": "agent-work/evidence/HX-BL-077/crows-home-villages/crows-village-build.log"
+    },
+    "node": {
+      "suite": "saveSafety.test.mjs",
+      "status": "passed",
+      "executed": 58,
+      "passed": 58,
+      "skipped": 0,
+      "ref": "agent-work/evidence/HX-BL-077/crows-home-villages/crows-village-save.log"
+    },
+    "browser": {
+      "status": "passed_scoped",
+      "ref": "agent-work/evidence/HX-BL-077/crows-home-villages/crows-village-browser.log",
+      "measurements": {
+        "freshHomes": 1,
+        "homeCountsBefore": 1,
+        "homeCountsAfter": 2,
+        "starterBuildings": 6,
+        "generatedOnExisting": true,
+        "changedTower": true,
+        "undoRedo": true,
+        "unassignKeepsVillage": true,
+        "editableBeacons": true,
+        "miasmaRecalculates": true,
+        "saveAndReopen": true,
+        "classicSwitchKeepsVillage": true,
+        "png": 259329,
+        "errors": []
+      },
+      "separate_from_node": true
+    },
+    "full_check": {
+      "status": "pending_integrated_package"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b7fb9bc8df49c6db1d1145f2c921cdb78b9cf4c0",
+    "head_sha": "d115c79006c17b1f97892ddeb7138361c0391b3d",
+    "added": 2,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node saveSafety",
+    "scenario": "Валидность владельца записи поселения и диапазона построек; специальный радиус маяка уровня V при процветании 10.",
+    "reuse_or_new_reason": "Тот же набор импорта, два отдельных контракта F1; браузерный сценарий временный, в постоянный набор не включён.",
+    "source": "git diff with two added logical test cases; JSX stub is tool support only."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-25T22:59:50.103Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-25T23:06:32.255Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-25T23:06:32.255Z"
+}
