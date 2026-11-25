@@ -640,25 +640,23 @@ try {
    await load(fixture);
    const imported = await snapshot();
    const region = imported.map.regions[0];
-   region.pointsOfInterest.push({q:1,r:0});
-   region.pointOfInterestKinds = {...region.pointOfInterestKinds,'1,0':'village'};
-   imported.map.terrainByHexKey['1,0'] = {terrainOverride:'lake',lakeId:1};
-   imported.counters.nextLakeId = 2;
-   imported.map.waterPoiByHexKey['0,1'] = 'shipwreck';
+   region.pointsOfInterest.push({q:0,r:1});
+   region.pointOfInterestKinds = {...region.pointOfInterestKinds,'0,1':'village'};
+   imported.map.waterPoiByHexKey['1,0'] = 'shipwreck';
    imported.map.editorNames = {
-     'poi:1:1,0': {ru:'Деревня на сваях',en:'Stilt Village'},
-     'waterPoi:0,1': {ru:'Крушение на суше',en:'Inland Wreck'},
+     'poi:1:0,1': {ru:'Деревня на сваях',en:'Stilt Village'},
+     'waterPoi:1,0': {ru:'Крушение на суше',en:'Inland Wreck'},
    };
-   imported.map.poiDiscovery = {'poi:1:1,0':'exploration','waterPoi:0,1':'interaction'};
+   imported.map.poiDiscovery = {'poi:1:0,1':'exploration','waterPoi:1,0':'interaction'};
    await load(imported);
    const accepted = await snapshot();
-   assert.equal(accepted.map.regions[0].pointOfInterestKinds['1,0'],'village');
-   assert.equal(accepted.map.terrainByHexKey['1,0'].terrainOverride,'lake');
-   assert.equal(accepted.map.waterPoiByHexKey['0,1'],'shipwreck');
-   assert.notEqual(accepted.map.terrainByHexKey['0,1']?.terrainOverride,'lake');
+   assert.equal(accepted.map.regions[0].pointOfInterestKinds['0,1'],'village');
+   assert.equal(accepted.map.terrainByHexKey['0,1'].terrainOverride,'lake');
+   assert.equal(accepted.map.waterPoiByHexKey['1,0'],'shipwreck');
+   assert.equal(accepted.map.terrainByHexKey['1,0'],undefined);
    assert.deepEqual(accepted.map.editorNames,imported.map.editorNames);
    assert.deepEqual(accepted.map.poiDiscovery,imported.map.poiDiscovery);
-   for(const [key,name] of [['1,0','Деревня на сваях'],['0,1','Крушение на суше']]){
+   for(const [key,name] of [['0,1','Деревня на сваях'],['1,0','Крушение на суше']]){
      await page.locator(`[data-engraved-poi="${key}"] .poi-marker`).waitFor();
      await select(key);
      assert.ok(await page.getByText(name,{exact:true}).isVisible());
