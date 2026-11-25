@@ -1,0 +1,122 @@
+{
+  "task_id": "HX-BL-076",
+  "stage_id": "RESET",
+  "scope": "F1 / SURFACE-Q01",
+  "finding_id": "HX076-RESET-RV02-01",
+  "pr": 516,
+  "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+  "previous_head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+  "head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+  "tree_sha": "713ce34c0b55522331df8fdba382329eb818ae21",
+  "fixture_refs": [
+    "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/obstacle-only.json",
+    "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/kingdom-only.json"
+  ],
+  "previous_review_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/review.json",
+  "method": "GitHub Actions ran the existing production browser test with real JSON import and export. For each case it compares the full before/reset export (savedAt excluded) through Undo and Redo after asserting reset visibility, data retention at import, complete clearing, and hidden region commands on the regionless map.",
+  "cases": [
+    {
+      "name": "water-only",
+      "reset_visible": true,
+      "cleared": true,
+      "undo_redo_exact": true
+    },
+    {
+      "name": "obstacle-only",
+      "reset_visible": true,
+      "cleared": true,
+      "undo_redo_exact": true
+    },
+    {
+      "name": "kingdom-only",
+      "reset_visible": true,
+      "cleared": true,
+      "undo_redo_exact": true
+    }
+  ],
+  "empty_map_reset_visible": false,
+  "dialogs": 0,
+  "checks": {
+    "required_passed": true,
+    "run_id": 45583649258,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45583649258",
+    "pr_head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+    "checkout_sha": "4c28608d5bf8c337c04829b0bc5b3ce3d6466bf1",
+    "checkout_tree_sha": "713ce34c0b55522331df8fdba382329eb818ae21",
+    "observed_at": "2026-11-25T09:26:55Z",
+    "jobs": [
+      {
+        "id": 139099636148,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 139099636381,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 139099636568,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 139099638599,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "tests": 453,
+      "pass": 453,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "job_id": 139099636568,
+      "matched": [
+        "2026-11-25T09:15:29.0025731Z HEAD is now at 4c28608 Merge a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+        "2026-11-25T09:21:34.8906407Z HX076 reset verified: water-only, obstacle-only and kingdom-only maps; exact Undo/Redo; no dialogs.",
+        "2026-11-25T09:23:15.8161283Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+      ],
+      "tree_confirmed": true
+    },
+    "world_random": {
+      "conclusion": "success"
+    }
+  },
+  "environment": {
+    "local_status": "environment_offline",
+    "verification": "existing_github_actions",
+    "after_screenshot": "not_captured",
+    "before_screenshots": [
+      "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/obstacle-only.jpg",
+      "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/kingdom-only.jpg"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+    "head_sha": "a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Browser save-history",
+    "scenario": "На двух контрольных картах отдельно сохранены препятствие и королевство. Для каждой проверяются принятие импорта, доступность сброса, одна обратимая транзакция и отсутствие кнопки после очистки.",
+    "parameter_cases": [
+      {
+        "layer": "obstacles",
+        "fixture_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/obstacle-only.json"
+      },
+      {
+        "layer": "kingdoms",
+        "fixture_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/kingdom-only.json"
+      }
+    ],
+    "reuse_or_new_reason": "Расширен существующий тест истории, который уже проверяет сброс водной карты без регионов и содержит помощник точного Undo/Redo. Обе конфигурации нужны: исправление должно охватывать каждый слой независимо.",
+    "source": "Git diff 00c7dc82421549e2e5661abebb3a6a060d146876..a726d46d148fb5fd25f47dab8f58b2c74b1e5fc9 по test/browser/save-history.smoke.mjs; добавлены две параметрические конфигурации внутри существующего браузерного сценария."
+  }
+}
