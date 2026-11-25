@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-25T1000-programmer-PR516-RV01",
+  "run_id": "2026-11-25T1100-reviewer-PR516-reset",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "reset_review_ready",
+  "status": "reset_changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -49,31 +49,15 @@
   "schedule_start_at": "2026-11-19T19:00:00+03:00",
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-076",
   "spec_path": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json",
+  "result_path": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": {
-    "task_id": "HX-BL-076",
-    "role": "reviewer",
-    "run_id": "2026-11-25T1100-reviewer-PR516-reset",
-    "claim_ref": "agent-work/claims/2026-11-25T1100-reviewer-PR516-reset.json",
-    "branch": "feat/hx076-reset-map",
-    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
-    "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
-    "generation": 807,
-    "acquired_at": "2026-11-25T08:04:10Z",
-    "heartbeat_at": "2026-11-25T08:04:10Z",
-    "status": "active",
-    "execution_running": true,
-    "stage_id": "RESET",
-    "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
-    "scope": "Independent SURFACE-Q01 review of PR 516 at 00c7dc8"
-  },
-  "next_step": "Независимо проверить PR №516 на 00c7dc8 по SURFACE-Q01. Повторить сброс непустой карты без регионов, Undo/Redo, обычную и пустую карту; записать вывод и предварительную оценку 1.3-rc8.",
+  "active_claim": null,
+  "next_step": "Показать «Сбросить» для принятой карты с препятствием или королевством при отсутствии регионов, воды и одномильной сетки. Проверить оба JSON на новом SHA, включая очистку, точные Undo/Redo, прежние условия команд региона и пустую карту. Передать на независимую приёмку.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -104,7 +88,7 @@
   "tree_sha": "61df548eb51a9120a36caf2ac2af908fef4653f4",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45567848260",
-  "review_verdict": null,
+  "review_verdict": "changes_requested",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -119,7 +103,7 @@
   "score_update_task_id": "HX-BL-073",
   "score_update_release_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Открытое замечание независимого проверяющего по приоритетной HX-BL-076 с однозначным контрактом SURFACE-Q01. Реестр подтвердил владение для ограниченного исправления.",
+  "role_selection_reason": "Приоритетная HX-BL-076 готова к независимой повторной приёмке по SURFACE-Q01. PR №516 открыт на точном SHA, необходимые проверки завершены, реестр исполнителей свободен для этой роли.",
   "score_update_result_ref": "agent-work/results/2026-11-25T0700-reviewer-PR515.json",
   "score_update_completed_at": "2026-11-25T04:03:32.851Z",
   "score_update_delta": 0.9876543209876544,
@@ -133,12 +117,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-25T07:08:20.204Z",
+      "at": "2026-11-25T08:03:02Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-25T07:41:18Z",
+      "at": "2026-11-25T08:08:17Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -146,9 +130,9 @@
     "errors": []
   },
   "open_findings": [
-    "HX076-RESET-RV01-01"
+    "HX076-RESET-RV02-01"
   ],
-  "current_review_score_assessment_status": "pending_independent_assessment",
+  "current_review_score_assessment_status": "preliminary_changes_requested",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -461,27 +445,9 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-  "addressed_findings_pending_review": [
-    "HX076-RESET-RV01-01"
-  ],
+  "addressed_findings_pending_review": [],
   "verified_fixed_findings": [
-    {
-      "id": "OM-REV-001",
-      "status": "closed_verified",
-      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-      "verifier": "independent_fresh_agent_plus_root_CI_artifact_crosscheck",
-      "review_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
-      "evidence": [
-        "agent-work/evidence/review-ONE-MILE1-d419-1400/busy-probe.json",
-        "agent-work/evidence/review-ONE-MILE1-d419-1400/sensitivity.json",
-        "agent-work/evidence/review-ONE-MILE1-d419-1400/root-crosscheck.json"
-      ]
-    },
-    "HX056-F11-RV06",
-    "HX056-F11-RV07",
-    "HX056-F11-RV08",
-    "HX056-F11-RV09",
-    "HX056-F11-RV10"
+    "HX076-RESET-RV01-01"
   ],
   "recovery_health": {
     "previous_start": {
@@ -589,7 +555,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44894704937",
   "next_task_execution_allowed": true,
   "last_release_pr": 511,
-  "last_material_result_path": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json",
+  "last_material_result_path": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
   "last_wait_check_at": "2026-11-22T06:59:13.314Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -630,23 +596,27 @@
   },
   "previous_active_claim": {
     "task_id": "HX-BL-076",
-    "role": "programmer",
-    "programmer_slot": true,
-    "run_id": "2026-11-25T1000-programmer-PR516-RV01",
-    "claim_ref": "agent-work/claims/2026-11-25T1000-programmer-PR516-RV01.json",
+    "role": "reviewer",
+    "run_id": "2026-11-25T1100-reviewer-PR516-reset",
+    "claim_ref": "agent-work/claims/2026-11-25T1100-reviewer-PR516-reset.json",
     "branch": "feat/hx076-reset-map",
     "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
-    "head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
-    "generation": 803,
-    "acquired_at": "2026-11-25T07:09:16.338Z",
-    "heartbeat_at": "2026-11-25T07:09:16.338Z",
+    "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+    "generation": 807,
+    "acquired_at": "2026-11-25T08:04:10Z",
+    "heartbeat_at": "2026-11-25T08:04:10Z",
     "status": "completed",
     "execution_running": false,
-    "result_ref": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json"
+    "stage_id": "RESET",
+    "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
+    "scope": "Independent SURFACE-Q01 review of PR 516 at 00c7dc8",
+    "result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
+    "completed_at": "2026-11-25T08:08:17Z",
+    "no_writing_processes_running": true
   },
   "review_request": null,
-  "reviewed_sha": "cae2b4837bc759cf4ba499ce2a7e6a06bd205d0b",
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+  "current_review_score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/score-assessment.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -746,7 +716,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-25T07:41:18Z",
+  "updated_at": "2026-11-25T08:08:17Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -822,24 +792,25 @@
     {
       "task_id": "HX-BL-076",
       "stage_id": "RESET",
-      "next_role": "reviewer",
-      "status": "review_ready",
+      "next_role": "programmer",
+      "status": "changes_requested",
       "pr_number": 516,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/516",
       "branch": "feat/hx076-reset-map",
       "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
       "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
-      "tree_sha": "61df548eb51a9120a36caf2ac2af908fef4653f4",
-      "scope": "F1 · SURFACE-Q01",
-      "finding_id": "HX076-RESET-RV01-01",
+      "scope": "F1 / SURFACE-Q01. Доступность сброса для непустой карты без регионов.",
+      "finding_id": "HX076-RESET-RV02-01",
       "spec_ref": "agent-work/specs/HX-BL-076-poi-surface-and-reset-F1.md",
-      "result_ref": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json",
-      "fixture_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/lake-without-regions.json",
-      "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/browser.json",
-      "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45567848260",
-      "authorization": "independent_review_authorized_in_f1_scope",
+      "result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
+      "fixture_refs": [
+        "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/obstacle-only.json",
+        "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/kingdom-only.json"
+      ],
+      "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/review.json",
+      "authorization": "approved_fix_in_f1_scope",
       "publication_authorized": false,
-      "next_step": "Независимо проверить PR №516 на 00c7dc8 по SURFACE-Q01. Повторить сброс непустой карты без регионов, Undo/Redo, обычную и пустую карту; записать вывод и предварительную оценку 1.3-rc8."
+      "next_step": "Показать «Сбросить» для принятой карты с препятствием или королевством при отсутствии регионов, воды и одномильной сетки. Проверить оба JSON на новом SHA, включая очистку, точные Undo/Redo, прежние условия команд региона и пустую карту. Передать на независимую приёмку."
     },
     {
       "task_id": "HX-BL-054",
@@ -906,15 +877,26 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+    "base_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
     "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
     "added": 0,
     "removed": 0,
-    "modified": 1,
-    "suite": "Browser save-history smoke",
-    "scenario": "Сброс через видимую кнопку после импорта карты с озером, точкой и заметкой при нуле регионов. Точные Undo/Redo, отсутствие диалогов и кнопки на пустой карте.",
-    "reuse_or_new_reason": "Расширена существующая проверка истории. Проверка обработчика в Node не выявляла недоступность кнопки.",
-    "source": "git diff 749397bff60f6d0fe2233073db9baa93801a9029..00c7dc82421549e2e5661abebb3a6a060d146876 -- test/browser/save-history.smoke.mjs; одна существующая цепочка сценария истории."
+    "modified": 3,
+    "suite": [
+      "Node saveSafety",
+      "Browser save-history"
+    ],
+    "scenario": "Node: малые озёра и локальные правки; авторские имена, заметки и данные Knave. Browser: доступность кнопки после импорта сохранения с водой без регионов и точная история.",
+    "reuse_or_new_reason": "Два прежних теста обработчика переписаны под F1 и покрывают разные наборы слоёв. Добавления внутри прежнего browser-сценария покрывают видимость команды при отсутствии регионов, чего не могут проверить тесты обработчика. Новые временные случаи проверяющего не входят в пакет.",
+    "source": "git diff b1b8c1b38f6e7616a68120cd6923af73da13a8a9..00c7dc82421549e2e5661abebb3a6a060d146876 по test/saveSafety.test.mjs и test/browser/save-history.smoke.mjs; две декларации Node и одна существующая сквозная браузерная цепочка.",
+    "since_previous_review": {
+      "base_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+      "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "suite": "Browser save-history"
+    }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012923161",
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -961,7 +943,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/browser.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/review.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -2032,7 +2014,7 @@
     "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
     "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/browser.json"
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2142,7 +2124,7 @@
   "test_change_summary_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
-  "review_evidence_ref": null,
+  "review_evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/review.json",
   "github_review_state": "COMMENTED",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
   "owner_visual_correction": {
@@ -2233,17 +2215,17 @@
   },
   "next_approved_stage_handoff_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
   "authorization_status": "Approved F1 implemented; independent review of exact SHA is next.",
-  "completed_at": "2026-11-25T07:41:18Z",
+  "completed_at": "2026-11-25T08:08:17Z",
   "score_changed": false,
   "next_stage_id": "BENDS-RV1",
   "score_evidence_updated": true,
   "current_stage_id": "RESET",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": "agent-work/claims/2026-11-24T2200-programmer-HX073.json",
-  "evidence_commit_sha": "8077e9638b3da653a96261b96af9d3f04a18b46a",
+  "evidence_commit_sha": "ef6a9b5929d5d4bab2b1f78549426a3b467ef5fa",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/review.json",
   "current_stage_ui_preview": {
@@ -7696,7 +7678,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json",
+  "result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -8499,34 +8481,87 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
-  "role": "programmer",
+  "role": "reviewer",
   "latest_result_ref": "agent-work/results/2026-11-25T0900-reviewer-PR516-reset.json",
   "checks": {
-    "typescript": "passed",
-    "build": "passed",
-    "focused_node": {
-      "executed": 5,
+    "browser": {
+      "build_dist_index_sha256": "bd3493c9c741fb448e2cd87a3491ae58b3f9631f942c85627fdc731fec201f9a",
+      "runner": "Chromium headless 151.0.7922.34",
+      "method": "Загрузка через обычный импорт и фактический экспорт JSON. Сравнение полных JSON без savedAt, проверка кнопок и SVG-слоёв.",
+      "cases": [
+        {
+          "label": "water-only",
+          "viewport": {
+            "width": 1500,
+            "height": 900
+          },
+          "dialogs": 0,
+          "errors": 0,
+          "reset_visible": true,
+          "exact_undo_redo": true,
+          "one_transaction": true
+        },
+        {
+          "label": "water-only",
+          "viewport": {
+            "width": 390,
+            "height": 900
+          },
+          "dialogs": 0,
+          "errors": 0,
+          "reset_visible": true,
+          "exact_undo_redo": true,
+          "one_transaction": true
+        },
+        {
+          "label": "ordinary",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "dialogs": 0,
+          "errors": 0,
+          "reset_visible": true,
+          "exact_undo_redo": true,
+          "one_transaction": true
+        },
+        {
+          "label": "obstacle-only",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "dialogs": 0,
+          "errors": 0,
+          "accepted": true,
+          "retained": "obstacles",
+          "rendered_elements": 1,
+          "reset_visible": false
+        },
+        {
+          "label": "kingdom-only",
+          "viewport": {
+            "width": 1500,
+            "height": 950
+          },
+          "dialogs": 0,
+          "errors": 0,
+          "accepted": true,
+          "retained": "kingdoms",
+          "rendered_elements": 94,
+          "reset_visible": false
+        }
+      ]
+    },
+    "node_focused": {
       "passed": 5,
-      "failed": 0,
+      "tests": 5,
+      "fail": 0,
       "skipped": 0
     },
-    "local_browser": {
-      "browser": "Chromium 151.0.7922.34",
-      "viewports": [
-        1500,
-        390
-      ],
-      "save_history_full": "passed",
-      "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/browser.json"
-    },
     "ci": {
-      "required_passed": true,
       "run_id": 45567848260,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45567848260",
-      "pr_head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
       "checkout_sha": "f5556fb604014fd145b5380fd8ae7522d24f84c0",
-      "checkout_tree_sha": "61df548eb51a9120a36caf2ac2af908fef4653f4",
-      "observed_at": "2026-11-25T07:40:56Z",
       "jobs": [
         {
           "id": 139046931981,
@@ -8559,17 +8594,19 @@
         "fail": 0,
         "skipped": 0
       },
-      "browser": {
-        "summary": "2026-11-25T07:32:15.8977721Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
-      },
-      "rng": {
-        "conclusion": "success"
-      }
-    },
-    "previous_browser_ci": {
-      "head_sha": "f71e965e7d412adfb76695a474ccc35958b80a05",
-      "run_id": 45566244926,
-      "browser_failure": "Duplicate fixture binding in save-history smoke; corrected at candidate head."
+      "logs": [
+        [
+          "2026-11-25T07:24:20.3222249Z HEAD is now at f5556fb Merge 00c7dc82421549e2e5661abebb3a6a060d146876 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+          "2026-11-25T07:40:15.0324028Z ℹ tests 453",
+          "2026-11-25T07:40:15.0324859Z ℹ pass 453",
+          "2026-11-25T07:40:15.0325221Z ℹ fail 0",
+          "2026-11-25T07:40:15.0326018Z ℹ skipped 0"
+        ],
+        [
+          "2026-11-25T07:24:23.6665821Z HEAD is now at f5556fb Merge 00c7dc82421549e2e5661abebb3a6a060d146876 into b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
+          "2026-11-25T07:32:15.8977721Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+        ]
+      ]
     }
   },
   "score_assessment_status": "completed",
@@ -9063,10 +9100,10 @@
       }
     ]
   },
-  "current_role_result": "Кнопка сброса доступна на непустой карте без регионов. На контрольной карте 1500 и 390 px сброс очистил озеро, именованную водную точку и заметку без диалогов. Отмена и повтор дали точные снимки карты. На пустой карте кнопка скрыта.",
+  "current_role_result": "На карте с озером, водной точкой и заметкой исправление подтверждено. На двух принятых непустых картах без регионов кнопка отсутствует: при наличии только препятствия или только королевства.",
   "current_stage_score_assessment_status": "preliminary_unpublished",
   "ui_actual_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/browser.json",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -9520,7 +9557,7 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-076",
-  "review_completed": false,
+  "review_completed": true,
   "release_readiness": "changes_requested",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_due_unpublished",
@@ -15364,7 +15401,7 @@
     "old_queues_superseded": true,
     "updated_at": "2026-11-15T20:46:38.231Z"
   },
-  "execution_state": "reset_review_ready",
+  "execution_state": "reset_changes_requested",
   "latest_PR503_score": {
     "result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
     "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -16321,8 +16358,8 @@
     }
   ],
   "task_status": "спецификация",
-  "current_result_ref": "agent-work/results/2026-11-25T1000-programmer-PR516-RV01.json",
-  "result_commit_sha": "d1cfa77c1e3bcf894176e7e11656ac8488f804d1",
+  "current_result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
+  "result_commit_sha": "e38ffe7b662c6b9ed8ca85ede7c2e2f24e72a6df",
   "independent_review_status": "accepted",
   "execution_locks_ref": "agent-work/execution-locks.json",
   "execution_lock_generation": 746,
@@ -16610,7 +16647,7 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-021-snow-biomes.json",
     "recorded_at": "2026-11-18T10:44:51.514Z"
   },
-  "review_status": "ready_for_independent_review",
+  "review_status": "changes_requested",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
   "review_ref": "agent-work/results/2026-11-24T0300-reviewer-HX062.json",
   "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/score-assessment.json",
@@ -18243,7 +18280,7 @@
       "errors": []
     }
   },
-  "active_claim_run_id": "2026-11-25T1100-reviewer-PR516-reset",
+  "active_claim_run_id": null,
   "implementation_head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
   "review_fix_ref": "agent-work/results/2026-11-24T0200-programmer-HX062-RV05.json",
   "latest_HX_BL_069_city_reroll": {
@@ -18328,7 +18365,7 @@
     }
   ],
   "preserved_active_interview": null,
-  "review_ready_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
+  "review_ready_sha": null,
   "latest_HX_BL_073_implementation": {
     "task_id": "HX-BL-073",
     "role": "programmer",
@@ -18351,7 +18388,7 @@
     "fix_ref": "HX073-RV02-01",
     "result_commit_sha": "1130452c25d43e07a1454b5b8991655671a0bc9e"
   },
-  "reviewed_head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+  "reviewed_head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
   "latest_HX_BL_073_review": {
     "task_id": "HX-BL-073",
     "role": "reviewer",
@@ -18522,12 +18559,15 @@
     "task_id": "HX-BL-076",
     "stage_id": "RESET",
     "pr": 516,
-    "head_sha": "749397bff60f6d0fe2233073db9baa93801a9029",
+    "head_sha": "00c7dc82421549e2e5661abebb3a6a060d146876",
     "verdict": "changes_requested",
-    "result_ref": "agent-work/results/2026-11-25T0900-reviewer-PR516-reset.json",
-    "evidence_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/review.json",
-    "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/749397b/review/score-assessment.json",
+    "result_ref": "agent-work/results/2026-11-25T1100-reviewer-PR516-reset.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/review.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-076/reset/00c7dc8/review/score-assessment.json",
     "finding_ids": [
+      "HX076-RESET-RV02-01"
+    ],
+    "verified_fixed_findings": [
       "HX076-RESET-RV01-01"
     ]
   },
