@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-25T20:30:13.751Z",
+  "updated_at": "2026-11-25T20:59:27.127Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3569,7 +3569,7 @@
     {
       "task_id": "HX-BL-077",
       "title": "Создать режим Crows (Cornath)",
-      "status": "Согласована",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-request-2026-11-25-crows-mode.json"
@@ -3599,13 +3599,13 @@
         "В подписанном тестовом гексе Crows отображается несколько типов среды. Ручное изменение сохраняется. Проверить разные категории деревень и отдельную постройку на карте по таблицам ТЗ.",
         "Маяк первого уровня убирает действие миазмы в своём гексе и шести соседних. Проверить рост зоны при повышении уровня и особый случай маяка пятого уровня при процветании 10."
       ],
-      "execution_state": "ready_for_final_specification",
-      "next_role": "business-analyst",
-      "next_step": "Бизнес-аналитик готовит чистовую спецификацию всего режима Crows одним пакетом по D2, ответам владельца и ТЗ2. Включить явную приёмку смены типа точки по Q04.",
-      "ready_for_development": false,
+      "execution_state": "ready_for_development",
+      "next_role": "programmer",
+      "next_step": "Реализовать полный Crows по F1 в отдельной ветке. Первый сценарий — регион, домашние деревни, маяк, сохранение и повторное открытие со сменой профилей.",
+      "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "updated_at": "2026-11-25T20:30:13.751Z",
+      "updated_at": "2026-11-25T20:59:27.127Z",
       "stage_id": "CROWS-L1",
       "draft_spec_ref": "agent-work/specs/HX-BL-077-crows-D2.md",
       "draft_spec_version": "D2",
@@ -3619,30 +3619,44 @@
         "CROWS-D1-06"
       ],
       "interview_status": "interview_completed",
-      "handoff_ref": "agent-work/handoffs/2026-11-25T2252-business-analyst-HX077-crows-D1-interviewer.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-25T2356-business-analyst-HX077-crows-F1-programmer.json",
       "approval_ref": "agent-work/decisions/owner-request-2026-11-25-crows-mode.json",
       "ui_preview_status": "presented_proposal",
       "ui_preview_pending": false,
-      "ui_preview_ref": "agent-work/evidence/HX-BL-077/crows-d2/preview.json",
+      "ui_preview_ref": "agent-work/evidence/HX-BL-077/crows-f1/preview.json",
       "scope_forecast": {
-        "packaging": "single_release",
-        "sections": [
-          "001",
-          "002",
-          "003",
-          "011",
-          "017"
-        ],
-        "forecast": "refresh_at_final_handoff"
+        "min": 10,
+        "max": 16,
+        "unit": "working_team_runs",
+        "confidence": "low_before_first_end_to_end",
+        "scope": "one_release",
+        "remaining": {
+          "implementation": [
+            7,
+            10
+          ],
+          "review_and_fixes": [
+            2,
+            4
+          ],
+          "release": [
+            1,
+            2
+          ]
+        },
+        "owner_release_wait": "excluded"
       },
-      "result_ref": "agent-work/results/2026-11-25T2330-interviewer-HX077-crows-close.json",
+      "result_ref": "agent-work/results/2026-11-25T2356-business-analyst-HX077-crows-F1.json",
       "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
       "interview_round_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.json",
       "interview_questionnaire_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/round-002.md",
       "open_question_ids": [],
       "owner_scope_correction_ref": "agent-work/decisions/owner-decision-2026-11-25-HX-BL-077-classic-ui-full-scope.json",
       "ui_order_decision_ref": "agent-work/decisions/owner-decision-2026-11-25-HX-BL-077-world-first.json",
-      "interview_answers_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json"
+      "interview_answers_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/answers-002.json",
+      "final_spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+      "final_spec_version": "F1",
+      "final_spec_blob_sha": "0626eb96d0312ee7983ceea9c61b57f787a7c71a"
     }
   ],
   "retired_pr_packages": {
