@@ -15877,14 +15877,14 @@ export function App() {
     setPoiExitRequest(null);setTimeout(()=>request.action(),0);return true;
   };
   const currentKnaveDraft=(draft:KnaveDraft|null):draft is KnaveDraft=>!!draft&&knaveDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&draft.hexKey===notesSelectionRef.current&&!documentBusy();
-  const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'>>,expected=knaveDraft)=>{
+  const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'>>,expected=knaveDraft,poiKey=knaveDiscoveryKey)=>{
     if(!editMode||generationMode!=='classic'||!selectedHexKey)return false;
     if(expected?!currentKnaveDraft(expected):mutationBlocked()||notesComposingRef.current||obstacleDraftRef.current||!finishInlineName())return false;
     const context=knaveMapContext(captureMap());if(!context.hexes.has(selectedHexKey))return false;
-    const key=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
-    if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey)||('mode'in patch)&&!key)return false;
-    const previous=key?discoveries.current[key]:undefined;
-    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:knaveRef.current?.difficultyByHex[selectedHexKey]??'unspecified',mode:previous??'passage'};
+    if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey))return false;
+    if('mode' in patch&&(!poiKey||(expected&&expected.poiKey!==poiKey)))return false;
+    const previous=poiKey?discoveries.current[poiKey]:undefined;
+    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey,difficulty:knaveRef.current?.difficultyByHex[selectedHexKey]??'unspecified',mode:previous??'passage'};
     finishNotesGroup();clearNotesDraft();updateKnaveDraft({...draft,...patch});return true;
   };
   const resetKnaveDraft=(expected=knaveDraftRef.current)=>{if(knaveDraftRef.current!==expected)return false;updateKnaveDraft(null);return true;};
@@ -16114,19 +16114,32 @@ export function App() {
     </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi, label,
       () => setEditingPoiHexKey(selectedHexKey)) : null}{name}</>;
   };
-  const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
+  const selectedLandPoi:PoiLocator|null=selectedHexKey&&selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)
+    ?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null;
+  const selectedWaterPoi:PoiLocator|null=selectedHexKey&&selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:null;
+  const selectedPoiSource=selectedWaterPoi??selectedLandPoi;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
-  const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
-  const acceptedDiscovery=knaveDiscoveryKey?discoveries.current[knaveDiscoveryKey]:undefined;
+  const selectedPoiLocators=[selectedWaterPoi,selectedLandPoi].flatMap(source=>source?[poiLocatorKey(source)]:[]);
   const knaveDifficulty=knaveDraft?.difficulty??(selectedHexKey?knave?.difficultyByHex[selectedHexKey]:undefined)??'unspecified';
-  const knaveDiscovery=knaveDraft?.mode??acceptedDiscovery??'passage';
   const knaveControlsBlocked=!!poiDraft||!!regionDraft||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||documentBusy()||dirtyNameDraft();
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секретное место'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret place'};
   const knavePanel=generationMode==='classic'&&(knave||knaveDiscoveryKey)&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
     {knave&&!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
-    {knaveDiscoveryKey&&<div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>}
+    {selectedPoiLocators.flatMap(key=>{
+      const content=knave?.content?.byPoi[key];
+      const mode=knaveDraft&&knaveDraft.poiKey===key?knaveDraft.mode:discoveries.current[key]??'passage';
+      const target=selectedPoiLocators.length>1?nameTargets.find(t=>t.poiLocator===key):undefined;
+      const poiLabel=target?.[language]||target?.fallback?.[language];
+      const discoveryLabel=(language==='ru'?'Обнаружение':'Discovery')+(poiLabel?` · ${poiLabel}`:'');
+      return [
+        content?<div key={`${key}:content`} className="knave-results"><KnaveContentRow content={content} owner={key} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${key}`]} onRoll={part=>mutateKnaveContent(key,part)}/></div>:null,
+        <div key={key} className="direct-line" data-poi-discovery={key}><label>{discoveryLabel}: {editMode?<select aria-label={discoveryLabel} value={mode}
+          disabled={knaveControlsBlocked||!!knaveDraft&&knaveDraft.poiKey!==key} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft,key)}>
+          {Object.entries(discoveryLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+        </select>:discoveryLabels[mode]}</label></div>,
+      ];
+    })}
     {knaveError&&<p id="knave-clue-error" className="direct-error" role="alert">{knaveError}</p>}
     {knaveDraft&&<button type="button" className="direct-value knave-cancel" onClick={()=>resetKnaveDraft(knaveDraft)}>{language==='ru'?'Отмена':'Cancel'}</button>}
   </div>:null;
@@ -17286,18 +17299,30 @@ export function App() {
                 const region = meta?.regionId ? regions.find(item => item.id === meta.regionId) : undefined;
                 const central = region && meta?.isCenter && hasCentralPoi(region);
                 const other = region?.pointsOfInterest.some(poi => hexKey(poi) === hex.key);
-                const kind = waterKind ?? (central ? region.centralPoiKind : other && region ? getPoiKindForHex(region, hex) : undefined);
                 if (!waterKind && !central && !other) return null;
-                const title = waterKind ? getWaterPoiLabel(waterKind, language) : central ?
-                  getCentralPoiLabel(region, language) : region ? getPoiLabelForHex(region, hex, language) : undefined;
+                const land = region&&(central||other)?{
+                  kind:central?region.centralPoiKind:getPoiKindForHex(region,hex),
+                  title:central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language),
+                  water:false,
+                }:null;
+                const markers: {kind:CentralPoiKind|PoiKind|WaterPoiKind|undefined;title:string;water:boolean}[] = land?[land]:[];
+                if(waterKind)markers.push({kind:waterKind,title:getWaterPoiLabel(waterKind,language),water:true});
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
-                const size = HEX_SIZE * .62;
+                const paired=markers.length>1;
+                const size = HEX_SIZE * (paired ? .42 : .62);
+                const radius = HEX_SIZE * (paired ? .25 : .425);
                 return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
-                  <circle cx={position.x} cy={position.y} r={HEX_SIZE*.425} fill={engravingFor(id)!.poiColor}
-                    stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
-                  <image className="poi-marker" href={getPoiSvgHref(kind, !!waterKind)}
-                    x={position.x-size/2} y={position.y-size/2} width={size} height={size}
-                    role="img" aria-label={title}/>
+                  {markers.flatMap(({kind,title,water},index)=>{
+                    const x=position.x+(paired?(index===0?-.26:.26)*HEX_SIZE:0);
+                    const key=water?'water':'land';
+                    return [
+                      <circle key={`${key}:ink`} cx={x} cy={position.y} r={radius} fill={engravingFor(id)!.poiColor}
+                        stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>,
+                      <image key={key} className="poi-marker" href={getPoiSvgHref(kind,water)}
+                        x={x-size/2} y={position.y-size/2} width={size} height={size}
+                        role="img" aria-label={title}/>,
+                    ];
+                  })}
                 </g>;
               })}
               </>}
@@ -17714,16 +17739,16 @@ export function App() {
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
                     {selectedSurfaceIsWater || selectedWaterPoiKind ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {(canEditSelectedPoi || selectedPoiKind) && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
-                      {!canEditSelectedPoi && selectedPoiKind ? <span>{POI_DETAILS[selectedPoiKind].emoji} {POI_DETAILS[selectedPoiKind].label[language]}</span>
+                    {(canEditSelectedPoi || selectedLandPoi) && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
+                      {!canEditSelectedPoi && selectedLandPoi ? <span>{selectedPoiKind?POI_DETAILS[selectedPoiKind].emoji+' ':''}{getPoiLabelForHex(selectedRegion,selectedHex,language)}</span>
                       : isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
                         {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}
-                      </select> : selectedPoiKind || editMode ? editableValue(t.editPoi, selectedPoiKind
-                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : t.addPoi,
+                      </select> : selectedLandPoi || editMode ? editableValue(t.editPoi, selectedPoiKind
+                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : selectedLandPoi?t.poi:t.addPoi,
                         () => setEditingPoiHexKey(selectedHexKey)) : null}
-                      {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
+                      {' '}{selectedLandPoi ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
                     </div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId} {renderName(`road:${roadId}`,'selected-road')}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId} {selectedHexRoadIds.includes(trailId)?null:renderName(`road:${trailId}`,'selected-road')}</p>)}
