@@ -74,6 +74,9 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const rotated = mode === 'mythic';
     save.ui.isMapRotated = rotated;
     save.map.gmNotesByHexKey = {'0,1': 'PRIVATE-EDITOR-FIXTURE'};
+    save.map.poiDiscovery = mode === 'mythic' ? {'poi:1:0,1': 'passage'} : {
+      'poi:1:0,1': 'interaction', 'poi:1:0,0': 'passage', 'poi:2:1,1': 'exploration'
+    };
     await editor.locator('input[type=file]').setInputFiles({name: 'classic-map.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(save))});
     await editor.locator('[data-selected-hex="0,1"]').waitFor({state: 'attached'});
     if (addOn) {
@@ -108,8 +111,33 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       return response.json();
     });
     const before = await snapshotPlayer();
-    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'marks', 'position', 'proposal', 'revision', 'rotated', 'routes']);
+    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'marks', 'pois', 'position', 'proposal', 'revision', 'rotated', 'routes']);
     assert.equal(before.mapMode, mode);
+    const editorIcons = await editor.locator('[data-engraved-poi]').evaluateAll(markers => markers.map(marker => [
+      marker.dataset.engravedPoi, marker.querySelector('image').getAttribute('href'), marker.querySelector('circle').getAttribute('fill')
+    ]));
+    const readIcons = page => page.locator('[data-poi] > image').evaluateAll(icons => icons.map(icon => [
+      icon.parentElement.dataset.poi, icon.getAttribute('href'), icon.previousElementSibling.getAttribute('fill')
+    ]));
+    assert.ok(editorIcons.length > 1, 'the imported map has several real points of interest');
+    assert.deepEqual((await readIcons(master)).sort(), editorIcons.sort());
+    const verifyPoi = async (view, expected) => {
+      const icons = expected ? editorIcons.filter(([key]) => key === expected) : [];
+      assert.equal(icons.length, expected ? 1 : 0);
+      assert.deepEqual(view.pois, icons.map(([key, icon, fill]) => {
+        const [q, r] = key.split(',').map(Number);
+        return {q, r, icon, fill};
+      }));
+      for (const page of [first, second]) assert.deepEqual(await readIcons(page), icons);
+      if (expected) {
+        assert.equal(await first.locator('[data-party]').getAttribute('fill'), 'none');
+        const image = await first.request.get(new URL(icons[0][1], roomUrl).href);
+        assert.equal(image.status(), 200);
+        assert.equal(image.headers()['content-type'], 'image/svg+xml');
+      }
+    };
+    await verifyPoi(before, mode === 'mythic' ? '0,1' : null);
+    if (mode === 'mythic') assert.match(await first.locator('[data-poi="0,1"]').getAttribute('transform'), /^rotate\(-90 /);
     const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail');
     const editorRouteCount = await editorRoutes.count();
     assert.ok(editorRouteCount > 0, 'the imported map has real rivers and routes');
@@ -133,6 +161,9 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const editorTerrain = new Map((await editor.evaluate(terrainSnapshot)).map(cell => [cell.key, cell]));
     const playerTerrain = await first.evaluate(terrainSnapshot);
     const masterTerrain = new Map((await master.evaluate(terrainSnapshot)).map(cell => [cell.key, cell]));
+    assert.equal(Boolean(playerTerrain.find(cell => cell.key === '0,1').engraving), mode !== 'mythic',
+      'player terrain reveals no sign of a secret current-hex point');
+    assert.equal(masterTerrain.get('0,1').engraving, null, 'a native point replaces its terrain engraving');
     assert.deepEqual(playerTerrain.map(cell => cell.key).sort(), before.cells.map(cell => `${cell.q},${cell.r}`).sort());
     const comparable = playerTerrain.filter(cell => editorTerrain.get(cell.key)?.engraving);
     assert.ok(comparable.length > 0, 'at least one visible cell has editor terrain without a POI icon');
@@ -162,16 +193,19 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     assert.deepEqual(proposed.cells, before.cells);
     assert.deepEqual(proposed.routes, before.routes);
     assert.deepEqual(proposed.marks, before.marks);
+    assert.deepEqual(proposed.pois, before.pois);
     await master.reload();
     await master.locator('[data-proposal="2"]').waitFor();
     assert.equal(await master.locator('#join').getAttribute('href'), offeredLink);
     if (process.env.VTT_EVIDENCE_DIR) {
       await master.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-master-before.jpg', quality: 78});
+      await second.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-player-before.jpg', quality: 78});
     }
     await master.locator('#confirm').click();
     await waitPosition('0,0');
     await Promise.all(pages.map(page => page.locator('[data-proposal]').waitFor({state: 'detached'})));
     const after = await snapshotPlayer();
+    await verifyPoi(after, mode === 'mythic' ? null : '0,0');
     verifyRouteBounds(after);
     assert.equal(await first.locator('[data-route-kind]').count(), after.routes.length);
     assert.equal(await first.locator('[data-mark-kind]').count(), after.marks.length);
@@ -195,13 +229,21 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       await second.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-player-after.jpg', quality: 78});
     }
     if (mode === 'classic') {
+      for (const [direction, position] of [[5, '0,1'], [0, '1,1']]) {
+        await first.locator(`[data-direction="${direction}"]`).click();
+        await master.locator(`[data-proposal="${direction}"]`).waitFor();
+        await master.locator('#confirm').click();
+        await waitPosition(position);
+        await verifyPoi(await snapshotPlayer(), null);
+      }
+      assert.ok(await master.locator('[data-poi="1,1"]').count(), 'a point requiring exploration is master-only on arrival');
       await editor.locator('[data-fine-step]').selectOption('1');
       await editor.locator('[data-fine-world]').waitFor({state: 'attached'});
       assert.equal(await launch.count(), 0, 'one-mile editor view cannot open a game');
     }
     console.log(JSON.stringify({mode, fixture, contexts: 3,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
-      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
+      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), masterPoints: editorIcons.length, playerPointsBefore: before.pois, playerPointsAfter: after.pois, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {
     try {
       await Promise.all(contexts.map(context => context.close()));

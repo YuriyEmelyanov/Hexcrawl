@@ -2,7 +2,7 @@
 import {createServer} from 'node:http';
 import {stripTypeScriptTypes} from 'node:module';
 import {createHash, randomBytes} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {readdir, readFile} from 'node:fs/promises';
 import {applyAction, mapCells, viewOf} from './room.mjs';
 import {readRoutes, routesAt, readMarks, marksAt} from './routes.mjs';
 
@@ -14,6 +14,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
   let playerRoutes;
   let marks;
   let playerMarks;
+  let pois;
   let mapDigest;
   const masterKey = randomBytes(24).toString('base64url');
   const playerPath = '/play/' + randomBytes(16).toString('base64url');
@@ -30,6 +31,13 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
   // The preview origin only serves built-in art. It never serves editor saves or arbitrary files.
   const catalog = JSON.parse(assets.get('/engraving-catalog.json').body);
   const engravingPaths = new Set(Object.keys(catalog).map(id => '/terrain/engravings/' + id + '.png'));
+  const poiPaths = new Set(['/poi/v2/unknown.svg']);
+  for (const layer of ['land', 'water']) {
+    const prefix = `/poi/v2/${layer}/`;
+    for (const file of await readdir(new URL('../../public' + prefix, import.meta.url), {withFileTypes: true})) {
+      if (file.isFile() && file.name.endsWith('.svg')) poiPaths.add(prefix + file.name);
+    }
+  }
   assets.set('/waterfall-color.svg', {type: 'image/svg+xml',
     body: await readFile(new URL('../../public/waterfall-color.svg', import.meta.url))});
   const page = await readFile(new URL('./index.html', import.meta.url));
@@ -53,7 +61,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
         return json(res, 404, {error: 'Unavailable'});
       }
       try {
-        const {save, position, routes: suppliedRoutes, marks: suppliedMarks} = await readJson(req, 16 * 1024 * 1024);
+        const {save, position, routes: suppliedRoutes, marks: suppliedMarks, pois: suppliedPois} = await readJson(req, 16 * 1024 * 1024);
         const mapMode = readMapMode(save);
         const viewStep = save?.map?.physicalGrid?.viewStep ?? 6;
         if (!mapMode || viewStep !== 6 ||
@@ -68,6 +76,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
           if (!opened.has(`${position.q},${position.r}`)) return json(res, 400, {error: 'Select an existing hex'});
           routes = readRoutes(suppliedRoutes);
           marks = readMarks(suppliedMarks);
+          pois = readPois(suppliedPois, opened, poiPaths);
           playerMarks = marksAt(marks, position);
           playerRoutes = routesAt(routes, position);
           cells = opened;
@@ -86,18 +95,21 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
       if (path === '/master' || path === playerPath) return send(res, 200, 'text/html; charset=utf-8', page);
       const asset = assets.get(path);
       if (asset) return send(res, 200, asset.type, asset.body);
-      if (engravingPaths.has(path)) {
+      if (engravingPaths.has(path) || poiPaths.has(path)) {
         try {
           const body = await readFile(new URL('../../public' + path, import.meta.url));
-          return send(res, 200, 'image/png', body);
+          return send(res, 200, poiPaths.has(path) ? 'image/svg+xml' : 'image/png', body);
         } catch {
-          return json(res, 404, {error: 'Engraving unavailable'});
+          return json(res, 404, {error: 'Artwork unavailable'});
         }
       }
     }
     if (!state || path !== '/state' || !(master || player)) return json(res, 404, {error: 'Room unavailable'});
     if (req.method === 'GET') {
-      const view = {...viewOf(cells, state, master), routes: master ? routes : playerRoutes, marks: master ? marks : playerMarks};
+      const points = master ? [...pois.values()].flat()
+        : (pois.get(`${state.position.q},${state.position.r}`) ?? []).filter(point => point.onPassage);
+      const drawings = points.map(({q, r, icon, fill}) => ({q, r, icon, fill}));
+      const view = {...viewOf(cells, state, master), routes: master ? routes : playerRoutes, marks: master ? marks : playerMarks, pois: drawings};
       return json(res, 200, master ? {...view, playerPath, history: [...history]} : view);
     }
     if (req.method !== 'POST') return json(res, 405, {error: 'Method unavailable'});
@@ -120,6 +132,22 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
   await new Promise((resolve, reject) => server.listen(port, '127.0.0.1', pipeError(resolve, reject, server)));
   const base = 'http://127.0.0.1:' + server.address().port;
   return {server, base};
+}
+
+function readPois(supplied, cells, paths) {
+  const points = new Map();
+  if (!Array.isArray(supplied)) return points;
+  for (const point of supplied) {
+    if (!point || !Number.isSafeInteger(point.q) || !Number.isSafeInteger(point.r)) continue;
+    const {q, r, icon, fill, discovery} = point;
+    const key = `${q},${r}`;
+    if (!cells.has(key) || typeof icon !== 'string' || !paths.has(icon) ||
+        typeof fill !== 'string' || !/^#[0-9a-f]{6}$/i.test(fill)) continue;
+    const atHex = points.get(key) ?? [];
+    atHex.push({q, r, icon, fill, onPassage: discovery === 'passage'});
+    points.set(key, atHex);
+  }
+  return points;
 }
 
 function readMapMode(save) {

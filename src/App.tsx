@@ -15954,6 +15954,22 @@ export function App() {
     ...riverWaterfalls.map(({x, y}) => ({kind: 'waterfall', x: x - riverOffset.x, y: y - riverOffset.y}))
   ];
 
+  const captureVttPois = () => {
+    const markers = mapSvgRef.current?.querySelectorAll<SVGGElement>('.emoji-layer > [data-vtt-poi-owner]');
+    return Array.from(markers ?? []).flatMap(marker => {
+      const cell = marker.getAttribute('data-engraved-poi')!;
+      const [q, r] = cell.split(',').map(Number);
+      const owner = marker.getAttribute('data-vtt-poi-owner')!;
+      const fill = marker.querySelector('circle')!.getAttribute('fill');
+      const point = (key: string, icon: string | null) => ({q, r, icon, fill,
+        discovery: discoveries.current[key] ?? (generationMode === 'classic' ? 'passage' : null)});
+      const points = [point(owner, marker.querySelector('image')!.getAttribute('href'))];
+      const water = waterPoiByKey.get(cell);
+      if (water && owner.startsWith('poi:')) points.push(point(`waterPoi:${cell}`, getPoiSvgHref(water, true)));
+      return points;
+    });
+  };
+
   const openVttPreview = async () => {
     if (!vttPreview || !vttAvailable || !vttStartHex || !renderDetails || documentBusy() || vttLaunchStatus === 'pending') return;
     const roomTab = window.open('about:blank', '_blank');
@@ -15967,7 +15983,8 @@ export function App() {
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
-        body: JSON.stringify({save: createSaveData(), position: vttStartHex, routes: captureVttRoutes(), marks: captureVttMarks()})
+        body: JSON.stringify({save: createSaveData(), position: vttStartHex,
+          routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
       });
       if (response.status === 409) {
         roomTab.close();
@@ -17591,7 +17608,8 @@ export function App() {
                   : getWaterPoiLabel(waterKind!, language));
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 const size = HEX_SIZE * .62;
-                return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
+                return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none"
+                  data-vtt-poi-owner={vttPreview ? (land ? `poi:${region.id}:${hex.key}` : `waterPoi:${hex.key}`) : undefined}>
                   <circle cx={position.x} cy={position.y} r={HEX_SIZE * .425} fill={engravingFor(id)!.poiColor}
                     stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
                   <image className="poi-marker" href={getPoiSvgHref(presentation?.icon??kind, !land)}

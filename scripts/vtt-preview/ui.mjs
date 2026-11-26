@@ -52,13 +52,16 @@ function draw(next) {
   map.setAttribute('viewBox', [centerX - 360, centerY - 260, 720, 520].join(' '));
   const {defs, terrain} = drawTerrain(next);
   const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
-  layer.append(...terrain, drawRoutes(next.routes), drawMarks(next.marks, next.rotated));
+  layer.append(...terrain, drawRoutes(next.routes), drawMarks(next.marks, next.rotated), drawPois(next.pois, next.rotated));
   if (next.proposal !== null) {
     layer.append(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7',
       transform: `translate(${x} ${y}) rotate(${directionAngle(next.proposal)})`,
       stroke: '#ffdc85', fill: 'none', 'stroke-width': 3, 'data-proposal': next.proposal}));
   }
-  layer.append(shape('circle', {cx: x, cy: y, r: 9, fill: '#ffdc85', stroke: '#654918', 'data-party': ''}));
+  const hasPoi = next.pois.some(point => key(point) === key(next.position));
+  layer.append(shape('circle', {cx: x, cy: y, r: hasPoi ? HEX_SIZE * .65 : 9,
+    fill: hasPoi ? 'none' : '#ffdc85', stroke: hasPoi ? '#ffdc85' : '#654918',
+    'stroke-width': hasPoi ? 2.5 : 1, 'data-party': ''}));
   map.replaceChildren(defs, layer);
   directionButtons.forEach((icon, direction) => {
     icon.setAttribute('transform', `rotate(${directionAngle(direction) + (next.rotated ? 90 : 0)} 10 10)`);
@@ -68,6 +71,7 @@ function draw(next) {
 function drawTerrain(next) {
   const current = new Set(next.currentKeys);
   const seen = new Set(next.history);
+  const occupied = new Set(next.pois.map(key));
   const cells = next.cells.map(cell => {
     const terrain = cell.water ?? cell.biome;
     const id = Object.hasOwn(catalog, terrain) ? terrain : 'plain_deciduous_forest';
@@ -92,9 +96,11 @@ function drawTerrain(next) {
       group.append(shape('image', {href: texture, 'clip-path': `url(#${id})`, x: x - width / 2,
         y: y - HEX_SIZE, width, height: HEX_SIZE * 2, preserveAspectRatio: 'none', 'data-terrain-blend': k}));
     }
-    const {size, bounds} = catalog[cell.id];
-    group.append(shape('image', {href: `/terrain/engravings/${cell.id}.png`,
-      'data-engraving': cell.id, ...engravingLayout(size, bounds, x, y, HEX_SIZE, next.rotated)}));
+    if (!occupied.has(k)) {
+      const {size, bounds} = catalog[cell.id];
+      group.append(shape('image', {href: `/terrain/engravings/${cell.id}.png`,
+        'data-engraving': cell.id, ...engravingLayout(size, bounds, x, y, HEX_SIZE, next.rotated)}));
+    }
     return group;
   });
   return {defs, terrain};
@@ -134,6 +140,31 @@ function drawMarks(marks, rotated) {
     group.append(mark);
   }
   return group;
+}
+
+function drawPois(points, rotated) {
+  const layer = shape('g', {'pointer-events': 'none'});
+  const byHex = new Map();
+  for (const point of points) {
+    const k = key(point);
+    if (!byHex.has(k)) byHex.set(k, []);
+    byHex.get(k).push(point);
+  }
+  for (const [k, atHex] of byHex) {
+    const {x, y} = toPixel(atHex[0].q, atHex[0].r);
+    const shared = atHex.length > 1;
+    const radius = HEX_SIZE * (shared ? .27 : .425);
+    const size = HEX_SIZE * (shared ? .42 : .62);
+    const group = shape('g', {'data-poi': k, ...(rotated ? {transform: `rotate(-90 ${x} ${y})`} : {})});
+    atHex.forEach(({icon, fill}, index) => {
+      const cx = shared ? x + (index - (atHex.length - 1) / 2) * (radius * 2 + 1) : x;
+      group.append(shape('circle', {cx, cy: y, r: radius, fill, stroke: '#f4ecd5', 'stroke-opacity': .75}));
+      group.append(shape('image', {href: icon, x: cx - size / 2, y: y - size / 2,
+        width: size, height: size, role: 'img', 'aria-label': 'Точка интереса'}));
+    });
+    layer.append(group);
+  }
+  return layer;
 }
 
 function directionAngle(direction) {
