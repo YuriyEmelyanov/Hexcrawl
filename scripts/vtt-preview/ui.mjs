@@ -189,7 +189,8 @@ async function action(kind, direction) {
     const response = await fetch('/state', {method: 'POST',
       headers: {...headers, 'content-type': 'application/json'},
       body: JSON.stringify({kind, direction, revision: view?.revision})});
-    if (!response.ok) commandError = 'Действие не применено';
+    if (response.status === 503) commandError = 'Не удалось сохранить состояние комнаты';
+    else if (!response.ok) commandError = 'Действие не применено';
     await refresh();
   } catch {
     commandError = 'Связь с комнатой потеряна';

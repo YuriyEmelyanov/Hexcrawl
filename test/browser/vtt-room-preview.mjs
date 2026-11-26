@@ -1,6 +1,8 @@
 // Exercise the shared room scenario for each supported editor profile.
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {mkdtemp, readFile, rename, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {chromium} from 'playwright';
 import {HEX_SIZE, getHexPolygonPoints, toPixel} from '../../src/rendering/baseHexArtwork.ts';
 import {startEditorPreview} from '../../scripts/vtt-preview/editor.mjs';
@@ -56,7 +58,9 @@ function verifyRouteBounds(view) {
 }
 
 async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-regions-seed42.json'}) {
-  const {editorUrl, roomUrl, close} = await startEditorPreview();
+  const privateDir = mode === 'classic' ? await mkdtemp(join(tmpdir(), 'hexcrawl-vtt-')) : null;
+  const storagePath = privateDir ? join(privateDir, 'room.json') : undefined;
+  let preview;
   const contexts = [];
   const openPage = async viewport => {
     const context = await browser.newContext({viewport});
@@ -64,6 +68,8 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     return context.newPage();
   };
   try {
+    preview = await startEditorPreview({storagePath});
+    const {editorUrl, roomUrl} = preview;
     const editor = await openPage({width: 1120, height: 720});
     await editor.goto(editorUrl);
     const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
@@ -201,6 +207,20 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       await master.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-master-before.jpg', quality: 78});
       await second.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-player-before.jpg', quality: 78});
     }
+    if (privateDir) {
+      await rename(privateDir, privateDir + '-unavailable');
+      try {
+        await master.locator('#confirm').click();
+        await master.getByText('Не удалось сохранить состояние комнаты', {exact: true}).waitFor();
+        await waitPosition('0,1');
+        assert.deepEqual(await snapshotPlayer(), proposed, 'failed save leaves the confirmed position and its projection intact');
+        if (process.env.VTT_EVIDENCE_DIR) {
+          await master.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'classic-save-unavailable.jpg'), quality: 78});
+        }
+      } finally {
+        await rename(privateDir + '-unavailable', privateDir);
+      }
+    }
     await master.locator('#confirm').click();
     await waitPosition('0,0');
     await Promise.all(pages.map(page => page.locator('[data-proposal]').waitFor({state: 'detached'})));
@@ -214,6 +234,28 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     assert.notDeepEqual(after.routes, before.routes, 'a move replaces the currently revealed route fragments');
     assert.ok(after.routes.length < await editorRoutes.count());
     assert.notDeepEqual(after.cells, before.cells, 'confirmed move updates the authorised projection');
+    if (privateDir) {
+      const snapshotMaster = () => master.evaluate(async () => {
+        const response = await fetch('/state', {headers: {
+          authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')
+        }});
+        return response.json();
+      });
+      const masterAfter = await snapshotMaster();
+      await preview.restartRoom();
+      assert.deepEqual(await snapshotPlayer(), after, 'the original link still gives its existing player the same view');
+      assert.deepEqual(await snapshotMaster(), masterAfter, 'the same browser retains master access and its map history');
+      const freshPlayer = await openPage({width: 420, height: 700});
+      assert.equal((await freshPlayer.goto(playerUrl)).status(), 200);
+      await freshPlayer.waitForFunction(() => document.querySelector('#position').value === '0,0');
+      assert.deepEqual(await readIcons(freshPlayer), await readIcons(first));
+      assert.equal((await freshPlayer.request.get(roomUrl + '/room.json')).status(), 404);
+      const editorFile = await freshPlayer.request.get(editorUrl + '/@fs' + storagePath);
+      assert.equal(editorFile.status(), 403, 'the editor dev server also denies access to the private snapshot');
+      if (process.env.VTT_EVIDENCE_DIR) {
+        await freshPlayer.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'classic-player-after-restart.jpg'), quality: 78});
+      }
+    }
     await master.reload();
     await waitPosition('0,0');
     assert.equal(await master.locator('#join').getAttribute('href'), offeredLink);
@@ -241,14 +283,19 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       await editor.locator('[data-fine-world]').waitFor({state: 'attached'});
       assert.equal(await launch.count(), 0, 'one-mile editor view cannot open a game');
     }
-    console.log(JSON.stringify({mode, fixture, contexts: 3,
+    console.log(JSON.stringify({mode, fixture, contexts: contexts.length,
+      durableRoomRestart: Boolean(privateDir), failedSavePreservedMove: Boolean(privateDir),
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
       proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), masterPoints: editorIcons.length, playerPointsBefore: before.pois, playerPointsAfter: after.pois, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {
     try {
       await Promise.all(contexts.map(context => context.close()));
     } finally {
-      await close();
+      try {
+        await preview?.close();
+      } finally {
+        if (privateDir) await rm(privateDir, {recursive: true, force: true});
+      }
     }
   }
 }
