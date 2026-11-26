@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-26T11:31:51.296Z",
+  "updated_at": "2026-11-26T12:02:28.896Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3828,7 +3828,7 @@
     {
       "task_id": "HX-BL-078",
       "title": "VTT HexCrawl.ru · первый этап: движение отряда и туман войны",
-      "status": "Согласована",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "Запрос владельца от 26.11.2026 на добавление первого этапа VTT в бэклог HexCrawl.ru"
@@ -3854,27 +3854,27 @@
         "На одной реальной карте сравнить редактор, мастера и игрока при одинаковом масштабе, центре и повороте. Видимые фрагменты совпадают по картографическому стилю. Мастер различает на карте все три состояния, включая случай видимого биома со скрытой точкой интереса. После хода ранее видимый фрагмент визуально меняет состояние у мастера. У игрока он исчезает в «Сейчас» и возвращается в «Сейчас и ранее» с исходным оформлением. Сверить на широком и узком экранах.",
         "После подтверждённого перехода обновить страницу мастера без экспорта или импорта JSON. Сверить восстановленные карту, позицию отряда, открытия, ручные скрытия и выбранный режим. У игрока проверить актуальный ограниченный вид в уже открытой вкладке и при открытии прежней ссылки."
       ],
-      "ready_for_development": false,
-      "implementation_authorized": false,
+      "ready_for_development": true,
+      "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Аналитик готовит чистовую спецификацию по VTT-Q01–Q12 и актуализирует критерии приёмки и макеты.",
+      "next_step": "Программист начинает выпуск 1. На реальной карте Classic 5–6 миль показать в трёх браузерах предложение и подтверждение хода, ограниченный обзор и восстановление после перезагрузки мастера по прежней ссылке.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-26T11:31:51.296Z",
+      "updated_at": "2026-11-26T12:02:28.896Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
-      "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-D1.1/preview.json",
-      "ui_preview_version": "D1.1-ui",
+      "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
+      "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "interview_completed",
+      "execution_state": "ready_for_development",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "business_analyst",
-      "result_ref": "agent-work/results/2026-11-26-interviewer-HX078-close-113111.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-26-interviewer-HX078-close-113111-analyst.json",
+      "next_role": "programmer",
+      "result_ref": "agent-work/results/2026-11-26-analyst-HX078-F1-115935.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-26-analyst-HX078-F1-115935-programmer.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3884,7 +3884,75 @@
       "interview_ref": "agent-work/interviews/HX-BL-078/VTT-FIRST/decisions.json",
       "interview_summary_ref": "agent-work/interviews/HX-BL-078/VTT-FIRST/round-002.md",
       "open_question_ids": [],
-      "next_role_after_answers": "business_analyst"
+      "next_role_after_answers": "business_analyst",
+      "implementation_slice_id": "VTT-RELEASE-1",
+      "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+      "spec_version": "F1",
+      "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+      "release_plan": [
+        {
+          "id": "VTT-RELEASE-1",
+          "title": "Живая карта отряда",
+          "remaining_runs": [
+            14,
+            21
+          ],
+          "state": "ready_for_development",
+          "acceptance": [
+            "VTT-AC01",
+            "VTT-AC02",
+            "VTT-AC03",
+            "VTT-AC06",
+            "VTT-AC08"
+          ]
+        },
+        {
+          "id": "VTT-RELEASE-2",
+          "title": "Память карты и управление видимостью",
+          "remaining_runs": [
+            8,
+            13
+          ],
+          "state": "planned_after_release_1",
+          "acceptance": [
+            "VTT-AC04",
+            "VTT-AC06",
+            "VTT-AC07"
+          ]
+        },
+        {
+          "id": "VTT-RELEASE-3",
+          "title": "Журнал и перенос игры",
+          "remaining_runs": [
+            9,
+            15
+          ],
+          "state": "planned_after_release_2",
+          "acceptance": [
+            "VTT-AC05",
+            "VTT-AC06",
+            "VTT-AC11",
+            "VTT-AC12"
+          ]
+        }
+      ],
+      "forecast": {
+        "remaining_runs": [
+          31,
+          49
+        ],
+        "confidence": "low",
+        "first_slice_remaining_runs": [
+          14,
+          21
+        ],
+        "excludes": "External waits and owner release approval",
+        "assumptions": [
+          "Isolated integration using existing environment",
+          "Production placement of live room service and capacity unconfirmed",
+          "No additional spending authorized"
+        ]
+      }
     }
   ],
   "retired_pr_packages": {
