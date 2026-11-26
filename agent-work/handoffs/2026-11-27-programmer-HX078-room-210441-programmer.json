@@ -1,0 +1,40 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "head_sha": "27cfb961edbc8c8085c7d73d00ce88785c85c96d",
+  "tree_sha": "de56da4e6a7043626159caebe5c0606cf9af55f9",
+  "previous_checkpoint_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+  "publication_authorized": false,
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-room-210441.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-room-210441-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-restart-27cfb96/browser.json",
+  "capture_refs": {
+    "master_failed_save": "agent-work/evidence/HX-BL-078/vtt-restart-27cfb96/classic-save-unavailable.jpg",
+    "player_after_restart": "agent-work/evidence/HX-BL-078/vtt-restart-27cfb96/classic-player-after-restart.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Реализовать закрытие доступа и смену ссылки мастером. На уже открытой вкладке и при новом входе старая ссылка теряет доступ, новая возвращает тот же подтверждённый гекс. Проверить сохранение этого решения после перезапуска.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      7,
+      14
+    ],
+    "confidence": "low",
+    "basis": "Локальная комната и ссылка восстановлены с диска. Остаются закрытие и смена ссылки, сценарий на созданной карте, восстановление редактора, подтверждение размещения, независимая приёмка и выпуск. Ожидание разрешения владельца выделяется отдельно."
+  },
+  "limitations": [
+    "Постоянное хранение проверено на импортированной карте Classic при заданном приватном пути вне репозитория и неизменном адресе/порте. Один процесс сервиса на файл. Остальные три профиля прошли прежний браузерный сценарий.",
+    "Штатная команда предпросмотра включает сохранение через VTT_PREVIEW_STORAGE_PATH. VTT_PREVIEW_PORT позволяет указать постоянный порт (по умолчанию 4175 при включённом сохранении).",
+    "Выпуск ещё требует созданной карты, закрытия и смены ссылки, восстановления редактора и проверки разрешённого размещения. Это промежуточный пакет в черновике PR519."
+  ],
+  "completion_check": "Старый игрок и новый браузер со старой ссылкой теряют доступ, новая ссылка открывает тот же гекс. Перезапуск сохраняет действующую ссылку и решение закрыть доступ.",
+  "checks_status": "in_progress"
+}
