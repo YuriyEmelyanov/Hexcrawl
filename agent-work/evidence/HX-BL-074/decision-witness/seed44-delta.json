@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-074",
+  "type": "proposal_before_after_scheme_using_recorded_coordinates",
+  "proposal_ref": "agent-work/backlog.json#HX-BL-074",
+  "composed_at": "2026-11-26T06:05:03.621Z",
+  "historical_case": {
+    "game_mode": "Classic",
+    "scale": "5–6 миль",
+    "seed": 44,
+    "coastal": true,
+    "start_region_cells": 9,
+    "main_river_id": 1,
+    "existing_example_arm_id": 3,
+    "source_ref": "agent-work/research/acceptance/L1-PR509/classic-common/hydrology/weighted.md",
+    "probe_ref": "agent-work/research/acceptance/L1-PR509/classic-common/hydrology/delta.mjs",
+    "recorded_vertices": {
+      "fork": {
+        "x": 96.995,
+        "y": -28
+      },
+      "existing_mouth": {
+        "x": 121.244,
+        "y": -14
+      },
+      "second_mouth": {
+        "x": 96.995,
+        "y": -56
+      }
+    },
+    "nearest_case_note": "Обе конечные вершины независимо сверены с берегом морских гексов в сохранённом прогоне. Числа округлены источником."
+  },
+  "before": "В сценарии после удаления рукава остаётся основное русло к устью 1. Ранее на PR511 ручное восстановление по прежним вершинам было отклонено, как записано в бэклоге и принятом предложении.",
+  "after_proposed": "Выбрать развилку на существующем русле и восстановить одно ребро к устью 2. Основное русло к устью 1, его ручные признаки и существующие переправы сохраняются. Не требуется назначать новому рукаву старый числовой ID.",
+  "witness_after_approval": {
+    "accepted_path": "После восстановления оба устья принадлежат отделённым друг от друга морским вершинам. PNG видит оба выхода. Повторное открытие JSON сохраняет развилку, основной путь и рукав.",
+    "reject_path": "Занятое ребро или непригодная конечная вершина сохраняют карту и Undo/Redo. Сценарий отказа включён в существующее предложение.",
+    "reuse": "Сохранённый случай Classic 44, единый редактор и существующее представление дельты."
+  },
+  "image_ref": "agent-work/evidence/HX-BL-074/decision-witness/seed44-delta.png",
+  "mapped_model_refs": [
+    "agent-work/score/rules/S01-C02.md",
+    "agent-work/score/current-score.json"
+  ],
+  "proposal_score": {
+    "criterion": "S03-C01",
+    "rule": "EDIT-30",
+    "share": 0.04,
+    "remaining_L1_points": 0.49382716049382713
+  },
+  "state": {
+    "head_main": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+    "implementation_authorized": false,
+    "publication_authorized": false,
+    "changed_score": false,
+    "reproduced_in_this_run": false
+  },
+  "limits": "Локальная объясняющая схема по существующему контрпримеру. Подход основного русла к развилке на рисунке условен. Изображение не является снимком новой реализации, новой проверкой отказа или пересчётом баллов.",
+  "prior_strategy_ref": "agent-work/results/2026-11-25T0500-strategist-HX074.json"
+}
