@@ -1,0 +1,265 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
+  "draft_spec_version": "D1.2",
+  "interview_ref": "agent-work/interviews/HX-BL-078/VTT-FIRST/decisions.json",
+  "interview_round_ref": "agent-work/interviews/HX-BL-078/VTT-FIRST/round-002.json",
+  "ready_for_development": false,
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "role": "business_analyst",
+  "status": "ready_for_final_spec",
+  "result_ref": "agent-work/results/2026-11-26-interviewer-HX078-close-113111.json",
+  "traceability": [
+    {
+      "question_id": "VTT-Q01",
+      "owner_answer": "Q01 · Вход A",
+      "option_id": "A",
+      "interpretation": "Общая ссылка даёт вход в роли игрока без аккаунта. Полномочия мастера отделены.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R02",
+        "VTT-R08"
+      ]
+    },
+    {
+      "question_id": "VTT-Q02",
+      "owner_answer": "Q02 · Между играми A",
+      "option_id": "A",
+      "interpretation": "Между встречами доступен последний разрешённый вид. Мастер может закрыть доступ или заменить ссылку.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R02",
+        "VTT-R08",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q03",
+      "owner_answer": "Q03 · Движение A",
+      "option_id": "A",
+      "interpretation": "Мастер ставит отряд на существующий гекс, включая воду. Подтверждённый ход ведёт на существующего соседа, новый гекс не генерируется.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R01",
+        "VTT-R06",
+        "VTT-R08"
+      ]
+    },
+    {
+      "question_id": "VTT-Q04",
+      "owner_answer": "Q04 · Стрелка A",
+      "option_id": "A",
+      "interpretation": "Живая комната сохраняет неподтверждённую стрелку при переподключении и перезагрузке мастера. Явное исключение из варианта A сохраняется: переносимый JSON содержит подтверждённое игровое состояние, временная стрелка не переносится и ход не подтверждается автоматически.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R06",
+        "VTT-R07",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q05",
+      "owner_answer": "Q05 · Обзор A промежуточный рельеф в следующем этапе.",
+      "option_id": "A",
+      "interpretation": "Первый выпуск использует расстояние и высоту цели. Перекрытие обзора промежуточным рельефом отложено на следующий этап.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R03",
+        "VTT-R04"
+      ]
+    },
+    {
+      "question_id": "VTT-Q06",
+      "owner_answer": "Q06 · Текущий биом Q06 · Текущий биом B",
+      "option_id": "B",
+      "interpretation": "Ручное скрытие сильнее автоматического обзора, включая биом под отрядом. Маркер отряда остаётся виден.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R03",
+        "VTT-R05",
+        "VTT-R08"
+      ]
+    },
+    {
+      "question_id": "VTT-Q07",
+      "owner_answer": "Q07 · История A",
+      "option_id": "A",
+      "interpretation": "Ранее увиденное учитывает и ручные раскрытия после возврата к автоматике. Явное скрытие исключает показ.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R04",
+        "VTT-R05",
+        "VTT-R07",
+        "VTT-R09"
+      ]
+    },
+    {
+      "question_id": "VTT-Q08",
+      "owner_answer": "Q08 · Объекты мастер может раскрыть информацию об объекте как всю, так и почастям, игроки могут записать информацию об объекте.",
+      "option_id": null,
+      "interpretation": "Мастер раскрывает сведения об объекте целиком или по отдельным частям. Игроки могут записывать сведения об объекте. Правила видимости авторских частей и заметок ведутся раздельно. Кто видит заметки игрока, уточняет VTT-Q11.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R04",
+        "VTT-R08",
+        "VTT-R09",
+        "VTT-R05",
+        "VTT-R07",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q09",
+      "owner_answer": "Q09 · Правки карты у игроков A, у мастера B, мастер может увидеть мир глазами игроков.",
+      "option_id": null,
+      "interpretation": "В обычном режиме мастер видит актуальную карту. Игроки видят последнее наблюдение ранее увиденного объекта до нового наблюдения или раскрытия. Мастер может открыть тот же вид, который получает игрок при выбранном режиме видимости.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R04",
+        "VTT-R05",
+        "VTT-R07",
+        "VTT-R09",
+        "VTT-R10",
+        "VTT-R02"
+      ]
+    },
+    {
+      "question_id": "VTT-Q10",
+      "owner_answer": "Q10 · Перенос JSON в JSON сохраняется всё, в кэше сохраняется всё, можно загрузить JSON и продолжить, можно продолжить в браузере и потом сохранить в JSON",
+      "option_id": null,
+      "interpretation": "Полное игровое состояние доступно для продолжения как из браузерного автосохранения, так и из JSON. После продолжения в браузере новый актуальный снимок снова экспортируется в JSON. Включить карту, позицию, историю и последние наблюдения, ручное раскрытие и скрытие, режим, и записи игроков в пределах прав доступа из VTT-Q11. Для временной неподтверждённой стрелки действует отдельное правило VTT-Q04. Восстановление в том же браузере сохраняет ссылку. Перенос существующей живой комнаты и прав мастера на другое устройство уточняет VTT-Q12.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R02",
+        "VTT-R07",
+        "VTT-R08",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q11",
+      "owner_answer": "Q11 A",
+      "option_id": "A",
+      "interpretation": "Записи об объекте входят в общий журнал отряда. Их видят мастер и все игроки, включая после ухода из гекса. Запись не раскрывает скрытые поля авторской карты. Журнал сохраняется в автосохранении и JSON.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R05",
+        "VTT-R07",
+        "VTT-R08",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q12",
+      "owner_answer": "Q12 Хотелось бы, чтобы ссылка сохранялась. чтобы игроки и со старого браузера могли играть и с нового.",
+      "option_id": "B",
+      "interpretation": "При продолжении игры из JSON в другом браузере мастер после подтверждения доступа восстанавливает ту же живую комнату. Действующая ссылка игроков сохраняется. Уже подключённые игроки и игроки, открывшие ссылку в другом браузере, видят актуальное разрешённое состояние той же комнаты. Игровая ссылка игрока не предоставляет полномочия мастера.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R02",
+        "VTT-R07",
+        "VTT-R08",
+        "VTT-R10"
+      ]
+    }
+  ],
+  "confirmed_scope": [
+    {
+      "decision": "Использовать то же картографическое отображение, что в редакторе. Мастер видит всю карту и три состояния для гексов и отдельных объектов. Игрок получает только разрешённые фрагменты.",
+      "requirements": [
+        "VTT-R02",
+        "VTT-R08",
+        "VTT-R09"
+      ],
+      "source_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json"
+    },
+    {
+      "decision": "Подтверждённое состояние автосохраняется в браузере мастера, перезагрузка сохраняет действующую ссылку игроков и восстанавливает подтверждённый ход. JSON служит переносом и копией.",
+      "requirements": [
+        "VTT-R07",
+        "VTT-R10"
+      ],
+      "source_ref": "agent-work/decisions/owner-2026-11-26-HX078-autosave.json"
+    },
+    {
+      "decision": "Один отряд. Одно общее выбранное направление, новый выбор заменяет предыдущее. Только мастер подтверждает или отменяет. При почти одновременных действиях текущим считать последний принятый комнатой выбор. Подтверждение относится к видимой мастеру версии предложения. Технический порядок не расширяет полномочия игроков.",
+      "requirements": [
+        "VTT-R01",
+        "VTT-R06",
+        "VTT-R08"
+      ],
+      "source_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
+      "basis": "Однозначное следствие последнего общего выбора и подтверждения мастером."
+    }
+  ],
+  "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-D1.1/preview.json",
+  "ui_preview_update": "Добавить представление мастера глазами игрока, раскрытие частей объекта и общий журнал. Показ макета не блокирует работу.",
+  "acceptance_notes": [
+    "Игрок добавляет запись к объекту. Второй игрок и мастер видят её, включая после ухода. Полный JSON и автосохранение восстанавливают журнал без выдачи скрытых авторских полей игроку.",
+    "Мастер сохраняет текущую игру в JSON, продолжает её в новом браузере после подтверждения прав, открывает прежнюю игровую ссылку в старом и новом браузерах игроков. Оба подключаются к той же комнате и получают актуальный разрешённый вид до и после нового подтверждённого хода.",
+    "Проверка прав мастера, стабильной ссылки и единого состояния комнаты входит в приёмку. Технология подтверждения прав остаётся выбором исполнителя в доступной инфраструктуре."
+  ],
+  "next_step": "Аналитик готовит чистовую спецификацию по VTT-Q01–Q12 и актуализирует критерии приёмки и макеты."
+}

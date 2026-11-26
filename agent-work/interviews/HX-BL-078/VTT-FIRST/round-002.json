@@ -40,15 +40,21 @@
         "basis": "Общий журнал подходит одному отряду и не требует отдельного личного доступа к записям для каждого игрока."
       },
       "always_allow_free_text": true,
-      "owner_answer": null,
-      "answer_source": null,
-      "interpretation": null,
+      "owner_answer": "Q11 A",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Записи об объекте входят в общий журнал отряда. Их видят мастер и все игроки, включая после ухода из гекса. Запись не раскрывает скрытые поля авторской карты. Журнал сохраняется в автосохранении и JSON.",
       "dependent_requirements": [
         "VTT-R05",
         "VTT-R07",
         "VTT-R08",
         "VTT-R10"
-      ]
+      ],
+      "selected_option_id": "A"
     },
     {
       "question_id": "VTT-Q12",
@@ -78,10 +84,57 @@
         "basis": "Полное продолжение из JSON сохраняется, а доступ к прежней комнате не зависит от владения файлом карты."
       },
       "always_allow_free_text": true,
-      "owner_answer": null,
-      "answer_source": null,
-      "interpretation": null,
+      "owner_answer": "Q12 Хотелось бы, чтобы ссылка сохранялась. чтобы игроки и со старого браузера могли играть и с нового.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "При продолжении игры из JSON в другом браузере мастер после подтверждения доступа восстанавливает ту же живую комнату. Действующая ссылка игроков сохраняется. Уже подключённые игроки и игроки, открывшие ссылку в другом браузере, видят актуальное разрешённое состояние той же комнаты. Игровая ссылка игрока не предоставляет полномочия мастера.",
       "dependent_requirements": [
+        "VTT-R02",
+        "VTT-R07",
+        "VTT-R08",
+        "VTT-R10"
+      ],
+      "selected_option_id": "B"
+    }
+  ],
+  "presented_in_chat_at": null,
+  "presented_in_chat_ref": null,
+  "presentation_status": "presented",
+  "owner_answers": [
+    {
+      "question_id": "VTT-Q11",
+      "owner_answer": "Q11 A",
+      "option_id": "A",
+      "interpretation": "Записи об объекте входят в общий журнал отряда. Их видят мастер и все игроки, включая после ухода из гекса. Запись не раскрывает скрытые поля авторской карты. Журнал сохраняется в автосохранении и JSON.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
+        "VTT-R05",
+        "VTT-R07",
+        "VTT-R08",
+        "VTT-R10"
+      ]
+    },
+    {
+      "question_id": "VTT-Q12",
+      "owner_answer": "Q12 Хотелось бы, чтобы ссылка сохранялась. чтобы игроки и со старого браузера могли играть и с нового.",
+      "option_id": "B",
+      "interpretation": "При продолжении игры из JSON в другом браузере мастер после подтверждения доступа восстанавливает ту же живую комнату. Действующая ссылка игроков сохраняется. Уже подключённые игроки и игроки, открывшие ссылку в другом браузере, видят актуальное разрешённое состояние той же комнаты. Игровая ссылка игрока не предоставляет полномочия мастера.",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "requirement_refs": [
         "VTT-R02",
         "VTT-R07",
         "VTT-R08",
@@ -89,21 +142,14 @@
       ]
     }
   ],
-  "presented_in_chat_at": null,
-  "presented_in_chat_ref": null,
-  "presentation_status": "prepared_for_current_chat",
-  "owner_answers": [],
-  "open_question_ids": [
-    "VTT-Q11",
-    "VTT-Q12"
-  ],
+  "open_question_ids": [],
   "new_question_ids": [
     "VTT-Q11",
     "VTT-Q12"
   ],
-  "status": "awaiting_owner_answers",
-  "next_role": "interviewer",
-  "next_step": "Уточнить видимость записей игроков (VTT-Q11) и сохранение ссылки при переносе на другое устройство (VTT-Q12). Затем передать чистовую спецификацию аналитику. Решения независимых частей уже зафиксированы.",
+  "status": "completed",
+  "next_role": "business_analyst",
+  "next_step": "Аналитик готовит чистовую спецификацию по VTT-Q01–Q12 и актуализирует критерии приёмки и макеты.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -118,5 +164,10 @@
     },
     "restored": false,
     "errors": []
-  }
+  },
+  "interview_status": "completed",
+  "interview_completed": true,
+  "presentation_evidence": "Варианты показаны в предыдущем сообщении чата, ответы владельца получены. Постоянная ссылка сообщения недоступна.",
+  "completed_at": "2026-11-26T11:31:51.296Z",
+  "closure_result_ref": "agent-work/results/2026-11-26-interviewer-HX078-close-113111.json"
 }
