@@ -17,7 +17,9 @@
         "primary_url": "https://blackswordhack.github.io/8world.html",
         "locator": "§8.2 The Struggle, первая часть до таблицы d6; для сравнения §11.3.3 Create Your World (solo)",
         "recorded_facts": "На пустой схеме отмечают названия начальных стран или регионов с учётом их взаимного расположения. В соло-варианте допустим даже перечень относительных мест без рисования карты.",
-        "verification": "selected_source_sections_rechecked"
+        "verification": "selected_source_sections_rechecked",
+        "checked_on": "2026-11-27",
+        "secondary_primary_ref": "https://blackswordhack.github.io/11appendices.html §11.3.3"
       },
       "model": {
         "game_unit_id": "BSH",
@@ -34,7 +36,10 @@
           "status": "bounded_component_only",
           "basis": "Проверяются устойчивые подписи регионов и возврат после сохранения. Ролевые слои и туман войны из правила не следуют.",
           "model_operation_id": "BSH-obs-01"
-        }
+        },
+        "criterion_id": "BSH-obs-01",
+        "active_model_operation_id": "BSH-obs-01",
+        "criterion_id_scope": "ID игровой операции по ops[].id. Общие criterion_id приведены отдельно."
       },
       "canonical": {
         "binding_id": null,
@@ -71,12 +76,14 @@
           {
             "given": "Два соседних региона A и B видны целиком на выбранном отдалении.",
             "when": "Поставить подписи «Север» и «Юг», сохранить и открыть карту с включёнными подписями.",
-            "expected": "Обе подписи читаются на карте одновременно и каждая относится к своему ID региона."
+            "expected": "Обе подписи читаются на карте одновременно и каждая относится к своему ID региона.",
+            "id": "BSH-obs-01-AC01"
           },
           {
             "given": "У A есть подпись «Север», у B — «Юг».",
             "when": "Переименовать A, экспортировать и открыть.",
-            "expected": "Изменилось только имя A; B и координаты обоих регионов прежние."
+            "expected": "Изменилось только имя A; B и координаты обоих регионов прежние.",
+            "id": "BSH-obs-01-AC02"
           }
         ],
         "source_vs_product_interpretation": "Из SRD следует нанесение имён. Одновременная читаемость на заданном обзоре, IDs и сохранение — критерии продукта.",
@@ -91,7 +98,7 @@
         "previous_checks": null
       },
       "implementation": {
-        "current_status": "unknown",
+        "current_status": "partial",
         "historical_evidence": {
           "ref": "territory-probe.mjs",
           "sha": null,
@@ -107,12 +114,75 @@
             "scope": "historical_partial_same_subcase",
             "finding": "Две области и поселение найдены по именам в исходных координатах после импорта. Проба не проверяла одновременную читаемость обеих надписей на карте."
           }
-        ]
+        ],
+        "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "current_evidence": {
+          "source_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+          "method": "Реальные обработчики App в test/helpers/generation-harness.mjs. Classic, regionFixture('classic',{river:true}), ручное переименование и повторный импорт.",
+          "source_paths": [
+            "src/App.tsx",
+            "test/helpers/generation-harness.mjs",
+            "test/helpers/region-fixture.mjs"
+          ],
+          "observed": {
+            "renameRoundTrip": true,
+            "geometry": {
+              "owners": [
+                [
+                  1,
+                  [
+                    "0,0",
+                    "1,0",
+                    "2,0"
+                  ]
+                ],
+                [
+                  2,
+                  [
+                    "3,0",
+                    "3,1"
+                  ]
+                ]
+              ],
+              "riverEdges": [
+                "121.244,-14|121.244,14"
+              ],
+              "unchanged": true
+            }
+          },
+          "scope": "Ручное переименование одного региона и возврат двух имён, ID и координат через JSON.",
+          "browser": {
+            "catalog": [
+              1,
+              1
+            ],
+            "overviewLabels": [
+              0,
+              0
+            ],
+            "viewport": [
+              1500,
+              1000
+            ],
+            "svgText": [
+              "Click Me!"
+            ],
+            "errors": [],
+            "engine": "Chromium headless",
+            "scope": "Локальный интерфейс из точного checkout. Проверены одновременно видимые пять гексов, список «Найти объект» и текст в .map-stage на одном обзоре; варианты масштаба не покрыты."
+          }
+        }
       },
       "open_checks": [
-        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта."
+        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта.",
+        "На проверенном обзоре имена найдены только в списке. Проверить состояние с явным слоем надписей, если такой слой появляется."
       ],
-      "disposition_reason": "Проверяются устойчивые подписи регионов и возврат после сохранения. Ролевые слои и туман войны из правила не следуют."
+      "disposition_reason": "Проверяются устойчивые подписи регионов и возврат после сохранения. Ролевые слои и туман войны из правила не следуют.",
+      "scope_basis": "Подписи мест региона из §8.2 и §11.3.3.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "separate_from_implementation": true
+      }
     },
     {
       "id": "BSH-obs-02",
@@ -127,7 +197,8 @@
         "primary_url": "https://blackswordhack.github.io/8world.html",
         "locator": "§8.2 The Struggle, первый абзац, geographical borders",
         "recorded_facts": "При размещении начальных стран или регионов следует учитывать географические границы и возникающие из них отношения. SRD не предписывает автоматическую границу и не устанавливает, какую природную преграду обязательно выбирать.",
-        "verification": "selected_source_sections_rechecked"
+        "verification": "selected_source_sections_rechecked",
+        "checked_on": "2026-11-27"
       },
       "model": {
         "game_unit_id": "BSH",
@@ -142,7 +213,10 @@
           "status": "bounded_component_only",
           "basis": "S06-C01 относится к исходной задаче фракций, связь только с пространственным компонентом территории. S04-C04 даёт проверку хранения геометрии.",
           "model_operation_id": "BSH-obs-02"
-        }
+        },
+        "criterion_id": "BSH-obs-02",
+        "active_model_operation_id": "BSH-obs-02",
+        "criterion_id_scope": "ID игровой операции по ops[].id. Общие criterion_id приведены отдельно."
       },
       "canonical": {
         "binding_id": null,
@@ -179,12 +253,14 @@
           {
             "given": "Территории A и B с тремя явно выбранными парами прилегающих гексов по обе стороны реки, проходящей по их общим рёбрам.",
             "when": "Вручную задать смежные границы, сохранить и открыть.",
-            "expected": "Все указанные гексы сохранили свою принадлежность, три общих ребра совпадают с выбранной линией; река не менялась."
+            "expected": "Все указанные гексы сохранили свою принадлежность, три общих ребра совпадают с выбранной линией; река не менялась.",
+            "id": "BSH-obs-02-AC01"
           },
           {
             "given": "Соседние земли разделены грядой. Один гекс к северу мастер решил оставить вне обеих территорий.",
             "when": "Нанести ручные границы и открыть сохранение.",
-            "expected": "Отмеченный гекс остался ничейным. Остальные назначения и гряда сохранены."
+            "expected": "Отмеченный гекс остался ничейным. Остальные назначения и гряда сохранены.",
+            "id": "BSH-obs-02-AC02"
           }
         ],
         "source_vs_product_interpretation": "SRD требует учитывать географию при размещении. Ручная проверка совпадения рубежа с краями гексов — только выбранная реализация сценария.",
@@ -199,7 +275,7 @@
         "previous_checks": null
       },
       "implementation": {
-        "current_status": "unknown",
+        "current_status": "partial",
         "historical_evidence": {
           "ref": "agent-work/research/requirements/MB-layer-baseline-2026-11-20.json#MB-REALM-003-L1",
           "sha": null,
@@ -207,14 +283,444 @@
           "finding": "Топонимы и контроль регионов поддерживаются. Ручная привязка границы двух выбранных стран к рубежу не проверена.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": "MB-REALM-003-L1"
+        },
+        "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "current_evidence": {
+          "source_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+          "method": "Реальные обработчики App в test/helpers/generation-harness.mjs. Classic, regionFixture('classic',{river:true}), ручное переименование и повторный импорт.",
+          "source_paths": [
+            "src/App.tsx",
+            "test/helpers/generation-harness.mjs",
+            "test/helpers/region-fixture.mjs"
+          ],
+          "observed": {
+            "owners": [
+              [
+                1,
+                [
+                  "0,0",
+                  "1,0",
+                  "2,0"
+                ]
+              ],
+              [
+                2,
+                [
+                  "3,0",
+                  "3,1"
+                ]
+              ]
+            ],
+            "riverEdges": [
+              "121.244,-14|121.244,14"
+            ],
+            "unchanged": true
+          },
+          "scope": "Совпадение уже заданного межрегионального ребра и русла и сохранение владельцев пяти гексов. Свободное редактирование границы не проверено."
         }
       },
       "open_checks": [
-        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта."
+        "Нет отдельного игрового binding на исходном SHA. Проверка нового сценария на действующей версии открыта.",
+        "Вручную задать рубеж политических территорий и проверить отдельно ничейный гекс."
       ],
-      "disposition_reason": "S06-C01 относится к исходной задаче фракций, связь только с пространственным компонентом территории. S04-C04 даёт проверку хранения геометрии."
+      "disposition_reason": "S06-C01 относится к исходной задаче фракций, связь только с пространственным компонентом территории. S04-C04 даёт проверку хранения геометрии.",
+      "scope_basis": "Ручная проекция естественного рубежа для смежных областей.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "separate_from_implementation": true
+      }
+    },
+    {
+      "id": "BSH-obs-03",
+      "game_id": "BSH",
+      "disposition": "keep_L1",
+      "scope_basis": "Региональный POI с постоянным адресом.",
+      "source": {
+        "url": "https://blackswordhack.github.io/8world.html",
+        "edition": "Black Sword Hack Ultimate Chaos Edition, Kobayashi / The Merry Mushmen, SRD 1.0.2, EN",
+        "author_project_key": "merry-mushmen:kobayashi:black-sword-hack:ue-srd-1.0.2",
+        "access_level": "author_publisher_open_srd",
+        "source_ref": "https://blackswordhack.github.io/8world.html",
+        "primary_url": "https://blackswordhack.github.io/8world.html",
+        "locator": "§8.5 и §8.5.1 Balance Stronghold, строки 262–272",
+        "recorded_facts": "Таблица d6 задаёт форму уединённого убежища. Вариант 4 — подземное неподвижное место, 5 — странствующий караван.",
+        "verification": "primary_srd_v1.0.2_checked",
+        "checked_on": "2026-11-27"
+      },
+      "model": {
+        "game_unit_id": "BSH",
+        "operation_id": "BSH-obs-03",
+        "operation_ref": null,
+        "active_model_operation_id": null,
+        "related_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "research_mapping_only",
+          "basis": "Региональный POI с постоянным адресом."
+        },
+        "candidate_for_model": true
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.place_description"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://blackswordhack.github.io/8world.html §8.5 и §8.5.1 Balance Stronghold, строки 262–272",
+        "normative_kind": "conditional_map_authoring_projection",
+        "applicability": "Мастер готовит региональную карту по открытому SRD 1.0.2.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает или бросает форму убежища и задаёт гекс, если убежище постоянно.",
+        "inputs_and_units": {
+          "die": "1d6, целое 1–6, либо выбор",
+          "selected_outcomes": {
+            "1": "скрытый монастырь",
+            "4": "подземное убежище",
+            "5": "странствующий караван"
+          },
+          "hex": "индекс гекса q/r",
+          "name": "строка"
+        },
+        "product_operation": "Мастер наносит постоянное убежище как POI и сохраняет его тип и подземность.",
+        "expected_output": "Одна постоянная точка у выбранного гекса с различимым подземным типом. Караван без назначенной постоянной стоянки не создаёт POI.",
+        "constraints_and_exceptions": [
+          "Точных миль и координат источник не задаёт.",
+          "Воздушная, сновидческая и многодверная формы требуют авторской привязки. Межпланарное перемещение и положение каравана в этой операции не рассчитываются."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "d6=4; гекс (3,−1); «Убежище K».",
+            "when": "Нанести точку и переоткрыть JSON.",
+            "expected": "Одно «Убежище K» в (3,−1), сохранился подземный характер. Остальные места без изменений.",
+            "id": "BSH-obs-03-AC01"
+          },
+          {
+            "given": "d6=5; постоянной стоянки нет.",
+            "when": "Принять форму убежища.",
+            "expected": "Число постоянных POI прежнее. Караван остаётся подвижным обстоятельством.",
+            "id": "BSH-obs-03-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "SRD задаёт форму. Привязка по гексу и экспорт — критерий продукта.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Точные координаты и расстояние от конфликта определяет мастер."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Мастер выбирает или бросает форму убежища и задаёт гекс, если убежище постоянно.",
+        "expected_output": "Одна постоянная точка у выбранного гекса с различимым подземным типом. Караван без назначенной постоянной стоянки не создаёт POI."
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "current_evidence": null
+      },
+      "open_checks": [
+        "Сквозная реализация этой операции на опубликованном SHA открыта."
+      ],
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "separate_from_implementation": true
+      }
+    },
+    {
+      "id": "BSH-obs-04",
+      "game_id": "BSH",
+      "disposition": "keep_L1",
+      "scope_basis": "Связи адресуемых городов с независимым типом.",
+      "source": {
+        "url": "https://blackswordhack.github.io/9city.html",
+        "edition": "Black Sword Hack Ultimate Chaos Edition, Kobayashi / The Merry Mushmen, SRD 1.0.2, EN",
+        "author_project_key": "merry-mushmen:kobayashi:black-sword-hack:ue-srd-1.0.2",
+        "access_level": "author_publisher_open_srd",
+        "source_ref": "https://blackswordhack.github.io/9city.html",
+        "primary_url": "https://blackswordhack.github.io/9city.html",
+        "locator": "§9.1.6 The city is known for…, строка 18 (HTML 56); контекст §9.1.4",
+        "recorded_facts": "Выбранная характеристика связывает город порталами с тремя другими городами.",
+        "verification": "primary_srd_v1.0.2_checked",
+        "checked_on": "2026-11-27"
+      },
+      "model": {
+        "game_unit_id": "BSH",
+        "operation_id": "BSH-obs-04",
+        "operation_ref": null,
+        "active_model_operation_id": null,
+        "related_common_criterion_ids": [
+          "S05-C02",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "research_mapping_only",
+          "basis": "Связи адресуемых городов с независимым типом."
+        },
+        "candidate_for_model": true
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_links"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://blackswordhack.github.io/9city.html §9.1.6 The city is known for…, строка 18 (HTML 56); контекст §9.1.4",
+        "normative_kind": "conditional_map_authoring_projection",
+        "applicability": "Мастер готовит региональную карту по открытому SRD 1.0.2.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает характеристику 18 и указывает три уже адресуемых города.",
+        "inputs_and_units": {
+          "option": "номер строки 18 из 20",
+          "origin": "ID города A",
+          "destinations": "ровно три разных ID других городов",
+          "connection_type": "портал"
+        },
+        "product_operation": "Записать адресуемые связи от города A к трём городам с типом портала.",
+        "expected_output": "Карточка A после открытия содержит три отдельные адресуемые связи. Существующая сеть дорог прежняя.",
+        "constraints_and_exceptions": [
+          "Характеристика опциональна.",
+          "Координаты и обратное направление не назначаются автоматически. Третий адресат не подставляется при неполных данных. Сценарий прохода находится за пределами L1."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Выбрана строка 18, города A/B/C/D размещены.",
+            "when": "Связать A с B/C/D, экспортировать и открыть.",
+            "expected": "В A три ссылки типа «портал» на B/C/D. География и физические дороги прежние.",
+            "id": "BSH-obs-04-AC01"
+          },
+          {
+            "given": "Указаны B и C, D неизвестен.",
+            "when": "Попытаться подтвердить комплект.",
+            "expected": "Полная операция остаётся открытой. Дубликатов и выдуманного города нет.",
+            "id": "BSH-obs-04-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Три адресата взяты из книги. ID, проверка неполноты и экспорт — критерии продукта.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Название адресатов, направление обратной связи и условия прохода открыты."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Мастер выбирает характеристику 18 и указывает три уже адресуемых города.",
+        "expected_output": "Карточка A после открытия содержит три отдельные адресуемые связи. Существующая сеть дорог прежняя."
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "current_evidence": null
+      },
+      "open_checks": [
+        "Сквозная реализация этой операции на опубликованном SHA открыта."
+      ],
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "separate_from_implementation": true
+      }
+    },
+    {
+      "id": "BSH-obs-05",
+      "game_id": "BSH",
+      "disposition": "keep_L1",
+      "scope_basis": "Относительная связь при подготовке карты, доступная до геометрии.",
+      "source": {
+        "url": "https://blackswordhack.github.io/10travelers.html",
+        "edition": "Black Sword Hack Ultimate Chaos Edition, Kobayashi / The Merry Mushmen, SRD 1.0.2, EN",
+        "author_project_key": "merry-mushmen:kobayashi:black-sword-hack:ue-srd-1.0.2",
+        "access_level": "author_publisher_open_srd",
+        "source_ref": "https://blackswordhack.github.io/10travelers.html",
+        "primary_url": "https://blackswordhack.github.io/10travelers.html",
+        "locator": "§10.1 How Long is The Trip?, строки 7–9",
+        "recorded_facts": "При отсутствии точной карты или при постепенной её подготовке до ближайшего city d4+3 дня, town d4 дней, village один день.",
+        "verification": "primary_srd_v1.0.2_checked",
+        "checked_on": "2026-11-27"
+      },
+      "model": {
+        "game_unit_id": "BSH",
+        "operation_id": "BSH-obs-05",
+        "operation_ref": null,
+        "active_model_operation_id": null,
+        "related_common_criterion_ids": [
+          "S05-C02",
+          "S04-C04"
+        ],
+        "criterion_fit": {
+          "status": "research_mapping_only",
+          "basis": "Относительная связь при подготовке карты, доступная до геометрии."
+        },
+        "candidate_for_model": true
+      },
+      "canonical": {
+        "binding_id": null,
+        "common_rule_ids": [
+          "content.site_links"
+        ],
+        "candidate_binding": true,
+        "binding_status": "no_exact_game_binding_at_baseline",
+        "binding_lookup_ref": "agent-work/rules/game-bindings.json",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422",
+        "related_non_equivalent_rule_ids": [
+          "travel.route_distance"
+        ]
+      },
+      "formalization": "new_primary_verified_draft",
+      "operational_requirement": {
+        "source_rule_ref": "https://blackswordhack.github.io/10travelers.html §10.1 How Long is The Trip?, строки 7–9",
+        "normative_kind": "conditional_map_authoring_projection",
+        "applicability": "Мастер готовит региональную карту по открытому SRD 1.0.2.",
+        "layer": "L1",
+        "trigger_or_user_action": "Дорисовывая карту, мастер задаёт связь с ближайшим поселением или её заготовку до выбора гекса.",
+        "inputs_and_units": {
+          "origin": "ID известного места",
+          "destination": "ID поселения или незаполненная ссылка",
+          "kind": [
+            "city",
+            "town",
+            "village"
+          ],
+          "die": "1d4 для city и town",
+          "unit": "дни пути; city 4–7, town 1–4, village 1"
+        },
+        "product_operation": "Сохранить относительную связь с типом цели и числом дней пути. Координаты задаются отдельно.",
+        "expected_output": "При повторном открытии подтверждённое число дней, вид поселения и ссылка остаются у этой связи; непоставленная точка не появляется на сетке.",
+        "constraints_and_exceptions": [
+          "Применимо к подготовке карты без точного положения мест.",
+          "Дни описывают время. Масштаб, направление, путь по гексам и линия дороги из них не выводятся. Фактический переход оставлен L2."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Для city и town d4=1 и 4; для village броска нет.",
+            "when": "Рассчитать связи и открыть сохранение.",
+            "expected": "City 4/7, town 1/4, village 1 день. Дни и типы сохранены.",
+            "id": "BSH-obs-05-AC01"
+          },
+          {
+            "given": "До town выпало 2 дня, координаты ещё неизвестны.",
+            "when": "Сохранить заготовку связи.",
+            "expected": "Сохранились town и 2 дня. Гекс и дорога не созданы.",
+            "id": "BSH-obs-05-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Формулы взяты из SRD. Сохранение в связи — продуктовая проекция. travel.route_distance измеряет физические расстояния и указан как смежное правило, без эквивалентности.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Место, направление и физическую дистанцию задаёт мастер."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Дорисовывая карту, мастер задаёт связь с ближайшим поселением или её заготовку до выбора гекса.",
+        "expected_output": "При повторном открытии подтверждённое число дней, вид поселения и ссылка остаются у этой связи; непоставленная точка не появляется на сетке."
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "current_evidence": null
+      },
+      "open_checks": [
+        "Сквозная реализация этой операции на опубликованном SHA открыта."
+      ],
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "separate_from_implementation": true
+      }
     }
   ],
-  "latest_formalization_base_sha": "26611e367554b4f4fcfb65681314870a5177d12c",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-awn-bsh-2230"
+  "latest_formalization_base_sha": "a1c41a0f495ed07e09a551a896daa01bede79c41",
+  "latest_formalization_run_id": "2026-11-27-top20-l1-bsh-corpus-0130",
+  "source_screen": [
+    {
+      "url": "https://blackswordhack.github.io/8world.html",
+      "locator": "§8.1, §8.3, §8.6",
+      "disposition": "out_of_scope",
+      "basis": "Антагонист, сценарные бедствия и финал. Нет формулы разметки границ или рельефа."
+    },
+    {
+      "url": "https://blackswordhack.github.io/8world.html",
+      "locator": "§8.2, таблицы Political situation и Attitude",
+      "disposition": "out_of_scope",
+      "basis": "Положение страны и ориентация на Закон/Хаос не задают границ или связей мест."
+    },
+    {
+      "url": "https://blackswordhack.github.io/8world.html",
+      "locator": "§8.4.1–16 Regional Adventure Seeds",
+      "disposition": "out_of_scope",
+      "basis": "События и авторские примеры. Яма в землях Орды, пирамиды и затопленный город могут использовать существующее ручное размещение без отдельного регионального алгоритма."
+    },
+    {
+      "url": "https://blackswordhack.github.io/8world.html",
+      "locator": "§8.5.1, результат 5",
+      "disposition": "defer_L2",
+      "basis": "Движущийся караван без постоянного места."
+    },
+    {
+      "url": "https://blackswordhack.github.io/9city.html",
+      "locator": "§9.1.1–5; §9.1.6, кроме 18",
+      "disposition": "out_of_scope",
+      "basis": "Локальная схема, участники и опциональные детали города. Авторский региональный ориентир может использовать стандартный POI."
+    },
+    {
+      "url": "https://blackswordhack.github.io/10travelers.html",
+      "locator": "§10.1, фактический переход; §10.2; §10.3.1",
+      "disposition": "defer_L2",
+      "basis": "Переход, события и морские происшествия. Пещера и руины в событийной таблице не имеют автоматически заданного постоянного места."
+    },
+    {
+      "url": "https://blackswordhack.github.io/10travelers.html",
+      "locator": "§10.3.2–3",
+      "disposition": "out_of_scope",
+      "basis": "Морской бой и абордаж."
+    },
+    {
+      "url": "https://blackswordhack.github.io/11appendices.html",
+      "locator": "§11.3.1–2",
+      "disposition": "out_of_scope",
+      "basis": "Назвать кампанию и создать персонажа."
+    },
+    {
+      "url": "https://blackswordhack.github.io/11appendices.html",
+      "locator": "§11.3.3–5, стартовый d6 и пролог",
+      "disposition": "defer_L2",
+      "basis": "Позиция упавшего кубика задаёт старт, его грань — пролог. Замок, берег и руины в прологе не обязательные маркеры подготовки."
+    },
+    {
+      "url": "https://blackswordhack.github.io/11appendices.html",
+      "locator": "§11.6, §11.9, §11.11",
+      "disposition": "out_of_scope",
+      "basis": "Оракул событий, авторский образец готового мира и сюжеты иных планов. Отдельной картографической процедуры в проверенных разделах нет."
+    }
+  ],
+  "latest_crosswalk": {
+    "game_id": "BSH",
+    "create_rank": 15,
+    "rows": 5,
+    "new_rows": 3,
+    "acceptance_cases": 10,
+    "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "implementation": {
+      "implemented": 0,
+      "partial": 2,
+      "unknown": 3
+    },
+    "binding_matches": 0,
+    "research_candidates": 3,
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-bsh-corpus-0130.json"
+  }
 }
