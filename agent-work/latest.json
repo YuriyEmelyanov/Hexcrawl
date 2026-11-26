@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-26-programmer-HX078-ci-150523",
+  "run_id": "2026-11-26-programmer-HX078-modes-155935",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -57,7 +57,7 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-26T1042-analyst-HX074-delta-D1.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
+  "next_step": "Связать представления мастера и игрока со штатным оформлением карты 5–6 миль. Сначала сопоставить общую отрисовку поверхности и гравюр на одной реальной карте. Затем подключить видимые фрагменты рек, дорог и точек интереса; проверить создание карт и восстановление комнаты после перезапуска сервера.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -157,7 +157,7 @@
   "evidence_path": "agent-work/evidence/HX-BL-077/crows-generated-poi/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
-  "head_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+  "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
   "tree_sha": "7ed571b3bf2ebd1aa07b93d2724154ff881aadbd",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45766857198",
@@ -251,12 +251,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-26T15:04:13.983Z",
+      "at": "2026-11-26T15:58:48.631Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-26T15:16:58.951Z",
+      "at": "2026-11-26T16:03:09.021Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -856,7 +856,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-26T15:17:19.661Z",
+  "updated_at": "2026-11-26T16:03:25.260Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1097,7 +1097,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-ci-220743b/regression.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/browser.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1474,7 +1474,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-ci-150523-programmer.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-modes-155935-programmer.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -8005,7 +8005,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-ci-150523.json",
+  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-modes-155935.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -12463,7 +12463,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-ci-150523.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-modes-155935.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -19841,32 +19841,34 @@
     "stage_id": "VTT-FIRST",
     "implementation_slice_id": "VTT-RELEASE-1",
     "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+    "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
     "branch": "agent/hx078-vtt-live-1",
     "pr": 519,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
-    "base_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
-    "head_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
-    "tree_sha": "d4395c32188099ec8c3174c5a7276d11c1a88763",
+    "base_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+    "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+    "tree_sha": "d4ea5777b039391cf009470a9bbce15d348e043e",
     "review_ready": false,
     "publication_authorized": false,
-    "status": "implementation_checkpoint",
-    "run_id": "2026-11-26-programmer-HX078-ci-150523",
+    "run_id": "2026-11-26-programmer-HX078-modes-155935",
     "role": "programmer",
-    "previous_result_ref": "agent-work/results/2026-11-26-programmer-HX078-editor-140653.json",
-    "recorded_at": "2026-11-26T15:16:58.951Z",
-    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-ci-150523.json",
-    "result_commit_sha": "8e9981a636d82fb9d9189eefd7722839e5049eca",
-    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-ci-220743b/regression.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-ci-150523-programmer.json",
+    "status": "implementation_checkpoint",
+    "previous_result_ref": "agent-work/results/2026-11-26-programmer-HX078-ci-150523.json",
+    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-modes-155935.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/browser.json",
+    "capture_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/player-map-modes.jpg",
+    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-modes-155935-programmer.json",
+    "result_commit_sha": "76effb7be7c76fd548e66681300decfd04e60b23",
+    "recorded_at": "2026-11-26T16:03:09.021Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "at": "2026-11-26T15:04:13.983Z",
+        "at": "2026-11-26T15:58:48.631Z",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "at": "2026-11-26T15:16:58.951Z",
+        "at": "2026-11-26T16:03:09.021Z",
         "status": "checked",
         "is_enabled": true
       },
@@ -19879,17 +19881,16 @@
         19
       ],
       "confidence": "low",
-      "basis": "Исправлена регрессия запуска, объём картографического оформления и долговечности не изменился."
+      "basis": "Вход и общий ход проверены для всех профилей. Остаются штатная отрисовка, дополнительные шаги приёмки на созданных картах, долговечность, размещение, независимая проверка и выпуск."
     },
     "next_role": "programmer",
-    "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
+    "next_step": "Связать представления мастера и игрока со штатным оформлением карты 5–6 миль. Сначала сопоставить общую отрисовку поверхности и гравюр на одной реальной карте. Затем подключить видимые фрагменты рек, дорог и точек интереса; проверить создание карт и восстановление комнаты после перезапуска сервера.",
     "execution_lock_released": true,
     "ci": {
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45846355257"
-    },
-    "scope_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45854899230"
+    }
   },
   "latest_HX_BL_078_editor_execution": {
     "task_id": "HX-BL-078",
@@ -20046,20 +20047,60 @@
     "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
     "previous_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-5-6-mile-only.json"
   },
-  "active_claim": {
-    "task_id": "HX-BL-078",
-    "role": "programmer",
-    "run_id": "2026-11-26-programmer-HX078-modes-155935",
-    "branch": "agent/hx078-vtt-live-1",
-    "base_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
-    "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-modes-155935.json",
-    "acquired_at": "2026-11-26T15:59:35.918Z",
-    "heartbeat_at": "2026-11-26T15:59:35.918Z",
-    "generation": 921,
-    "programmer_slot": true
-  },
   "latest_HX_BL_078_modes_execution": {
+    "task_id": "HX-BL-078",
+    "stage_id": "VTT-FIRST",
+    "implementation_slice_id": "VTT-RELEASE-1",
+    "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+    "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+    "branch": "agent/hx078-vtt-live-1",
+    "pr": 519,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+    "base_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+    "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+    "tree_sha": "d4ea5777b039391cf009470a9bbce15d348e043e",
+    "review_ready": false,
+    "publication_authorized": false,
     "run_id": "2026-11-26-programmer-HX078-modes-155935",
-    "status": "implementation_in_progress"
+    "role": "programmer",
+    "status": "implementation_checkpoint",
+    "previous_result_ref": "agent-work/results/2026-11-26-programmer-HX078-ci-150523.json",
+    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-modes-155935.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/browser.json",
+    "capture_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/player-map-modes.jpg",
+    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-modes-155935-programmer.json",
+    "result_commit_sha": "76effb7be7c76fd548e66681300decfd04e60b23",
+    "recorded_at": "2026-11-26T16:03:09.021Z",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-26T15:58:48.631Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-26T16:03:09.021Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    },
+    "forecast": {
+      "remaining_first_release_runs": [
+        12,
+        19
+      ],
+      "confidence": "low",
+      "basis": "Вход и общий ход проверены для всех профилей. Остаются штатная отрисовка, дополнительные шаги приёмки на созданных картах, долговечность, размещение, независимая проверка и выпуск."
+    },
+    "next_role": "programmer",
+    "next_step": "Связать представления мастера и игрока со штатным оформлением карты 5–6 миль. Сначала сопоставить общую отрисовку поверхности и гравюр на одной реальной карте. Затем подключить видимые фрагменты рек, дорог и точек интереса; проверить создание карт и восстановление комнаты после перезапуска сервера.",
+    "execution_lock_released": true,
+    "ci": {
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45854899230"
+    }
   }
 }
