@@ -1,0 +1,152 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+  "head_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+  "tree_sha": "d4395c32188099ec8c3174c5a7276d11c1a88763",
+  "review_ready": false,
+  "publication_authorized": false,
+  "run_id": "2026-11-26-programmer-HX078-ci-150523",
+  "role": "programmer",
+  "status": "implementation_checkpoint",
+  "role_selection_reason": "Два падения CI на текущем утверждённом HX-BL-078 имели одинаковую причину в предыдущем коммите. Владелец задачи и общий слот свободны после сверки 767 claims и результатов.",
+  "result": "Исправлен запуск штатного редактора без параметров VTT. Повторён прежде падавший тест и подтверждён режим комнаты с двумя игроками.",
+  "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-ci-150523.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-ci-220743b/regression.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-ci-150523-programmer.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-26T15:04:13.983Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-26T15:16:58.951Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "checks": {
+    "before": {
+      "sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+      "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585264",
+      "node_job": 139966950833,
+      "browser_job": 139966949588,
+      "failure": "ReferenceError: __HEXCRAWL_VTT_PREVIEW_URL__ is not defined",
+      "targeted_reproduction_exit_code": 1
+    },
+    "after": {
+      "targeted_node": {
+        "command": "node --test --test-name-pattern=production streams/continuation/undo classic/1$ test/worldContinuation.test.mjs",
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "browser_vtt": {
+        "command": "node test/browser/vtt-room-preview.mjs",
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "contexts": 3,
+        "reopened_from_editor": true,
+        "same_player_link": true
+      },
+      "standard_editor": {
+        "method": "Ephemeral Playwright verification against production Vite preview. Imports classic-six-regions-seed42.json, verifies selected hex -1,-5 and engraving.",
+        "result": "passed",
+        "page_errors": 0,
+        "preview_button_present": false
+      },
+      "production_build": {
+        "command": "npm run build",
+        "status": "passed",
+        "app_bundle_sha256": "338c2485060792cca975f8533cdba98328ffa841ddf24a6fc50de4580c7997a8"
+      },
+      "local_extended": {
+        "one_mile_browser": {
+          "command": "node test/browser/one-mile.smoke.mjs",
+          "exit_code": 0,
+          "status": "passed",
+          "reported": "ONE_MILE_UI_RESULT status passed"
+        },
+        "full_npm_check": {
+          "command": "npm run check",
+          "status": "stopped_while_running",
+          "exit_code": 130,
+          "notes": "Full CI additionally queued on exact SHA. Production build run separately, exit 0."
+        },
+        "combined_additional_node": {
+          "command": "node --test --test-concurrency=2 test/worldContinuation.test.mjs test/saveSafety.test.mjs",
+          "status": "stopped_while_running",
+          "exit_code": 130
+        },
+        "tested_content_matches_remote_commit": true
+      },
+      "remote_ci": {
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45846355257",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+        "jobs": [
+          {
+            "name": "browser",
+            "id": 140000935626,
+            "status": "in_progress",
+            "conclusion": null
+          },
+          {
+            "name": "check",
+            "id": 140000936181,
+            "status": "in_progress",
+            "conclusion": null
+          },
+          {
+            "name": "world-random",
+            "id": 140000936275,
+            "status": "in_progress",
+            "conclusion": null
+          },
+          {
+            "name": "engraved-map-comparison",
+            "id": 140000938937,
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+    "head_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node test and Playwright",
+    "scenario_or_risk": "Безопасный старт редактора без параметров комнаты, реальный импорт и запуск комнаты с параметрами.",
+    "reuse_or_new_reason": "Сбой воспроизводится существующим тестом worldContinuation и действующим workflow. Режим с параметрами покрывает существующий vtt-room-preview.",
+    "source": "Diff точных base и head меняет только src/App.tsx; отдельная браузерная диагностика временная."
+  },
+  "limitations": [
+    "Проверка касается исправления необязательных параметров комнаты. Рендерер живой карты по-прежнему упрощён. Хранение между рестартами и размещение остаются впереди."
+  ],
+  "next_role": "programmer",
+  "next_step": "Продолжить подключение штатного оформления карты 5–6 миль. Сначала использовать общий код рисования основы и гравюр для мастера и разрешённых гексов игрока. Сравнить одну карту из редактора в двух представлениях, включая узкий экран, затем подключить разрешённые участки рек, дорог и точек интереса.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      12,
+      19
+    ],
+    "confidence": "low",
+    "basis": "Исправлена регрессия запуска, объём картографического оформления и долговечности не изменился."
+  },
+  "completed_at": "2026-11-26T15:16:58.951Z"
+}
