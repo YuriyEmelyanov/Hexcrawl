@@ -1,0 +1,145 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "head_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+  "tree_sha": "0c0dba11eabb3551bea8c27e9413866dbe1b0df2",
+  "review_ready": false,
+  "publication_authorized": false,
+  "run_id": "2026-11-26-programmer-HX078-marks-190309",
+  "role": "programmer",
+  "status": "implementation_checkpoint",
+  "role_selection_reason": "Готовый этап HX-BL-078, 772 claim сверены и слот свободен. Предыдущий CI зелёный.",
+  "result": "Перенесены штатные пороги, водопады и оформление мостов, бродов и паромных переправ. Координаты меток игрока ограничены текущим гексом. На карте Mythic подтверждён переход от моста к паромной переправе.",
+  "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-marks-190309.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-marks-df4479a/browser.json",
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-marks-df4479a/water-marks-before-after.jpg",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-marks-190309-programmer.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-26T19:02:02.533Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-26T19:07:46.386Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "checks": {
+    "typescript": {
+      "command": "./node_modules/.bin/tsc --noEmit",
+      "passed": true
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true
+    },
+    "browser_vtt": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "scenarios": [
+        {
+          "mode": "Classic",
+          "master_strokes": 70,
+          "player_before": "bridge",
+          "player_after": "bridge"
+        },
+        {
+          "mode": "Classic + Knave 2e",
+          "master_strokes": 70,
+          "player_before": "bridge",
+          "player_after": "bridge"
+        },
+        {
+          "mode": "Classic + Crows (Cornath)",
+          "master_strokes": 70,
+          "player_before": "bridge",
+          "player_after": "bridge"
+        },
+        {
+          "mode": "Mythic Bastionland",
+          "master_strokes": 308,
+          "player_before": "bridge",
+          "player_after": "ferry"
+        }
+      ],
+      "checks_per_mode": [
+        "координаты всех знаков и линий игрока в пределах текущего гекса",
+        "число знаков и штрихов мастера совпадает с редактором",
+        "число видимых знаков совпадает с проекцией",
+        "предложение хода не меняет доступность знаков",
+        "после подтверждения, перезагрузки и повторного входа выдаётся актуальный гекс"
+      ]
+    },
+    "temporary_browser_diagnostics": [
+      {
+        "fixture": "e5-river-editor.json",
+        "position": "0,0",
+        "local_ford_faded_stroke": true,
+        "kind": "ford",
+        "passed": true
+      },
+      {
+        "fixture": "terrain-display-map.json",
+        "position": "0,9",
+        "local_waterfall_marks": 1,
+        "local_rapid_strokes": 9,
+        "native_waterfall_asset_http": 200,
+        "passed": true
+      }
+    ],
+    "node_vm": {
+      "command": "node --test --test-name-pattern=production streams/continuation/undo classic/1$ test/worldContinuation.test.mjs",
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "verified_remote_content": true,
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45881127068",
+      "head_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+    "head_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suite": "Playwright VTT",
+    "scenario_or_risk": "Раскрытие только локальных порогов и переправ, соответствие вида мастера редактору и переход от моста к переправе после подтверждения.",
+    "reuse_or_new_reason": "Расширены текущие четыре браузерных сценария. Отдельные пробы брода и водопада временные, без постоянного дублирования.",
+    "source": "Четыре параметра scenarios в test/browser/vtt-room-preview.mjs, diff 43f165d..df4479a."
+  },
+  "limitations": [
+    "Паром сохраняет штатный разрыв дороги. Для моста, брода и переправы добавлена локальная подсказка. Отдельные значки точек интереса и авторские сведения впереди.",
+    "Геометрия штрихов ограничена текущим гексом, а пиктограмма водопада привязана к его вершине. Направление течения отдельным слоем пока не подключено.",
+    "Проверены импортированные карты. Долговечное хранение и публичное размещение впереди."
+  ],
+  "forecast": {
+    "remaining_first_release_runs": [
+      9,
+      16
+    ],
+    "confidence": "low",
+    "basis": "Проверены штрихи порогов и мостов, изображение водопада и локальные переправы. Остаются точки интереса, созданные карты, хранение и размещение, независимая проверка и выпуск."
+  },
+  "next_role": "programmer",
+  "next_step": "Подключить штатные значки точек интереса. У мастера должна отображаться полная карта объектов. Игрок получает значок только для «При прохождении» в текущем гексе; координаты и сведения закрытых объектов отсутствуют в ответе. Затем перейти к долговечному хранению комнаты.",
+  "completed_at": "2026-11-26T19:07:46.386Z"
+}
