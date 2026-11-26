@@ -1,0 +1,146 @@
+{
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "head_sha": "490d8c64b2804f1c2d45fadde0c206d03913228d",
+  "tree_sha": "6765a471e2ed57b15e4e0423e87af9b13a60d06c",
+  "pr": {
+    "number": 518,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/518",
+    "draft": true,
+    "head": "490d8c64b2804f1c2d45fadde0c206d03913228d"
+  },
+  "runtime": {
+    "node": "24.22.3",
+    "chromium": "158.0.8127.0",
+    "source": "Local preview of build from the verified branch tree; no publishing action."
+  },
+  "scenarios": [
+    {
+      "criteria": [
+        "CROWS-04",
+        "CROWS-09"
+      ],
+      "data": {
+        "hex": "3,-4",
+        "lake": "2,-4",
+        "forestHill": [
+          "coast",
+          "forest",
+          "highlands"
+        ],
+        "manual": "swamp",
+        "afterBiomeEdit": [
+          "coast",
+          "cold",
+          "swamp"
+        ],
+        "atomicInvalidImport": true,
+        "preservedByProfileAndJson": true,
+        "undoRedo": true,
+        "pngBytes": 678734,
+        "narrowViewport": 390,
+        "errors": []
+      },
+      "fixture": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-map.json",
+      "steps_ru": [
+        "Открыть карту и выбрать гекс 3/-4 рядом с озером 2/-4.",
+        "В режиме правок выбрать лиственный лес на холмах. Убедиться, что одновременно появились побережье, лес и холмы/горы.",
+        "Поставить ручную отметку «Болото», сменить биом на снежно-ледяную равнину, сохранить JSON и открыть снова.",
+        "В обычном Classic карточка среды скрыта. После включения Crows и на повторно открытой карте отметка сохранена.",
+        "Снять отметку, проверить отмену и повтор. Импорт неизвестного признака отклоняется до замены карты.",
+        "Проверить панель на 390 px и выгрузить PNG."
+      ]
+    },
+    {
+      "criteria": [
+        "CROWS-04"
+      ],
+      "steps_ru": [
+        "Осушить всё озеро 2/-4 штатной правкой поверхности и снова выбрать соседний гекс.",
+        "Убедиться, что берег пропал, установленное болото осталось, а отмена правки воды восстановила берег."
+      ],
+      "data": {
+        "waterRecompute": true,
+        "undoRestoresShore": true,
+        "manualRetained": true,
+        "hex": "3,-4",
+        "lake": "2,-4"
+      }
+    },
+    {
+      "criteria": [
+        "CROWS-06",
+        "CROWS-07",
+        "CROWS-08",
+        "CROWS-09"
+      ],
+      "data": {
+        "maps": 2,
+        "categories": [
+          "village",
+          "city",
+          "town",
+          "capital"
+        ],
+        "standalone": 19,
+        "eligibleWild": 1,
+        "excludedWild": 1,
+        "freestandingBeaconBoundary": true,
+        "savedReopened": true,
+        "png": 668243,
+        "errors": []
+      }
+    },
+    {
+      "criteria": [
+        "CROWS-05",
+        "CROWS-08",
+        "CROWS-09"
+      ],
+      "data": {
+        "freshHomes": 1,
+        "homeCountsBefore": 1,
+        "homeCountsAfter": 2,
+        "starterBuildings": 6,
+        "generatedOnExisting": true,
+        "changedTower": true,
+        "undoRedo": true,
+        "unassignKeepsVillage": true,
+        "editableBeacons": true,
+        "miasmaRecalculates": true,
+        "saveAndReopen": true,
+        "classicSwitchKeepsVillage": true,
+        "png": 258798,
+        "errors": []
+      }
+    },
+    {
+      "criteria": [
+        "CROWS-01",
+        "CROWS-02",
+        "CROWS-09"
+      ],
+      "data": {
+        "regions": 2,
+        "afterGrowth": 3,
+        "partialTemplate": true,
+        "explicitEmpty": true,
+        "profileExclusivity": true,
+        "undo": true,
+        "atomicImport": true,
+        "narrowSameLine": true,
+        "worldFirst": true,
+        "pngBytes": 198817,
+        "errors": []
+      }
+    }
+  ],
+  "temporary_classification_matrix": "17 documented biome cases, each with and without a shore.",
+  "assets": [
+    "before.jpg",
+    "desktop.jpg",
+    "narrow.jpg",
+    "map.png",
+    "roundtrip.json"
+  ]
+}
