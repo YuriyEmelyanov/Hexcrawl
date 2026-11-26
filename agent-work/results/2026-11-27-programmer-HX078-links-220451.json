@@ -1,0 +1,112 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "head_sha": "e56d1d348fa04d730dfce345e48e09ae491633c0",
+  "tree_sha": "a326dbfc69a430d59d14e2780b773772598da527",
+  "previous_checkpoint_sha": "27cfb961edbc8c8085c7d73d00ce88785c85c96d",
+  "publication_authorized": false,
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-links-220451.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-links-220451-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-links-e56d1d3/browser.json",
+  "capture_refs": {
+    "master_rotated": "agent-work/evidence/HX-BL-078/vtt-links-e56d1d3/classic-master-link-rotated.jpg",
+    "player_revoked": "agent-work/evidence/HX-BL-078/vtt-links-e56d1d3/classic-player-link-revoked.jpg",
+    "player_new_link": "agent-work/evidence/HX-BL-078/vtt-links-e56d1d3/classic-player-new-link.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Восстановить карту в редакторе браузера мастера после полной перезагрузки без импорта JSON. Проверить на карте, созданной в редакторе: мастер подтверждает ход, обновляет редактор и снова открывает гекскроул с той же позицией и ссылкой, а игрок продолжает по прежнему адресу.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      6,
+      13
+    ],
+    "confidence": "low",
+    "basis": "Отзыв и замена ссылки вместе с сохранением после перезапуска проверены. Остаются восстановление редактора и сценарий на созданной карте, проверка режима размещения, независимая приёмка и выпуск. Ожидание решения владельца выделяется отдельно."
+  },
+  "limitations": [
+    "Черновик работает в локальном предпросмотре с одним процессом на снимок. Смену и закрытие ссылки после перезапуска проверили на импортированной карте Classic. Knave 2e, Crows и Mythic прошли прежний сквозной сценарий.",
+    "Открытая вкладка очищает карту после следующего ответа об отзыве. Разделение прав выполняет сервер для начального входа, чтения и действия.",
+    "Восстановление карты в редакторе мастера и проверка размещения остаются частью первого выпуска."
+  ],
+  "run_id": "2026-11-27-programmer-HX078-links-220451",
+  "role": "programmer",
+  "status": "implementation_checkpoint",
+  "role_selection_reason": "Действующее поручение владельца по HX-BL-078. Check на предыдущем SHA 27cfb96 зелёный, замечаний в PR519 нет. Сверены 20 записей активной формы, владелец задачи и общий слот свободны.",
+  "result": "Мастер закрывает вход игроков или меняет ссылку, сохраняя позицию отряда. После смены две открытые вкладки игроков очистили карту и отключили команды, повторный вход по старой ссылке получил 404. Новая ссылка открыла тот же гекс 1,1. Закрытый доступ и новая ссылка сохранились при перезапуске. Исправлена остановка комнатного сервиса с открытыми вкладками: HTTP-соединения закрываются, начатая запись завершается до повторного открытия снимка.",
+  "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-room-210441.json",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-links-220451.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-26T22:03:57.552Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-26T22:12:16.432Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "checks": {
+    "previous_ci": {
+      "id": 45896163729,
+      "head_sha": "27cfb961edbc8c8085c7d73d00ce88785c85c96d",
+      "conclusion": "success"
+    },
+    "syntax": "passed",
+    "typescript": "passed",
+    "build": "passed",
+    "browser": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "chromium": "158.0.8127.0"
+    },
+    "temporary_node_diagnostic": {
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0,
+      "denied_player_admin_http": 409,
+      "old_link_http": 404,
+      "new_link_http": 200,
+      "closed_persists": true,
+      "new_link_persists": true,
+      "position_preserved": true,
+      "rotation_with_new_movement_proposal": true,
+      "concurrent_rotations_http": [
+        200,
+        409
+      ]
+    },
+    "github": {
+      "id": 45903161013,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "e56d1d348fa04d730dfce345e48e09ae491633c0",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45903161013"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "27cfb961edbc8c8085c7d73d00ce88785c85c96d",
+    "head_sha": "e56d1d348fa04d730dfce345e48e09ae491633c0",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Classic: отзыв в уже открытых вкладках и при новом входе, смена ссылки без сброса позиции, сохранение закрытого доступа и новой ссылки после перезапуска, запрет команд управления ссылкой игроку.",
+    "reuse_or_new_reason": "Расширен существующий браузерный сценарий Classic на импортированной карте с двумя игроками и приватным файлом комнаты. Остальные профили сохранили прежние проверки.",
+    "count_source": "Diff точных базового и нового SHA. Массив из четырёх сценариев не менялся. Дополнительные шаги выполняются только для Classic."
+  },
+  "completed_at": "2026-11-26T22:12:16.432Z"
+}
