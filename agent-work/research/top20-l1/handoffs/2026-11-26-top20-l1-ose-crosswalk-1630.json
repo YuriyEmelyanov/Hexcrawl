@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-26-top20-l1-ose-crosswalk-1630",
+  "task_id": "HX-RSR-001",
+  "base_sha": "9ef7095520f6195a5ba20029e04388e801927fed",
+  "status": "bounded_ose_wilderness_preparation_crosswalk_complete",
+  "audiences": [
+    "product_model",
+    "strategist",
+    "development"
+  ],
+  "selection": "OSE занимает 8-е место в действующей create-когорте и указан в контрольной точке. Сопоставление старых книг с ORR закрывает вопрос о масштабе и выявляет конкретное действие для логова. WWN завершён в выбранном корпусе, для Root уже есть отдельная передача о размещении конкретных мест.",
+  "corpus": {
+    "sources": {
+      "orr": {
+        "id": "OSE-OFFICIAL-ORR-2026-EN",
+        "edition": "Old-School Essentials Online Rules Reference, редакция 2026",
+        "publisher": "Necrotic Gnome",
+        "author": "Gavin Norman",
+        "access_level": "public_official_primary_text",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026"
+      },
+      "classic": {
+        "id": "OSE-CLASSIC-RT-2019",
+        "edition": "Classic Fantasy Rules Tome, copyright 2019, номер экземпляра на зеркале не установлен",
+        "url": "https://www.scribd.com/document/696642871/Old-School-Essentials-Classic-Fantasy-Rules-Tome",
+        "access_level": "selected_printed_text_on_public_mirror",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:classic-rules-tome-2019"
+      },
+      "advanced": {
+        "id": "OSE-ADVANCED-RT-2020",
+        "edition": "Advanced Fantasy Referee’s Tome, copyright 2020, номер экземпляра на зеркале не установлен",
+        "url": "https://www.scribd.com/document/1058768110/Old-School-Essentials-Advanced-Fantasy-Referee-s-Tome",
+        "access_level": "selected_printed_text_on_public_mirror",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:advanced-referees-tome-2020"
+      },
+      "release2026": {
+        "id": "OSE-REFEREES-BOOK-2026",
+        "url": "https://necroticgnome.com/blogs/news/new-ose-2026-pdfs-new-store-new-adventures",
+        "source_status": "Publisher confirms redesigned 2026 books and rule reference. The complete 2026 Referee’s Book is outside the checked text."
+      }
+    },
+    "range": "Complete relevant clauses of Designing a Wilderness, Designing a Base Town, and selected Number Appearing/Ogre anchors; no full-book claim.",
+    "preserved_coverage_ref": "agent-work/market/rules/OSE-ORR-2026-coverage-ledger.json",
+    "prior_runtime_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10.json",
+    "legacy_Basic_v14_boundary": "Переданный Basic Rules v1.4 не содержит двух глав подготовки карты. Сохранённая инвентаризация использована как подтверждение объёма, без новой загрузки PDF."
+  },
+  "revisions": {
+    "common": "24→6, расположение базового города, ориентир дня до подземелья, пять категорий служб и выбранный пример NA совпали в проверенных разделах.",
+    "different": "ORR уточняет примеры услуг. Продолжение требует полного 2026 Referee’s Book только при заявлении полноты этого издания."
+  },
+  "dispositions": {
+    "retained": 6,
+    "historical_ref": "agent-work/research/requirements/OSE-scope-audit.json",
+    "other": [
+      {
+        "locator": "Designing a Wilderness, шаги 3–4",
+        "disposition": "needs_owner_decision",
+        "reason": "Политические границы и приблизительные ареалы, включая территорию значимого монстра, требуют отдельно принятого пространственного слоя. У выбранного логова фиксируется собственное место."
+      },
+      {
+        "locator": "Designing a Wilderness, шаг 7",
+        "disposition": "defer_L2",
+        "reason": "Использование региональных таблиц встреч относится к ведению."
+      },
+      {
+        "locator": "Designing a Base Town, шаги 1 и 3–5",
+        "disposition": "out_of_scope",
+        "reason": "Численность, правитель, NPC и слухи в этой части служат контекстом. Автоматические подсистемы населения, власти, персонажей и сюжета не вытекают из подготовки места."
+      }
+    ]
+  },
+  "rows": [
+    {
+      "id": "OSE-ORR-2026-001-L1",
+      "disposition": "keep_L1",
+      "reason": "Создание и детализация одной карты на нескольких физических масштабах относятся к принятому назначению HexCrawl.",
+      "source": {
+        "section": "Designing a Wilderness, шаг 2 / Scale",
+        "web_lines": [
+          253,
+          256
+        ],
+        "page_last_modified": "2026-08-02"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-001-L1",
+      "binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-001-L1",
+      "common_rule_ids": [
+        "map.nested_scales",
+        "map.physical_hex_scale"
+      ],
+      "criterion_ids": [
+        "S02-C02",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "Проверить создание отдельной подробной области и её JSON в интерфейсе на опубликованном SHA. Численное совпадение масштаба не подтверждает перенос географии."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-004-L1",
+      "disposition": "keep_L1",
+      "reason": "Выбор и размещение базового населённого пункта — подготовка конкретного места карты; текущее положение партии из этого не следует.",
+      "source": {
+        "section": "Designing a Wilderness, шаги 3 и 5",
+        "web_lines": [
+          257,
+          269
+        ],
+        "page_last_modified": "2026-08-02"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-004-L1",
+      "binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-004-L1",
+      "common_rule_ids": [
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "Назначение в заметке остаётся по адресу. Полное адресуемое назначение базы и перенос связанных данных требуют независимой проверки."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-005-L1",
+      "disposition": "keep_L1",
+      "reason": "Подземелья как места карты и их размещение относительно базы входят в подготовку карты; расчёт пути/дня — отдельныйL2.",
+      "source": {
+        "section": "Designing a Wilderness, шаг 6",
+        "web_lines": [
+          270,
+          273
+        ],
+        "page_last_modified": "2026-08-02"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-005-L1",
+      "binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-005-L1",
+      "common_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "Исторический и свежий сценарии сохраняют ручные ссылки в тексте. Реакция связи на перенос или переименование базы ещё открыта."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-006-L1",
+      "disposition": "keep_L1",
+      "reason": "Простые сведения о ночлеге/помощи относятся к необходимому содержимому конкретной базы для подготовки карты; это явное разрешённое исключение владельца, а не основание из произвольной заметки.",
+      "source": {
+        "section": "Designing a Base Town, шаг 2 / Note Services",
+        "web_lines": [
+          259,
+          270
+        ],
+        "page_last_modified": "2026-10-08"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-006-L1",
+      "binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-006-L1",
+      "common_rule_ids": [
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "В проверенном пути данные остаются в заметке гекса. Самостоятельная панель не требуется источником. При переносе объекта нужен явный тест принадлежности сведений."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-REGION-TERRAIN-L1",
+      "disposition": "keep_L1",
+      "reason": "Результат — координаты и геометрия базовой суши, воды и рельефа в уже принятом редакторе региональной карты.",
+      "source": {
+        "section": "Designing a Wilderness, шаги 1–2 / Basic geography and Major terrain features",
+        "web_lines": [
+          249,
+          256
+        ],
+        "page_last_modified": "2026-08-02"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-REGION-TERRAIN-L1",
+      "binding_ref": null,
+      "common_rule_ids": [
+        "map.terrain_zones",
+        "map.land_water_shapes",
+        "map.river_network"
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C03",
+        "S01-C05",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "Проверить единый браузерный сценарий из исходного участка и последующего расширения."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-WILDERNESS-LAIR-L1",
+      "disposition": "keep_L1",
+      "reason": "Точное число жителей выбранного постоянного логова — содержимое одной конкретной точки карты. Формула действует при подготовке этой точки.",
+      "source": {
+        "section": "Game Statistics / Number Appearing + Ogre; Designing a Wilderness, шаг 4",
+        "web_lines": [
+          313,
+          320
+        ],
+        "page_last_modified": "2026-08-02"
+      },
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/OSE.json#OSE-ORR-2026-WILDERNESS-LAIR-L1",
+      "binding_ref": null,
+      "common_rule_ids": [
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S04-C04"
+      ],
+      "implementation_status": "partial",
+      "remaining": [
+        "Проверить применение формулы в интерфейсе. В исполненном сценарии 45 введено мастером. После перемещения маркера численность осталась у исходного гекса."
+      ]
+    }
+  ],
+  "implementation": {
+    "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "publication_ref": "agent-work/results/2026-11-26-PR518-publication.json",
+    "method": "Actual App handlers and numerical grid using the existing generation harness and authored region fixture. No browser DOM. Replayed OSE-P01–P08 plus numerical grid and the lair relocation. Number 45 was supplied by the fixture, not produced by product code.",
+    "base_script_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.mjs",
+    "checks": [
+      {
+        "id": "OSE-P01",
+        "expected": "Use existing generic POI editor to create/name a town; no automatic base-town role inferred",
+        "actual": {
+          "kind": "town",
+          "name": "Ольховый брод"
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P02",
+        "expected": "Record allfive service categories, base role and deliberate location; unknown is literal prose, not auto-filled with services",
+        "actual": "База кампании: Ольховый брод; выбран мастером на краю карты.\nЧёрный рынок: есть, скупка сокровищ; гильдия неизвестна.\nСтража: есть; взятки неизвестны; патрули площадь вечером.\nЛечение: раны; болезни/воскрешение неизвестны.\nНочлег: неизвестно.\nМесто слухов: доска у ворот; тексты и истинность неизвестны.",
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P03",
+        "expected": "Edit only lodging; other services, geography and RNG unchanged",
+        "actual": {
+          "otherCategoriesPreserved": true,
+          "geometryPreserved": true,
+          "RNGPreserved": true
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P04",
+        "expected": "Undo/Redo exact manual category edit without regenerating services",
+        "actual": {
+          "undoExact": true,
+          "redoExact": true
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P05",
+        "expected": "Place two dungeons and retain authored base references/travel descriptions as text; no inferred radius or new road",
+        "actual": {
+          "dungeons": [
+            "0,0",
+            "3,0"
+          ],
+          "reference": "T=2,0",
+          "preciseMiles": null
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P06",
+        "expected": "Accepted ruler/nomad prose can be edited independently; this does not create a political extent layer",
+        "actual": {
+          "ruler": "Лига купцов",
+          "nomadNoteUnchanged": true,
+          "geometryUnchanged": true
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P07",
+        "expected": "Actual JSON import restores town, two dungeons, all authored unknowns/references and unchanged generation state",
+        "actual": {
+          "mapExact": true,
+          "generationExact": true
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-P08",
+        "expected": "POI moves with its identity, but GM notes intentionally remain attached to hex coordinates; manually maintained base/service text does not automatically follow the town",
+        "actual": {
+          "townMoved": "2,0→1,0",
+          "serviceNoteStays": "2,0",
+          "areaNoteAtTargetPreserved": true,
+          "kind": "scope_boundary_not_confirmed_bug"
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-CURRENT-GRID",
+        "expected": "Real detail grid reports 24 and 6 miles across flats; positive-area intersections are measured rather than assuming 16 aligned children",
+        "actual": {
+          "steps": [
+            24,
+            6
+          ],
+          "detailIntersectionsOfCentered24MileHex": 19,
+          "convention": "across_flats"
+        },
+        "result": "pass"
+      },
+      {
+        "id": "OSE-CURRENT-LAIR",
+        "expected": "A typed Lair marker and handwritten headcount survive import; as a hex note, headcount remains at the original coordinate when marker moves",
+        "actual": {
+          "at": "2,0",
+          "movedTo": "1,0",
+          "markerSaved": true,
+          "numberChosenManually": 45,
+          "numberRemainedAt": "2,0",
+          "typedCountUsed": false,
+          "automatedRollUsed": false
+        },
+        "result": "pass"
+      }
+    ],
+    "additional_existing_tests": {
+      "refs": [
+        "test/manualRegions.test.mjs",
+        "test/manualWater.test.mjs",
+        "test/manualRivers.test.mjs",
+        "test/regionEditing.test.mjs"
+      ],
+      "count": 48,
+      "passed": 48
+    },
+    "full_workflow": "unknown"
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-26-top20-l1-ose-crosswalk-1630",
+    "result_ref": "agent-work/research/runs/2026-11-26-top20-l1-ose-crosswalk-1630.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-ose-crosswalk-1630.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Old-School Essentials: четыре сохранённые операции сверены с онлайн-редакцией 2026 и выбранными разделами Classic и Advanced. Добавлены географический каркас и наполнение выбранного логова. На опубликованном SHA численность в заметке сохраняется в старом гексе при переносе логова.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2.",
+      "pirate": "Проверить на опубликованном SHA сценарии 50-мильной карты и кораблекрушений на суше/отмели. В Core с. 134–135 подтверждён ключ готовой карты Black Coral Bay, точные измерения подложки по HTML не установлены. С. 156–165 и правила Starter Set, Cabin Fever, Port Generator — отдельные корпуса или остаток; сканы нужны только при новом подходящем источнике. Не считать игровой балл пересчитанным.",
+      "crows": "Дождаться связанного SHA F1 для проверок CROWS-04–08 и полного CROWS-01–09. Селективная карта игроков, адресная связь карты с тайником и готовые места PT3 требуют отдельной проверки применимости и фактической поддержки. Спорные детали Best Steward Ever и локальных укрытий не считать невыполненными критериями F1.",
+      "shadowdark": "На точном опубликованном SHA повторно проверить независимую видимость признака, категории стационарной опасности, danger, связи POI и сцен. Сохранённый Classic/Knave runtime датирован 20.11. Неопределённый рецепт двух колонок и текущая поддержка остаются открытыми. Поздние errata и дополнения не пересматривались.",
+      "pf2": "Проверить опубликованный UI и сохранения отдельно от выполненной пробы масштаба. Пять ST-кандидатов не имеют отдельных bindings. На GM Core с.146–165 остаётся печатный остаток по планам, Player Core 3–8 и приложениям требуется свой тематический скрининг. Базовый L1 и Kingmaker пополнять раздельно при новом источнике.",
+      "knave2": "На точном опубликованном SHA проверить владельца и видимость признака, перенос посвящения святилища, ручной выбор строки и сохранение нескольких исходов. Для ссылки без следующей обычной строки или неоднозначной целевой таблицы правило оставляет решение мастеру. Остальные вспомогательные таблицы сохраняют локаторы перевода; английские исходы не пересверены сплошь. При новом основании проверить подходящее дополнение отдельно от основной книги.",
+      "wwn": "Сверить перевод Deluxe для шага 1. Точечно проверить One-Roll Terrain Feature Details с. 123 и выбранные результаты размещения из Making the Kingdom Map / Nation с. 124+ при продолжении WWN. На опубликованном интерфейсе требуется проверить океанские границы после JSON, принадлежность имён рельефным объектам, перенос крупных форм в отдельную детализацию и несколько независимых POI в одном гексе.",
+      "ose": "Проверить сквозную подготовку 24→6 с JSON, принадлежность численности логову, применение формулы и принадлежность сведений о службах городу. Полный Referee’s Book 2026, номера зеркальных печатных экземпляров, дополнительные монстры и Starter Set остаются отдельными источниками."
+    },
+    "next": "Cairn 2e: сопоставить физические места, препятствия и переходы уже разобранных Setting Seeds с опциональной проекцией на гекс-карту. Начать с четырнадцати строк, отделив штатный pointcrawl от выбранной мастером сетки.",
+    "needs_owner_action": false
+  }
+}
