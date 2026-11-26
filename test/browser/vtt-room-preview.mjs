@@ -11,6 +11,29 @@ const scenarios = [
   {mode: 'mythic', label: 'Mythic Bastionland', fixture: 'terrain-display-map.json'}
 ];
 
+function terrainSnapshot() {
+  const round = n => Math.round(n * 1e5) / 1e5 || 0;
+  return [...document.querySelectorAll('polygon[data-hex-key], polygon[data-cell]')].map(polygon => {
+    const engraving = polygon.parentElement.querySelector('[data-engraving]');
+    const texture = polygon.parentElement.querySelector('.terrain-blend, [data-terrain-blend]');
+    const points = polygon.getAttribute('points').split(' ').map(pair => pair.split(',').map(Number));
+    const [centerX, centerY] = [0, 1].map(axis => points.reduce((sum, point) => sum + point[axis], 0) / points.length);
+    return {
+      key: polygon.dataset.hexKey ?? polygon.dataset.cell,
+      fill: getComputedStyle(polygon).fill,
+      outline: points.map(([x, y]) => [round(x - centerX), round(y - centerY)]),
+      engraving: engraving && {
+        href: engraving.getAttribute('href'),
+        size: ['width', 'height'].map(name => round(Number(engraving.getAttribute(name)))),
+        offset: [round(Number(engraving.getAttribute('x')) - centerX),
+          round(Number(engraving.getAttribute('y')) - centerY)],
+       upright: engraving.hasAttribute('transform')
+      },
+      texture: texture?.getAttribute('href')
+    };
+  });
+}
+
 async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-regions-seed42.json'}) {
   const {editorUrl, roomUrl, close} = await startEditorPreview();
   const contexts = [];
@@ -27,6 +50,8 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     assert.ok(await launch.isDisabled(), 'the empty editor cannot start a room');
     const save = JSON.parse(await readFile(new URL('../fixtures/' + fixture, import.meta.url), 'utf8'));
     save.ui.selectedHex = {q: 0, r: 1};
+    const rotated = mode === 'mythic';
+    save.ui.isMapRotated = rotated;
     save.map.gmNotesByHexKey = {'0,1': 'PRIVATE-EDITOR-FIXTURE'};
     await editor.locator('input[type=file]').setInputFiles({name: 'classic-map.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(save))});
     await editor.locator('[data-selected-hex="0,1"]').waitFor({state: 'attached'});
@@ -62,8 +87,32 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       return response.json();
     });
     const before = await snapshotPlayer();
-    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'position', 'proposal', 'revision']);
+    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'position', 'proposal', 'revision', 'rotated']);
     assert.equal(before.mapMode, mode);
+    assert.equal(before.rotated, rotated);
+    assert.equal(await first.locator('#map > g').getAttribute('transform'), rotated ? 'rotate(90)' : null);
+    const arrows = await first.locator('[data-direction] > svg > path').evaluateAll(paths =>
+      paths.map(path => path.getAttribute('transform')));
+    assert.equal(new Set(arrows).size, 6, 'six directions have distinct vector arrows');
+    const editorTerrain = new Map((await editor.evaluate(terrainSnapshot)).map(cell => [cell.key, cell]));
+    const playerTerrain = await first.evaluate(terrainSnapshot);
+    const masterTerrain = new Map((await master.evaluate(terrainSnapshot)).map(cell => [cell.key, cell]));
+    assert.deepEqual(playerTerrain.map(cell => cell.key).sort(), before.cells.map(cell => `${cell.q},${cell.r}`).sort());
+    const comparable = playerTerrain.filter(cell => editorTerrain.get(cell.key)?.engraving);
+    assert.ok(comparable.length > 0, 'at least one visible cell has editor terrain without a POI icon');
+    for (const cell of comparable) {
+      const editorCell = editorTerrain.get(cell.key);
+      for (const actual of [cell, masterTerrain.get(cell.key)]) {
+        assert.equal(actual.fill, editorCell.fill, cell.key);
+        assert.deepEqual(actual.outline, editorCell.outline, cell.key);
+        assert.deepEqual(actual.engraving, editorCell.engraving, cell.key);
+      }
+    }
+    const textureMatches = playerTerrain.filter(cell => cell.texture && cell.texture === editorTerrain.get(cell.key)?.texture).length;
+    assert.ok(textureMatches > 0, 'at least one authorized blend matches the editor pixel for pixel');
+    const artwork = await first.request.get(new URL(comparable[0].engraving.href, roomUrl).href);
+    assert.equal(artwork.status(), 200);
+    assert.equal(artwork.headers()['content-type'], 'image/png');
     assert.deepEqual(Object.keys(before.cells[0]).sort(), ['biome', 'height', 'q', 'r', 'water']);
     assert.equal((await fetch(roomUrl + '/test/fixtures/classic-six-regions-seed42.json')).status, 404);
     assert.ok(!JSON.stringify(before).includes('PRIVATE-EDITOR-FIXTURE'));
@@ -106,7 +155,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     }
     console.log(JSON.stringify({mode, fixture, contexts: 3,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
-      proposedDirection: 2, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
+      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {
     try {
       await Promise.all(contexts.map(context => context.close()));

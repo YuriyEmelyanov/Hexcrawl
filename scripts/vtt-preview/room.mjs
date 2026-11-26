@@ -34,6 +34,7 @@ export function viewOf(cells, state, master) {
   return {
     position: state.position,
     mapMode: state.mapMode,
+    rotated: state.rotated,
     proposal: state.proposal,
     revision: state.revision,
     cells: master ? [...cells.values()] : visible,

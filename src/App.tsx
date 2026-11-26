@@ -51,6 +51,7 @@ import {buildNaturalLakes} from './rendering/lakeGeometry';
 import { Engraving, EngravingLoading } from './rendering/EngravedTerrain';
 import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engravingAssets';
 import { terrainTextures } from './rendering/terrainBlend';
+import { HEX_SIZE, toPixel, getHexPolygonPoints, hexPoints, getHexWidth } from './rendering/baseHexArtwork';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
 import { MANUAL_BIOMES, manualBiome, type ManualBiomeId } from './rendering/manualBiomes';
@@ -409,7 +410,6 @@ type ChooseBiomeResult = {
   reason?: 'river_height_constraint_failed';
 };
 
-const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
@@ -902,29 +902,9 @@ function getBoundaryHexes(region: Region): AxialHex[] {
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
 }
 
-function toPixel(q: number, r: number) {
-  return {
-    x: HEX_SIZE * SQRT3 * (q + r / 2),
-    y: HEX_SIZE * 1.5 * r
-  };
-}
-
 // Расстояние В ТАЙЛАХ (число гексов) от центра карты по гексовой метрике.
 function hexDistanceFromCenter(hex: AxialHex): number {
   return (Math.abs(hex.q) + Math.abs(hex.q + hex.r) + Math.abs(hex.r)) / 2;
-}
-
-function getHexPolygonPoints(cx: number, cy: number, size: number): Array<{ x: number; y: number }> {
-  const points: Array<{ x: number; y: number }> = [];
-  for (let i = 0; i < 6; i += 1) {
-    const angle = (Math.PI / 180) * (60 * i - 30);
-    points.push({ x: cx + size * Math.cos(angle), y: cy + size * Math.sin(angle) });
-  }
-  return points;
-}
-
-function hexPoints(cx: number, cy: number, size: number) {
-  return getHexPolygonPoints(cx, cy, size).map((point) => `${point.x},${point.y}`).join(' ');
 }
 
 function getHexCoordinateLabelLayout(cx: number, cy: number, sourceHeight: number, isRotated: boolean) {
@@ -2192,10 +2172,6 @@ function shuffleArray<T>(values: T[], rng: RandomStreams = fallbackRandomStreams
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
-}
-
-function getHexWidth(hexSize: number): number {
-  return SQRT3 * hexSize;
 }
 
 function getNewRiverFullnessForHeight(heightLevel: RegionHeightLevel): RiverFullness {

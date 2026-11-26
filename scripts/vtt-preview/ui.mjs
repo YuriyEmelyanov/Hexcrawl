@@ -1,3 +1,6 @@
+import {HEX_SIZE, toPixel, hexPoints, getHexWidth, engravingLayout} from '/base-hex-artwork.mjs';
+import {terrainTextures} from '/terrain-blend.mjs';
+
 const master = location.pathname === '/master';
 const modeLabels = {
   classic: 'Classic',
@@ -12,10 +15,9 @@ const progress = get('progress');
 const confirm = get('confirm');
 const cancel = get('cancel');
 const vectors = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
-const signs = ['→', '↗', '↖', '←', '↙', '↘'];
+const directionButtons = [];
 const key = ({q, r}) => `${q},${r}`;
-const point = ({q, r}) => [Math.sqrt(3) * 28 * (q + r / 2), 42 * r];
-const palette = await fetch('/palette.json').then(response => response.json());
+const catalog = await fetch('/engraving-catalog.json').then(response => response.json());
 const onboard = location.hash.slice(1);
 if (master && onboard) {
   localStorage.setItem('vtt-preview-master', onboard);
@@ -45,31 +47,63 @@ function draw(next) {
     get('join').hidden = false;
     confirm.disabled = cancel.disabled = next.proposal === null;
   }
-  const [x, y] = point(next.position);
-  map.setAttribute('viewBox', [x - 360, y - 260, 720, 520].join(' '));
-  const current = new Set(next.currentKeys);
-  const seen = new Set(next.history);
-  const layer = next.cells.map(cell => {
-    const [cx, cy] = point(cell);
-    const p = Array.from({length: 6}, (_, i) => {
-      const angle = (i * 60 + 30) * Math.PI / 180;
-      return [cx + 28 * Math.cos(angle), cy + 28 * Math.sin(angle)].join(',');
-    });
-    const k = key(cell);
-    return shape('polygon', {points: p.join(' '), 'data-cell': k,
-      fill: cell.water ? palette.water[cell.water === 'sea' ? 'sea' : 'river'] : palette.ground[cell.biome] ?? '#B4C391',
-      'fill-opacity': master && !current.has(k) ? seen.has(k) ? .66 : .31 : 1,
-      stroke: '#738a83', 'stroke-width': '1.3'});
-  });
+  const {x, y} = toPixel(next.position.q, next.position.r);
+  const [centerX, centerY] = next.rotated ? [-y, x] : [x, y];
+  map.setAttribute('viewBox', [centerX - 360, centerY - 260, 720, 520].join(' '));
+  const {defs, terrain} = drawTerrain(next);
+  const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
+  layer.append(...terrain);
   if (next.proposal !== null) {
-    const [q, r] = vectors[next.proposal];
-    const [dx, dy] = point({q, r});
-    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    layer.push(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7', transform: 'translate(' + x + ' ' + y + ') rotate(' + angle + ')',
+    layer.append(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7',
+      transform: `translate(${x} ${y}) rotate(${directionAngle(next.proposal)})`,
       stroke: '#ffdc85', fill: 'none', 'stroke-width': 3, 'data-proposal': next.proposal}));
   }
-  layer.push(shape('circle', {cx: x, cy: y, r: 9, fill: '#ffdc85', stroke: '#654918', 'data-party': ''}));
-  map.replaceChildren(...layer);
+  layer.append(shape('circle', {cx: x, cy: y, r: 9, fill: '#ffdc85', stroke: '#654918', 'data-party': ''}));
+  map.replaceChildren(defs, layer);
+  directionButtons.forEach((icon, direction) => {
+    icon.setAttribute('transform', `rotate(${directionAngle(direction) + (next.rotated ? 90 : 0)} 10 10)`);
+  });
+}
+
+function drawTerrain(next) {
+  const current = new Set(next.currentKeys);
+  const seen = new Set(next.history);
+  const cells = next.cells.map(cell => {
+    const terrain = cell.water ?? cell.biome;
+    const id = Object.hasOwn(catalog, terrain) ? terrain : 'plain_deciduous_forest';
+    return {...cell, id, color: catalog[id].color};
+  });
+  // The player view blends only its authorized cells, so a hidden neighbour cannot tint a visible edge.
+  const textures = terrainTextures(cells);
+  const defs = shape('defs', {});
+  const width = getHexWidth(HEX_SIZE);
+  const terrain = cells.map(cell => {
+    const {x, y} = toPixel(cell.q, cell.r);
+    const k = key(cell);
+    const points = hexPoints(x, y, HEX_SIZE);
+    const group = shape('g', {opacity: !master || current.has(k) ? 1 : seen.has(k) ? .66 : .31});
+    group.append(shape('polygon', {points, 'data-cell': k, fill: cell.color}));
+    const texture = textures.get(k);
+    if (texture) {
+      const id = 'hex-clip-' + k;
+      const clip = shape('clipPath', {id});
+      clip.append(shape('polygon', {points}));
+      defs.append(clip);
+      group.append(shape('image', {href: texture, 'clip-path': `url(#${id})`, x: x - width / 2,
+        y: y - HEX_SIZE, width, height: HEX_SIZE * 2, preserveAspectRatio: 'none', 'data-terrain-blend': k}));
+    }
+    const {size, bounds} = catalog[cell.id];
+    group.append(shape('image', {href: `/terrain/engravings/${cell.id}.png`,
+      'data-engraving': cell.id, ...engravingLayout(size, bounds, x, y, HEX_SIZE, next.rotated)}));
+    return group;
+  });
+  return {defs, terrain};
+}
+
+function directionAngle(direction) {
+  const [q, r] = vectors[direction];
+  const {x, y} = toPixel(q, r);
+  return Math.atan2(y, x) * 180 / Math.PI;
 }
 
 async function refresh() {
@@ -100,7 +134,15 @@ vectors.forEach((_, direction) => {
   const button = document.createElement('button');
   button.type = 'button';
   button.dataset.direction = direction;
-  button.textContent = signs[direction];
+  button.setAttribute('aria-label', `Предложить ход, направление ${direction + 1}`);
+  const icon = shape('svg', {viewBox: '0 0 20 20', width: 18, height: 18, 'aria-hidden': true});
+  const arrow = shape('path', {d: 'M3 10h13m-5 -5 5 5-5 5',
+    fill: 'none', stroke: 'currentColor', 'stroke-width': 1.8,
+    'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+    transform: `rotate(${directionAngle(direction)} 10 10)`});
+  icon.append(arrow);
+  directionButtons.push(arrow);
+  button.append(icon);
   button.addEventListener('click', () => void action('propose', direction));
   get('choices').append(button);
 });
