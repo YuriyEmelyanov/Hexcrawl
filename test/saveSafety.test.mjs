@@ -1,4 +1,4 @@
-import { villageBeaconRadius } from '../src/crowsSettlements.ts';
+import { CROWS_BUILDINGS, rollCrowsPoint, villageBeaconRadius } from '../src/crowsSettlements.ts';
 import {projectOneMile} from '../src/oneMile.ts';
 import {newKnaveLayer,validateKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
@@ -93,6 +93,37 @@ test('Crows village beacon extends to radius six only at level five and prosperi
   assert.equal(radius(10, [beacon(1), beacon(4)]), 4);
   assert.equal(radius(9, [beacon(5)]), 5);
   assert.equal(radius(10, [beacon(5), beacon(3)]), 6);
+});
+
+test('Crows generates distinct buildings and valid prosperity for every settlement category', () => {
+  const ranges = {
+    village: [-10, 7, 1, 10], town: [-9, 9, 2, 11],
+    city: [-8, 9, 3, 12], capital: [-7, 10, 4, 13]
+  };
+  for (const [kind, [low, high, min, max]] of Object.entries(ranges)) {
+    for (let seed = 0; seed < 128; seed++) {
+      const {settlement} = rollCrowsPoint(kind, seed, 1, {q: 0, r: -1}, false, false);
+      assert.equal(settlement.home, false);
+      assert.ok(settlement.prosperity >= low && settlement.prosperity <= high);
+      assert.ok(settlement.buildings.length >= min && settlement.buildings.length <= max);
+      assert.equal(new Set(settlement.buildings.map(b => b.type)).size, settlement.buildings.length);
+      assert.ok(settlement.buildings.every(b => b.level >= 1 && b.level <= CROWS_BUILDINGS[b.type].max));
+    }
+  }
+});
+
+test('Crows building replacement applies only to eligible Classic structure sites', () => {
+  const here = {q: 0, r: 0};
+  assert.deepEqual(rollCrowsPoint('tower', 1, 1, here, false, false), {});
+  assert.deepEqual(rollCrowsPoint('cave', 1, 1, here, true, true), {});
+  const types = new Set();
+  for (let seed = 0; seed < 256; seed++) {
+    const settled = rollCrowsPoint('tower', seed, 1, here, true, false).building;
+    assert.deepEqual(rollCrowsPoint('tower', seed, 1, here, false, true).building, settled);
+    assert.ok(settled.level >= 1 && settled.level <= CROWS_BUILDINGS[settled.type].max);
+    types.add(settled.type);
+  }
+  assert.equal(types.size, 13);
 });
 
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {

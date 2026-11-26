@@ -1,4 +1,4 @@
-import { EMPTY_CROWS_SETTLEMENTS, rebindCrowsSettlements, starterCrowsSettlement, validCrowsSettlements, villageBeaconRadius, type CrowsSettlement, type CrowsSettlements } from './crowsSettlements';
+import { CROWS_BUILDINGS, CROWS_SETTLEMENTS, EMPTY_CROWS_SETTLEMENTS, isCrowsSettlementKind, isCrowsStructureSite, rebindCrowsSettlements, rollCrowsPoint, starterCrowsSettlement, validCrowsSettlements, villageBeaconRadius, type CrowsSettlement, type CrowsSettlements } from './crowsSettlements';
 import { CrowsVillageInfo } from './CrowsVillageInfo';
 import { fillCornathWorld, type MapWorld } from './crowsWorld';
 import { MapWorldInfo } from './MapWorldInfo';
@@ -1024,7 +1024,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
   });
   const data=value as HexcrawlSaveData;
   if (data.map.crowsSettlements !== undefined && !validCrowsSettlements(data.map.crowsSettlements,
-    crowsSettlementCheck({regions:data.map.regions, hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}))) {
+    crowsLandPoiKinds({regions:data.map.regions, hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}))) {
     throw new SaveValidationError('map.crowsSettlements', 'invalid settlement owner, prosperity or building');
   }
   if (data.map.poiDiscovery !== undefined) {
@@ -1162,7 +1162,9 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
   const imported:ValidatedHexcrawlSaveData={...data,map:{...map,regions,roads,rivers,kingdoms,tags,knave,
     physicalGrid:map.physicalGrid && remapDetail(map.physicalGrid),
     poiDiscovery:map.poiDiscovery && rekey(map.poiDiscovery,'map.poiDiscovery'),
-    crowsSettlements:map.crowsSettlements && {...map.crowsSettlements,byPoi:rekey(map.crowsSettlements.byPoi,'map.crowsSettlements.byPoi')},
+    crowsSettlements:map.crowsSettlements && {...map.crowsSettlements,
+      byPoi:rekey(map.crowsSettlements.byPoi,'map.crowsSettlements.byPoi'),
+      standaloneByPoi:map.crowsSettlements.standaloneByPoi && rekey(map.crowsSettlements.standaloneByPoi,'map.crowsSettlements.standaloneByPoi')},
     editorNames:map.editorNames && rekey(map.editorNames,'map.editorNames'),
     toponyms:{seed,model:DEFAULT_TOPONYM_MODEL,names}
   }};
@@ -1439,24 +1441,22 @@ function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: Readon
   return {...after, poiDiscovery: values};
 }
 
-const CROWS_SETTLEMENT_KINDS = new Set<string>(['village', 'town', 'city', 'capital']);
-
-function crowsSettlementCheck(map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) {
+function crowsLandPoiKinds(map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) {
   const live = poiNameLocators({ regions: map.regions, waterPoiByKey: new Map() });
   const byId = new Map(map.regions.map(region => [String(region.id), region]));
   return (owner: string) => {
-    if (!live.has(owner)) return false;
+    if (!live.has(owner)) return undefined;
     const [, id, key] = owner.split(':');
     const region = byId.get(id);
     const central = region && hasCentralPoi(region) && hexKey(region.centerHex) === key;
     const kind = central ? region.centralPoiKind : region?.pointOfInterestKinds?.[key];
-    return kind !== undefined && CROWS_SETTLEMENT_KINDS.has(kind) && waterKindAt(map.hexTerrainByKey, key) === 'land';
+    return waterKindAt(map.hexTerrainByKey, key) === 'land' ? kind : undefined;
   };
 }
 
 function retainCrowsSettlements(map: MapSnapshot, moves: ReadonlyMap<string, string | null> = new Map()): MapSnapshot {
   if (!map.crowsSettlements) return map;
-  return {...map,crowsSettlements:rebindCrowsSettlements(map.crowsSettlements,crowsSettlementCheck(map),moves)};
+  return {...map,crowsSettlements:rebindCrowsSettlements(map.crowsSettlements,crowsLandPoiKinds(map),moves)};
 }
 
 function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={},creationMode?:GenerationMode):MapSnapshot{
@@ -12479,6 +12479,7 @@ export function App() {
     setWorld(value);
   };
   const [crowsEnabled, setCrowsEnabled] = useState(false);
+  const crowsActive = crowsEnabled && generationMode === 'classic';
   const [crowsSettlements, setCrowsSettlements] = useState<CrowsSettlements>();
   const crowsSettlementsRef = useRef<CrowsSettlements>();
   const updateCrowsSettlements = (value: CrowsSettlements | undefined) => {
@@ -14505,7 +14506,7 @@ export function App() {
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history, lakeRegions:readonly Region[] = []) => {
     const starter = lakeRegions[0];
-    if (crowsEnabled && generationMode === 'classic' && !kingdomJob && starter &&
+    if (crowsActive && !kingdomJob && starter &&
         !map.crowsSettlements?.starterGranted && hasCentralPoi(starter) &&
         waterKindAt(map.hexTerrainByKey, hexKey(starter.centerHex)) === 'land' &&
         poiNameLocators(map).has(`poi:${starter.id}:${hexKey(starter.centerHex)}`)) {
@@ -14514,6 +14515,27 @@ export function App() {
       const village = starterCrowsSettlement(map.generation.masterSeed, starter.id, starter.centerHex);
       map = {...map,regions,crowsSettlements:{starterGranted:true,byPoi:{...map.crowsSettlements?.byPoi,[owner]:village}},
         toponyms:synchronizeToponyms(map.toponyms,getToponymEntities(regions,map.rivers,map.hexTerrainByKey),map.toponymSeed)};
+    }
+    if (crowsActive && !kingdomJob) {
+      const beforeIds = new Set(checkpoint.regions.map(region => region.id));
+      const generated = map.regions.filter(region => !beforeIds.has(region.id));
+      const layer = map.crowsSettlements ?? EMPTY_CROWS_SETTLEMENTS;
+      const byPoi = {...layer.byPoi}, standaloneByPoi = {...layer.standaloneByPoi};
+      const kindFor = crowsLandPoiKinds(map);
+      for (const region of generated) {
+        const points = hasCentralPoi(region) ? [region.centerHex,...region.pointsOfInterest] : region.pointsOfInterest;
+        for (const point of points) {
+          const owner = `poi:${region.id}:${hexKey(point)}`;
+          if (byPoi[owner] || standaloneByPoi[owner]) continue;
+          const kind = kindFor(owner);
+          if (!kind) continue;
+          const result = rollCrowsPoint(kind,map.generation.masterSeed,region.id,point,
+            region.biomeLandType === 'settled',isCrowsStructureSite(kind) && hexHasRoadSegment(point,map.roads));
+          if (result.settlement) byPoi[owner] = result.settlement;
+          if (result.building) standaloneByPoi[owner] = result.building;
+        }
+      }
+      map = {...map,crowsSettlements:{...layer,byPoi,standaloneByPoi}};
     }
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
@@ -15039,9 +15061,9 @@ export function App() {
     const current = crowsSettlementsRef.current;
     if (!current && !snapshot.crowsSettlements) return undefined;
     const saved = snapshot.crowsSettlements ?? EMPTY_CROWS_SETTLEMENTS;
-    const owns = crowsSettlementCheck(snapshot);
-    const live = Object.fromEntries(Object.entries(current?.byPoi ?? {}).filter(([owner]) => owns(owner)));
-    return {...saved,byPoi:{...saved.byPoi,...live}};
+    const combined = {...saved,byPoi:{...saved.byPoi,...current?.byPoi},
+      standaloneByPoi:{...saved.standaloneByPoi,...current?.standaloneByPoi}};
+    return rebindCrowsSettlements(combined,crowsLandPoiKinds(snapshot),new Map());
   };
 
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
@@ -15324,17 +15346,29 @@ export function App() {
     && poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)
     ? {kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey} : null;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !selectedSurfaceIsWater && (!selectedWaterPoiKind || selectedLandPoi));
-  const crowsVillageOwner = crowsEnabled && generationMode === 'classic' && selectedLandPoi && !selectedSurfaceIsWater
+  const crowsVillageOwner = crowsActive && selectedLandPoi && !selectedSurfaceIsWater
     ? poiLocatorKey(selectedLandPoi) : undefined;
   const selectedCrowsVillage = crowsVillageOwner ? crowsSettlements?.byPoi[crowsVillageOwner] : undefined;
-  const crowsMiasma = crowsEnabled && generationMode === 'classic' && selectedHex &&
-    !isSelectedCandidate && (selectedRegion || isSelectedLake || isSelectedSea)
-    ? !Object.entries(crowsSettlements?.byPoi ?? {}).some(([owner, village]) => {
-      const radius = villageBeaconRadius(village);
-      if (radius === 0) return false;
-      const [q, r] = owner.split(':')[2].split(',').map(Number);
-      return hexDistance(selectedHex, {q, r}) <= radius;
-    })
+  const selectedCrowsBuilding = crowsVillageOwner ? crowsSettlements?.standaloneByPoi?.[crowsVillageOwner] : undefined;
+  const crowsPoiPresentation = (owner: string, kind?: string) => {
+    if (!crowsActive) return undefined;
+    const building = crowsSettlements?.standaloneByPoi?.[owner];
+    if (building) return {icon:CROWS_BUILDINGS[building.type].icon, label:CROWS_BUILDINGS[building.type][language]};
+    if (isCrowsSettlementKind(kind)) return {icon:'village' as const, label:CROWS_SETTLEMENTS[kind][language]};
+  };
+  const selectedCrowsPoi = crowsVillageOwner ? crowsPoiPresentation(crowsVillageOwner,
+    selectedHasCentralPoi ? selectedRegion?.centralPoiKind : selectedPoiKind) : undefined;
+  const crowsBeaconSources = useMemo(() => [
+    ...Object.entries(crowsSettlements?.byPoi ?? {}).map(([owner,village])=>({owner,radius:villageBeaconRadius(village)})),
+    ...Object.entries(crowsSettlements?.standaloneByPoi ?? {}).filter(([,building])=>building.type === 'beacon')
+      .map(([owner,building])=>({owner,radius:building.level}))
+  ].filter(({radius})=>radius>0).map(({owner,radius})=>{
+    const [q,r]=owner.split(':')[2].split(',').map(Number);
+    return {q,r,radius};
+  }),[crowsSettlements]);
+  const crowsMiasma = crowsActive && selectedHex && !isSelectedCandidate &&
+    (selectedRegion || isSelectedLake || isSelectedSea)
+    ? !crowsBeaconSources.some(source=>hexDistance(selectedHex,source)<=source.radius)
     : undefined;
   const editCrowsVillage = (village: CrowsSettlement) => {
     if (!crowsVillageOwner || !editMode || mutationBlocked() || !selectedCrowsVillage ||
@@ -16985,9 +17019,10 @@ export function App() {
     const region=regions.find(r=>r.id===Number(parts[1])),waterKind=waterPoiByKey.get(key),central=region&&hasCentralPoi(region)&&isSameHex(region.centerHex,hex);
     const kind=water?waterKind:central?region.centralPoiKind:region?.pointOfInterestKinds?.[key];
     const named=nameTargets.find(t=>t.poiLocator===alias||t.key===alias);
-    const typeLabel=waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi;
+    const presentation = water ? undefined : crowsPoiPresentation(alias,kind);
+    const typeLabel=presentation?.label ?? (waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi);
     const label=finePoiLabel(typeLabel,named?.[language]);
-    return {label,image:getPoiSvgHref(kind,water)};
+    return {label,image:getPoiSvgHref(presentation?.icon??kind,water)};
   };
   const focusFine=()=>{const key=(automaticFineSceneRef.current??physicalGridRef.current)?.selectedCell;setTimeout(()=>{if(key)mapSvgRef.current?.querySelector<SVGGElement>(`[data-fine-key="${hexKey(key)}"]`)?.focus();},0);};
   const cancelFineDraft=(expected=fineDraft)=>{if(expected&&fineDraftRef.current!==expected)return false;fineDraftRef.current=null;setFineDraft(null);setFineExit(null);fineComposing.current=false;setEditError(null);focusFine();};
@@ -17194,7 +17229,7 @@ export function App() {
   const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork nativeRiverPaint={riverPaint} nativeRoadPaint={roadPaint} state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} smallLakeDraftCells={smallLakeDraft?.cells} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     geography={mask=>refinedArtwork(fineDisplay,mask)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineRoutes,riverPaint,roadPaint,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [crowsActive,crowsSettlements,fineDisplay,fineRoutes,riverPaint,roadPaint,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const infoEditControl = <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
@@ -17456,14 +17491,15 @@ export function App() {
                 const land = region && (central || other);
                 if (!land && !waterKind) return null;
                 const kind = land ? (central ? region.centralPoiKind : getPoiKindForHex(region, hex)) : waterKind;
-                const title = land ? (central ? getCentralPoiLabel(region, language) : getPoiLabelForHex(region, hex, language))
-                  : getWaterPoiLabel(waterKind!, language);
+                const presentation = land ? crowsPoiPresentation(`poi:${region.id}:${hex.key}`,kind) : undefined;
+                const title = presentation?.label ?? (land ? (central ? getCentralPoiLabel(region, language) : getPoiLabelForHex(region, hex, language))
+                  : getWaterPoiLabel(waterKind!, language));
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 const size = HEX_SIZE * .62;
                 return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
                   <circle cx={position.x} cy={position.y} r={HEX_SIZE * .425} fill={engravingFor(id)!.poiColor}
                     stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
-                  <image className="poi-marker" href={getPoiSvgHref(kind, !land)}
+                  <image className="poi-marker" href={getPoiSvgHref(presentation?.icon??kind, !land)}
                     x={position.x-size/2} y={position.y-size/2} width={size} height={size}
                     role="img" aria-label={title}/>
                 </g>;
@@ -17516,7 +17552,7 @@ export function App() {
             ) : null}
             <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g>
   </>), [
-    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, coarseTerrain, coarseTextures, debugRivers, debugVerticesByRegion, hexTerrainByKey, isMapRotated, kingdoms, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverPaint, roadPaint, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, waterPoiByKey
+    crowsActive, crowsSettlements, biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, coarseTerrain, coarseTextures, debugRivers, debugVerticesByRegion, hexTerrainByKey, isMapRotated, kingdoms, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverPaint, roadPaint, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, waterPoiByKey
   ]);
 
   useEffect(() => {
@@ -17877,7 +17913,7 @@ export function App() {
                     {selectedHasCentralPoi && !editableCapital ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => e.target.value ? setSelectedCentralPoiKind(e.target.value as CentralPoiKind) : deleteSelectedPoi()} onBlur={() => setEditingCentralPoiRegionId(null)}>
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
-                    </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
+                    </select> : editableValue(t.editPoi, `${selectedCrowsPoi ? POI_DETAILS[selectedCrowsPoi.icon].emoji : getCentralPoiEmoji(selectedRegion)} ${selectedCrowsPoi?.label ?? getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
                     {(canEditSelectedPoi || selectedLandPoi) && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
                       {!canEditSelectedPoi && selectedLandPoi ? <span>{selectedPoiKind?POI_DETAILS[selectedPoiKind].emoji+' ':''}{getPoiLabelForHex(selectedRegion,selectedHex,language)}</span>
@@ -17886,13 +17922,16 @@ export function App() {
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
                         {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}
                       </select> : selectedLandPoi || editMode ? editableValue(t.editPoi, selectedPoiKind
-                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : selectedLandPoi?t.poi:t.addPoi,
+                        ? `${POI_DETAILS[selectedCrowsPoi?.icon ?? selectedPoiKind].emoji} ${selectedCrowsPoi?.label ?? POI_DETAILS[selectedPoiKind].label[language]}` : selectedLandPoi?t.poi:t.addPoi,
                         () => setEditingPoiHexKey(selectedHexKey)) : null}
                       {' '}{selectedLandPoi ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
                     </div> : null}
                     {selectedHasCentralPoi && selectedHasSecondaryPoi && selectedHex ? <div className="direct-line">
                       {selectedPoiKind ? POI_DETAILS[selectedPoiKind].emoji + ' ' : ''}{getPoiLabelForHex(selectedRegion, selectedHex, language)}
                     </div> : null}
+                    {selectedCrowsBuilding && <p data-crows-building={selectedCrowsBuilding.type}>
+                      {language === 'ru' ? 'Уровень' : 'Level'}: {selectedCrowsBuilding.level}
+                    </p>}
                     {crowsVillageOwner && <CrowsVillageInfo village={selectedCrowsVillage} language={language} editing={editMode}
                       disabled={mutationBlocked(false)} onHomeChange={setCrowsHome} onChange={editCrowsVillage} />}
                     {selectedWaterPoiKind || (selectedSurfaceIsWater && !selectedLandPoi) ? <div className="direct-line">{renderWaterPoi()}</div> : null}
