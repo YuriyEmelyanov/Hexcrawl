@@ -1,0 +1,542 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-26-top20-l1-knave2-crosswalk-1030",
+  "task_id": "HX-RSR-001",
+  "base_sha": "a8d802087d3c372c13e8d4f92acfa04c862bec05",
+  "status": "bounded_knave2_source_binding_reconciliation_complete",
+  "audiences": [
+    "product_model",
+    "strategist",
+    "development"
+  ],
+  "corpus": {
+    "english": {
+      "source_id": "KNAVE2-EN-FIRST-PRINTING",
+      "edition": "Knave Second Edition, first printing",
+      "copyright_year": 2023,
+      "isbn": "979-8-9874702-0-6",
+      "creator": "Ben Milton / Questing Beast",
+      "primary_text_url": "https://www.scribd.com/document/697405773/Knave-2e-Spreads",
+      "access_level": "selected_printed_pages_in_publisher_text_on_public_mirror",
+      "author_project_key": "ben-milton/questing-beast/knave2/core2024"
+    },
+    "translation": {
+      "source_id": "KNAVE2-RU-1.0",
+      "sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "ref": "agent-work/research/requirements/KNAVE2-scope-audit.json"
+    },
+    "scope_totals": {
+      "out_of_scope": 36,
+      "defer_L2": 17,
+      "keep_L1": 12,
+      "integration_L3": 10,
+      "needs_owner_decision": 3
+    },
+    "formalization": "12 operational requirements reconciled",
+    "implementation": "component observations and historical release evidence; full current browser scenarios unknown",
+    "saved_rule_matrix_ref": "agent-work/market/rules/Knave-2e.json",
+    "coverage_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+    "map_example": {
+      "printed_pages": [
+        78,
+        79
+      ],
+      "pdf_page": 43,
+      "observed_from_saved_visual_inspection": "Пример 12×8 с местностью, водой и точками интереса. Рабочим объёмом рисунок используется как иллюстрация; предписанных размеров или плотности не установлено."
+    },
+    "english_corpus_limit": "Проверены нужные правила, заголовки и контрольные строки. Содержимое полного набора результатов с. 27–43, изображения и последующие errata не сверялись заново."
+  },
+  "disposition_inventory": {
+    "ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+    "counts": {
+      "out_of_scope": 36,
+      "defer_L2": 17,
+      "keep_L1": 12,
+      "integration_L3": 10,
+      "needs_owner_decision": 3
+    },
+    "retained_ids": [
+      "KNAVE2-005-L1",
+      "KNAVE2-006-L1",
+      "KNAVE2-010-L1",
+      "KNAVE2-020-L1",
+      "KNAVE2-037-L1",
+      "KNAVE2-040-L1",
+      "KNAVE2-045-L1",
+      "KNAVE2-051-L1",
+      "KNAVE2-070-L1",
+      "KNAVE2-071-L1",
+      "KNAVE2-072-L1",
+      "KNAVE2-073-L1"
+    ],
+    "selected_boundaries": [
+      "Движение, взаимодействие и раскрытие в сессии — L2.",
+      "Магия реликвий и приготовление зелий остаются в интеграциях или исключены по существующей ревизии.",
+      "Обязательная генерация числа святилищ по типу поселения остаётся needs_owner_decision в KNAVE2-038-L1."
+    ]
+  },
+  "rows": [
+    {
+      "id": "KNAVE2-005-L1",
+      "binding": "KNAVE2-005-L1",
+      "canon": [
+        "map.physical_hex_scale"
+      ],
+      "criterion_ids": [
+        "S04-C04"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Traveling / Travel speed",
+        "mirror_line_locator": [
+          397,
+          407
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-005-L1",
+      "criterion_scope_notes": {
+        "S04-C04": "Экспорт и повторное открытие физического профиля; масштаб на экране не меняет эти данные."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json"
+      ]
+    },
+    {
+      "id": "KNAVE2-006-L1",
+      "binding": "KNAVE2-006-L1",
+      "canon": [
+        "map.terrain_zones"
+      ],
+      "criterion_ids": [
+        "S07-C01",
+        "S04-C04"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Traveling / Travel speed",
+        "mirror_line_locator": [
+          397,
+          409
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-006-L1",
+      "criterion_scope_notes": {
+        "S07-C01": "Локальная труднопроходимость как игровой параметр местности.",
+        "S04-C04": "Сохранение флага в JSON вместе с прежним биомом и POI."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json"
+      ]
+    },
+    {
+      "id": "KNAVE2-010-L1",
+      "binding": "KNAVE2-010-L1",
+      "canon": [
+        "content.discovery_levels",
+        "content.site_links",
+        "map.audience_views"
+      ],
+      "criterion_ids": [
+        "S05-C03",
+        "S04-C03"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Traveling / Exploring and Secret features",
+        "mirror_line_locator": [
+          417,
+          430
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-010-L1",
+      "criterion_scope_notes": {
+        "S05-C03": "Уровни раскрытия Knave с отдельным условием взаимодействия.",
+        "S04-C03": "Игровой вид не раскрывает секрет раньше разрешённого действия."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/results/2026-11-24-PR513-publication.json",
+        "src/poiDiscovery.ts#discoveryForRoll"
+      ]
+    },
+    {
+      "id": "KNAVE2-020-L1",
+      "binding": "KNAVE2-020-L1",
+      "canon": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Locations / Structures / Place Traits / Dungeons",
+        "mirror_line_locator": [
+          [
+            435,
+            486
+          ],
+          [
+            599,
+            605
+          ]
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 6,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-020-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Адресуемая запись места с выбранными подсказками и их происхождением.",
+        "S07-C01": "Ограниченная связь подсказки с контекстом местности. Саму проходимость или геометрию этот сценарий не проверяет."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/research/runs/2026-11-21-L1-Knave-reroll-0830.json",
+        "src/tags/knave.ts#fillKnaveContent"
+      ]
+    },
+    {
+      "id": "KNAVE2-037-L1",
+      "binding": "KNAVE2-037-L1",
+      "canon": [
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Relic Magic / Shrines",
+        "mirror_line_locator": [
+          1074,
+          1098
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-037-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Посвящённость сохраняется у конкретного святилища."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/research/runs/2026-11-21-L1-Knave-shrine-0930.json"
+      ]
+    },
+    {
+      "id": "KNAVE2-040-L1",
+      "binding": "KNAVE2-040-L1",
+      "canon": [
+        "map.resource_availability",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Alchemy / Harvesting",
+        "mirror_line_locator": [
+          1139,
+          1156
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-040-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Редкое растение указано в содержимом выбранного места.",
+        "S07-C01": "Региональная доступность ресурса с качественной привязкой к месту."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": []
+    },
+    {
+      "id": "KNAVE2-045-L1",
+      "binding": "KNAVE2-045-L1",
+      "canon": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Colors r1 and Inn Name 1 r14",
+        "mirror_line_locator": [
+          [
+            1158,
+            1161
+          ],
+          [
+            1497,
+            1512
+          ]
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 1,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-045-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "У существующего места сохраняется результат названной вспомогательной таблицы с источником."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "src/tags/knave.ts#fillKnaveContent"
+      ]
+    },
+    {
+      "id": "KNAVE2-051-L1",
+      "binding": "KNAVE2-051-L1",
+      "canon": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Inn Name 1 / Inn Name 2 / Food Traits / Food",
+        "mirror_line_locator": [
+          1497,
+          1548
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-051-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Подсказки названия и меню относятся к уже размещённой таверне."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "src/tags/knave.ts#validateKnaveCatalog"
+      ]
+    },
+    {
+      "id": "KNAVE2-070-L1",
+      "binding": "KNAVE2-070-L1",
+      "canon": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Introduction / Tables",
+        "mirror_line_locator": [
+          149,
+          167
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 7,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-070-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Сведения места сохраняют источник, строки и толкование мастера."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "src/tags/knave.ts#validateKnaveContent"
+      ]
+    },
+    {
+      "id": "KNAVE2-071-L1",
+      "binding": "KNAVE2-071-L1",
+      "canon": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Introduction / Tables",
+        "mirror_line_locator": [
+          169,
+          188
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 3,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-071-L1",
+      "criterion_scope_notes": {
+        "S05-C01": "Несколько исходов сохраняются у одного места вместе с интерпретацией."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "src/tags/knave.ts#rerollKnaveContent"
+      ]
+    },
+    {
+      "id": "KNAVE2-072-L1",
+      "binding": "KNAVE2-072-L1",
+      "canon": [
+        "map.routes_and_barriers"
+      ],
+      "criterion_ids": [
+        "S01-C04",
+        "S04-C04"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Game Master Duties / Create locations to explore",
+        "mirror_line_locator": [
+          207,
+          218
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-072-L1",
+      "criterion_scope_notes": {
+        "S01-C04": "Ручное альтернативное соединение сохраняется отдельным путём. Проба не покрывает мосты, паромы или реки.",
+        "S04-C04": "Две линии и адреса мест сохраняются при повторном открытии."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": []
+    },
+    {
+      "id": "KNAVE2-073-L1",
+      "binding": "KNAVE2-073-L1",
+      "canon": [
+        "content.static_hazard",
+        "content.discovery_levels",
+        "map.audience_views"
+      ],
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C03",
+        "S07-C01"
+      ],
+      "source": {
+        "source_id": "KNAVE2-EN-FIRST-PRINTING",
+        "section": "Game Master Duties / Signpost danger",
+        "mirror_line_locator": [
+          215,
+          223
+        ]
+      },
+      "coverage": "unknown",
+      "cases": 2,
+      "operational_requirement_ref": "agent-work/research/top20-l1/games/KNAVE2.json#KNAVE2-073-L1",
+      "criterion_scope_notes": {
+        "S04-C03": "Признак доступен игрокам согласно раскрытию, GM-механизм остаётся скрыт.",
+        "S05-C03": "Уровень раскрытия признака и опасности задаётся отдельно.",
+        "S07-C01": "Признак соотнесён с конкретным риском местности в выбранном сценарии."
+      },
+      "disposition": "keep_L1",
+      "implementation_evidence_scoped": [
+        "agent-work/results/2026-11-24-PR513-publication.json"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "KNAVE2-070-L1",
+      "finding": "Оригинал проясняет необходимость пропустить соседние ссылки до первой обычной строки. В проверенном компоненте ссылка хранится без разрешения. Пробу с B/8, B/9, B/10 и отдельный случай конца таблицы можно использовать при приёмке общего механизма."
+    },
+    {
+      "id": "KNAVE2-045-L1",
+      "finding": "Реальный пример ссылки Inn Name 1/14 → Colors/1. Сохранить оба локатора и пользовательскую интерпретацию. Эта операция переиспользует 070."
+    },
+    {
+      "id": "KNAVE2-010-L1",
+      "finding": "Утверждённая спецификация переводит подсказку в комментарий гекса и допускает пустой комментарий. Уровень обнаружения и привязанная улика с самостоятельным раскрытием требуют разных проверок."
+    },
+    {
+      "id": "KNAVE2-037-L1",
+      "finding": "Исторический перенос святилища сохранял имя, но оставлял запись посвящения старому гексу. Проверять принадлежность посвящения объекту через перенос и повторное использование прежнего гекса."
+    },
+    {
+      "id": "KNAVE2-040-L1",
+      "finding": "Авторский обычай помещать растения в опасные или затерянные места не даёт параметров урожайности или восстановления. Старый вывод об отсутствии этих параметров не отвечает на вопрос реализации узкого L1."
+    }
+  ],
+  "implementation": {
+    "build_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "working_browser_cover": "unknown for the full scenarios on current published SHA",
+    "component_probe": {
+      "seed": 28,
+      "owner": "poi:1:0,0",
+      "table": "structures",
+      "row": 14,
+      "selection": "compatible_pool",
+      "references": [
+        {
+          "printedPage": 47,
+          "resolution": "unresolved_source_reference"
+        }
+      ],
+      "traitBefore": 59,
+      "traitAfter": 2,
+      "mutationError": "Invalid Knave content",
+      "dungeonRolls": [
+        39,
+        40,
+        99
+      ],
+      "discovery": [
+        "exploration",
+        "interaction",
+        "interaction"
+      ]
+    },
+    "published_scope": {
+      "ref": "agent-work/results/2026-11-24-PR513-publication.json",
+      "sha": "a4184a601fd045f326d0dc81164d8dc0322f2456",
+      "observed": "Принятый и опубликованный PR513. Режимы «При прохождении», «При исследовании», «Секретное место» применяются в Classic/Knave. Отдельное поле улики снято, используется существующий комментарий к гексу. Секрет с пустым комментарием допустим. Старые тексты поля улики не переносятся автоматически.",
+      "scope": "released_owner_slice",
+      "requirement_ref": "agent-work/specs/HX-BL-062-discovery-F1.md#r3-секрет-и-комментарий--q06-q07",
+      "review_ref": "agent-work/evidence/HX-BL-062-F1/review-192aa57/ui.log",
+      "accepted_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f"
+    },
+    "history": "Проверки PR509 сохранены у каждой операции отдельно. Исторические G-статусы не уточняют состояние нового SHA.",
+    "full_game_accepted": false
+  },
+  "validation": {
+    "operational_requirements": 12,
+    "acceptance_cases": 33,
+    "existing_bindings": 12,
+    "criterion_mapping": "direct scope annotated alongside original matrix relations",
+    "added_operation_count": 0
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-26-top20-l1-knave2-crosswalk-1030",
+    "result_ref": "agent-work/research/runs/2026-11-26-top20-l1-knave2-crosswalk-1030.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-knave2-crosswalk-1030.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Knave 2e: 12 операций описаны по опубликованному английскому тексту первого тиража и сохранённой ревизии русского перевода. Для каждой зафиксированы игровой binding, критерии и приёмка. Уточнено правило повторной ссылки. Отдельные утверждения по генерации проверены на текущем main, проверка опубликованного PR513 использована в фактическом объёме.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2.",
+      "pirate": "Проверить на опубликованном SHA сценарии 50-мильной карты и кораблекрушений на суше/отмели. В Core с. 134–135 подтверждён ключ готовой карты Black Coral Bay, точные измерения подложки по HTML не установлены. С. 156–165 и правила Starter Set, Cabin Fever, Port Generator — отдельные корпуса или остаток; сканы нужны только при новом подходящем источнике. Не считать игровой балл пересчитанным.",
+      "crows": "Дождаться связанного SHA F1 для проверок CROWS-04–08 и полного CROWS-01–09. Селективная карта игроков, адресная связь карты с тайником и готовые места PT3 требуют отдельной проверки применимости и фактической поддержки. Спорные детали Best Steward Ever и локальных укрытий не считать невыполненными критериями F1.",
+      "shadowdark": "На точном опубликованном SHA повторно проверить независимую видимость признака, категории стационарной опасности, danger, связи POI и сцен. Сохранённый Classic/Knave runtime датирован 20.11. Неопределённый рецепт двух колонок и текущая поддержка остаются открытыми. Поздние errata и дополнения не пересматривались.",
+      "pf2": "Проверить опубликованный UI и сохранения отдельно от выполненной пробы масштаба. Пять ST-кандидатов не имеют отдельных bindings. На GM Core с.146–165 остаётся печатный остаток по планам, Player Core 3–8 и приложениям требуется свой тематический скрининг. Базовый L1 и Kingmaker пополнять раздельно при новом источнике.",
+      "knave2": "На точном опубликованном SHA проверить владельца и видимость признака, перенос посвящения святилища, ручной выбор строки и сохранение нескольких исходов. Для ссылки без следующей обычной строки или неоднозначной целевой таблицы правило оставляет решение мастеру. Остальные вспомогательные таблицы сохраняют локаторы перевода; английские исходы не пересверены сплошь. При новом основании проверить подходящее дополнение отдельно от основной книги."
+    },
+    "next": "Worlds Without Number Deluxe 2021: сопоставить девять рабочих строк с существующей сверкой английской и русской редакций. Начать с регионального гидрологического каркаса, ручного нанесения объектов и различия именованных мест и подписей к произвольной геометрии.",
+    "needs_owner_action": false
+  }
+}
