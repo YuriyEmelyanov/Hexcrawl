@@ -16,8 +16,13 @@
         ],
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-001-L1",
         "recorded_facts": "Предложить подготовить Лес из12полян; при выборе готового Леса оставить его расположение и содержимое, не запускать заново построение.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 224–226, Making the Woodland и выбор готовой карты",
+        "author_project_key": "magpie-games:root-rpg:core2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -25,14 +30,23 @@
         "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/ROOT.json#ROOT-CORE-001-L1",
         "related_common_criterion_ids": [
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-CORE-001-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": "ROOT-CORE-001-L1",
         "common_rule_ids": [
           "content.site_density"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-001-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -55,7 +69,8 @@
         "constraints_and_exceptions": [
           "Не означает12гексов,12регионов или запрет иных POI.",
           "Поведение для готовой карты, не соответствующей12полянам, этим срезом не определено; не добавлять и не удалять молча.",
-          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась.",
+          "Печатная схема не задаёт миль, размер ячейки или связанность смежных гексов. Гексы для проекции задаёт мастер."
         ],
         "acceptance_cases": [
           {
@@ -93,11 +108,19 @@
           "finding": "Hex regions and POIs exist; there is no Root12-clearing construction profile. Existing import preserves an accepted map, not allRoot invariants.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-CORE-002-L1",
@@ -111,8 +134,13 @@
         ],
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-002-L1",
         "recorded_facts": "Выбрать сообщество по броску; если уже подготовлены четыре такие поляны, перебросить этот результат. Сохранять речь о большинстве населения, не о единственном виде жителей.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 225–226, Clearing Denizens Table",
+        "author_project_key": "magpie-games:root-rpg:core2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -120,7 +148,13 @@
         "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/ROOT.json#ROOT-CORE-002-L1",
         "related_common_criterion_ids": [
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-CORE-002-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона."
       },
       "canonical": {
         "binding_id": "ROOT-CORE-002-L1",
@@ -128,7 +162,9 @@
           "content.place_description",
           "content.roll_table_resolution"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-002-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -220,11 +256,19 @@
           "finding": "No majority-community field or four-per-community policy in published map/setup model; a descriptive note is not an enforced cap.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-CORE-003-L1",
@@ -238,8 +282,13 @@
         ],
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-003-L1",
         "recorded_facts": "Определить общее число путей; учесть уже подведённые пути и добавить только оставшиеся. По достижении12полян дать ведущему убрать незавершённые линии либо оставить их отметками, без новой поляны ради каждой линии.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 225–226, Clearing Paths Table",
+        "author_project_key": "magpie-games:root-rpg:core2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -250,7 +299,14 @@
           "S01-C04",
           "S01-C05",
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-CORE-003-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S01-C04",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Явные дороги и тропы и сохранение раскладки. Бюджет путей задаёт Root."
       },
       "canonical": {
         "binding_id": "ROOT-CORE-003-L1",
@@ -258,7 +314,9 @@
           "content.roll_table_resolution",
           "map.routes_and_barriers"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-003-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -350,6 +408,12 @@
             "given": "Тот же Лес, ведущий выбирает убрать незавершённые линии.",
             "when": "Завершить подготовку.",
             "expected": "Линии убраны; число и содержимое12полян сохранены."
+          },
+          {
+            "id": "ROOT-CORE-003-L1-AC05",
+            "given": "A соседствует с B по сетке. Один проведённый путь A–C. Бросок 2d6=3.",
+            "when": "Выбрать второе направление к D и сохранить.",
+            "expected": "От A ровно две явные линии: A–C и A–D. A–B отсутствует."
           }
         ],
         "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
@@ -368,7 +432,7 @@
         "previous_checks": null
       },
       "implementation": {
-        "current_status": "unknown",
+        "current_status": "partial",
         "historical_evidence": {
           "ref": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-003-L1",
           "sha": null,
@@ -376,11 +440,27 @@
           "finding": "Manual roads use adjacent axial segments and protect a geometric network; no Root named-clearing path budget/incoming-count/unfinished-line procedure.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": {
+          "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+          "path": "src/manualRoads.ts",
+          "blob_sha": "f9e405a66ecef935c74075d41d34e26d9c96c320",
+          "runtime_ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+          "method": "Прогон реальных обработчиков App на указанном SHA, переиспользован из Cairn",
+          "observed": "Три явных пути образовали кольцо после JSON. Соседнее место без ребра осталось несвязанным. Отдельное препятствие остановило запись тропы.",
+          "limitation": "Classic, ручные смежные сегменты. Подсчёт, незавершённые пути и связи через несколько гексов в Root остаются unknown."
+        },
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-CORE-004-L1",
@@ -395,8 +475,13 @@
         ],
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-004-L1",
         "recorded_facts": "Получить имя по выбранному порядку кубов; при повторе предложить обратное чтение или новый бросок, не принимая уже занятое имя.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 225–227, Random Clearing Name",
+        "author_project_key": "magpie-games:root-rpg:core2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -404,7 +489,14 @@
         "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/ROOT.json#ROOT-CORE-004-L1",
         "related_common_criterion_ids": [
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-CORE-004-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": "ROOT-CORE-004-L1",
@@ -412,7 +504,9 @@
           "content.place_description",
           "content.roll_table_resolution"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-004-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -453,6 +547,12 @@
             "given": "Оба имени для исходного и обратного порядка уже заняты.",
             "when": "Ведущий выбирает переброс и получает свободное имя.",
             "expected": "Используется новый свободный результат; старые названия не изменены."
+          },
+          {
+            "id": "ROOT-CORE-004-L1-AC03",
+            "given": "Оба порядка исходной пары ведут к уже использованным именам.",
+            "when": "Мастер пробует обратный порядок, затем перебрасывает.",
+            "expected": "Повтор не появляется. Применяется свободный итог нового броска. Имена других полян сохранены."
           }
         ],
         "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
@@ -470,7 +570,7 @@
         "previous_checks": null
       },
       "implementation": {
-        "current_status": "unknown",
+        "current_status": "partial",
         "historical_evidence": {
           "ref": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-004-L1",
           "sha": null,
@@ -478,11 +578,55 @@
           "finding": "POI names are editable and saved; no Root ordered-name catalog, reverse-pair collision policy or Woodland uniqueness enforcement.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": {
+          "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+          "path": "src/tags/engine.ts",
+          "blob_sha": "8d2a207bfddb24c41e8e7d6dafc315ddf9684838",
+          "method": "Тело функции resolved из указанного SHA выполнено с синтетической таблицей 6×6 в JS",
+          "observed": {
+            "pairs": 36,
+            "unique": 36,
+            "cases": [
+              [
+                "1,2",
+                "1"
+              ],
+              [
+                "1,6",
+                "5"
+              ],
+              [
+                "2,1",
+                "6"
+              ],
+              [
+                "2,6",
+                "11"
+              ],
+              [
+                "3,4",
+                "15"
+              ],
+              [
+                "6,2",
+                "31"
+              ]
+            ]
+          },
+          "limitation": "Подтверждён выбор 36 разных ячеек. Уникальность имен Root и сохранение в поляне остаются unknown."
+        },
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-TO-001-L1",
@@ -493,8 +637,13 @@
         "locator": 219,
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-001-L1",
         "recorded_facts": "Дать ведущему подготовить название, описание ситуации и то, что прибывающие персонажи заметят сначала; сохранить этот материал у поляны.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 219 / PDF 220, Basic Description и Introducing the Clearing",
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -502,14 +651,23 @@
         "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/ROOT.json#ROOT-TO-001-L1",
         "related_common_criterion_ids": [
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-TO-001-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": "ROOT-TO-001-L1",
         "common_rule_ids": [
           "content.place_description"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-001-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -528,13 +686,15 @@
         "constraints_and_exceptions": [
           "Источник не задаёт длину текста, число деталей или таблицу случайных названий.",
           "Текст первого впечатления не означает, что все скрытые конфликты стали известны персонажам.",
-          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась.",
+          "Сохраняются постоянные факты места для мастера. Момент раскрытия и вступительная сцена относятся к ведению."
         ],
         "acceptance_cases": [
           {
             "given": "ПолянаA, выбранное название«Ольховый брод», описание«деревянный мост у ворот».",
             "when": "Сохранить подготовленное место и снова открыть карту.",
-            "expected": "Поляна сохранила название, мост/ворота как описание места и исходную позицию; конфликт/угроза/NPCне сгенерированы."
+            "expected": "Поляна сохранила название, мост/ворота как описание места и исходную позицию; конфликт/угроза/NPCне сгенерированы.",
+            "id": "ROOT-TO-001-L1-AC01"
           }
         ],
         "source_vs_product_interpretation": "Источник даёт советы подготовки поляны. Возможности сохранить и связать материал на карте, различать доступность сведений и редактировать подготовку — продуктовый перевод для решения стратега и аналитика. Способ хранения, команды, UI и архитектура не определены исследователем. Все примеры с Ольховым бродом, Рином и Эшем придуманы и не являются материалом книги.",
@@ -559,11 +719,19 @@
           "finding": "Name and accepted situation/first impression fit existing POI name plus GM note and survive actual import/history. No dedicated clearing model/UI is claimed.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-TO-008-L1",
@@ -573,9 +741,14 @@
         "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
         "locator": 179,
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-008-L1",
-        "recorded_facts": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "recorded_facts": "На карте без воды d6 выбирает вид воды. При совместном добавлении обоих объектов река впадает в озеро. Следующее общее предложение противоречиво.",
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 179 / PDF 180, Riverfolk Company и Map Edge Table, строки 6861–6889",
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -587,7 +760,14 @@
           "S01-C04",
           "S01-C05",
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-TO-008-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S01-C02",
+          "S01-C03"
+        ],
+        "criterion_mapping_basis": "Различение реки и озера и их геометрическая связь. Условный выбор задаёт Root."
       },
       "canonical": {
         "binding_id": "ROOT-TO-008-L1",
@@ -596,7 +776,9 @@
           "map.land_water_shapes",
           "map.river_network"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-008-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -632,18 +814,20 @@
             "world_distance_from_drop": null,
             "nearest_metric": null,
             "close_radius": null,
-            "lake_river_direction": "source anomaly unresolved"
+            "lake_river_direction": {
+              "new_pair_d6_6": "river_into_lake",
+              "general_statement": "unknown_source_anomaly"
+            }
           }
         },
-        "product_operation": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
-        "expected_output": "На карте подготовлен выбранный водный объект; известные соединения с полянами сохранены, неподтверждённые размеры и направление не придуманы.",
+        "product_operation": "Выбрать воду по броску, задать края и нужные поляны или озеро. При совместном построении завершить русло в озере.",
+        "expected_output": "Вода и связи с заданными полянами сохранены. Для одновременного добавления на карту без воды сохранено направление река → озеро.",
         "constraints_and_exceptions": [
           "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
           "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
           "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
           "Повторный край не обязан отличаться от первого по явному тексту.",
-          "Опечатка про озеро, соединяемое с озером, не исправлена молча.",
-          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          "Направление относится к случаю одновременного добавления реки и озера в этой процедуре. Для прочих случаев направление не выводится из противоречивого предложения."
         ],
         "acceptance_cases": [
           {
@@ -663,22 +847,28 @@
             "given": "Озеро уже есть, дополнительная вода ведущим не запрошена.",
             "when": "Начинается подготовка Riverfolk.",
             "expected": "Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции."
+          },
+          {
+            "id": "ROOT-TO-008-L1-AC04",
+            "given": "Карта без воды. d6 вида воды=6, d6 края=1. Ближайшая к северу поляна A. Озеро K.",
+            "when": "Подготовить обе формы и сохранить.",
+            "expected": "Река входит сверху через A и заканчивается в K. Дополнительный выход к краю не назначается."
           }
         ],
-        "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+        "source_vs_product_interpretation": "Из источника взяты условия выбора и направление для новой пары. Привязка к гексам и формат хранения относятся к продукту. Обозначения A и K — синтетические данные теста.",
         "canonical_rule_refs": [
           "map.land_water_shapes",
           "map.river_network",
           "content.roll_table_resolution"
         ],
         "unresolved_parameters": [
-          "ROOT-TO-Q04: ошибочное подлежащее и направление связи река/озеро.",
+          "ROOT-TO-Q04: общая фраза после однозначной ветки d6=6 внутренне противоречива, направление для других случаев неизвестно.",
           "ROOT-TO-Q07: геометрическая метрика, близость и равенства расстояний."
         ]
       },
       "model_fixture": {
         "user_action": "Riverfolk: добавить водные объекты и провести реку",
-        "expected_output": "На карте подготовлен выбранный водный объект; известные соединения с полянами сохранены, неподтверждённые размеры и направление не придуманы.",
+        "expected_output": "Вода и связи с заданными полянами сохранены. Для одновременного добавления на карту без воды сохранено направление река → озеро.",
         "previous_checks": null
       },
       "implementation": {
@@ -690,11 +880,20 @@
           "finding": "Manual water/river editing is reusable geometry, but does not select Root edge clearings or execute its conditional Riverfolk setup. Source lake-direction question remains open.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
-        "Confirm historical evidence at a source-specific product SHA."
-      ]
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Проверить сток новой пары на продукте и сохранить редакционную неоднозначность для остальных случаев."
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": true
+      }
     },
     {
       "id": "ROOT-TO-009-L1",
@@ -705,8 +904,13 @@
         "locator": 180,
         "source_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-009-L1",
         "recorded_facts": "Помогать подключать допустимые поляны, ограничивая озеро четырьмя полянами и потерю путей двумя; hit определяется по уже скорректированному итогу, знак модификатора остаётся неясным.",
-        "access_level": "unknown",
-        "verification": "reused_from_existing_research"
+        "access_level": "full_text_selected_section_third_party_mirror",
+        "verification": "reused_from_existing_research",
+        "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 180 / PDF 181, Lake Expansion, строки 6904–6909; Core с. 32, порог hit",
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -718,7 +922,14 @@
           "S01-C04",
           "S01-C05",
           "S05-C01"
-        ]
+        ],
+        "criterion_id": "ROOT-TO-009-L1",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S01-C03",
+          "S01-C04"
+        ],
+        "criterion_mapping_basis": "Граница озера и явные пути. Ограничения расширения задаёт Root."
       },
       "canonical": {
         "binding_id": "ROOT-TO-009-L1",
@@ -727,7 +938,9 @@
           "map.land_water_shapes",
           "map.routes_and_barriers"
         ],
-        "candidate_binding": false
+        "candidate_binding": false,
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-009-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "existing_structured_requirement",
       "operational_requirement": {
@@ -786,6 +999,12 @@
             "given": "Для допустимого кандидата озера уже переданы скорректированные итоги6,7,10; знак модификатора в этом примере не вычисляется.",
             "when": "Определить только условие hit.",
             "expected": "6 — не-hit;7 и10 — hit. Остальные условия расширения проверяются отдельно."
+          },
+          {
+            "id": "ROOT-TO-009-L1-AC05",
+            "given": "К озеру подключены A и B. Для C 2d6=7 до модификатора.",
+            "when": "Проверить расширение без подтверждённого итогового броска.",
+            "expected": "Автоматически C не добавлена. Два прочтения дают 6 и 8. При заданных ведущим итогах 6 отклоняет C, 8 допускает при соблюдении пределов."
           }
         ],
         "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; Порог hit уточнён дополнительным источником; для сырого броска всё ещё нужен однозначный модификатор. Уточнение: определение hit сверено с core32 по первичному тексту на стороннем хостинге; это дополнительный источник, не молчаливое исправление T&O.",
@@ -813,11 +1032,19 @@
           "finding": "Geometric lake editing is not the Root rule limiting four clearings and two lost named paths. Modifier sign remains source-uncertain and is not invented.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": null
-        }
+        },
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Confirm historical evidence at a source-specific product SHA."
-      ]
+      ],
+      "scope_basis": "Региональная география и привязанное содержимое исходного binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "source_procedure",
+        "source_questions": true
+      }
     },
     {
       "id": "ROOT-SCOPE-M01",
@@ -836,13 +1063,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006",
         "recorded_facts": "Для Marquisate исходная крепость находится в крайней поляне. Ведущий выбирает угол или использует d6 с перебросом 5–6. Исходная процедура также назначает контроль фракции.",
-        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Core Book",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M01",
         "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
         "author_project_key": "magpie-games:root-rpg:core2021",
-        "source_ledger": "ROOT-CORE-2021-EN"
+        "source_ledger": "ROOT-CORE-2021-EN",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 228–229, First: The Marquisate, Woodland Corner",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -854,7 +1084,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M01",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -864,7 +1101,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-CORE-006-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-006-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-006-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -894,12 +1133,14 @@
           {
             "given": "Ведущий уже выбрал A как крайнюю поляну. A явно привязана к гексу (0, 0).",
             "when": "Сохранить Крепость K на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "Тест проверяет только крепость K на выбранном гексе. Крепость K виден в контексте гекса (0, 0) после открытия."
+            "expected": "Тест проверяет только крепость K на выбранном гексе. Крепость K виден в контексте гекса (0, 0) после открытия.",
+            "id": "ROOT-SCOPE-M01-AC01"
           },
           {
             "given": "Мастер указал поляну A, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Крепость K для A.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M01-AC02"
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -933,11 +1174,19 @@
               "ROOT-P02"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M02",
@@ -956,13 +1205,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008",
         "recorded_facts": "При участии Marquisate первый Roost Eyrie находится в противоположном углу от крепости. Иначе угол выбирается ведущим или броском. Исходный Roost сопровождается присутствием и контролем Eyrie.",
-        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Core Book",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M02",
         "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
         "author_project_key": "magpie-games:root-rpg:core2021",
-        "source_ledger": "ROOT-CORE-2021-EN"
+        "source_ledger": "ROOT-CORE-2021-EN",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 230–231, Second: The Eyrie Dynasties",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -974,7 +1226,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M02",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -984,7 +1243,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-CORE-008-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-008-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-008-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1014,12 +1275,14 @@
           {
             "given": "Ведущий выбрал B по условию источника. Крепость K уже отмечена в A. B явно привязана к гексу (2, 0).",
             "when": "Сохранить Roost B на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "Положение K, наличие фракций и их контроль не меняются. Roost B виден в контексте гекса (2, 0) после открытия."
+            "expected": "Положение K, наличие фракций и их контроль не меняются. Roost B виден в контексте гекса (2, 0) после открытия.",
+            "id": "ROOT-SCOPE-M02-AC01"
           },
           {
             "given": "Мастер указал поляну B, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Roost B для B.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M02-AC02"
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1053,11 +1316,19 @@
               "ROOT-P02"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M03",
@@ -1075,13 +1346,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014",
         "recorded_facts": "Опциональная процедура предлагает взять по два результата для жителей, построек и проблем. Из части таблицы построек известны мельница и акведук; порядок осей таблицы здесь не нужен.",
-        "access_level": "public_primary_text_third_party_host_selected_sections",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Core Book",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M03",
         "primary_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
         "author_project_key": "magpie-games:root-rpg:core2021",
-        "source_ledger": "ROOT-CORE-2021-EN"
+        "source_ledger": "ROOT-CORE-2021-EN",
+        "source_id": "ROOT-CORE-2021-EN",
+        "precise_locator": "Печатные с. 235, Fleshing Out Your Clearings, Buildings",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -1093,7 +1367,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M03",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -1103,7 +1384,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-CORE-014-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-014-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-014-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1133,12 +1416,14 @@
           {
             "given": "Мастер уже выбрал две постройки; в соседнем гексе (1,0) есть башня T. A явно привязана к гексу (0, 0).",
             "when": "Сохранить Мельница M и акведук Q на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "Сохраняются два объекта M/Q в A, башня T остаётся на прежнем месте. Жители и проблемы не выводятся из выбора построек. Мельница M и акведук Q виден в контексте гекса (0, 0) после открытия."
+            "expected": "Сохраняются два объекта M/Q в A, башня T остаётся на прежнем месте. Жители и проблемы не выводятся из выбора построек. Мельница M и акведук Q виден в контексте гекса (0, 0) после открытия.",
+            "id": "ROOT-SCOPE-M03-AC01"
           },
           {
             "given": "Мастер указал поляну A, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Мельница M и акведук Q для A.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M03-AC02"
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1174,11 +1459,19 @@
               "ROOT-P04"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M04",
@@ -1193,13 +1486,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-003",
         "recorded_facts": "При подготовке поляны предлагается придумать примечательные места и жителей. Источник отдельно описывает мотивы и треки вреда жителей. Факт о Рине — тестовый пример автора требования.",
-        "access_level": "owner_attached_full_text_selected_sections_supported_by_public_transcription",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Travelers & Outsiders",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M04",
         "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
-        "author_project_key": "magpie-games/root-rpg/travelers-outsiders/first-printing2021",
-        "source_ledger": "ROOT-TO-2021-EN"
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "source_ledger": "ROOT-TO-2021-EN",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 219 / PDF 220, Important Residents и Important Locations",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -1211,7 +1507,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M04",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -1221,7 +1524,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-TO-003-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-003-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-003-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1252,12 +1557,14 @@
           {
             "given": "Есть два склада S и U. В предметном описании S мастер указал «Рин работает на складе S». A явно привязана к гексу (0, 0).",
             "when": "Сохранить Склад S на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "Факт виден у S после открытия карты и отсутствует у U. Профиль NPC, мотивы и треки вреда не создаются. Склад S виден в контексте гекса (0, 0) после открытия."
+            "expected": "Факт виден у S после открытия карты и отсутствует у U. Профиль NPC, мотивы и треки вреда не создаются. Склад S виден в контексте гекса (0, 0) после открытия.",
+            "id": "ROOT-SCOPE-M04-AC01"
           },
           {
             "given": "Мастер указал поляну A, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Склад S для A.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M04-AC02"
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1292,11 +1599,19 @@
               "ROOT-P05"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M05",
@@ -1311,13 +1626,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007",
         "recorded_facts": "Культ размещает один исходный сад в угловой поляне и назначает контроль; бросок Outcast и два места присутствия относятся к другим шагам.",
-        "access_level": "owner_attached_full_text_selected_sections_supported_by_public_transcription",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Travelers & Outsiders",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M05",
         "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
-        "author_project_key": "magpie-games/root-rpg/travelers-outsiders/first-printing2021",
-        "source_ledger": "ROOT-TO-2021-EN"
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "source_ledger": "ROOT-TO-2021-EN",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 179 / PDF 180, Fourth: The Lizard Cult, Random Corner Table",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -1329,7 +1647,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M05",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -1339,7 +1664,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-TO-007-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-007-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-007-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1356,25 +1683,45 @@
             "unit": "индекс гекса"
           },
           "selected_poi": "Сад G",
-          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно."
+          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно.",
+          "source_corner_table": {
+            "die": "1d6",
+            "NW": 1,
+            "NE": 2,
+            "SW": 3,
+            "SE": 4,
+            "reroll": [
+              5,
+              6
+            ]
+          }
         },
         "product_operation": "Мастер выбирает гекс (-1, 1) для C, добавляет Сад G и сохраняет карту.",
         "expected_output": "На C появляется один сад G. Статус Outcast, присутствие и контроль не изменяются.",
         "constraints_and_exceptions": [
           "Используется явно выбранный гекс; масштаб и соседство из графа полян автоматически не вычисляются.",
           "Меняются только выбранные места и их непосредственное описание; параметры фракций, NPC и маршрутов не меняются.",
-          "Объект должен быть виден как место в гексе. Отдельный профиль Root, редактор политического контроля и собственная схема POI не требуются этим результатом."
+          "Объект должен быть виден как место в гексе. Отдельный профиль Root, редактор политического контроля и собственная схема POI не требуются этим результатом.",
+          "При одном ориентире берётся угол напротив крепости либо Roost, при обоих случайно выбирается один из двух оставшихся, без обоих применяется таблица углов."
         ],
         "acceptance_cases": [
           {
             "given": "Ведущий уже выбрал крайнюю поляну C. C явно привязана к гексу (-1, 1).",
             "when": "Сохранить Сад G на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "На C появляется один сад G. Статус Outcast, присутствие и контроль не изменяются. Сад G виден в контексте гекса (-1, 1) после открытия."
+            "expected": "На C появляется один сад G. Статус Outcast, присутствие и контроль не изменяются. Сад G виден в контексте гекса (-1, 1) после открытия.",
+            "id": "ROOT-SCOPE-M05-AC01"
           },
           {
             "given": "Мастер указал поляну C, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Сад G для C.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M05-AC02"
+          },
+          {
+            "id": "ROOT-SCOPE-M05-AC03",
+            "given": "Крепость на северо-западе и Roost на северо-востоке. Из двух свободных углов выбран юго-запад.",
+            "when": "Подтвердить место первого сада.",
+            "expected": "Один сад в юго-западной поляне. Прежнее состояние фракций сохранено."
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1408,11 +1755,19 @@
               "ROOT-P02"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M06",
@@ -1427,13 +1782,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010",
         "recorded_facts": "Riverfolk Company использует воду, связность путями и близость ценных ресурсов для выбора полян. Исходный пост ставится в одну лучшую допустимую поляну; равенство разрешают случайно, охраняемую крепостью Marquisate или Roost лидирующую поляну пропускают.",
-        "access_level": "owner_attached_full_text_selected_sections_supported_by_public_transcription",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Travelers & Outsiders",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M06",
         "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
-        "author_project_key": "magpie-games/root-rpg/travelers-outsiders/first-printing2021",
-        "source_ledger": "ROOT-TO-2021-EN"
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "source_ledger": "ROOT-TO-2021-EN",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 180 / PDF 181, Trading Post, строки 6910–6926",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -1445,7 +1803,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M06",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -1455,7 +1820,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-TO-010-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-010-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-010-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1472,25 +1839,48 @@
             "unit": "индекс гекса"
           },
           "selected_poi": "Пост P",
-          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно."
+          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно.",
+          "source_checklist": {
+            "unit": "ответы «да», 0–4",
+            "water": "на реке или озере",
+            "separate_explicit_path_thresholds": [
+              3,
+              4
+            ],
+            "resource": "в поляне или поблизости",
+            "tie": "случайно",
+            "ineligible_examples": [
+              "крепость",
+              "Roost"
+            ]
+          }
         },
         "product_operation": "Мастер выбирает гекс (0, 2) для D, добавляет Пост P и сохраняет карту.",
         "expected_output": "На D сохраняется один P, назначения контроля и изменения маршрутов нет.",
         "constraints_and_exceptions": [
           "Используется явно выбранный гекс; масштаб и соседство из графа полян автоматически не вычисляются.",
           "Меняются только выбранные места и их непосредственное описание; параметры фракций, NPC и маршрутов не меняются.",
-          "Объект должен быть виден как место в гексе. Отдельный профиль Root, редактор политического контроля и собственная схема POI не требуются этим результатом."
+          "Объект должен быть виден как место в гексе. Отдельный профиль Root, редактор политического контроля и собственная схема POI не требуются этим результатом.",
+          "Мастер может передать выбранную поляну вручную. Геометрические соседи без пути не входят в счёт путей."
         ],
         "acceptance_cases": [
           {
             "given": "Ведущий уже выбрал D для поста после применения условий игры. D явно привязана к гексу (0, 2).",
             "when": "Сохранить Пост P на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "На D сохраняется один P, назначения контроля и изменения маршрутов нет. Пост P виден в контексте гекса (0, 2) после открытия."
+            "expected": "На D сохраняется один P, назначения контроля и изменения маршрутов нет. Пост P виден в контексте гекса (0, 2) после открытия.",
+            "id": "ROOT-SCOPE-M06-AC01"
           },
           {
             "given": "Мастер указал поляну D, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Пост P для D.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M06-AC02"
+          },
+          {
+            "id": "ROOT-SCOPE-M06-AC03",
+            "given": "A и B на воде с ресурсом. У A четыре явных пути и крепость. У B три пути и четвёртый соседний гекс без пути.",
+            "when": "Посчитать четыре признака и выбрать лучшую допустимую поляну.",
+            "expected": "A имеет 4 ответа «да» и пропускается. B имеет 3 ответа «да» и получает один пост. Сеть путей сохранена."
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1524,11 +1914,19 @@
               "ROOT-P02"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     },
     {
       "id": "ROOT-SCOPE-M07",
@@ -1543,13 +1941,16 @@
         },
         "source_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011",
         "recorded_facts": "Grand Duchy начинает с туннеля в определённом углу. Дополнительный туннель появляется в случайной поляне вне контроля Duchy, а контролируемый результат перебрасывают.",
-        "access_level": "owner_attached_full_text_selected_sections_supported_by_public_transcription",
+        "access_level": "full_text_selected_section_third_party_mirror",
         "verification": "selected_source_clause_rechecked",
         "title": "Root: The Roleplaying Game — Travelers & Outsiders",
         "audit_locator_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M07",
         "primary_url": "https://www.scribd.com/document/561462456/Root-Travelers-Outsiders",
-        "author_project_key": "magpie-games/root-rpg/travelers-outsiders/first-printing2021",
-        "source_ledger": "ROOT-TO-2021-EN"
+        "author_project_key": "magpie-games:root-rpg:travelers-outsiders2021",
+        "source_ledger": "ROOT-TO-2021-EN",
+        "source_id": "ROOT-TO-2021-EN",
+        "precise_locator": "Печатные с. 178 и 181 / PDF 179 и 182, Random Clearing и Duchy Invasion Table",
+        "crosswalk_verified_on": "2026-11-26"
       },
       "model": {
         "game_unit_id": "ROOT",
@@ -1561,7 +1962,14 @@
         "criterion_fit": {
           "classification": "bounded_component",
           "basis": "Проверка места и его сведений в выбранном гексе. Ситуации, политический контроль и случайные таблицы не следуют из S05-C01 в этом сценарии."
-        }
+        },
+        "criterion_id": "ROOT-SCOPE-M07",
+        "criterion_id_scope": "В игровом файле модели операция идентифицируется полем ops[].id. Соответствующие criterion_id общего блока приведены отдельно.",
+        "verified_common_criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_mapping_basis": "Адресуемое место или поляна в контексте региона и сохранение её данных."
       },
       "canonical": {
         "binding_id": null,
@@ -1571,7 +1979,9 @@
         "candidate_binding": false,
         "parent_binding_id": "ROOT-TO-011-L1",
         "parent_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-011-L1",
-        "binding_match": "selected_component_of_existing_parent"
+        "binding_match": "selected_component_of_existing_parent",
+        "verified_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-011-L1",
+        "verified_registry_blob_sha": "f4bb0500fff9b67585d72222253b929ba4e23422"
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
@@ -1588,7 +1998,13 @@
             "unit": "индекс гекса"
           },
           "selected_poi": "Вход E",
-          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно."
+          "selection_origin": "Ввод мастера по его карте или правилам Root; гекс указан явно.",
+          "source_corner_policy": {
+            "three_factions": "единственный свободный угол",
+            "two": "один из двух свободных наугад",
+            "one": "противоположный угол",
+            "zero": "бросок по таблице углов"
+          }
         },
         "product_operation": "Мастер выбирает гекс (2, -1) для E, добавляет Вход E и сохраняет карту.",
         "expected_output": "После добавления E остаются два входа E0 и E. Путь, ребро маршрута и автоматическое сообщение между ними не появляются.",
@@ -1601,12 +2017,20 @@
           {
             "given": "Мастер применил игровой выбор вне редактора и выбрал E; первый вход E0 находится в A. E явно привязана к гексу (2, -1).",
             "when": "Сохранить Вход E на указанном гексе, закрыть и заново открыть сохранение.",
-            "expected": "После добавления E остаются два входа E0 и E. Путь, ребро маршрута и автоматическое сообщение между ними не появляются. Вход E виден в контексте гекса (2, -1) после открытия."
+            "expected": "После добавления E остаются два входа E0 и E. Путь, ребро маршрута и автоматическое сообщение между ними не появляются. Вход E виден в контексте гекса (2, -1) после открытия.",
+            "id": "ROOT-SCOPE-M07-AC01"
           },
           {
             "given": "Мастер указал поляну E, но ещё не выбрал для неё гекс. Другие места сохранены.",
             "when": "Попытаться разместить Вход E для E.",
-            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется."
+            "expected": "Автоматическое место не появляется. Для ручного размещения нужен выбор гекса, существующая карта сохраняется.",
+            "id": "ROOT-SCOPE-M07-AC02"
+          },
+          {
+            "id": "ROOT-SCOPE-M07-AC03",
+            "given": "Три разных угла заняты крепостью, Roost и садом. Для второго туннеля выпадает контролируемая X, после переброса Y.",
+            "when": "Нанести входы по двум выбранным полянам.",
+            "expected": "Первый вход в свободном углу, второй вход в Y. X и исходная сеть путей сохранены."
           }
         ],
         "source_vs_product_interpretation": "Место и условия выбора описаны источником. Явная проекция поляны на гекс, сохранение и повторное открытие — продуктовый сценарий. Условия фракционной генерации остаются в родительском источнике.",
@@ -1640,13 +2064,35 @@
               "ROOT-P02"
             ]
           }
-        ]
+        ],
+        "current_evidence": null,
+        "root_end_to_end_status": "unknown"
       },
       "open_checks": [
         "Проверить вручную указанный гекс и повторное открытие на опубликованном SHA; родительский тест Root не подтверждает этот узкий сценарий."
-      ]
+      ],
+      "scope_basis": "Физическое место или простой факт о нём при подготовке поляны. Фракционная и игровая части принадлежат родительскому binding.",
+      "requirement_readiness": {
+        "status": "specified_for_bounded_acceptance",
+        "operation_scope": "manual_placement",
+        "source_questions": false
+      }
     }
   ],
-  "latest_formalization_base_sha": "e20a79c3a4cc4701bac04d4783277d203cca6d00",
-  "latest_formalization_run_id": "2026-11-24-top20-l1-dnd5-root-1630"
+  "latest_formalization_base_sha": "907e246af9fcf2a22fc24f0aad52309a2974cec4",
+  "latest_formalization_run_id": "2026-11-26-top20-l1-root-crosswalk-2230",
+  "latest_crosswalk": {
+    "game_id": "ROOT",
+    "rows": 14,
+    "direct_bindings": 7,
+    "parent_bindings": 7,
+    "acceptance_cases": 40,
+    "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "implementation": {
+      "implemented": 0,
+      "partial": 2,
+      "unknown": 12
+    },
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-root-crosswalk-2230.json"
+  }
 }
