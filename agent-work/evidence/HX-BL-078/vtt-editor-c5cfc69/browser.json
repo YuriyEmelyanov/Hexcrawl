@@ -1,0 +1,99 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+  "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+  "tree_sha": "adab485d9a7c8eada9767c41cbbc8ccb4339221a",
+  "review_ready": false,
+  "publication_authorized": false,
+  "recorded_at": "2026-11-26T14:13:21.126Z",
+  "checked_by": "programmer",
+  "scope": [
+    "VTT-R01",
+    "VTT-R06",
+    "VTT-R08",
+    "VTT-AC03 (entry only)",
+    "VTT-AC06 (base hex payload)",
+    "VTT-AC08 (browser reload)"
+  ],
+  "checks": {
+    "typescript": {
+      "command": "npx tsc --noEmit",
+      "passed": true
+    },
+    "production_build": {
+      "command": "npm run build",
+      "passed": true,
+      "preview_launch_code_in_bundle": false
+    },
+    "browser": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0,
+      "confirmed": {
+        "fixture": "classic-six-regions-seed42",
+        "editor": "native JSON import",
+        "browser_contexts": 3,
+        "viewport_widths": [
+          1120,
+          900,
+          420
+        ],
+        "from": "0,1",
+        "to": "0,0",
+        "master_cells": 52,
+        "player_cells_before": 7,
+        "player_cells_after": 6,
+        "editor_reopen_preserves_room": true,
+        "master_and_player_reload": true,
+        "stable_player_link": true,
+        "player_payload_omits_private_note": true,
+        "fixture_endpoint_returns_404": true,
+        "player_cannot_open_room": true
+      }
+    },
+    "github_ci": [
+      {
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585347",
+        "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a"
+      },
+      {
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585264",
+        "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a"
+      }
+    ],
+    "full_local_check": "not_executed_for_checkpoint"
+  },
+  "test_change_summary": {
+    "base_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+    "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Playwright browser",
+    "scenario_or_risk": "Запуск из обычного редактора после импорта, сохранение выбранного начального гекса и повторный вход в ту же комнату без утечки заметки мастера.",
+    "reuse_or_new_reason": "Расширен один существующий сквозной сценарий test/browser/vtt-room-preview.mjs, так как запуск из редактора и дальнейший общий ход составляют один пользовательский путь.",
+    "source": "Diff между 23de552 и c5cfc69; один исполняемый последовательный кейс."
+  },
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/editor-to-player.jpg",
+  "limitations": [
+    "Отдельная тестовая вкладка на локальном сервере. Обычная сборка сайта не включает запуск комнаты.",
+    "Сценарий подтверждён для загруженного JSON. Новая карта из генератора использует ту же выгрузку документа, но отдельный браузерный проход генерации ещё не выполнен.",
+    "Комната хранит одну карту в памяти. Штатная отрисовка подложек, тайлов, рек, дорог, точек интереса, панорамирования и масштаба, долговечное хранение и размещение остаются впереди."
+  ],
+  "observations": [
+    "Штатный редактор сохранил загруженную карту после входа в отдельную вкладку.",
+    "Загруженная карта дошла через штатный createSaveData; тестовая служба выдаёт игрокам ограниченную проекцию.",
+    "В одном сравнительном снимке видны кнопка внизу справа редактора и геометрия той же карты в двух режимах. Рендерер комнаты пока рисует только базовые полигоны."
+  ]
+}
