@@ -57,7 +57,7 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-26T1042-analyst-HX074-delta-D1.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Продолжить подключение штатного оформления карты 5–6 миль. Сначала использовать общий код рисования основы и гравюр для мастера и разрешённых гексов игрока. Сравнить одну карту из редактора в двух представлениях, включая узкий экран, затем подключить разрешённые участки рек, дорог и точек интереса.",
+  "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -19882,13 +19882,14 @@
       "basis": "Исправлена регрессия запуска, объём картографического оформления и долговечности не изменился."
     },
     "next_role": "programmer",
-    "next_step": "Продолжить подключение штатного оформления карты 5–6 миль. Сначала использовать общий код рисования основы и гравюр для мастера и разрешённых гексов игрока. Сравнить одну карту из редактора в двух представлениях, включая узкий экран, затем подключить разрешённые участки рек, дорог и точек интереса.",
+    "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
     "execution_lock_released": true,
     "ci": {
       "status": "in_progress",
       "conclusion": null,
       "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45846355257"
-    }
+    },
+    "scope_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
   },
   "latest_HX_BL_078_editor_execution": {
     "task_id": "HX-BL-078",
@@ -20007,30 +20008,34 @@
   },
   "latest_HX_BL_078_owner_scale_scope": {
     "task_id": "HX-BL-078",
-    "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-5-6-mile-only.json",
+    "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
     "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
-    "result_ref": "agent-work/results/2026-11-26-HX078-owner-vtt-5-6-mile-only.json",
+    "result_ref": "agent-work/results/2026-11-26-HX078-owner-vtt-map-modes.json",
     "scope": {
-      "generation_mode": "classic",
       "map_hex_size_miles": "5–6",
+      "generation_modes": [
+        "classic",
+        "mythic"
+      ],
+      "classic_add_ons": "all supported editor combinations, including Knave 2e and Crows (Cornath)",
       "other_map_hex_sizes": "out_of_scope",
       "applies_to": [
         "master",
         "player",
         "acceptance"
       ],
-      "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-5-6-mile-only.json"
+      "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
     },
-    "recorded_at": "2026-11-26T15:25:20.292Z",
+    "recorded_at": "2026-11-26T15:27:54.653Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "at": "2026-11-26T15:24:42.230Z",
+        "at": "2026-11-26T15:26:52.963Z",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "at": "2026-11-26T15:25:20.292Z",
+        "at": "2026-11-26T15:27:54.653Z",
         "status": "checked",
         "is_enabled": true
       },
@@ -20038,6 +20043,7 @@
       "errors": []
     },
     "next_role": "programmer",
-    "next_step": "Продолжить подключение штатного оформления карты 5–6 миль. Сначала использовать общий код рисования основы и гравюр для мастера и разрешённых гексов игрока. Сравнить одну карту из редактора в двух представлениях, включая узкий экран, затем подключить разрешённые участки рек, дорог и точек интереса."
+    "next_step": "Подключить штатное отображение карты 5–6 миль в видах мастера и игрока. Убрать ограничение прототипа на Classic без дополнений в редакторе и на сервере. Проверить открытие комнаты, общий ход и права выдачи на картах Classic, Classic с дополнениями и Mythic Bastionland. Сохранить ограничение по размеру гекса.",
+    "previous_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-5-6-mile-only.json"
   }
 }
