@@ -86,6 +86,21 @@ test('Crows save validates home settlement ownership and building limits', () =>
   assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /map.crowsSettlements/);
 });
 
+test('Crows save accepts manual environment traits only on existing hexes', () => {
+  const data = structuredClone(valid);
+  const {q, r} = data.map.regions[0].centerHex;
+  const key = `${q},${r}`;
+  data.map.crowsEnvironmentByHex = {[key]: ['swamp', 'forest']};
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  for (const layer of [
+    {[key]: ['bog']}, {[key]: ['forest', 'forest']}, {[key]: []}, {'99999,99999': ['forest']}
+  ]) {
+    data.map.crowsEnvironmentByHex = layer;
+    assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /map.crowsEnvironmentByHex/);
+  }
+});
+
 test('Crows village beacon extends to radius six only at level five and prosperity ten', () => {
   const beacon = level => ({type: 'beacon', level});
   const radius = (prosperity, buildings) => villageBeaconRadius({home: false, prosperity, buildings});

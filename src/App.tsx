@@ -1,3 +1,4 @@
+import { automaticCrowsEnvironment, CROWS_ENVIRONMENTS, CROWS_ENVIRONMENT_ORDER, validCrowsEnvironmentByHex, type CrowsEnvironment, type CrowsEnvironmentByHex } from './crowsEnvironment';
 import { CROWS_BUILDINGS, CROWS_SETTLEMENTS, EMPTY_CROWS_SETTLEMENTS, isCrowsSettlementKind, isCrowsStructureSite, rebindCrowsSettlements, rollCrowsPoint, starterCrowsSettlement, validCrowsSettlements, villageBeaconRadius, type CrowsSettlement, type CrowsSettlements } from './crowsSettlements';
 import { CrowsVillageInfo } from './CrowsVillageInfo';
 import { fillCornathWorld, type MapWorld } from './crowsWorld';
@@ -510,6 +511,7 @@ type HexcrawlSaveData = {
     physicalGrid?:Detail1State;
     world?: MapWorld;
     crowsSettlements?: CrowsSettlements;
+    crowsEnvironmentByHex?: CrowsEnvironmentByHex;
     knave?: KnaveLayer;
     riverFeatures?: RiverFeatures;
     tags?: TagState;
@@ -1023,6 +1025,10 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
+  if (data.map.crowsEnvironmentByHex !== undefined && !validCrowsEnvironmentByHex(data.map.crowsEnvironmentByHex,
+    actualHexKeys({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}))) {
+    throw new SaveValidationError('map.crowsEnvironmentByHex','invalid environment trait or missing hex');
+  }
   if (data.map.crowsSettlements !== undefined && !validCrowsSettlements(data.map.crowsSettlements,
     crowsLandPoiKinds({regions:data.map.regions, hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}))) {
     throw new SaveValidationError('map.crowsSettlements', 'invalid settlement owner, prosperity or building');
@@ -1454,6 +1460,17 @@ function crowsLandPoiKinds(map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>
   };
 }
 
+function actualHexKeys(map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) {
+  return new Set([...map.regions.flatMap(region => region.hexes.map(hexKey)),...map.hexTerrainByKey.keys()]);
+}
+
+function retainedCrowsEnvironment(map: MapSnapshot, layer = map.crowsEnvironmentByHex): CrowsEnvironmentByHex | undefined {
+  if (!layer) return;
+  const cells=actualHexKeys(map);
+  const kept=Object.entries(layer).filter(([key])=>cells.has(key));
+  return kept.length ? Object.fromEntries(kept) : undefined;
+}
+
 function retainCrowsSettlements(map: MapSnapshot, moves: ReadonlyMap<string, string | null> = new Map()): MapSnapshot {
   if (!map.crowsSettlements) return map;
   return {...map,crowsSettlements:rebindCrowsSettlements(map.crowsSettlements,crowsLandPoiKinds(map),moves)};
@@ -1461,6 +1478,7 @@ function retainCrowsSettlements(map: MapSnapshot, moves: ReadonlyMap<string, str
 
 function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={},creationMode?:GenerationMode):MapSnapshot{
  candidate=retainCrowsSettlements(withPoiDiscovery(before,candidate,moves,creationMode),moves);
+ if (candidate.crowsEnvironmentByHex) candidate={...candidate,crowsEnvironmentByHex:retainedCrowsEnvironment(candidate)};
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
@@ -2347,6 +2365,7 @@ type MapSnapshot = {
   physicalGrid?:Detail1State;
   world?: MapWorld;
   crowsSettlements?: CrowsSettlements;
+  crowsEnvironmentByHex?: CrowsEnvironmentByHex;
   knave?: KnaveLayer;
   seas:SeaRecord[];
   nextSeaId:number;
@@ -12482,6 +12501,12 @@ export function App() {
   const crowsActive = crowsEnabled && generationMode === 'classic';
   const [crowsSettlements, setCrowsSettlements] = useState<CrowsSettlements>();
   const crowsSettlementsRef = useRef<CrowsSettlements>();
+  const [crowsEnvironmentByHex,setCrowsEnvironmentByHex] = useState<CrowsEnvironmentByHex>();
+  const crowsEnvironmentRef = useRef<CrowsEnvironmentByHex>();
+  const updateCrowsEnvironment = (layer: CrowsEnvironmentByHex | undefined) => {
+    crowsEnvironmentRef.current=layer;
+    setCrowsEnvironmentByHex(layer);
+  };
   const updateCrowsSettlements = (value: CrowsSettlements | undefined) => {
     crowsSettlementsRef.current = value;
     setCrowsSettlements(value);
@@ -13077,7 +13102,7 @@ export function App() {
     const snapshot: MapSnapshot = {
       physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,crowsEnvironmentByHex:crowsEnvironmentRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13957,7 +13982,7 @@ export function App() {
       const snapshot: MapSnapshot = {
         physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
-        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        poiDiscovery:{...discoveries.current},world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,crowsEnvironmentByHex:crowsEnvironmentRef.current,knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -14017,7 +14042,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ poiDiscovery:discoveries.current,physicalGrid:physicalGridRef.current,world:worldRef.current,crowsSettlements:crowsSettlementsRef.current,crowsEnvironmentByHex:crowsEnvironmentRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ requiresFineAdaptation:fineLegacyRef.current,map: captureMap(), generationHistory: history, selectedHex,
     // Camera coordinates belong to the accepted document, not its detached
@@ -14070,6 +14095,7 @@ export function App() {
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
     updateWorld(map.world);
     updateCrowsSettlements(map.crowsSettlements);
+    updateCrowsEnvironment(retainedCrowsEnvironment(map));
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -14231,8 +14257,6 @@ export function App() {
       return false;
     }
   };
-  const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
-    new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
   const notesForSurvivingHexes = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) => {
     const keys = actualHexKeys(map);
     return Object.fromEntries(Object.entries(notesMapRef.current).filter(([key]) => keys.has(key)));
@@ -14543,6 +14567,7 @@ export function App() {
     }
     if(generationMode==='classic'&&!kingdomJob)map=withPoiDiscovery(checkpoint,map);
     map=retainCrowsSettlements(map);
+    if (map.crowsEnvironmentByHex) map={...map,crowsEnvironmentByHex:retainedCrowsEnvironment(map)};
     const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
@@ -14611,7 +14636,7 @@ export function App() {
     const generationHistory = [...checkpoints, savedCheckpoint];
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection, generationHistory }, {preparedScene});
     setHistory(generationHistory);
-    fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);updateCrowsSettlements(map.crowsSettlements);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
+    fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);updateCrowsSettlements(map.crowsSettlements);updateCrowsEnvironment(map.crowsEnvironmentByHex);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
@@ -14688,6 +14713,7 @@ export function App() {
     discoveries.current=map.poiDiscovery??{};updateKnave(map.knave);
     updateWorld(map.world);
     updateCrowsSettlements(map.crowsSettlements);
+    updateCrowsEnvironment(retainedCrowsEnvironment(map));
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -15069,11 +15095,11 @@ export function App() {
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
     snapshot=deferFineRegeneration?{...snapshot,physicalGrid:undefined}:retainFineCheckpoint(snapshot);
-    snapshot={...snapshot,world:worldRef.current,crowsSettlements:retainedCrowsCheckpoint(snapshot)};
+    snapshot={...snapshot,world:worldRef.current,crowsSettlements:retainedCrowsCheckpoint(snapshot),crowsEnvironmentByHex:retainedCrowsEnvironment(snapshot,crowsEnvironmentRef.current??{})};
     snapshot={...snapshot,poiDiscovery:retainedDiscoveryCheckpoint(snapshot),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
-    updateSeaIdentity(snapshot);discoveries.current=snapshot.poiDiscovery??{};updateKnave(snapshot.knave);updateCrowsSettlements(snapshot.crowsSettlements);updatePhysicalGrid(snapshot.physicalGrid);
+    updateSeaIdentity(snapshot);discoveries.current=snapshot.poiDiscovery??{};updateKnave(snapshot.knave);updateCrowsSettlements(snapshot.crowsSettlements);updateCrowsEnvironment(snapshot.crowsEnvironmentByHex);updatePhysicalGrid(snapshot.physicalGrid);
     const retainedPoiNames=retainPoiNames(snapshot,editorNamesRef.current);
     updateTags(reconcileTags(tagsRef.current,snapshot,captureMap(),generationRef.current.masterSeed,false));
     restoreGeneration(snapshot.generation);
@@ -15190,6 +15216,7 @@ export function App() {
     map.knave=retainedKnaveCheckpoint(map);
     map.world=before.map.world;
     map.crowsSettlements=retainedCrowsCheckpoint(map);
+    map.crowsEnvironmentByHex=retainedCrowsEnvironment(map,crowsEnvironmentRef.current??{});
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
       const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
@@ -15332,6 +15359,26 @@ export function App() {
   const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
+  const automaticEnvironment = crowsActive && selectedHex && selectedEffectiveBiomeId && !selectedSurfaceIsWater
+    ? automaticCrowsEnvironment(selectedEffectiveBiomeId,BIOMES[selectedEffectiveBiomeId].heightLevel,
+      getHexNeighbors(selectedHex).some(neighbor=>waterKindAt(hexTerrainByKey,hexKey(neighbor))!=='land'))
+    : [];
+  const manualEnvironment = selectedHexKey ? crowsEnvironmentByHex?.[selectedHexKey] ?? [] : [];
+  const visibleEnvironment = CROWS_ENVIRONMENT_ORDER.filter(trait=>automaticEnvironment.includes(trait)||manualEnvironment.includes(trait));
+  const setCrowsEnvironment = (trait: CrowsEnvironment, enabled: boolean) => {
+    if (!crowsActive || !editMode || !selectedRegion || !selectedHexKey || selectedSurfaceIsWater ||
+        notesSelectionRef.current !== selectedHexKey || mutationBlocked()) return;
+    const layer={...crowsEnvironmentRef.current};
+    const existing=layer[selectedHexKey]??[];
+    if (existing.includes(trait) === enabled) return;
+    const next=enabled ? CROWS_ENVIRONMENT_ORDER.filter(value=>value===trait||existing.includes(value))
+      : existing.filter(value=>value!==trait);
+    if (next.length) layer[selectedHexKey]=next;
+    else delete layer[selectedHexKey];
+    const before=captureDocument(), crowsEnvironmentByHex=Object.keys(layer).length ? layer : undefined;
+    recordTransaction(before,{...before,map:{...before.map,crowsEnvironmentByHex}});
+    updateCrowsEnvironment(crowsEnvironmentByHex);
+  };
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
   // Geometry remains protected by E7 even when a legacy region has no central POI.
@@ -15855,6 +15902,7 @@ export function App() {
       ...(doc.map.knave===undefined?{}:{knave:structuredClone(doc.map.knave)}),
       ...(doc.map.world?{world:{...doc.map.world}}:{}),
       ...(doc.map.crowsSettlements?{crowsSettlements:structuredClone(doc.map.crowsSettlements)}:{}),
+      ...(doc.map.crowsEnvironmentByHex?{crowsEnvironmentByHex:structuredClone(doc.map.crowsEnvironmentByHex)}:{}),
       seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
       nextSeaId:doc.map.nextSeaId,
       editorNames:structuredClone(doc.map.editorNames??{}),
@@ -15981,7 +16029,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,crowsSettlements:imported.map.crowsSettlements,
+        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,crowsSettlements:imported.map.crowsSettlements,crowsEnvironmentByHex:imported.map.crowsEnvironmentByHex,
           poiDiscovery:{...Object.fromEntries(Object.entries(imported.map.knave?.discoveryByPoi??{}).map(([key,value])=>[key,value.mode])),...imported.map.poiDiscovery},
           knave:imported.map.knave?{...imported.map.knave,discoveryByPoi:{}}:undefined,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
@@ -17909,6 +17957,19 @@ export function App() {
                         ? `${getBiomeLabel(selectedHexBiomeOverride, language)}${selectedHexBiomeOverride === selectedRegion.biomeId ? (language === 'ru' ? ' · локально' : ' · local') : ''}`
                         : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
                     </div> : null}
+                    {crowsActive && selectedEffectiveBiomeId && !selectedSurfaceIsWater && <div data-crows-environment>
+                      <p><strong>{language === 'ru' ? 'Среда' : 'Environment'}</strong>: {visibleEnvironment.length
+                        ? visibleEnvironment.map(trait=>CROWS_ENVIRONMENTS[trait][language]).join(' · ') : '—'}</p>
+                      {editMode && <fieldset className="crows-environment-options">
+                        <legend>{language === 'ru' ? 'Ручные признаки среды' : 'Manual environment traits'}</legend>
+                        {CROWS_ENVIRONMENT_ORDER.map(trait=><label key={trait}>
+                          <input type="checkbox" checked={visibleEnvironment.includes(trait)}
+                            disabled={mutationBlocked(false) || automaticEnvironment.includes(trait) && !manualEnvironment.includes(trait)}
+                            onChange={event=>setCrowsEnvironment(trait,event.currentTarget.checked)} />
+                          {CROWS_ENVIRONMENTS[trait][language]}{automaticEnvironment.includes(trait) ? (language === 'ru' ? ' (авто)' : ' (auto)') : ''}
+                        </label>)}
+                      </fieldset>}
+                    </div>}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
                     {selectedHasCentralPoi && !editableCapital ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => e.target.value ? setSelectedCentralPoiKind(e.target.value as CentralPoiKind) : deleteSelectedPoi()} onBlur={() => setEditingCentralPoiRegionId(null)}>
