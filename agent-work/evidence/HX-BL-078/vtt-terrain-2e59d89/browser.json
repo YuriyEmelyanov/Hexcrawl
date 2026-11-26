@@ -1,0 +1,114 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+  "head_sha": "2e59d8906c8d6fac4758b18d4c527e6a85b24eb1",
+  "tree_sha": "a68f15322a835c8935b8008939149d365b4f68cb",
+  "review_ready": false,
+  "publication_authorized": false,
+  "scope": [
+    "VTT-R08",
+    "VTT-R09 (base terrain only)",
+    "VTT-AC03 (artwork)",
+    "VTT-AC06 (cell projection)"
+  ],
+  "checks": {
+    "typescript": {
+      "command": "./node_modules/.bin/tsc --noEmit",
+      "passed": true
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true
+    },
+    "browser_vtt": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "scenarios": [
+        {
+          "mode": "Classic",
+          "fixture": "classic-six-regions-seed42.json",
+          "matched_engraving_cells": 3,
+          "identical_blend_cells": 1,
+          "rotated": false
+        },
+        {
+          "mode": "Classic + Knave 2e",
+          "fixture": "classic-six-regions-seed42.json",
+          "matched_engraving_cells": 3,
+          "identical_blend_cells": 1,
+          "rotated": false
+        },
+        {
+          "mode": "Classic + Crows (Cornath)",
+          "fixture": "classic-six-regions-seed42.json",
+          "matched_engraving_cells": 3,
+          "identical_blend_cells": 1,
+          "rotated": false
+        },
+        {
+          "mode": "Mythic Bastionland",
+          "fixture": "terrain-display-map.json",
+          "matched_engraving_cells": 6,
+          "identical_blend_cells": 1,
+          "rotated": true
+        }
+      ],
+      "checks_per_mode": [
+        "совпадение контура, цвета и размещения гравюр у видимых гексов без POI в редакторе, у мастера и игрока",
+        "совпадение data URL перехода там, где разрешённые соседние цвета дают тот же результат",
+        "точное совпадение нарисованных гексов с серверным набором игрока",
+        "6 видимых векторных стрелок с разными углами",
+        "сохранение общего подтверждённого хода после повторного входа"
+      ]
+    },
+    "engraved_map": {
+      "command": "node test/browser/engraved-map.smoke.mjs",
+      "exit_code": 0,
+      "checks": [
+        "Classic 5–6 и 1 миля",
+        "PNG, история, повторное открытие",
+        "повторная загрузка недоступной гравюры"
+      ]
+    },
+    "node_vm": {
+      "command": "node --test --test-name-pattern=production streams/continuation/undo classic/1$ test/worldContinuation.test.mjs",
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "verified_remote_content": true,
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45864668953",
+      "head_sha": "2e59d8906c8d6fac4758b18d4c527e6a85b24eb1",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+    "head_sha": "2e59d8906c8d6fac4758b18d4c527e6a85b24eb1",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suite": "Playwright VTT",
+    "scenario_or_risk": "Общее оформление и поворот, векторные стрелки и отсутствие скрытых гексов в DOM игрока.",
+    "reuse_or_new_reason": "Проверки отражают новое поведение и выполняются в тех же четырёх сценариях открытия комнаты. Дополнительных кейсов не вводилось.",
+    "source": "Четыре параметра scenarios в test/browser/vtt-room-preview.mjs, diff 283ed5b..2e59d89."
+  },
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-terrain-2e59d89/classic-terrain-before-after.jpg",
+  "limitations": [
+    "Переходы у игрока рассчитываются по его разрешённым гексам. На границе тумана цвет скрытого соседа исключён из перехода.",
+    "Совпадение гравюр проверено на гексах без значков объектов. Реки, дороги и POI в игровых видах ещё впереди.",
+    "Сохранение поворота подтверждено в текущей комнате. Управление масштабом и центром карты и долговечное хранение комнаты ещё не завершены.",
+    "Доказательство локальное, сценарии не включают публичное размещение."
+  ]
+}
