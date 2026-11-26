@@ -1,0 +1,75 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "publication_authorized": false,
+  "review_ready": false,
+  "test_change_summary": {
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "head_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "browser / Playwright",
+    "scenario_or_risk": "Один связный сценарий: серверное ограничение карты игрока, общая стрелка и восстановление той же комнаты при перезагрузке.",
+    "reuse_or_new_reason": "Штатные браузерные сценарии используют одного клиента и не проверяют общий ход трёх контекстов или разграничение данных; использованы существующий Playwright и принятная карта seed 42.",
+    "source": "Добавлен один сценарий test/browser/vtt-room-preview.mjs; diff базы с точным head SHA. Runner считает весь последовательный сценарий одним кейсом."
+  },
+  "checks": {
+    "browser_vtt": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0,
+      "status": "passed",
+      "runtime": "Node 24.22.3 and Playwright cached chromium",
+      "result": {
+        "map_fixture": "test/fixtures/classic-six-regions-seed42.json",
+        "seed": 42,
+        "contexts": 3,
+        "master_cells": 52,
+        "player_cells_before": 6,
+        "player_cells_after": 7,
+        "from": "0,0",
+        "to": "0,1",
+        "same_link_after_reload": true,
+        "proposal_survived_reload": true
+      }
+    },
+    "production_build": {
+      "command": "npm run build",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    "full_local": {
+      "command": "npm run check",
+      "exit_code": 130,
+      "status": "stopped_after_prolonged_local_run",
+      "limits": "CI covers the complete repository checks. Local full-suite result is not certified unless exit code is 0."
+    },
+    "github_ci": {
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45825985809"
+    }
+  },
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-first-23de552/three-views.jpg",
+  "capture_order": [
+    "Мастер до хода",
+    "Мастер после подтверждения",
+    "Игрок после подтверждения"
+  ],
+  "limitations": [
+    "Изолированный loopback-прототип на существующей карте, общая комната в памяти процесса. Перезагрузка браузера проверена, рестарт сервера пока сбрасывает комнату.",
+    "Штатный редактор, экспорт, произвольная карта и полная отрисовка рек, дорог и POI ещё не подключены. Текущее отображение использует цвета из редактора, визуальная приёмка на штатном рендерере впереди.",
+    "Постоянное размещение живых комнат на сайте не подтверждено. Текущий пакет — черновик, отдельная приёмка и выпуск впереди."
+  ],
+  "score": "unknown_until_independent_acceptance",
+  "observed_on": "2026-11-26T13:10:16.153Z"
+}
