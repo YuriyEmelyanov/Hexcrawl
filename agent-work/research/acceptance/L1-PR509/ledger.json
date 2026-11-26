@@ -5597,19 +5597,19 @@
           "action": "Среда и климат гекса",
           "expected": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности.",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-003",
-          "functional": "partial",
-          "functional_credit": 0.5,
-          "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-003",
-          "finding": "Хвойный лес сохранился как отдельный биом гекса вместе с прежней деревней после JSON-загрузки.",
+          "functional": "full",
+          "functional_credit": 1,
+          "evidence": "agent-work/evidence/HX-BL-077/review-0966537/independent-review.json#CROWS-04",
+          "finding": "На опубликованной карте Crows автоматические типы среды и ручные coast/forest/highlands сохраняются после JSON; переключение профиля не теряет данные.",
           "quality": [
-            0,
+            1,
             1
           ],
           "quality_cases": [
             {
               "case": "base",
-              "state": "unknown",
-              "low": 0,
+              "state": "pass",
+              "low": 1,
               "high": 1
             }
           ],
@@ -5618,7 +5618,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/evidence/HX-BL-077/release-3d85da6/score-assessment.json#CROWS-PT3-L1-003"
         },
         {
           "id": "CROWS-PT3-L1-004",
@@ -5688,19 +5690,19 @@
           "action": "Домашняя деревня",
           "expected": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V.",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-011",
-          "functional": "partial",
-          "functional_credit": 0.5,
-          "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-011",
-          "finding": "Уже существующую деревню можно именовать с сохранением её единственного объекта по тому же адресу. JSON-восстановление не создаёт копию.",
+          "functional": "full",
+          "functional_credit": 1,
+          "evidence": "agent-work/evidence/HX-BL-077/review-0966537/independent-review.json#CROWS-05",
+          "finding": "Опубликованный режим создаёт одну домашнюю деревню с пятью фиксированными и одной отдельной случайной постройкой; смена базы, Undo/Redo, снятие статуса и повторное открытие сохраняют идентичность.",
           "quality": [
-            0,
+            1,
             1
           ],
           "quality_cases": [
             {
               "case": "base",
-              "state": "unknown",
-              "low": 0,
+              "state": "pass",
+              "low": 1,
               "high": 1
             }
           ],
@@ -5709,7 +5711,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/evidence/HX-BL-077/release-3d85da6/score-assessment.json#CROWS-PT3-L1-011"
         },
         {
           "id": "CROWS-PT3-L1-017",
@@ -5717,20 +5721,20 @@
           "action": "Зона маяка",
           "expected": "На полной сетке радиусы1/2/5/6 охватывают7/19/91/127гексов. Обозначение зоны не меняет биомы, реки и POI; перекрытие двух источников не исчезает при удалении одного.",
           "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-017",
-          "functional": "absent",
-          "functional_credit": 0,
-          "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-017",
-          "finding": "Для исходного гекса получен контрольный ряд 7, 19, 91, 127 клеток для радиусов 1, 2, 5, 6. Заданные зоны с источниками и пересечениями в текущем контракте карты отсутствуют.",
+          "functional": "full",
+          "functional_credit": 1,
+          "evidence": "agent-work/evidence/HX-BL-077/review-0966537/independent-review.json#CROWS-08",
+          "finding": "На опубликованной карте подтверждены радиусы маяков 1/5/6, особый V/10, перекрытие зон, перенос/удаление/Undo и повторное открытие без потери второй зоны.",
           "quality": [
-            0,
-            0
+            1,
+            1
           ],
           "quality_cases": [
             {
               "case": "base",
-              "state": "fail",
-              "low": 0,
-              "high": 0
+              "state": "pass",
+              "low": 1,
+              "high": 1
             }
           ],
           "disposition": "keep_L1",
@@ -5738,7 +5742,9 @@
           "source_acceptance": null,
           "probe": "CROWS-PT3-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": null
+          "binding": null,
+          "accepted_credit": 1,
+          "acceptance_ref": "agent-work/evidence/HX-BL-077/release-3d85da6/score-assessment.json#CROWS-PT3-L1-017"
         },
         {
           "id": "CROWS-PT3-L1-019",
@@ -7414,7 +7420,7 @@
       }
     ]
   },
-  "current_run": "2026-11-21-L1-lake-input-1130",
+  "current_run": "2026-11-26T0957-reviewer-PR518-score",
   "next_batch": {
     "id": "L1-ALL-ACCEPTANCE",
     "layer": "L1",
@@ -7432,16 +7438,16 @@
     "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "core_ref": "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
     "game_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
-    "published_total_rounded": 192.91,
+    "published_total_rounded": 197.54,
     "market": 0,
     "version": "L1-24-S03-C02-merged",
     "prior_browser_total": 104.52887363806904,
     "prior_browser_scope": "34 common + 177 game rows; use Classic review for updated common points",
-    "new_score_awarded": 0.5925925925925926,
-    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511. S03-C02 включает S03-C03, 29 правил, общий вес ядра 675. CROWS пересчитан по решению владельца от 24.11.2026. VAL-04 дозачтён по PR №515. Поздние начисления PR №512–514 сверх этого среза отражены в текущей оценке и истории.",
+    "new_score_awarded": 4.62962962962963,
+    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511. S03-C02 включает S03-C03, 29 правил, общий вес ядра 675. CROWS пересчитан по решению владельца от 24.11.2026. VAL-04 дозачтён по PR №515. Поздние начисления PR №512–514 сверх этого среза отражены в текущей оценке и истории. PR №518: три ранее незачтённые строки Crows (003, 011, 017) подтверждены на опубликованном дереве; S02-C03 проверен с нулевой дельтой.",
     "core_points": 129.76116952417036,
-    "game_points": 63.148072127957185,
-    "total_points": 192.90924165212755,
+    "game_points": 67.77770175758681,
+    "total_points": 197.53887128175717,
     "scale_points": 0,
     "crows_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
     "latest_criterion_release_review": {
@@ -7451,6 +7457,20 @@
       "delta": 0.9876543209876544,
       "release_sha": "b1b8c1b38f6e7616a68120cd6923af73da13a8a9",
       "assessment_ref": "agent-work/evidence/HX-BL-073/release-b1b8c1b/score-assessment.json",
+      "current_score_ref": "agent-work/score/current-score.json"
+    },
+    "latest_game_release_review": {
+      "pr": 518,
+      "game": "CROWS",
+      "criterion_ids": [
+        "S02-C03",
+        "CROWS-PT3-L1-003",
+        "CROWS-PT3-L1-011",
+        "CROWS-PT3-L1-017"
+      ],
+      "delta": 4.62962962962963,
+      "release_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+      "assessment_ref": "agent-work/evidence/HX-BL-077/release-3d85da6/score-assessment.json",
       "current_score_ref": "agent-work/score/current-score.json"
     }
   },
@@ -7520,9 +7540,11 @@
       {
         "id": "CROWS",
         "kind": "game",
-        "accepted_share": 0.3888888888888889,
+        "accepted_share": 0.7222222222222222,
         "weight": 1,
-        "scope_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json"
+        "scope_decision_ref": "agent-work/decisions/owner-decision-2026-11-24-crows-l1-acceptance.json",
+        "latest_release_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+        "latest_assessment_ref": "agent-work/evidence/HX-BL-077/release-3d85da6/score-assessment.json"
       },
       {
         "id": "SI",
