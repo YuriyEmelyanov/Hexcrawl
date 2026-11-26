@@ -33,6 +33,7 @@ export function viewOf(cells, state, master) {
   const visible = visibleAt(cells, state.position);
   return {
     position: state.position,
+    mapMode: state.mapMode,
     proposal: state.proposal,
     revision: state.revision,
     cells: master ? [...cells.values()] : visible,

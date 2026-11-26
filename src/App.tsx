@@ -15946,8 +15946,7 @@ export function App() {
   });
 
   const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
-  const vttAvailable = vttPreview && generationMode === 'classic' && !knaveEnabled && !crowsEnabled
-    && !fineActive && !automaticFinePreparing && !editMode;
+  const vttAvailable = vttPreview && !fineActive && !automaticFinePreparing && !editMode;
   const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
     ? selectedHex : null;
 

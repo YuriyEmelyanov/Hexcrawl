@@ -1,4 +1,10 @@
 const master = location.pathname === '/master';
+const modeLabels = {
+  classic: 'Classic',
+  knave: 'Classic · Knave 2e',
+  crows: 'Classic · Crows (Cornath)',
+  mythic: 'Mythic Bastionland'
+};
 const get = id => document.getElementById(id);
 const map = get('map');
 const position = get('position');
@@ -18,7 +24,7 @@ if (master && onboard) {
 const headers = master
   ? {authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')}
   : {'x-preview-room': location.pathname};
-get('role').textContent = (master ? 'Мастер' : 'Игрок') + ' · Classic · 5–6 миль';
+const role = master ? 'Мастер' : 'Игрок';
 get('master-controls').hidden = !master;
 let view;
 let commandError = '';
@@ -32,6 +38,7 @@ function shape(name, attrs) {
 function draw(next) {
   view = next;
   position.value = key(next.position);
+  get('role').textContent = `${role} · ${modeLabels[next.mapMode]} · 5–6 миль`;
   progress.textContent = commandError || (next.proposal === null ? 'Ход не предложен' : 'Ход предложен');
   if (master) {
     get('join').href = next.playerPath;

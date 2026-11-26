@@ -41,19 +41,20 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
       }
       try {
         const {save, position} = await readJson(req, 16 * 1024 * 1024);
-        if (save?.schema !== 'hexcrawl-map' || save.ui?.generationMode !== 'classic' ||
-            save.ui.knaveEnabled || save.ui.crowsEnabled || save.map?.physicalGrid?.viewStep === 1 ||
+        const mapMode = readMapMode(save);
+        const viewStep = save?.map?.physicalGrid?.viewStep ?? 6;
+        if (!mapMode || viewStep !== 6 ||
             !Number.isSafeInteger(position?.q) || !Number.isSafeInteger(position?.r)) {
-          return json(res, 400, {error: 'Select a Classic map and starting hex'});
+          return json(res, 400, {error: 'Select a 5–6 mile map and starting hex'});
         }
-        const digest = createHash('sha256').update(JSON.stringify(save.map)).digest('hex');
+        const digest = createHash('sha256').update(JSON.stringify([mapMode, save.map])).digest('hex');
         if (state && mapDigest !== digest) return json(res, 409, {error: 'A different map is already open'});
         if (!state) {
           const opened = mapCells(save);
           if (!opened.has(`${position.q},${position.r}`)) return json(res, 400, {error: 'Select an existing hex'});
           cells = opened;
           mapDigest = digest;
-          state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0};
+          state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode};
           history = new Set(viewOf(cells, state, true).currentKeys);
         }
         return json(res, 200, {masterPath: '/master#' + masterKey});
@@ -92,6 +93,15 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
   await new Promise((resolve, reject) => server.listen(port, '127.0.0.1', pipeError(resolve, reject, server)));
   const base = 'http://127.0.0.1:' + server.address().port;
   return {server, base};
+}
+
+function readMapMode(save) {
+  if (save?.schema !== 'hexcrawl-map') return null;
+  if (save.ui?.generationMode === 'mythic') return 'mythic';
+  if (save.ui?.generationMode !== 'classic') return null;
+  if (save.ui.crowsEnabled === true) return 'crows';
+  if (save.ui.knaveEnabled === true) return 'knave';
+  return 'classic';
 }
 
 async function readJson(req, maxBytes) {
