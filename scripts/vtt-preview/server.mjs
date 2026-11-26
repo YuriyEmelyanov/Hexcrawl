@@ -1,12 +1,14 @@
 // Development fixture only. Explicitly bound to loopback, outside the Pages build.
 import {createServer} from 'node:http';
-import {randomBytes} from 'node:crypto';
+import {createHash, randomBytes} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {applyAction, mapCells, viewOf} from './room.mjs';
 
-export async function startPreview({port = 0} = {}) {
-  const fixture = new URL('../../test/fixtures/classic-six-regions-seed42.json', import.meta.url);
-  const cells = mapCells(JSON.parse(await readFile(fixture, 'utf8')));
+export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
+  let cells;
+  let state;
+  let history;
+  let mapDigest;
   const masterKey = randomBytes(24).toString('base64url');
   const playerPath = '/play/' + randomBytes(16).toString('base64url');
   const assets = new Map(await Promise.all([
@@ -18,8 +20,6 @@ export async function startPreview({port = 0} = {}) {
   const {BIOME_GROUND_COLORS, WATER_PALETTE} = await import('../../src/rendering/terrainStyle.ts');
   const palette = {ground: BIOME_GROUND_COLORS, water: WATER_PALETTE};
   const page = await readFile(new URL('./index.html', import.meta.url));
-  let state = {position: {q: 0, r: 0}, proposal: null, revision: 0};
-  let history = new Set(viewOf(cells, state, true).currentKeys);
   const send = (res, status, type, body) => {
     res.writeHead(status, {'content-type': type, 'cache-control': 'no-store'});
     res.end(body);
@@ -27,6 +27,40 @@ export async function startPreview({port = 0} = {}) {
   const json = (res, status, body) => send(res, status, 'application/json; charset=utf-8', JSON.stringify(body));
   const server = createServer(async (req, res) => {
     const path = new URL(req.url, 'http://localhost').pathname;
+    if (path === '/open') {
+      if (!editorOrigin?.() || req.headers.origin !== editorOrigin()) return json(res, 404, {error: 'Unavailable'});
+      res.setHeader('access-control-allow-origin', req.headers.origin);
+      res.setHeader('vary', 'Origin');
+      if (req.method === 'OPTIONS') {
+        res.setHeader('access-control-allow-headers', 'authorization, content-type');
+        res.setHeader('access-control-allow-methods', 'POST');
+        return send(res, 204, 'text/plain', '');
+      }
+      if (req.method !== 'POST' || !launchKey || req.headers.authorization !== 'Bearer ' + launchKey) {
+        return json(res, 404, {error: 'Unavailable'});
+      }
+      try {
+        const {save, position} = await readJson(req, 16 * 1024 * 1024);
+        if (save?.schema !== 'hexcrawl-map' || save.ui?.generationMode !== 'classic' ||
+            save.ui.knaveEnabled || save.ui.crowsEnabled || save.map?.physicalGrid?.viewStep === 1 ||
+            !Number.isSafeInteger(position?.q) || !Number.isSafeInteger(position?.r)) {
+          return json(res, 400, {error: 'Select a Classic map and starting hex'});
+        }
+        const digest = createHash('sha256').update(JSON.stringify(save.map)).digest('hex');
+        if (state && mapDigest !== digest) return json(res, 409, {error: 'A different map is already open'});
+        if (!state) {
+          const opened = mapCells(save);
+          if (!opened.has(`${position.q},${position.r}`)) return json(res, 400, {error: 'Select an existing hex'});
+          cells = opened;
+          mapDigest = digest;
+          state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0};
+          history = new Set(viewOf(cells, state, true).currentKeys);
+        }
+        return json(res, 200, {masterPath: '/master#' + masterKey});
+      } catch {
+        return json(res, 400, {error: 'Invalid map'});
+      }
+    }
     const master = req.headers.authorization === 'Bearer ' + masterKey;
     const player = req.headers['x-preview-room'] === playerPath;
     if (req.method === 'GET') {
@@ -35,19 +69,14 @@ export async function startPreview({port = 0} = {}) {
       const asset = assets.get(path);
       if (asset) return send(res, 200, asset.type, asset.body);
     }
-    if (path !== '/state' || !(master || player)) return json(res, 404, {error: 'Room unavailable'});
+    if (!state || path !== '/state' || !(master || player)) return json(res, 404, {error: 'Room unavailable'});
     if (req.method === 'GET') {
       const view = viewOf(cells, state, master);
       return json(res, 200, master ? {...view, playerPath, history: [...history]} : view);
     }
     if (req.method !== 'POST') return json(res, 405, {error: 'Method unavailable'});
     try {
-      let body = '';
-      for await (const chunk of req) {
-        body += chunk;
-        if (body.length > 2048) return json(res, 413, {error: 'Request too large'});
-      }
-      const action = JSON.parse(body);
+      const action = await readJson(req, 2048);
       if (!action || typeof action !== 'object') return json(res, 400, {error: 'Invalid action'});
       const next = applyAction(cells, state, action, master);
       if (!next) return json(res, 409, {error: 'Action not applied'});
@@ -62,7 +91,21 @@ export async function startPreview({port = 0} = {}) {
   });
   await new Promise((resolve, reject) => server.listen(port, '127.0.0.1', pipeError(resolve, reject, server)));
   const base = 'http://127.0.0.1:' + server.address().port;
-  return {server, base, masterUrl: base + '/master#' + masterKey, playerUrl: base + playerPath};
+  return {server, base};
+}
+
+async function readJson(req, maxBytes) {
+  const chunks = [];
+  let bytes = 0;
+  for await (const chunk of req.iterator({destroyOnReturn: false})) {
+    bytes += chunk.length;
+    if (bytes > maxBytes) {
+      req.resume();
+      throw new Error('Request too large');
+    }
+    chunks.push(chunk);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
 }
 
 function pipeError(resolve, reject, server) {

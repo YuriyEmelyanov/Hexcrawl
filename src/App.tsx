@@ -12392,6 +12392,10 @@ function completeRegionRoadConnections(options: {
 const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Parameters<typeof generateRoadsForRegionImpl>[0], rng: RandomStreams = fallbackRandomStreams) =>
   completeRegionRoadConnections({ ...options, ...generateRoadsForRegionImpl(options, rng) }));
 
+declare const __HEXCRAWL_VTT_PREVIEW_URL__: string | null;
+declare const __HEXCRAWL_VTT_PREVIEW_KEY__: string | null;
+const vttPreviewUrl = __HEXCRAWL_VTT_PREVIEW_URL__;
+
 export function App() {
   const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
   const generationRef = useRef(cloneGenerationState(initialGeneration));
@@ -15937,6 +15941,42 @@ export function App() {
     }
   });
 
+  const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
+  const vttAvailable = vttPreviewUrl && generationMode === 'classic' && !knaveEnabled && !crowsEnabled
+    && !fineActive && !automaticFinePreparing && !editMode;
+  const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
+    ? selectedHex : null;
+
+  const openVttPreview = async () => {
+    if (!vttPreviewUrl || !vttAvailable || !vttStartHex || documentBusy() || vttLaunchStatus === 'pending') return;
+    const roomTab = window.open('about:blank', '_blank');
+    if (!roomTab) {
+      setVttLaunchStatus('popup');
+      return;
+    }
+    roomTab.opener = null;
+    setVttLaunchStatus('pending');
+    try {
+      const response = await fetch(new URL('/open', vttPreviewUrl), {
+        method: 'POST',
+        headers: {'content-type': 'application/json', authorization: 'Bearer ' + __HEXCRAWL_VTT_PREVIEW_KEY__},
+        body: JSON.stringify({save: createSaveData(), position: vttStartHex})
+      });
+      if (response.status === 409) {
+        roomTab.close();
+        setVttLaunchStatus('different-map');
+        return;
+      }
+      if (!response.ok) throw new Error('Unable to open preview room');
+      const {masterPath} = await response.json();
+      roomTab.location.replace(new URL(masterPath, vttPreviewUrl).href);
+      setVttLaunchStatus('idle');
+    } catch {
+      roomTab.close();
+      setVttLaunchStatus('error');
+    }
+  };
+
   const handleExportPng = async () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
@@ -18347,6 +18387,17 @@ export function App() {
 
             </div>
           </div>
+          {vttAvailable && <div className="vtt-preview-entry">
+            {vttLaunchStatus === 'popup' && <p role="alert">{language === 'ru'
+              ? 'Разрешите открытие новой вкладки.' : 'Allow the browser to open a new tab.'}</p>}
+            {vttLaunchStatus === 'different-map' && <p role="alert">{language === 'ru'
+              ? 'В тестовой комнате уже открыта другая версия карты.' : 'The preview room already contains a different version of the map.'}</p>}
+            {vttLaunchStatus === 'error' && <p role="alert">{language === 'ru'
+              ? 'Не удалось подключиться к тестовой комнате.' : 'Unable to connect to the preview room.'}</p>}
+            <button type="button" disabled={!vttStartHex || documentBusy() || vttLaunchStatus === 'pending'}
+              title={!vttStartHex ? (language === 'ru' ? 'Выберите стартовый гекс' : 'Select a starting hex') : undefined}
+              onClick={() => void openVttPreview()}>{language === 'ru' ? 'Гекскроул' : 'Hexcrawl'}</button>
+          </div>}
 
         </div>
       </section>
