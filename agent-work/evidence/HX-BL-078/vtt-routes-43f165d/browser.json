@@ -1,0 +1,101 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "2e59d8906c8d6fac4758b18d4c527e6a85b24eb1",
+  "head_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "tree_sha": "f6ef9cb64e2ec3cd6fad8d4aed778f4575f530b2",
+  "review_ready": false,
+  "publication_authorized": false,
+  "scope": [
+    "VTT-R04 (river, road and trail strokes)",
+    "VTT-R06 (atomic change)",
+    "VTT-R08 (route projection)",
+    "VTT-AC03",
+    "VTT-AC06"
+  ],
+  "checks": {
+    "typescript": {
+      "command": "./node_modules/.bin/tsc --noEmit",
+      "passed": true
+    },
+    "build": {
+      "command": "npm run build",
+      "passed": true
+    },
+    "browser_vtt": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "scenarios": [
+        {
+          "mode": "Classic",
+          "master_strokes": 45,
+          "player_before": 4,
+          "player_after": 4
+        },
+        {
+          "mode": "Classic + Knave 2e",
+          "master_strokes": 45,
+          "player_before": 4,
+          "player_after": 4
+        },
+        {
+          "mode": "Classic + Crows (Cornath)",
+          "master_strokes": 45,
+          "player_before": 4,
+          "player_after": 4
+        },
+        {
+          "mode": "Mythic Bastionland",
+          "master_strokes": 198,
+          "player_before": 7,
+          "player_after": 6
+        }
+      ],
+      "checks_per_mode": [
+        "число отрисованных линий мастера совпадает с редактором",
+        "все координаты, переданные игроку, лежат в текущем гексе, а вне его нет координат или идентификаторов продолжений",
+        "предложение хода не меняет линии и после подтверждения выдаваемые фрагменты меняются",
+        "отрисованное число фрагментов совпадает с ответом сервера",
+        "переоткрытие комнаты и старая ссылка сохраняются"
+      ]
+    },
+    "node_vm": {
+      "command": "node --test --test-name-pattern=production streams/continuation/undo classic/1$ test/worldContinuation.test.mjs",
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "verified_remote_content": true,
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45873019276",
+      "head_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "2e59d8906c8d6fac4758b18d4c527e6a85b24eb1",
+    "head_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suite": "Playwright VTT",
+    "scenario_or_risk": "Отсутствие полного пути в ответе игроку и раскрытие следующего фрагмента только после подтверждения хода.",
+    "reuse_or_new_reason": "Расширены четыре существующих сценария в одном runner; отдельный тест не нужен для того же перехода.",
+    "source": "Четыре параметра scenarios в test/browser/vtt-room-preview.mjs, diff 2e59d89..43f165d."
+  },
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-routes-43f165d/classic-routes-before-after.jpg",
+  "limitations": [
+    "Комната получает штатные линии из редактора. Игроку доступны координаты отрезков текущего гекса, даже если соседние биомы видны. Визуальный штрих тропы может начинаться заново в месте обрезки.",
+    "Отдельные обозначения переправ, порогов, водопадов и точек интереса пока не подключены. ПК и узкий экран проверены на импортированных картах.",
+    "Долговечное хранение и публичное размещение впереди."
+  ]
+}
