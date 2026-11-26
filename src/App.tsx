@@ -12394,7 +12394,11 @@ const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Pa
 
 declare const __HEXCRAWL_VTT_PREVIEW_URL__: string | null;
 declare const __HEXCRAWL_VTT_PREVIEW_KEY__: string | null;
-const vttPreviewUrl = __HEXCRAWL_VTT_PREVIEW_URL__;
+// Some editor harnesses compile this module without the Vite preview definitions.
+const vttPreview = typeof __HEXCRAWL_VTT_PREVIEW_URL__ === 'string'
+  && typeof __HEXCRAWL_VTT_PREVIEW_KEY__ === 'string'
+  ? {url: __HEXCRAWL_VTT_PREVIEW_URL__, launchKey: __HEXCRAWL_VTT_PREVIEW_KEY__}
+  : null;
 
 export function App() {
   const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
@@ -15942,13 +15946,13 @@ export function App() {
   });
 
   const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
-  const vttAvailable = vttPreviewUrl && generationMode === 'classic' && !knaveEnabled && !crowsEnabled
+  const vttAvailable = vttPreview && generationMode === 'classic' && !knaveEnabled && !crowsEnabled
     && !fineActive && !automaticFinePreparing && !editMode;
   const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
     ? selectedHex : null;
 
   const openVttPreview = async () => {
-    if (!vttPreviewUrl || !vttAvailable || !vttStartHex || documentBusy() || vttLaunchStatus === 'pending') return;
+    if (!vttPreview || !vttAvailable || !vttStartHex || documentBusy() || vttLaunchStatus === 'pending') return;
     const roomTab = window.open('about:blank', '_blank');
     if (!roomTab) {
       setVttLaunchStatus('popup');
@@ -15957,9 +15961,9 @@ export function App() {
     roomTab.opener = null;
     setVttLaunchStatus('pending');
     try {
-      const response = await fetch(new URL('/open', vttPreviewUrl), {
+      const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
-        headers: {'content-type': 'application/json', authorization: 'Bearer ' + __HEXCRAWL_VTT_PREVIEW_KEY__},
+        headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
         body: JSON.stringify({save: createSaveData(), position: vttStartHex})
       });
       if (response.status === 409) {
@@ -15969,7 +15973,7 @@ export function App() {
       }
       if (!response.ok) throw new Error('Unable to open preview room');
       const {masterPath} = await response.json();
-      roomTab.location.replace(new URL(masterPath, vttPreviewUrl).href);
+      roomTab.location.replace(new URL(masterPath, vttPreview.url).href);
       setVttLaunchStatus('idle');
     } catch {
       roomTab.close();
