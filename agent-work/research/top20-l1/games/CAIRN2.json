@@ -1,22 +1,1830 @@
 {
   "schema_version": 1,
   "game_id": "CAIRN2",
-  "research_sha": "f1171afb87ada1e372fb15812746aac73dec5cb7",
+  "research_sha": "7da34906c2481a78a9d31ab981912a5afe278f84",
   "game_matrix_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json",
   "rows": [
-    {"id":"CAIRN2-PC-001-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online rules; page revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-001-L1","recorded_facts":"Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-PC-001-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-PC-001-L1","related_common_criterion_ids":["S04-C03"]},"canonical":{"binding_id":"CAIRN2-PC-001-L1","common_rule_ids":["map.reference_labels"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001","normative_kind":"map_conversion_procedure","applicability":"Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement","layer":"L1","trigger_or_user_action":"Ведущий выбирает места исходной карты для представления pointcrawl.","inputs_and_units":{"selected_places":"выбранные места; число не фиксировано книгой","labels":"номера для ссылки на места"},"product_operation":"Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.","expected_output":"Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.","constraints_and_exceptions":["Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.","Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-PC-001-L1-AC01","given":"Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.","when":"Подготовить обозначения мест.","expected":"Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."},{"id":"CAIRN2-PC-001-L1-AC02","given":"На карте есть четвёртое место «Пещера», не выбранное ведущим.","when":"Пронумеровать только выбранные три места.","expected":"Пещере не придуман номер и она не удалена."}],"source_vs_product_interpretation":"Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.reference_labels"],"unresolved_parameters":["Политика перенумерации и сочетания с существующими обозначениями источником не задана."]},"model_fixture":{"user_action":"Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.","expected_output":"Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-001-L1","sha":null,"model_reported_status":"partial","finding":"Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-PC-002-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online rules; page revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1","recorded_facts":"Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-PC-002-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-PC-002-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05"]},"canonical":{"binding_id":"CAIRN2-PC-002-L1","common_rule_ids":["map.routes_and_barriers"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002","normative_kind":"map_conversion_procedure","applicability":"Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement","layer":"L1","trigger_or_user_action":"Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.","inputs_and_units":{"places":"выбранные места исходной карты","routes":"известные дороги, тропы и водные маршруты","unconnected_sites":"места без отмеченных соединений"},"product_operation":"Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.","expected_output":"Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.","constraints_and_exceptions":["Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.","Отсутствие маршрута не означает непроходимость всей местности.","Направленность и доступность пути при разных условиях не определены этим ограниченным срезом.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-PC-002-L1-AC01","given":"A–B соединены тропой, B–C водным маршрутом; D без соединений.","when":"Подготовить сеть этих четырёх мест.","expected":"Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."},{"id":"CAIRN2-PC-002-L1-AC02","given":"E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.","when":"Показать подготовленную сеть.","expected":"Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."},{"id":"CAIRN2-PC-002-L1-AC03","given":"Ведущий добавил к D известную дорогу от C.","when":"Обновить представление сети.","expected":"Показана дорога C–D; D больше не обозначен как не имеющий соединений."}],"source_vs_product_interpretation":"Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.routes_and_barriers"],"unresolved_parameters":["Наличие точного режима pointcrawl в продукте не проверено.","Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."]},"model_fixture":{"user_action":"Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.","expected_output":"Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1","sha":null,"model_reported_status":"partial","finding":"Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-001-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-001-L1","recorded_facts":"Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-001-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-001-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05"]},"canonical":{"binding_id":"CAIRN2-SS-001-L1","common_rule_ids":["map.terrain_zones"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий начинает пакетную подготовку местности региона.","inputs_and_units":{"count_roll":"целое 1–6","positions":"принятые опорные точки внутри карты","off_map":"точки вне карты"},"product_operation":"Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.","expected_output":"Исходные и дополнительные области различимы; принятые границы сохранены.","constraints_and_exceptions":["Бумажный бросок не задаёт цифровой алгоритм координат или разбиения гексов.","Заполнение пустот может увеличить итоговое число областей.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-001-L1-AC01","given":"Число = 3; точки A и B внутри карты, C вне карты.","when":"Заменить C и принять границы вокруг трёх точек.","expected":"Три исходные области; A и B не заменены, принятые границы сохранены."},{"id":"CAIRN2-SS-001-L1-AC02","given":"Приняты три области; осталась пустота.","when":"Добавить четвёртую область в пустоту.","expected":"Четыре области; число начальных кубов не ограничивает итог."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.terrain_zones"],"unresolved_parameters":["Цифровой перенос бумажных положений и кривых границ требует отдельного решения."]},"model_fixture":{"user_action":"Подготавливать области по заданным броскам и положениям","expected_output":"Исходные и дополнительные области различимы; принятые границы сохранены.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-001-L1","sha":null,"model_reported_status":"partial","finding":"Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-002-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-002-L1","recorded_facts":"Сопоставить бросок исходной категории и сохранить её до уточнения местности.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-002-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-002-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05","S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-002-L1","common_rule_ids":["content.roll_table_resolution","map.terrain_zones"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий определяет исходную категорию области.","inputs_and_units":{"die":"один d6, целое 1–6"},"product_operation":"Сопоставить бросок исходной категории и сохранить её до уточнения местности.","expected_output":"У каждой опорной точки сохранена исходная категория.","constraints_and_exceptions":["Это выбор категории области, а не вероятность на каждый гекс.","Соответствие категориям проходимости HX-BL-044 не установлено.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-002-L1-AC01","given":"Заданы броски 1, 3, 4, 5, 6.","when":"Определить категории.","expected":"Easy, Easy, Tough, Tough, Perilous соответственно."},{"id":"CAIRN2-SS-002-L1-AC02","given":"Получен Perilous, конкретная география ещё не выбрана.","when":"Сохранить результат.","expected":"Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution","agent-work/rules/common-rules.json#map.terrain_zones"],"unresolved_parameters":["Соответствие исходной категории универсальной проходимости требует отдельной проверки."]},"model_fixture":{"user_action":"Различать исходные категории Easy/Tough/Perilous","expected_output":"У каждой опорной точки сохранена исходная категория.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-002-L1","sha":null,"model_reported_status":"partial","finding":"Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-003-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-003-L1","recorded_facts":"Получить два результата из независимых колонок выбранной категории и сохранить их у области.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-003-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-003-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05","S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-003-L1","common_rule_ids":["content.landmarks","content.roll_table_resolution","map.terrain_zones"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий уточняет область и её ориентир.","inputs_and_units":{"category":"Easy/Tough/Perilous","terrain_die":"d20, целое 1–20","landmark_die":"отдельный d20, целое 1–20"},"product_operation":"Получить два результата из независимых колонок выбранной категории и сохранить их у области.","expected_output":"Область содержит местность и ориентир с исходными индексами.","constraints_and_exceptions":["Один общий бросок не заменяет два независимых.","Источник разрешает перебросить или истолковать результат; это не означает смену всей карты.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-003-L1-AC01","given":"Easy; местность = 15, ориентир = 1.","when":"Разрешить обе колонки.","expected":"Plains + Broken Sundial; использованы разные строки."},{"id":"CAIRN2-SS-003-L1-AC02","given":"Perilous; местность = 15, ориентир = 20.","when":"Разрешить обе колонки.","expected":"Mountains + Weeping Bubble; индексы не выравниваются автоматически."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution","agent-work/rules/common-rules.json#map.terrain_zones","agent-work/rules/common-rules.json#content.landmarks"],"unresolved_parameters":[]},"model_fixture":{"user_action":"Получать независимые местность и ориентир по категории","expected_output":"Область содержит местность и ориентир с исходными индексами.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-003-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-004-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-004-L1","recorded_facts":"Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-004-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-004-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05"]},"canonical":{"binding_id":"CAIRN2-SS-004-L1","common_rule_ids":["content.landmarks"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий наносит уже выбранный ориентир области.","inputs_and_units":{"position":"принятая точка","description":"выбранный ориентир"},"product_operation":"Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.","expected_output":"Ориентир, положение и исходная область связаны.","constraints_and_exceptions":["Бумажный треугольник не предписывает новый интерфейс или конкретный SVG.","Численный радиус и видимость из каждой точки не заданы.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-004-L1-AC01","given":"У области A выбран Broken Sundial в точке P.","when":"Разместить ориентир.","expected":"Ориентир связан с A и P; соседние области не изменены."},{"id":"CAIRN2-SS-004-L1-AC02","given":"Известно описание видимости, численный радиус неизвестен.","when":"Сохранить описание.","expected":"Описание сохранено; радиус в милях или гексах не добавлен."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.landmarks"],"unresolved_parameters":["Дальность и препятствия обзора относятся к отдельным правилам L2."]},"model_fixture":{"user_action":"Размещать ориентир как географическую опору","expected_output":"Ориентир, положение и исходная область связаны.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-004-L1","sha":null,"model_reported_status":"partial","finding":"Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-005-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-005-L1","recorded_facts":"Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-005-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-005-L1","related_common_criterion_ids":["S01-C02","S01-C03","S01-C04","S01-C05"]},"canonical":{"binding_id":"CAIRN2-SS-005-L1","common_rule_ids":["map.land_water_shapes","map.river_network"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий подготавливает воду региона.","inputs_and_units":{"water_sources":"имеющиеся или выбранные источники","elevation_context":"относительное выше/ниже","outlet":"принятое завершение"},"product_operation":"Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.","expected_output":"Источник воды и выбранный путь или выход сохранены.","constraints_and_exceptions":["При наличии воды новая река не обязательна.","Озеро при встрече с высокой местностью возможно, но не обязательно.","Численный гидрологический алгоритм не задан.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-005-L1-AC01","given":"В регионе есть озеро; ведущий не добавляет реку.","when":"Сохранить воду региона.","expected":"Озеро осталось источником; новая река не навязана."},{"id":"CAIRN2-SS-005-L1-AC02","given":"Высокая точка H, низкая L, море S.","when":"Принять водоток H → L → S.","expected":"Сохранены направление и выход в море; дополнительное озеро не создано."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.land_water_shapes","agent-work/rules/common-rules.json#map.river_network"],"unresolved_parameters":["Стыковка с соседями и цифровая геометрия высот не специфицированы."]},"model_fixture":{"user_action":"Подготавливать воду и осмысленное направление реки","expected_output":"Источник воды и выбранный путь или выход сохранены.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-005-L1","sha":null,"model_reported_status":"partial","finding":"Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-007-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-007-L1","recorded_facts":"Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-007-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-007-L1","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-007-L1","common_rule_ids":["content.site_density","content.site_links"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий задаёт опорное место и пакет остальных мест.","inputs_and_units":{"Heart":"отдельное значимое место рядом с водой","N":"выбранное целое 3–8","points":"принятые положения дополнительных мест"},"product_operation":"Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.","expected_output":"Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.","constraints_and_exceptions":["Heart значим, но не обязательно крупнейший или важнейший город.","Это количество для региона, а не плотность на каждый гекс.","Распределение N и формула d6 + 2 источником не заданы.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-007-L1-AC01","given":"Heart H у воды, N = 3.","when":"Создать выбранный набор.","expected":"Четыре места: H и три дополнительных."},{"id":"CAIRN2-SS-007-L1-AC02","given":"Heart H, N = 8; одна дополнительная точка вне карты.","when":"Повторить положение этой точки.","expected":"Девять мест: H и восемь дополнительных; прочие положения сохранены."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.site_density","agent-work/rules/common-rules.json#content.site_links"],"unresolved_parameters":["Численная дистанция до воды и способ выбора N не нормированы."]},"model_fixture":{"user_action":"Назначать Heart у воды и отдельное число мест","expected_output":"Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-007-L1","sha":null,"model_reported_status":"partial","finding":"Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-008-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-008-L1","recorded_facts":"Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-008-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-008-L1","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-008-L1","common_rule_ids":["content.roll_table_resolution","content.site_density"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий определяет категории дополнительных мест.","inputs_and_units":{"dice":"по одному d6 для дополнительного места","one_choice":"явный выбор Waypoint или Settlement при 1"},"product_operation":"Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.","expected_output":"Категории соответствуют броскам; Heart сохранён отдельно.","constraints_and_exceptions":["Вес граней не задаёт точную квоту итоговой карты.","Опасность Curiosity при взаимодействии не означает автоматический бой.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-008-L1-AC01","given":"Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.","when":"Назначить категории.","expected":"Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."},{"id":"CAIRN2-SS-008-L1-AC02","given":"Heart уже есть; для нового места получен 1.","when":"Выбрать Settlement.","expected":"Новое место — Settlement; Heart не переименован."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution","agent-work/rules/common-rules.json#content.site_density"],"unresolved_parameters":["Политика выбора между Waypoint и Settlement не задана."]},"model_fixture":{"user_action":"Назначать категории только выбранным дополнительным местам","expected_output":"Категории соответствуют броскам; Heart сохранён отдельно.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-008-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-009-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-009-L1","recorded_facts":"Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-009-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-009-L1","related_common_criterion_ids":["S04-C03"]},"canonical":{"binding_id":"CAIRN2-SS-009-L1","common_rule_ids":["map.reference_labels"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий назначает обозначения подготовленным местам.","inputs_and_units":{"places":"Heart и дополнительные места","numbers":"выбранные ведущим обозначения"},"product_operation":"Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.","expected_output":"Номера пригодны для ссылок между местами.","constraints_and_exceptions":["Начальное целое и порядок прочих мест не фиксированы источником.","Номер гекса не заменяет обозначение места.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-009-L1-AC01","given":"Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.","when":"Назначить обозначения.","expected":"H = 1, A = 2, B = 3, C = 4; имена и положения прежние."},{"id":"CAIRN2-SS-009-L1-AC02","given":"Место A остаётся в точке P; новое обозначение — 7.","when":"Сохранить обозначение.","expected":"A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.reference_labels"],"unresolved_parameters":["Политика перенумерации и обновления старых ссылок не задана источником."]},"model_fixture":{"user_action":"Нумеровать места начиная с Heart","expected_output":"Номера пригодны для ссылок между местами.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-009-L1","sha":null,"model_reported_status":"partial","finding":"Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-010-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-010-L1","recorded_facts":"Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-010-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-010-L1","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-010-L1","common_rule_ids":["content.place_description","content.roll_table_resolution"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий наполняет выбранное место.","inputs_and_units":{"category":"одна из пяти категорий","dice":"два отдельных d20, значения 1–20","Heart_choice":"выбранная категория Heart при необходимости"},"product_operation":"Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.","expected_output":"Место содержит обе исходные подсказки и их принятый смысл.","constraints_and_exceptions":["Слово «обычно» не является запретом другой категории Heart.","Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-010-L1-AC01","given":"Settlement; тип = 4, свойство = 20.","when":"Разрешить обе колонки.","expected":"City + Trading Hub."},{"id":"CAIRN2-SS-010-L1-AC02","given":"Dungeon; тип = 2, свойство = 18.","when":"Разрешить обе колонки.","expected":"Cave + Sealed; комнаты и монстры автоматически не созданы."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution","agent-work/rules/common-rules.json#content.place_description"],"unresolved_parameters":[]},"model_fixture":{"user_action":"Наполнять каждое место двумя независимыми подсказками","expected_output":"Место содержит обе исходные подсказки и их принятый смысл.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-010-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-011-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-011-L1","recorded_facts":"Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-011-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-011-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05","S04-C03","S05-C03"]},"canonical":{"binding_id":"CAIRN2-SS-011-L1","common_rule_ids":["content.discovery_levels","map.routes_and_barriers"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий задаёт свойства известного соединения.","inputs_and_units":{"ends":"два выбранных места","access":"Standard/Hidden/Conditional","condition":"известное ведущему условие текстом"},"product_operation":"Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.","expected_output":"Смена физического вида не стирает условие пути.","constraints_and_exceptions":["Скрытость пути не равна непроходимости местности.","Численная цена поиска, проверка и урон неизвестны.","Бумажная нотация линий не задаёт новый интерфейс.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-011-L1-AC01","given":"A–B — условный водный путь; нужна лодка.","when":"Сохранить соединение.","expected":"Условие «лодка» сохранено; проходимость без лодки не заявлена."},{"id":"CAIRN2-SS-011-L1-AC02","given":"A–C — скрытая дорога; цена поиска неизвестна.","when":"Сохранить тип.","expected":"Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.routes_and_barriers","agent-work/rules/common-rules.json#content.discovery_levels"],"unresolved_parameters":["Исполнение условий и обнаружения требует отдельного корпуса L2/L3."]},"model_fixture":{"user_action":"Различать доступность пути и его физический вид","expected_output":"Смена физического вида не стирает условие пути.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-011-L1","sha":null,"model_reported_status":"partial","finding":"Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-012-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-012-L1","recorded_facts":"Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-012-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-012-L1","related_common_criterion_ids":["S01-C02","S01-C04","S01-C05"]},"canonical":{"binding_id":"CAIRN2-SS-012-L1","common_rule_ids":["content.site_links","map.routes_and_barriers"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий связывает подготовленные места.","inputs_and_units":{"Heart":"исходное место","connections":"принятые пары мест","path_count_choice":"1–4 на рассматриваемом шаге, точная трактовка требует решения"},"product_operation":"Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.","expected_output":"У каждого пути сохранены концы и принятый физический вид.","constraints_and_exceptions":["Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.","Конечное место может оставаться тупиком.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-012-L1-AC01","given":"H–A — дорога, H–B — тропа, A–B — сокращение.","when":"Сохранить набор.","expected":"Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."},{"id":"CAIRN2-SS-012-L1-AC02","given":"B — конечное место единственного пути.","when":"Принять тупик.","expected":"Автоматическая дорога из B ради соединения со всеми местами не добавлена."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#map.routes_and_barriers","agent-work/rules/common-rules.json#content.site_links"],"unresolved_parameters":["Алгоритм раскладки, ограничения степени и пересечений не предписаны."]},"model_fixture":{"user_action":"Связывать места сетью с осмысленными развилками","expected_output":"У каждого пути сохранены концы и принятый физический вид.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-012-L1","sha":null,"model_reported_status":"partial","finding":"Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]},
-    {"id":"CAIRN2-SS-013-L1","game_id":"CAIRN2","disposition":"keep_L1","source":{"edition":"Second Edition official online text; revision/date not declared","locator":null,"source_ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-013-L1","recorded_facts":"Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.","access_level":"unknown","verification":"reused_from_existing_research"},"model":{"game_unit_id":"CAIRN2","operation_id":"CAIRN2-SS-013-L1","operation_ref":"agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-013-L1","related_common_criterion_ids":["S05-C01"]},"canonical":{"binding_id":"CAIRN2-SS-013-L1","common_rule_ids":["content.place_description","content.roll_table_resolution"],"candidate_binding":false},"formalization":"existing_structured_requirement","operational_requirement":{"source_rule_ref":"agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013","normative_kind":"optional_setting_creation_procedure","applicability":"Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation","layer":"L1","trigger_or_user_action":"Ведущий описывает конкретный путь.","inputs_and_units":{"route":"принятая пара мест","feature_die":"d20, значение 1–20","condition_die":"другой d20, значение 1–20"},"product_operation":"Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.","expected_output":"Путь содержит обе исходные подсказки.","constraints_and_exceptions":["Колонка Condition не равна типу Conditional path.","Упоминание засады не требует автоматически запускать бой.","Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."],"acceptance_cases":[{"id":"CAIRN2-SS-013-L1-AC01","given":"A–B; Feature = 12, Condition = 20.","when":"Разрешить подсказки.","expected":"Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."},{"id":"CAIRN2-SS-013-L1-AC02","given":"Condition = 1.","when":"Сохранить подсказку.","expected":"Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."}],"source_vs_product_interpretation":"Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.","canonical_rule_refs":["agent-work/rules/common-rules.json#content.roll_table_resolution","agent-work/rules/common-rules.json#content.place_description"],"unresolved_parameters":["Полный каталог и механические последствия не импортируются автоматически."]},"model_fixture":{"user_action":"Описывать путь парой независимых результатов","expected_output":"Путь содержит обе исходные подсказки.","previous_checks":null},"implementation":{"current_status":"unknown","historical_evidence":{"ref":"agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-013-L1","sha":null,"model_reported_status":"absent","finding":"В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.","scope":"unresolved_or_analogy","matching_prior_operation":null}},"open_checks":["Confirm historical evidence at a source-specific product SHA."]}
-  ]
+    {
+      "id": "CAIRN2-PC-001-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Pointcrawls / Converting a Map, пункт 1",
+          "web_lines": [
+            495,
+            498
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+        "source_id": "CAIRN2-WG-POINTCRAWLS-WEB",
+        "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Пронумеровать выбранные места исходной карты для ссылок; шаг не устанавливает размер сетки."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-PC-001-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-PC-001-L1",
+        "related_common_criterion_ids": [
+          "S04-C03"
+        ],
+        "criterion_ids": [
+          "S04-C04",
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Пронумеровать выбранные места исходной карты для ссылок; шаг не устанавливает размер сетки."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-PC-001-L1",
+        "common_rule_ids": [
+          "map.reference_labels"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-PC-001-L1",
+        "binding_source_rule_id": "CAIRN2-PC-001",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001",
+        "normative_kind": "map_conversion_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: пункты подготовки существующей карты для pointcrawl.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+        "inputs_and_units": {
+          "selected_places": "выбранные места; число не фиксировано книгой",
+          "labels": "номера для ссылки на места"
+        },
+        "product_operation": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+        "expected_output": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+        "constraints_and_exceptions": [
+          "Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.",
+          "Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила.",
+          "У нумерации общий набор ссылок с CAIRN2-SS-009-L1. Координата и имя остаются отдельны."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-PC-001-L1-AC01",
+            "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+            "when": "Подготовить обозначения мест.",
+            "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."
+          },
+          {
+            "id": "CAIRN2-PC-001-L1-AC02",
+            "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+            "when": "Пронумеровать только выбранные три места.",
+            "expected": "Пещере не придуман номер и она не удалена."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": [
+          "Политика перенумерации и сочетания с существующими обозначениями источником не задана."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+        "expected_output": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-001-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Номера выбранных мест дают ссылки на объекты карты, сохраняя положение и название."
+    },
+    {
+      "id": "CAIRN2-PC-002-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Pointcrawls / Converting a Map, пункт 2",
+          "web_lines": [
+            495,
+            499
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+        "source_id": "CAIRN2-WG-POINTCRAWLS-WEB",
+        "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Отметить известную дорогу, тропу или водный путь между местами. Видно также, у каких мест нет подготовленной связи."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-PC-002-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-PC-002-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_ids": [
+          "S01-C04",
+          "S04-C04"
+        ],
+        "criterion_scope_note": "Отметить известную дорогу, тропу или водный путь между местами. Видно также, у каких мест нет подготовленной связи."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-PC-002-L1",
+        "common_rule_ids": [
+          "map.routes_and_barriers"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-PC-002-L1",
+        "binding_source_rule_id": "CAIRN2-PC-002",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+        "normative_kind": "map_conversion_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: пункты подготовки существующей карты для pointcrawl.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+        "inputs_and_units": {
+          "places": "выбранные места исходной карты",
+          "routes": "известные дороги, тропы и водные маршруты",
+          "unconnected_sites": "места без отмеченных соединений"
+        },
+        "product_operation": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+        "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+        "constraints_and_exceptions": [
+          "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+          "Отсутствие маршрута не означает непроходимость всей местности.",
+          "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-PC-002-L1-AC01",
+            "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+            "when": "Подготовить сеть этих четырёх мест.",
+            "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+          },
+          {
+            "id": "CAIRN2-PC-002-L1-AC02",
+            "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+            "when": "Показать подготовленную сеть.",
+            "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+          },
+          {
+            "id": "CAIRN2-PC-002-L1-AC03",
+            "given": "Ведущий добавил к D известную дорогу от C.",
+            "when": "Обновить представление сети.",
+            "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+          },
+          {
+            "id": "CAIRN2-PC-002-L1-AC04",
+            "given": "Есть A в 1,0 и D в соседнем 2,0. Нанесены только три явно выбранных связи между H, A и B.",
+            "when": "Сохранить и повторно открыть карту.",
+            "expected": "Все три пути существуют. D сохранилась, ни один путь не ссылается на неё. Соседство не устанавливает оформленную дорогу."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Наличие точного режима pointcrawl в продукте не проверено.",
+          "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+        "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+            "kind": "published_tree_app_handler",
+            "scope": "loop, fourth site remains isolated; navigable waterway not executed",
+            "actual": {
+              "roads": [
+                {
+                  "id": 1,
+                  "from": "0,0",
+                  "to": "1,0",
+                  "kind": "road"
+                },
+                {
+                  "id": 2,
+                  "from": "1,0",
+                  "to": "0,1",
+                  "kind": "trail"
+                },
+                {
+                  "id": 3,
+                  "from": "0,1",
+                  "to": "0,0",
+                  "kind": "trail"
+                }
+              ],
+              "isolatedPoint": "2,0",
+              "isolatedPointType": "holy_place",
+              "physicallyAdjacentTo": "1,0",
+              "jsonRoundtrip": true
+            }
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "loop, fourth site remains isolated; navigable waterway not executed"
+      ],
+      "disposition_reason": "Дороги, тропы и водные пути между выбранными местами наполняют карту; отсутствие соединения не запрещает движение по местности."
+    },
+    {
+      "id": "CAIRN2-SS-001-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Draw Terrain, пункты 1–4",
+          "web_lines": [
+            726,
+            733
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Бросок d6 задаёт 1–6 исходных опорных точек. Повторяют только выпавшие за страницу позиции, отдельно можно заполнить пустоты."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-001-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-001-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_ids": [
+          "S03-C01",
+          "S04-C04"
+        ],
+        "criterion_scope_note": "Бросок d6 задаёт 1–6 исходных опорных точек. Повторяют только выпавшие за страницу позиции, отдельно можно заполнить пустоты."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-001-L1",
+        "common_rule_ids": [
+          "map.terrain_zones"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-001-L1",
+        "binding_source_rule_id": "CAIRN2-SS-001",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий начинает пакетную подготовку местности региона.",
+        "inputs_and_units": {
+          "count_roll": "целое 1–6",
+          "positions": "принятые опорные точки внутри карты",
+          "off_map": "точки вне карты"
+        },
+        "product_operation": "Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.",
+        "expected_output": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+        "constraints_and_exceptions": [
+          "Бумажный бросок не задаёт цифровой алгоритм координат или разбиения гексов.",
+          "Заполнение пустот может увеличить итоговое число областей.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-001-L1-AC01",
+            "given": "Число = 3; точки A и B внутри карты, C вне карты.",
+            "when": "Заменить C и принять границы вокруг трёх точек.",
+            "expected": "Три исходные области; A и B не заменены, принятые границы сохранены."
+          },
+          {
+            "id": "CAIRN2-SS-001-L1-AC02",
+            "given": "Приняты три области; осталась пустота.",
+            "when": "Добавить четвёртую область в пустоту.",
+            "expected": "Четыре области; число начальных кубов не ограничивает итог."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Цифровой перенос бумажных положений и кривых границ требует отдельного решения."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Подготавливать области по заданным броскам и положениям",
+        "expected_output": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-001-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-ose-crosswalk-1630.json#implementation",
+            "kind": "same_sha_related_component",
+            "scope": "manual region geometry and edits; positional draw and selective reroll unknown"
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "manual region geometry and edits; positional draw and selective reroll unknown"
+      ],
+      "disposition_reason": "Принятые области местности и заполнение пустот относятся к редактированию карты. Бумажный бросок не задаёт цифровой алгоритм."
+    },
+    {
+      "id": "CAIRN2-SS-002-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Terrain Die Drop Table",
+          "web_lines": [
+            728,
+            740
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Бросок d6 1–3 даёт Easy, 4–5 Tough, 6 Perilous. Категория выбирает семейство таблиц местности."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-002-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-002-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05",
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Бросок d6 1–3 даёт Easy, 4–5 Tough, 6 Perilous. Категория выбирает семейство таблиц местности."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-002-L1",
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "map.terrain_zones"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-002-L1",
+        "binding_source_rule_id": "CAIRN2-SS-002",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий определяет исходную категорию области.",
+        "inputs_and_units": {
+          "die": "один d6, целое 1–6"
+        },
+        "product_operation": "Сопоставить бросок исходной категории и сохранить её до уточнения местности.",
+        "expected_output": "У каждой опорной точки сохранена исходная категория.",
+        "constraints_and_exceptions": [
+          "Это выбор категории области, а не вероятность на каждый гекс.",
+          "Соответствие категориям проходимости HX-BL-044 не установлено.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила.",
+          "Easy/Tough/Perilous здесь относятся к выбору исходной таблицы. В отдельной адаптации движение принимает сложность местности и пути раздельно; выполнение расчёта относится к L2."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-002-L1-AC01",
+            "given": "Заданы броски 1, 3, 4, 5, 6.",
+            "when": "Определить категории.",
+            "expected": "Easy, Easy, Tough, Tough, Perilous соответственно."
+          },
+          {
+            "id": "CAIRN2-SS-002-L1-AC02",
+            "given": "Получен Perilous, конкретная география ещё не выбрана.",
+            "when": "Сохранить результат.",
+            "expected": "Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Соответствие исходной категории универсальной проходимости требует отдельной проверки."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Различать исходные категории Easy/Tough/Perilous",
+        "expected_output": "У каждой опорной точки сохранена исходная категория.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-002-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Категория области выбирает таблицу местности; Easy/Tough/Perilous не равны автоматически утверждённой проходимости."
+    },
+    {
+      "id": "CAIRN2-SS-003-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Easy, Tough, Perilous",
+          "web_lines": [
+            730,
+            815
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Для каждой выбранной таблицы независимо бросить d20 за форму местности и второй d20 за ориентир. Совпадение строк не требуется."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-003-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-003-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05",
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S01-C05",
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Для каждой выбранной таблицы независимо бросить d20 за форму местности и второй d20 за ориентир. Совпадение строк не требуется."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-003-L1",
+        "common_rule_ids": [
+          "content.landmarks",
+          "content.roll_table_resolution",
+          "map.terrain_zones"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-003-L1",
+        "binding_source_rule_id": "CAIRN2-SS-003",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий уточняет область и её ориентир.",
+        "inputs_and_units": {
+          "category": "Easy/Tough/Perilous",
+          "terrain_die": "d20, целое 1–20",
+          "landmark_die": "отдельный d20, целое 1–20"
+        },
+        "product_operation": "Получить два результата из независимых колонок выбранной категории и сохранить их у области.",
+        "expected_output": "Область содержит местность и ориентир с исходными индексами.",
+        "constraints_and_exceptions": [
+          "Один общий бросок не заменяет два независимых.",
+          "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-003-L1-AC01",
+            "given": "Easy; местность = 15, ориентир = 1.",
+            "when": "Разрешить обе колонки.",
+            "expected": "Plains + Broken Sundial; использованы разные строки."
+          },
+          {
+            "id": "CAIRN2-SS-003-L1-AC02",
+            "given": "Perilous; местность = 15, ориентир = 20.",
+            "when": "Разрешить обе колонки.",
+            "expected": "Mountains + Weeping Bubble; индексы не выравниваются автоматически."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "map.terrain_zones",
+          "content.landmarks"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Получать независимые местность и ориентир по категории",
+        "expected_output": "Область содержит местность и ориентир с исходными индексами.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-003-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Независимые результаты задают местность и конкретный ориентир области."
+    },
+    {
+      "id": "CAIRN2-SS-004-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Landmarks, Draw Terrain",
+          "web_lines": [
+            723,
+            732
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Каждая принятая опорная точка имеет ориентир, показанный треугольником на схеме и связанный с областью. Точный радиус видимости здесь не задан."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-004-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-004-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_ids": [
+          "S03-C01",
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Каждая принятая опорная точка имеет ориентир, показанный треугольником на схеме и связанный с областью. Точный радиус видимости здесь не задан."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-004-L1",
+        "common_rule_ids": [
+          "content.landmarks"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-004-L1",
+        "binding_source_rule_id": "CAIRN2-SS-004",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий наносит уже выбранный ориентир области.",
+        "inputs_and_units": {
+          "position": "принятая точка",
+          "description": "выбранный ориентир"
+        },
+        "product_operation": "Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.",
+        "expected_output": "Ориентир, положение и исходная область связаны.",
+        "constraints_and_exceptions": [
+          "Бумажный треугольник не предписывает новый интерфейс или конкретный SVG.",
+          "Численный радиус и видимость из каждой точки не заданы.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-004-L1-AC01",
+            "given": "У области A выбран Broken Sundial в точке P.",
+            "when": "Разместить ориентир.",
+            "expected": "Ориентир связан с A и P; соседние области не изменены."
+          },
+          {
+            "id": "CAIRN2-SS-004-L1-AC02",
+            "given": "Известно описание видимости, численный радиус неизвестен.",
+            "when": "Сохранить описание.",
+            "expected": "Описание сохранено; радиус в милях или гексах не добавлен."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.landmarks"
+        ],
+        "unresolved_parameters": [
+          "Дальность и препятствия обзора относятся к отдельным правилам L2."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Размещать ориентир как географическую опору",
+        "expected_output": "Ориентир, положение и исходная область связаны.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-004-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+            "kind": "published_tree_app_handler",
+            "scope": "types and positions of placed POI survive JSON, landmark-specific relationship unknown",
+            "actual": {
+              "holy_place": "2,0",
+              "roads": [
+                {
+                  "id": 1,
+                  "from": "0,0",
+                  "to": "1,0",
+                  "kind": "road"
+                },
+                {
+                  "id": 2,
+                  "from": "1,0",
+                  "to": "0,1",
+                  "kind": "trail"
+                },
+                {
+                  "id": 3,
+                  "from": "0,1",
+                  "to": "0,0",
+                  "kind": "trail"
+                }
+              ],
+              "isolatedPoint": "2,0",
+              "isolatedPointType": "holy_place",
+              "physicallyAdjacentTo": "1,0",
+              "jsonRoundtrip": true
+            }
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "types and positions of placed POI survive JSON, landmark-specific relationship unknown"
+      ],
+      "disposition_reason": "Ориентир имеет положение и связь с областью; радиус обзора и боевые LOS не включены."
+    },
+    {
+      "id": "CAIRN2-SS-005-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Rivers, Seas, and Lakes",
+          "web_lines": [
+            816,
+            820
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Регион имеет источник воды. Если мастер наносит реку, линия идёт от более высокого к низкому. Возможные завершения — выбранное озеро, море или выход с карты."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-005-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-005-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C03",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_ids": [
+          "S01-C02",
+          "S01-C03"
+        ],
+        "criterion_scope_note": "Регион имеет источник воды. Если мастер наносит реку, линия идёт от более высокого к низкому. Возможные завершения — выбранное озеро, море или выход с карты."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-005-L1",
+        "common_rule_ids": [
+          "map.land_water_shapes",
+          "map.river_network"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-005-L1",
+        "binding_source_rule_id": "CAIRN2-SS-005",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий подготавливает воду региона.",
+        "inputs_and_units": {
+          "water_sources": "имеющиеся или выбранные источники",
+          "elevation_context": "относительное выше/ниже",
+          "outlet": "принятое завершение"
+        },
+        "product_operation": "Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.",
+        "expected_output": "Источник воды и выбранный путь или выход сохранены.",
+        "constraints_and_exceptions": [
+          "При наличии воды новая река не обязательна.",
+          "Озеро при встрече с высокой местностью возможно, но не обязательно.",
+          "Численный гидрологический алгоритм не задан.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-005-L1-AC01",
+            "given": "В регионе есть озеро; ведущий не добавляет реку.",
+            "when": "Сохранить воду региона.",
+            "expected": "Озеро осталось источником; новая река не навязана."
+          },
+          {
+            "id": "CAIRN2-SS-005-L1-AC02",
+            "given": "Высокая точка H, низкая L, море S.",
+            "when": "Принять водоток H → L → S.",
+            "expected": "Сохранены направление и выход в море; дополнительное озеро не создано."
+          },
+          {
+            "id": "CAIRN2-SS-005-L1-AC03",
+            "given": "Выбранное русло следует от высоты H к низине L. В L нет моря, мастер продолжает русло за картой.",
+            "when": "Сохранить географию и повторно открыть документ.",
+            "expected": "Начало у H, направление H→L, у края сохранён выход. Новый терминальный водоём этим действием не создаётся."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "map.river_network"
+        ],
+        "unresolved_parameters": [
+          "Стыковка с соседями и цифровая геометрия высот не специфицированы."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Подготавливать воду и осмысленное направление реки",
+        "expected_output": "Источник воды и выбранный путь или выход сохранены.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-005-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-ose-crosswalk-1630.json#implementation",
+            "kind": "same_sha_related_component",
+            "scope": "manual water and river suites; complete source-specific succession across high and low terrain unknown"
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "manual water and river suites; complete source-specific succession across high and low terrain unknown"
+      ],
+      "disposition_reason": "Вода и направление реки - география карты; озеро не требует новой реки."
+    },
+    {
+      "id": "CAIRN2-SS-007-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Points of Interest, Draw Points of Interest",
+          "web_lines": [
+            856,
+            871
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Heart — значимое поселение рядом с водой, рядом с ним в регионе отдельно создаются 3–8 мест. Heart не обязан быть самым крупным."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-007-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-007-L1",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_scope_note": "Heart — значимое поселение рядом с водой, рядом с ним в регионе отдельно создаются 3–8 мест. Heart не обязан быть самым крупным."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-007-L1",
+        "common_rule_ids": [
+          "content.site_density",
+          "content.site_links"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-007-L1",
+        "binding_source_rule_id": "CAIRN2-SS-007",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий задаёт опорное место и пакет остальных мест.",
+        "inputs_and_units": {
+          "Heart": "отдельное значимое место рядом с водой",
+          "N": "выбранное целое 3–8",
+          "points": "принятые положения дополнительных мест"
+        },
+        "product_operation": "Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.",
+        "expected_output": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+        "constraints_and_exceptions": [
+          "Heart значим, но не обязательно крупнейший или важнейший город.",
+          "Это количество для региона, а не плотность на каждый гекс.",
+          "Распределение N и формула d6 + 2 источником не заданы.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила.",
+          "У источника не задана дистанция от Heart до воды в милях или гексах; соседство можно задать как конкретную приёмочную геометрию, книга его не обязывает."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-007-L1-AC01",
+            "given": "Heart H у воды, N = 3.",
+            "when": "Создать выбранный набор.",
+            "expected": "Четыре места: H и три дополнительных."
+          },
+          {
+            "id": "CAIRN2-SS-007-L1-AC02",
+            "given": "Heart H, N = 8; одна дополнительная точка вне карты.",
+            "when": "Повторить положение этой точки.",
+            "expected": "Девять мест: H и восемь дополнительных; прочие положения сохранены."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Численная дистанция до воды и способ выбора N не нормированы."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Назначать Heart у воды и отдельное число мест",
+        "expected_output": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-007-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+            "kind": "published_tree_app_handler",
+            "scope": "four distinct places remain after import; no Heart assignment or distance check",
+            "actual": {
+              "count": 4,
+              "positions": [
+                "0,0",
+                "1,0",
+                "0,1",
+                "2,0"
+              ]
+            }
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "four distinct places remain after import; no Heart assignment or distance check"
+      ],
+      "disposition_reason": "Heart у воды и3–8 дополнительных мест - наполнение региона, не плотность на гекс."
+    },
+    {
+      "id": "CAIRN2-SS-008-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / POI Die Drop Table",
+          "web_lines": [
+            865,
+            880
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Результат 1 допускает Waypoint или Settlement, 2–3 дают Curiosity, 4 Lair, 5–6 Dungeon. Heart остаётся отдельным первым местом."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-008-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-008-L1",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Результат 1 допускает Waypoint или Settlement, 2–3 дают Curiosity, 4 Lair, 5–6 Dungeon. Heart остаётся отдельным первым местом."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-008-L1",
+        "common_rule_ids": [
+          "content.roll_table_resolution",
+          "content.site_density"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-008-L1",
+        "binding_source_rule_id": "CAIRN2-SS-008",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий определяет категории дополнительных мест.",
+        "inputs_and_units": {
+          "dice": "по одному d6 для дополнительного места",
+          "one_choice": "явный выбор Waypoint или Settlement при 1"
+        },
+        "product_operation": "Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.",
+        "expected_output": "Категории соответствуют броскам; Heart сохранён отдельно.",
+        "constraints_and_exceptions": [
+          "Вес граней не задаёт точную квоту итоговой карты.",
+          "Опасность Curiosity при взаимодействии не означает автоматический бой.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-008-L1-AC01",
+            "given": "Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.",
+            "when": "Назначить категории.",
+            "expected": "Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."
+          },
+          {
+            "id": "CAIRN2-SS-008-L1-AC02",
+            "given": "Heart уже есть; для нового места получен 1.",
+            "when": "Выбрать Settlement.",
+            "expected": "Новое место — Settlement; Heart не переименован."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.site_density"
+        ],
+        "unresolved_parameters": [
+          "Политика выбора между Waypoint и Settlement не задана."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Назначать категории только выбранным дополнительным местам",
+        "expected_output": "Категории соответствуют броскам; Heart сохранён отдельно.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-008-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Категории назначаются выбранным местам. Грань1 сохраняет выбор Waypoint/Settlement."
+    },
+    {
+      "id": "CAIRN2-SS-009-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Draw Points of Interest; Draw Paths",
+          "web_lines": [
+            865,
+            871
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "При генерации региона нумерацию начинают с Heart. Эти номера используются для ссылок между существующими местами."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-009-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-009-L1",
+        "related_common_criterion_ids": [
+          "S04-C03"
+        ],
+        "criterion_ids": [
+          "S04-C04",
+          "S05-C01"
+        ],
+        "criterion_scope_note": "При генерации региона нумерацию начинают с Heart. Эти номера используются для ссылок между существующими местами."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-009-L1",
+        "common_rule_ids": [
+          "map.reference_labels"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-009-L1",
+        "binding_source_rule_id": "CAIRN2-SS-009",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий назначает обозначения подготовленным местам.",
+        "inputs_and_units": {
+          "places": "Heart и дополнительные места",
+          "numbers": "выбранные ведущим обозначения"
+        },
+        "product_operation": "Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.",
+        "expected_output": "Номера пригодны для ссылок между местами.",
+        "constraints_and_exceptions": [
+          "Начальное целое и порядок прочих мест не фиксированы источником.",
+          "Номер гекса не заменяет обозначение места.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила.",
+          "У нумерации общий набор ссылок с CAIRN2-PC-001-L1. Для созданного региона первый номер получает Heart. Координата и имя остаются отдельны."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-009-L1-AC01",
+            "given": "Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.",
+            "when": "Назначить обозначения.",
+            "expected": "H = 1, A = 2, B = 3, C = 4; имена и положения прежние."
+          },
+          {
+            "id": "CAIRN2-SS-009-L1-AC02",
+            "given": "Место A остаётся в точке P; новое обозначение — 7.",
+            "when": "Сохранить обозначение.",
+            "expected": "A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": [
+          "Политика перенумерации и обновления старых ссылок не задана источником."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Нумеровать места начиная с Heart",
+        "expected_output": "Номера пригодны для ссылок между местами.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-009-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Номера связывают существующие места, начиная с Heart; координата гекса не заменяет номер места."
+    },
+    {
+      "id": "CAIRN2-SS-010-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Settlements, Waypoints, Curiosities, Lairs, Dungeons",
+          "web_lines": [
+            871,
+            1006
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Два самостоятельных результата d20 дают тип и особенность конкретного места; Heart обычно получает таблицу поселения или Waypoint."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-010-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-010-L1",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_scope_note": "Два самостоятельных результата d20 дают тип и особенность конкретного места; Heart обычно получает таблицу поселения или Waypoint."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-010-L1",
+        "common_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-010-L1",
+        "binding_source_rule_id": "CAIRN2-SS-010",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий наполняет выбранное место.",
+        "inputs_and_units": {
+          "category": "одна из пяти категорий",
+          "dice": "два отдельных d20, значения 1–20",
+          "Heart_choice": "выбранная категория Heart при необходимости"
+        },
+        "product_operation": "Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.",
+        "expected_output": "Место содержит обе исходные подсказки и их принятый смысл.",
+        "constraints_and_exceptions": [
+          "Слово «обычно» не является запретом другой категории Heart.",
+          "Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-010-L1-AC01",
+            "given": "Settlement; тип = 4, свойство = 20.",
+            "when": "Разрешить обе колонки.",
+            "expected": "City + Trading Hub."
+          },
+          {
+            "id": "CAIRN2-SS-010-L1-AC02",
+            "given": "Dungeon; тип = 2, свойство = 18.",
+            "when": "Разрешить обе колонки.",
+            "expected": "Cave + Sealed; комнаты и монстры автоматически не созданы."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "model_fixture": {
+        "user_action": "Наполнять каждое место двумя независимыми подсказками",
+        "expected_output": "Место содержит обе исходные подсказки и их принятый смысл.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-010-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Таблица наполняет конкретное выбранное место типом и свойством; без генератора личностей NPC, политики, сюжета или магии."
+    },
+    {
+      "id": "CAIRN2-SS-011-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Path Types; Draw Paths",
+          "web_lines": [
+            1007,
+            1023
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Standard, Hidden, Conditional описывают доступ или известность пути. Road, Trail, Wilderness route отдельно описывают физический вид. У скрытого пути есть цена открытия, у условного — средство или препятствие."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-011-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-011-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05",
+          "S04-C03",
+          "S05-C03"
+        ],
+        "criterion_ids": [
+          "S01-C04",
+          "S04-C03",
+          "S05-C03"
+        ],
+        "criterion_scope_note": "Standard, Hidden, Conditional описывают доступ или известность пути. Road, Trail, Wilderness route отдельно описывают физический вид. У скрытого пути есть цена открытия, у условного — средство или препятствие."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-011-L1",
+        "common_rule_ids": [
+          "content.discovery_levels",
+          "map.routes_and_barriers"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-011-L1",
+        "binding_source_rule_id": "CAIRN2-SS-011",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий задаёт свойства известного соединения.",
+        "inputs_and_units": {
+          "endpoints": "Пара существующих мест",
+          "path_surface": [
+            "road",
+            "trail",
+            "wilderness"
+          ],
+          "access": [
+            "standard",
+            "hidden",
+            "conditional"
+          ],
+          "condition": "Например лодка, карта, проводник или препятствие. Содержание указывает мастер."
+        },
+        "product_operation": "Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.",
+        "expected_output": "Смена физического вида не стирает условие пути.",
+        "constraints_and_exceptions": [
+          "Скрытость пути не равна непроходимости местности.",
+          "Численная цена поиска, проверка и урон неизвестны.",
+          "Бумажная нотация линий не задаёт новый интерфейс.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила.",
+          "Скрытость, условие доступа и геометрический запрет изменяются отдельно. Раскрытие, цена поиска и проверка выполнения условия относятся к L2."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-011-L1-AC01",
+            "given": "A–B — условный водный путь; нужна лодка.",
+            "when": "Сохранить соединение.",
+            "expected": "Условие «лодка» сохранено; проходимость без лодки не заявлена."
+          },
+          {
+            "id": "CAIRN2-SS-011-L1-AC02",
+            "given": "A–C — скрытая дорога; цена поиска неизвестна.",
+            "when": "Сохранить тип.",
+            "expected": "Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."
+          },
+          {
+            "id": "CAIRN2-SS-011-L1-AC03",
+            "given": "Между A и B есть тропа. Мастер помечает её скрытой. Между B и C известная тропа с условием «нужен проводник».",
+            "when": "Сохранить и повторно открыть обе связи.",
+            "expected": "У обеих связей физический вид «тропа». Первая имеет скрытость, вторая хранит условие с проводником. Статусы независимы."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers",
+          "content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Исполнение условий и обнаружения требует отдельного корпуса L2/L3."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Различать доступность пути и его физический вид",
+        "expected_output": "Смена физического вида не стирает условие пути.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-011-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+            "kind": "published_tree_app_handler",
+            "scope": "physical road and trail; independently stored access and disclosure remain unknown",
+            "actual": {
+              "physical_kind_negative_probe": {
+                "wilderness": {
+                  "accepted": false,
+                  "unchanged": true
+                },
+                "hidden": {
+                  "accepted": false,
+                  "unchanged": true
+                },
+                "conditional": {
+                  "accepted": false,
+                  "unchanged": true
+                }
+              },
+              "barrier_probe": {
+                "from": "0,0",
+                "to": "1,0",
+                "blocked": "Path unchanged: Could not prepare the path edit.",
+                "noMapMutation": true
+              }
+            }
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "physical road and trail; independently stored access and disclosure remain unknown"
+      ],
+      "disposition_reason": "При подготовке конкретного пути отмечаются скрытость/условие отдельно от физического вида. Проверки, цена поиска и исполнение условий отложены."
+    },
+    {
+      "id": "CAIRN2-SS-012-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Draw Paths",
+          "web_lines": [
+            1015,
+            1023
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Начать связи с Heart, поддержать петли, ответвления, тупики и короткие пути. Текст про 1–4 не определяет алгоритм степени узла или порядок заполнения всех пар."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-012-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-012-L1",
+        "related_common_criterion_ids": [
+          "S01-C02",
+          "S01-C04",
+          "S01-C05"
+        ],
+        "criterion_ids": [
+          "S01-C04",
+          "S03-C04",
+          "S04-C04"
+        ],
+        "criterion_scope_note": "Начать связи с Heart, поддержать петли, ответвления, тупики и короткие пути. Текст про 1–4 не определяет алгоритм степени узла или порядок заполнения всех пар."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-012-L1",
+        "common_rule_ids": [
+          "content.site_links",
+          "map.routes_and_barriers"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-012-L1",
+        "binding_source_rule_id": "CAIRN2-SS-012",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий связывает подготовленные места.",
+        "inputs_and_units": {
+          "Heart": "исходное место",
+          "connections": "принятые пары мест",
+          "path_count_choice": "1–4 на рассматриваемом шаге, точная трактовка требует решения"
+        },
+        "product_operation": "Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.",
+        "expected_output": "У каждого пути сохранены концы и принятый физический вид.",
+        "constraints_and_exceptions": [
+          "Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.",
+          "Конечное место может оставаться тупиком.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-012-L1-AC01",
+            "given": "H–A — дорога, H–B — тропа, A–B — сокращение.",
+            "when": "Сохранить набор.",
+            "expected": "Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."
+          },
+          {
+            "id": "CAIRN2-SS-012-L1-AC02",
+            "given": "B — конечное место единственного пути.",
+            "when": "Принять тупик.",
+            "expected": "Автоматическая дорога из B ради соединения со всеми местами не добавлена."
+          },
+          {
+            "id": "CAIRN2-SS-012-L1-AC03",
+            "given": "Мастер нанёс H→A как дорогу, A→B и B→H как тропы. D имеет соседний гекс, но связи не заданы.",
+            "when": "Сохранить и повторно открыть JSON.",
+            "expected": "Есть три отдельные связи с прежними ID и путями. D сохранена без связи."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Алгоритм раскладки, ограничения степени и пересечений не предписаны."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Связывать места сетью с осмысленными развилками",
+        "expected_output": "У каждого пути сохранены концы и принятый физический вид.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "partial",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-012-L1",
+          "sha": null,
+          "model_reported_status": "partial",
+          "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [
+          {
+            "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+            "ref": "agent-work/research/top20-l1/handoffs/2026-11-26-top20-l1-cairn2-projection-1930.json#implementation",
+            "kind": "published_tree_app_handler",
+            "scope": "authored loop of physical road and trails with stable IDs and isolated fourth point after import",
+            "actual": {
+              "roads": [
+                {
+                  "id": 1,
+                  "from": "0,0",
+                  "to": "1,0",
+                  "kind": "road"
+                },
+                {
+                  "id": 2,
+                  "from": "1,0",
+                  "to": "0,1",
+                  "kind": "trail"
+                },
+                {
+                  "id": 3,
+                  "from": "0,1",
+                  "to": "0,0",
+                  "kind": "trail"
+                }
+              ],
+              "isolatedPoint": "2,0",
+              "isolatedPointType": "holy_place",
+              "physicallyAdjacentTo": "1,0",
+              "jsonRoundtrip": true
+            }
+          }
+        ],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "authored loop of physical road and trails with stable IDs and isolated fourth point after import"
+      ],
+      "disposition_reason": "Пары мест и виды путей задают географию. Неясная трактовка1–4 не оправдывает автоматическую связность."
+    },
+    {
+      "id": "CAIRN2-SS-013-L1",
+      "game_id": "CAIRN2",
+      "disposition": "keep_L1",
+      "source": {
+        "edition": "Cairn 2e, Warden’s Guide, официальная английская веб-редакция, номер ревизии не указан",
+        "locator": {
+          "section": "Setting Seeds / Path Features",
+          "web_lines": [
+            1022,
+            1052
+          ],
+          "printed_page": null
+        },
+        "source_ref": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "access_level": "public_primary_full_section",
+        "verification": "direct_primary_against_preserved_extraction",
+        "recorded_facts": "Два самостоятельных d20 дают признак и условие указанного пути. Подсказка закрепляется за путём, механическое применение условия относится к игре."
+      },
+      "model": {
+        "game_unit_id": "CAIRN2",
+        "operation_id": "CAIRN2-SS-013-L1",
+        "operation_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/CAIRN2.json#CAIRN2-SS-013-L1",
+        "related_common_criterion_ids": [
+          "S05-C01"
+        ],
+        "criterion_ids": [
+          "S05-C01",
+          "S04-C04"
+        ],
+        "criterion_scope_note": "Два самостоятельных d20 дают признак и условие указанного пути. Подсказка закрепляется за путём, механическое применение условия относится к игре."
+      },
+      "canonical": {
+        "binding_id": "CAIRN2-SS-013-L1",
+        "common_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "candidate_binding": false,
+        "binding_ref": "agent-work/rules/game-bindings.json#CAIRN2-SS-013-L1",
+        "binding_source_rule_id": "CAIRN2-SS-013",
+        "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422"
+      },
+      "formalization": "existing_structured_requirement",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013",
+        "normative_kind": "optional_setting_creation_procedure",
+        "applicability": "Выбранная мастером проекция Cairn 2e на региональную гекс-карту. Тип источника: подготовка нового pointcrawl-региона по Setting Seeds.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий описывает конкретный путь.",
+        "inputs_and_units": {
+          "route": "принятая пара мест",
+          "feature_die": "d20, значение 1–20",
+          "condition_die": "другой d20, значение 1–20"
+        },
+        "product_operation": "Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.",
+        "expected_output": "Путь содержит обе исходные подсказки.",
+        "constraints_and_exceptions": [
+          "Колонка Condition не равна типу Conditional path.",
+          "Упоминание засады не требует автоматически запускать бой.",
+          "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "CAIRN2-SS-013-L1-AC01",
+            "given": "A–B; Feature = 12, Condition = 20.",
+            "when": "Разрешить подсказки.",
+            "expected": "Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."
+          },
+          {
+            "id": "CAIRN2-SS-013-L1-AC02",
+            "given": "Condition = 1.",
+            "when": "Сохранить подсказку.",
+            "expected": "Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."
+          },
+          {
+            "id": "CAIRN2-SS-013-L1-AC03",
+            "given": "Бросок признака 12 даёт милевые отметки, бросок условия 3 — обрушенный мост. Мастер применяет результаты к тропе A–B.",
+            "when": "Подтвердить и открыть сохранение.",
+            "expected": "У этой тропы сохранены оба исхода. Полилиния тропы остаётся на карте. Препятствие не исполняет переход или урон."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга задаёт процедуру pointcrawl. Для выбранной мастером региональной гекс-карты сохраняются физические места, известные пути и относящиеся к ним данные. Раскладка по гексам и формат JSON принадлежат продукту.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полный каталог и механические последствия не импортируются автоматически."
+        ]
+      },
+      "model_fixture": {
+        "user_action": "Описывать путь парой независимых результатов",
+        "expected_output": "Путь содержит обе исходные подсказки.",
+        "previous_checks": null
+      },
+      "implementation": {
+        "current_status": "unknown",
+        "historical_evidence": {
+          "ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-013-L1",
+          "sha": null,
+          "model_reported_status": "absent",
+          "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+          "scope": "unresolved_or_analogy",
+          "matching_prior_operation": null
+        },
+        "scoped_evidence": [],
+        "full_workflow": "unknown"
+      },
+      "open_checks": [
+        "Confirm historical evidence at a source-specific product SHA.",
+        "Нет прогона своего профиля на проверенном SHA."
+      ],
+      "disposition_reason": "Признаки конкретного пути нужны для подготовки маршрута; угроза остаётся сведением о месте, без боевого/событийного движка."
+    }
+  ],
+  "checked_run_id": "2026-11-26-top20-l1-cairn2-projection-1930",
+  "source_crosswalk": {
+    "sources": [
+      {
+        "id": "CAIRN2-WG-POINTCRAWLS-WEB",
+        "title": "Cairn 2e — Warden's Guide: Pointcrawls",
+        "edition": "Second Edition official online rules; page revision/date not declared",
+        "url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+        "locator": "Pointcrawls; Converting a Map, first two bullets, web lines431–439",
+        "printed_page": null,
+        "language": "en",
+        "geography": "English web edition; no audience extrapolation",
+        "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls",
+        "access_level": "full_text",
+        "accessed_at": "2026-11-08T00:36:44.847Z",
+        "license": "CC-BY-SA 4.0 as stated by source page",
+        "attribution": "Cairn official website, Warden's Guide, Pointcrawls",
+        "deduplication": "One canonical publisher page; navigation/linked adventures are not independent source or GM observations"
+      },
+      {
+        "id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+        "title": "Cairn 2e Warden’s Guide — Setting Seeds",
+        "edition": "Second Edition official online text; revision/date not declared",
+        "url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+        "locator": "Topography through Paths, including Put It All Together context; web body719–1066",
+        "printed_page": null,
+        "pdf_page": null,
+        "language": "en",
+        "access_level": "full_text",
+        "accessed_at": "2026-11-10T20:39:42.995945+00:00",
+        "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds",
+        "license": "CC-BY-SA4.0; Yochai Gal / Cairn official website; this source-derived handoff shared under same license",
+        "corpus": "Complete geographic procedures719–1066, not all SettingSeeds theme/factions or all book tables as executable catalogs. All geographic table rows read; literary catalogs not republished/imported.",
+        "geography": "English web edition; no population extrapolation"
+      }
+    ],
+    "prior_scope_ref": "agent-work/research/requirements/CAIRN2-scope-audit.json",
+    "selected_corpus": "Pointcrawls, пункты 1–2; Setting Seeds, Topography и подготовка мест и путей. Тематический архив содержит 13 таблиц, полный повторный импорт не выполнялся.",
+    "catalog_ref": "agent-work/research/catalogs/CAIRN2-SettingSeeds-geography-v1.json",
+    "separate_resource": {
+      "source_ref": "https://cairnrpg.com/resources/hexcrawls-in-cairn/",
+      "edition": "Hexcrawls in Cairn, отдельная адаптация на сайте проекта, дата и версия страницы не указаны",
+      "author_project_key": "cairn-rpg:website:resources:hexcrawls-in-cairn",
+      "locators": {
+        "boundary": "483–485",
+        "terrain_and_route_travel": "505–523",
+        "reveal": "557–576"
+      },
+      "disposition": "defer_L2",
+      "facts": "Адаптация при входе в гекс использует максимум сложности пути и местности, затем поправки. Это правило движения, не требование изменить весь рельеф, пути или исходный профиль карты. Поворот сетки для таблицы потери направления относятся к её собственному сценарию. Фиксированный физический шаг не установлен в проверенном разделе."
+    }
+  }
 }
