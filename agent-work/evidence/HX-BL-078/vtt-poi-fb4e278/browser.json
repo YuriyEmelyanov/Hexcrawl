@@ -1,0 +1,288 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "publication_authorized": false,
+  "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+  "tree_sha": "73d52578316d61d44f80baf6944f11e38712b588",
+  "previous_checkpoint_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-poi-200617.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-poi-200617-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/browser.json",
+  "capture_refs": {
+    "master_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-master-before.jpg",
+    "player_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-before.jpg",
+    "player_after": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-after.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Сохранить комнату, позицию и действующую ссылку в долговечном хранилище. Проверить на существующей карте: подтверждённый ход, перезапуск сервиса и повторный вход по прежней ссылке показывают прежнюю подтверждённую позицию.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      8,
+      15
+    ],
+    "confidence": "low",
+    "basis": "Участки маршрутов, переправы и штатные POI в локальном сценарии проверены. Остаются созданные карты, долговечное хранение, отзыв доступа, проверка и выпуск. Ожидание разрешения владельца отдельно."
+  },
+  "limitations": [
+    "Проверены импортированные карты Classic, Knave 2e, Crows (Cornath) и Mythic Bastionland. Созданные карты, водная точка и несколько разных точек в одном гексе не входили в браузерный набор этого запуска.",
+    "У старых Classic-карт без явного значения действует редакторское значение «При прохождении». У Mythic Bastionland без значения игроку точка автоматически не выдаётся, мастер её видит.",
+    "Маркер отряда становится кольцом на точке интереса. Сведения о точках, ручные открытия и режим памяти в этот этап не входили. Комната пока работает в локальном предпросмотре и теряется при перезапуске сервиса."
+  ],
+  "recorded_at": "2026-11-26T20:21:30.681Z",
+  "role": "programmer",
+  "scope": [
+    "VTT-R04",
+    "VTT-R08",
+    "VTT-R09"
+  ],
+  "score_evidence": {
+    "model": "1.3-rc8",
+    "level": "L2",
+    "criterion_id": "S04-C03",
+    "grade": "unknown",
+    "delta": "unknown",
+    "basis": "Раздельная выдача точек мастеру и игроку на этом SHA. Полнота L2 и вес строки требуют проверки всего пакета."
+  },
+  "chromium": "Chromium 158.0.8127.0",
+  "checks": {
+    "browser": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0
+    },
+    "tsc": {
+      "status": "passed"
+    },
+    "build": {
+      "status": "passed"
+    },
+    "node_local": {
+      "status": "passed",
+      "tests": 460,
+      "pass": 460,
+      "fail": 0,
+      "skipped": 0
+    },
+    "github": {
+      "id": 45889150062,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45889150062",
+      "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+    "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suite": "test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Редактор, мастер и два игровых браузера на одной карте. Проверяется соответствие значков, исключение закрытых объектов из ответа и карты игрока, раскрытие после подтверждения и уход из гекса без истории в режиме «Сейчас».",
+    "reuse_or_new_reason": "Использованы четыре существующих сценария, так как они уже проходят переход из редактора, вход и подтверждение хода.",
+    "count_source": "Diff двух точных SHA: массив scenarios не изменился, расширена общая проверка verifyRoom. Один логический сценарий на профиль."
+  },
+  "scenarios": [
+    {
+      "mode": "classic",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 3,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 70,
+      "playerRoutesBefore": 6,
+      "playerRoutesAfter": 6,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "knave",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 3,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 70,
+      "playerRoutesBefore": 6,
+      "playerRoutesAfter": 6,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "crows",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 3,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 70,
+      "playerRoutesBefore": 6,
+      "playerRoutesAfter": 6,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "mythic",
+      "fixture": "terrain-display-map.json",
+      "contexts": 3,
+      "allCells": 206,
+      "firstCells": 7,
+      "afterCells": 7,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": true,
+      "matchedEngravings": 6,
+      "matchedBlends": 1,
+      "editorRoutes": 308,
+      "playerRoutesBefore": 9,
+      "playerRoutesAfter": 6,
+      "markTypes": [
+        "ferry",
+        "bridge",
+        "waterfall"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "ferry"
+      ],
+      "masterPoints": 41,
+      "playerPointsBefore": [
+        {
+          "q": 0,
+          "r": 1,
+          "icon": "/poi/v2/land/capital.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "playerPointsAfter": [],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    }
+  ],
+  "privacy_assertions": [
+    "Exact player POI payload contains only q, r, icon and fill",
+    "Current secret cell renders standard terrain in player view",
+    "Proposal does not alter disclosure",
+    "Both player contexts match and reopening preserves disclosure",
+    "The Classic scenario enters both the secret and exploration cells without revealing their points"
+  ]
+}

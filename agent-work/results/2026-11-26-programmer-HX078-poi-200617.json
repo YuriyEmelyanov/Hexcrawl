@@ -1,0 +1,100 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "publication_authorized": false,
+  "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+  "tree_sha": "73d52578316d61d44f80baf6944f11e38712b588",
+  "previous_checkpoint_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-poi-200617.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-poi-200617-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/browser.json",
+  "capture_refs": {
+    "master_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-master-before.jpg",
+    "player_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-before.jpg",
+    "player_after": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-after.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Сохранить комнату, позицию и действующую ссылку в долговечном хранилище. Проверить на существующей карте: подтверждённый ход, перезапуск сервиса и повторный вход по прежней ссылке показывают прежнюю подтверждённую позицию.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      8,
+      15
+    ],
+    "confidence": "low",
+    "basis": "Участки маршрутов, переправы и штатные POI в локальном сценарии проверены. Остаются созданные карты, долговечное хранение, отзыв доступа, проверка и выпуск. Ожидание разрешения владельца отдельно."
+  },
+  "limitations": [
+    "Проверены импортированные карты Classic, Knave 2e, Crows (Cornath) и Mythic Bastionland. Созданные карты, водная точка и несколько разных точек в одном гексе не входили в браузерный набор этого запуска.",
+    "У старых Classic-карт без явного значения действует редакторское значение «При прохождении». У Mythic Bastionland без значения игроку точка автоматически не выдаётся, мастер её видит.",
+    "Маркер отряда становится кольцом на точке интереса. Сведения о точках, ручные открытия и режим памяти в этот этап не входили. Комната пока работает в локальном предпросмотре и теряется при перезапуске сервиса."
+  ],
+  "role": "programmer",
+  "run_id": "2026-11-26-programmer-HX078-poi-200617",
+  "status": "implementation_checkpoint",
+  "role_selection_reason": "Прямое поручение владельца по HX-BL-078. Предыдущий этап на df4479a прошёл Check, реестр перед запуском пуст, 20 записей активной формы сопоставлены с завершением или решением владельца.",
+  "result": "Мастер видит штатные значки точек интереса. Игрок получает только значки «При прохождении» текущего гекса. Предложение хода картину не меняет. После подтверждения на карте Classic появляется деревня в гексе 0,0. Секретная точка и точка для исследования остаются скрыты при входе в их гекс.",
+  "previous_result_ref": "agent-work/results/2026-11-26-programmer-HX078-marks-190309.json",
+  "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-poi-200617.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-26T20:02:45.063Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-26T20:21:30.681Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "checks": {
+    "browser": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0
+    },
+    "tsc": {
+      "status": "passed"
+    },
+    "build": {
+      "status": "passed"
+    },
+    "node_local": {
+      "status": "passed",
+      "tests": 460,
+      "pass": 460,
+      "fail": 0,
+      "skipped": 0
+    },
+    "github": {
+      "id": 45889150062,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45889150062",
+      "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+    "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suite": "test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Редактор, мастер и два игровых браузера на одной карте. Проверяется соответствие значков, исключение закрытых объектов из ответа и карты игрока, раскрытие после подтверждения и уход из гекса без истории в режиме «Сейчас».",
+    "reuse_or_new_reason": "Использованы четыре существующих сценария, так как они уже проходят переход из редактора, вход и подтверждение хода.",
+    "count_source": "Diff двух точных SHA: массив scenarios не изменился, расширена общая проверка verifyRoom. Один логический сценарий на профиль."
+  },
+  "completed_at": "2026-11-26T20:21:30.681Z"
+}
