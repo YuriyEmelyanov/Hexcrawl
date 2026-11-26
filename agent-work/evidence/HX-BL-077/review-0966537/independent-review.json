@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "pr": 518,
+  "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+  "head_sha": "096653754ed1919a45d24f650d7a88caaf6bbaf3",
+  "tree_sha": "7ed571b3bf2ebd1aa07b93d2724154ff881aadbd",
+  "status": "accepted",
+  "scope": "F1 unified release. No release authorized.",
+  "spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+  "review_method": "Two read-only reviewers. Separate agent with fresh context checked CROWS-05–08 and compared real PNG export pixels. Primary reviewer built a fresh copy of the exact Git tree, independently tested profiles, World, scale, traits, save compatibility, real cross-mode growth and manual building edits, and checked CI independently.",
+  "checks": {
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45733739062",
+    "ci_jobs": [
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "link": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45733739062/job/139621945446"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "link": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45733739062/job/139621945863"
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "link": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45733739062/job/139621946090"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped",
+        "link": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45733739062/job/139621947334"
+      }
+    ],
+    "local_build": "passed",
+    "permanent_node_targeted": "6 of 6 passed",
+    "browser_runtime": "Chromium 158.0.8127.0",
+    "local_build_tree_verified": true
+  },
+  "fixtures": {
+    "original_classic": "test/fixtures/classic-six-regions-seed42.json",
+    "profile_and_shore": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-map.json",
+    "standalone_compare": "Exact generated fixture named in png-pixel-summary.json"
+  },
+  "criteria": [
+    {
+      "id": "CROWS-01",
+      "status": "passed",
+      "evidence": [
+        "profile_and_import",
+        "switch_generation"
+      ],
+      "result": "Knave → Crows → Classic → Mythic → Crows → Knave. Actual growth 1→2→3→33 regions. Profile layers survive switching and reopened JSON."
+    },
+    {
+      "id": "CROWS-02",
+      "status": "passed",
+      "evidence": [
+        "profile_and_import"
+      ],
+      "result": "World first on empty/nonempty maps and in all profiles, independent of selected hex. Partial default fill preserves authored name; deliberate blank description survives toggling, save, reset undo."
+    },
+    {
+      "id": "CROWS-03",
+      "status": "passed",
+      "evidence": [
+        "generation_and_manual_edits",
+        "scale"
+      ],
+      "result": "New map defaults to 5–6 miles; selector follows Coordinates in existing toolbar. On a six-region compatible map, 1→6 preserves manual traits, regions and world."
+    },
+    {
+      "id": "CROWS-04",
+      "status": "passed",
+      "evidence": [
+        "profile_and_import",
+        "shore"
+      ],
+      "result": "Coast + Forest + Hills/mountains displayed together next to biome. Manual swamp remains after save, reopen and shore edit. Removing adjacent lake removes coast; undo restores coast."
+    },
+    {
+      "id": "CROWS-05",
+      "status": "passed",
+      "evidence": [
+        "ordinary_home",
+        "fallback_and_regeneration",
+        "generation_and_manual_edits"
+      ],
+      "result": "No starter on the fallback tract. First actual region starts with five fixed plus one distinct building at level I. Named tower converts to second home without loss of name or identity; undo, redo, unassign and reopen work."
+    },
+    {
+      "id": "CROWS-06",
+      "status": "passed",
+      "evidence": [
+        "generated_points",
+        "generation_and_manual_edits",
+        "png_pixels"
+      ],
+      "result": "All four settlement types seen in real maps. Count/draw boundaries and no automatic duplicates verified. Two manual smithies and prosperity endpoints accepted. Village icon checked in exported PNG."
+    },
+    {
+      "id": "CROWS-07",
+      "status": "passed",
+      "evidence": [
+        "generated_points",
+        "png_pixels"
+      ],
+      "result": "19 generated standalone buildings in two maps; road-bound eligible and non-road excluded wild slot confirmed. Underlying Classic rolls retained. Actual export pixels distinguish standalone beacon versus Classic brewery."
+    },
+    {
+      "id": "CROWS-08",
+      "status": "passed",
+      "evidence": [
+        "beacons",
+        "ordinary_home"
+      ],
+      "result": "Village I protection includes all seven cells. Village V/9 protects radius 5, V/10 radius 6 with 7 out. Free-standing V ends at radius 5. Move/delete/undo and reload update only the appropriate parts of overlapping protection zones."
+    },
+    {
+      "id": "CROWS-09",
+      "status": "passed",
+      "evidence": [
+        "profile_and_import",
+        "switch_generation",
+        "ordinary_home"
+      ],
+      "result": "Legacy fixture opens and remains usable; new JSON reopens. Invalid manual data and unknown version are refused before replacing the map; undo and redo still refer to the accepted document."
+    }
+  ],
+  "scenarios": {
+    "profile_and_import": {
+      "profiles": [
+        "Crows",
+        "Classic",
+        "Mythic",
+        "Crows",
+        "Knave",
+        "Crows"
+      ],
+      "preservedMapLayers": true,
+      "worldFirstAll": true,
+      "partialWorldAndIntentionalEmpty": true,
+      "resetUndo": true,
+      "traits": [
+        "coast",
+        "forest",
+        "highlands"
+      ],
+      "manualPersistence": true,
+      "rejectionKeepsMapAndUndo": true,
+      "unknownVersionRejected": true,
+      "narrow": 390,
+      "png": true,
+      "errors": []
+    },
+    "scale": {
+      "standardScaleRoundtrip": true,
+      "profileAndWorldPreserved": true,
+      "manualTraitsPreserved": true,
+      "mapRegionsPreserved": true,
+      "errors": []
+    },
+    "generation_and_manual_edits": {
+      "firstScale": 6,
+      "home": "poi:1:0,0",
+      "firstRegions": 1,
+      "grownRegions": 2,
+      "repeatBuildingSupported": true,
+      "prosperityEndpoints": true,
+      "regenerationCommitted": true,
+      "oneStarterPreserved": true,
+      "undoRestoredMap": true,
+      "dialogs": [],
+      "errors": []
+    },
+    "switch_generation": {
+      "growthByMode": [
+        1,
+        2,
+        3,
+        33
+      ],
+      "knavePreservedOnCrowsAndMythic": true,
+      "crowsPreservedOnClassicAndMythic": true,
+      "roundtrip": true,
+      "dialogs": [],
+      "errors": []
+    },
+    "shore": {
+      "waterRecompute": true,
+      "undoRestoresShore": true,
+      "manualRetained": true,
+      "hex": "3,-4",
+      "lake": "2,-4"
+    },
+    "generated_points": {
+      "maps": 2,
+      "categories": [
+        "village",
+        "city",
+        "town",
+        "capital"
+      ],
+      "standalone": 19,
+      "eligibleWild": 1,
+      "excludedWild": 1,
+      "freestandingBeaconBoundary": true,
+      "savedReopened": true,
+      "png": 668243,
+      "errors": []
+    },
+    "ordinary_home": {
+      "freshHomes": 1,
+      "homeCountsBefore": 1,
+      "homeCountsAfter": 2,
+      "starterBuildings": 6,
+      "generatedOnExisting": true,
+      "changedTower": true,
+      "undoRedo": true,
+      "unassignKeepsVillage": true,
+      "editableBeacons": true,
+      "miasmaRecalculates": true,
+      "saveAndReopen": true,
+      "classicSwitchKeepsVillage": true,
+      "png": 258798,
+      "errors": []
+    },
+    "beacons": {
+      "crows08": "PASS",
+      "radius5": "2,0",
+      "radius6": "0,1",
+      "radius7": "1,-1",
+      "levelOneRing": [
+        "0,0",
+        "-1,1",
+        "0,-1",
+        "-1,-1",
+        "-1,0",
+        "-2,0",
+        "-2,1"
+      ],
+      "overlap": "-4,3",
+      "movedFrom": "-4,4",
+      "movedTo": "-6,5",
+      "oldOnly": "-3,3",
+      "newOnly": "-7,6",
+      "move": true,
+      "remove": true,
+      "undo": true,
+      "jsonReopen": true
+    },
+    "fallback_and_regeneration": {
+      "fallbackTract": 1,
+      "starter": "poi:2:0,1",
+      "laterRegion": 3,
+      "regeneratedRegion": 3,
+      "starterRetained": true,
+      "history": 3
+    }
+  },
+  "artifacts": {
+    "png_pixels": "agent-work/evidence/HX-BL-077/review-0966537/png-pixel-summary.json",
+    "comparison": "agent-work/evidence/HX-BL-077/review-0966537/png-comparison.png",
+    "narrow_traits": "agent-work/evidence/HX-BL-077/review-0966537/traits-narrow.jpg",
+    "developer_before_after": "agent-work/evidence/HX-BL-077/crows-environment/scenarios.json"
+  },
+  "findings": [],
+  "test_change_summary": {
+    "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+    "head_sha": "096653754ed1919a45d24f650d7a88caaf6bbaf3",
+    "added": 6,
+    "removed": 0,
+    "modified": 1,
+    "source": "Exact PR diff on test/saveSafety.test.mjs and test/browser/save-history.smoke.mjs. Harness component stubs counted as support code, not cases.",
+    "suites": [
+      {
+        "suite": "Node saveSafety",
+        "added": 6,
+        "removed": 0,
+        "modified": 0,
+        "independent_executed": 6,
+        "independent_passed": 6,
+        "independent_skipped": 0,
+        "scenario": "World and profile schema, settlement ownership/levels, manual habitat schema, village radius, generated categories/uniqueness, eligible standalone replacements.",
+        "reuse_or_new_reason": "Existing saveSafety runner extended with distinct Crows contracts. Node rule probes cannot replace live generator, save and rendering checks."
+      },
+      {
+        "suite": "Chromium save-history",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Existing compact-edit layout assertion now reads the visible World heading and checks it remains the first item, keeping the existing geometry assertions on desktop and mobile.",
+        "reuse_or_new_reason": "Updated existing UI scenario, kept the layout invariant."
+      }
+    ],
+    "browser_independent_diagnostics": "Temporary acceptance probes; separate from permanent test changes and the ten routine browser scripts."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-077/review-0966537/score-assessment.json",
+  "release_authorized": false
+}
