@@ -57,7 +57,7 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-26T1042-analyst-HX074-delta-D1.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Подключить штатные значки точек интереса. У мастера должна отображаться полная карта объектов. Игрок получает значок только для «При прохождении» в текущем гексе; координаты и сведения закрытых объектов отсутствуют в ответе. Затем перейти к долговечному хранению комнаты.",
+  "next_step": "Сохранить комнату, позицию и действующую ссылку в долговечном хранилище. Проверить на существующей карте: подтверждённый ход, перезапуск сервиса и повторный вход по прежней ссылке показывают прежнюю подтверждённую позицию.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -157,10 +157,10 @@
   "evidence_path": "agent-work/evidence/HX-BL-077/crows-generated-poi/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
-  "head_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
-  "tree_sha": "7ed571b3bf2ebd1aa07b93d2724154ff881aadbd",
-  "checks_status": "passed",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45766857198",
+  "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+  "tree_sha": "73d52578316d61d44f80baf6944f11e38712b588",
+  "checks_status": "in_progress",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45889150062",
   "review_verdict": "accepted",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
@@ -237,13 +237,13 @@
   "score_update_task_id": "HX-BL-077",
   "score_update_release_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Прямое согласование владельцем открыло подготовку черновика.",
+  "role_selection_reason": "Прямое поручение владельца по HX-BL-078. Предыдущий этап на df4479a прошёл Check, реестр перед запуском пуст, 20 записей активной формы сопоставлены с завершением или решением владельца.",
   "score_update_result_ref": "agent-work/results/2026-11-26T0957-reviewer-PR518-score.json",
   "score_update_completed_at": "2026-11-26T07:02:34.060Z",
   "score_update_delta": 4.62962962962963,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/backlog.json#HX-BL-074",
-  "next_task_id": "HX-BL-074",
+  "next_task_id": "HX-BL-078",
   "approval_ref": "agent-work/decisions/owner-2026-11-26-approve-HX074-delta.json",
   "last_completed_stage": "POI-OPEN-COARSE",
   "previous_release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
@@ -251,12 +251,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-26T19:02:02.533Z",
+      "at": "2026-11-26T20:02:45.063Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-26T19:07:46.386Z",
+      "at": "2026-11-26T20:21:30.681Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -1097,7 +1097,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-marks-df4479a/browser.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/browser.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1474,7 +1474,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-marks-190309-programmer.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-poi-200617-programmer.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -8031,7 +8031,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-marks-190309.json",
+  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-poi-200617.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -9378,7 +9378,7 @@
   "current_role_result": "Этап сброса принят. Подтверждены сброс сохранённого профиля Knave, точные Undo/Redo и создание первого региона после сброса с 1 мили. Старые замечания закрыты. Предварительная дельта L1 по 1.3-rc8 составляет 0.",
   "current_stage_score_assessment_status": "preliminary_unpublished",
   "ui_actual_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/one-mile-after-reset.jpg",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -12489,7 +12489,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-marks-190309.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-poi-200617.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -12853,7 +12853,6 @@
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
   "substage": "GEO2-scoped-river-removal",
-  "active_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-poi-200617.json",
   "bounded_implementation_complete": true,
   "score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/RV12-bb29552/verification.json",
   "ui_actual_head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
@@ -15676,7 +15675,7 @@
     "old_queues_superseded": true,
     "updated_at": "2026-11-15T20:46:38.231Z"
   },
-  "execution_state": "poi_open_review_ready",
+  "execution_state": "implementation_checkpoint",
   "latest_PR503_score": {
     "result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
     "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -16094,21 +16093,12 @@
     "publication_authorized": false
   },
   "forecast": {
-    "remaining_runs": [
-      31,
-      49
+    "remaining_first_release_runs": [
+      8,
+      15
     ],
     "confidence": "low",
-    "first_slice_remaining_runs": [
-      14,
-      21
-    ],
-    "excludes": "External waits and owner release approval",
-    "assumptions": [
-      "Isolated integration using existing environment",
-      "Production placement of live room service and capacity unconfirmed",
-      "No additional spending authorized"
-    ]
+    "basis": "Участки маршрутов, переправы и штатные POI в локальном сценарии проверены. Остаются созданные карты, долговечное хранение, отзыв доступа, проверка и выпуск. Ожидание разрешения владельца отдельно."
   },
   "actual_ui": {
     "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
@@ -16656,8 +16646,8 @@
     }
   ],
   "task_status": "спецификация",
-  "current_result_ref": "agent-work/results/2026-11-26-PR518-publication.json",
-  "result_commit_sha": "954628c13b70629219073976c9f49c86faff645b",
+  "current_result_ref": "agent-work/results/2026-11-26-programmer-HX078-poi-200617.json",
+  "result_commit_sha": "d423c695882f19d41c3daf7148c6dd3f434e1383",
   "independent_review_status": "pending",
   "execution_locks_ref": "agent-work/execution-locks.json",
   "execution_lock_generation": 913,
@@ -19861,7 +19851,7 @@
     "recorded_at": "2026-11-26T12:02:28.896Z"
   },
   "implementation_slice_id": "VTT-RELEASE-1",
-  "recorded_at": "2026-11-26T12:02:28.896Z",
+  "recorded_at": "2026-11-26T20:21:30.681Z",
   "latest_HX_BL_078_implementation": {
     "task_id": "HX-BL-078",
     "stage_id": "VTT-FIRST",
@@ -20297,16 +20287,73 @@
       "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45881127068"
     }
   },
-  "active_claim": {
+  "latest_HX_BL_078_poi_execution": {
     "task_id": "HX-BL-078",
-    "role": "programmer",
-    "run_id": "2026-11-26-programmer-HX078-poi-200617",
-    "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-poi-200617.json",
+    "stage_id": "VTT-FIRST",
+    "implementation_slice_id": "VTT-RELEASE-1",
+    "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+    "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
     "branch": "agent/hx078-vtt-live-1",
-    "base_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
-    "acquired_at": "2026-11-26T20:06:17.996Z",
-    "heartbeat_at": "2026-11-26T20:06:17.996Z",
-    "generation": 933,
-    "programmer_slot": true
+    "pr": 519,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+    "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+    "publication_authorized": false,
+    "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6",
+    "tree_sha": "73d52578316d61d44f80baf6944f11e38712b588",
+    "previous_checkpoint_sha": "df4479af403a8b24923814eb66bc6679c0b0208f",
+    "review_ready": false,
+    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-poi-200617.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-poi-200617-programmer.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/browser.json",
+    "capture_refs": {
+      "master_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-master-before.jpg",
+      "player_before": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-before.jpg",
+      "player_after": "agent-work/evidence/HX-BL-078/vtt-poi-fb4e278/classic-player-after.jpg"
+    },
+    "next_role": "programmer",
+    "next_step": "Сохранить комнату, позицию и действующую ссылку в долговечном хранилище. Проверить на существующей карте: подтверждённый ход, перезапуск сервиса и повторный вход по прежней ссылке показывают прежнюю подтверждённую позицию.",
+    "forecast": {
+      "remaining_first_release_runs": [
+        8,
+        15
+      ],
+      "confidence": "low",
+      "basis": "Участки маршрутов, переправы и штатные POI в локальном сценарии проверены. Остаются созданные карты, долговечное хранение, отзыв доступа, проверка и выпуск. Ожидание разрешения владельца отдельно."
+    },
+    "limitations": [
+      "Проверены импортированные карты Classic, Knave 2e, Crows (Cornath) и Mythic Bastionland. Созданные карты, водная точка и несколько разных точек в одном гексе не входили в браузерный набор этого запуска.",
+      "У старых Classic-карт без явного значения действует редакторское значение «При прохождении». У Mythic Bastionland без значения игроку точка автоматически не выдаётся, мастер её видит.",
+      "Маркер отряда становится кольцом на точке интереса. Сведения о точках, ручные открытия и режим памяти в этот этап не входили. Комната пока работает в локальном предпросмотре и теряется при перезапуске сервиса."
+    ],
+    "run_id": "2026-11-26-programmer-HX078-poi-200617",
+    "role": "programmer",
+    "status": "implementation_checkpoint",
+    "role_selection_reason": "Прямое поручение владельца по HX-BL-078. Предыдущий этап на df4479a прошёл Check, реестр перед запуском пуст, 20 записей активной формы сопоставлены с завершением или решением владельца.",
+    "previous_result_ref": "agent-work/results/2026-11-26-programmer-HX078-marks-190309.json",
+    "result_commit_sha": "d423c695882f19d41c3daf7148c6dd3f434e1383",
+    "recorded_at": "2026-11-26T20:21:30.681Z",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-26T20:02:45.063Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-26T20:21:30.681Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    },
+    "execution_lock_released": true,
+    "ci": {
+      "id": 45889150062,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45889150062",
+      "head_sha": "fb4e278799a1dc3a23ae5d1904044489f37424b6"
+    }
   }
 }
