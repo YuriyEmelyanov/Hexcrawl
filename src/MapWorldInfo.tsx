@@ -13,13 +13,9 @@ export function MapWorldInfo({ world, language, editing, onEditField }: Props) {
   const nameLabel = ru ? 'Название мира' : 'World name';
   const descriptionLabel = ru ? 'Описание мира' : 'World description';
 
-  if (!editing) return <details className="world-info" data-world-info>
+  return <details className="world-info" data-world-info>
     <summary><strong>{title}</strong>{world?.name ? ' · ' + world.name : ''}</summary>
-    {world?.description && <p>{world.description}</p>}
-  </details>;
-
-  return <div className="world-info" data-world-info>
-    <strong>{title}</strong>
+    {editing ? <>
       <label>{nameLabel}
         <input key={world?.name} defaultValue={world?.name ?? ''} maxLength={WORLD_FIELD_LIMITS.name}
           onBlur={event => {
@@ -32,5 +28,6 @@ export function MapWorldInfo({ world, language, editing, onEditField }: Props) {
             if (event.currentTarget.value !== (world?.description ?? '')) onEditField('description', event.currentTarget.value);
           }} />
       </label>
-  </div>;
+    </> : world?.description && <p>{world.description}</p>}
+  </details>;
 }

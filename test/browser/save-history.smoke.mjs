@@ -152,16 +152,18 @@ try {
  for (const width of [1500,390]) {
   await page.setViewportSize({width,height:1100});await info.scrollIntoViewIfNeeded();
   const layout=await info.evaluate(el=>{
-   const button=el.querySelector('.direct-mode'), first=el.querySelector('p');
+   const button=el.querySelector('.direct-mode'), first=el.querySelector(':scope > [data-world-info] > summary');
    const b=button.getBoundingClientRect(), p=first.getBoundingClientRect();
    return {label:button.getAttribute('aria-label'),title:button.title,text:button.textContent.trim(),
     width:b.width,height:b.height,firstTop:p.top,buttonTop:b.top,
+    worldFirst:first.parentElement===button.parentElement.nextElementSibling,
     infoOverflow:getComputedStyle(document.querySelector('.roll-card')).overflowY,
     controlsOverflow:getComputedStyle(document.querySelector('.map-toolbar')).overflowY,
     fits:document.documentElement.scrollWidth<=innerWidth};
   });
   assert.equal(layout.label,'Редактировать');assert.equal(layout.title,'Редактировать');assert.equal(layout.text,'');
-  assert.ok(layout.width>=44&&layout.height>=44);assert.ok(layout.firstTop<layout.buttonTop+layout.height/2,'title starts beside edit control');
+  assert.ok(layout.width>=44&&layout.height>=44);assert.ok(layout.worldFirst,'world is the first information item');
+  assert.ok(layout.firstTop<layout.buttonTop+layout.height/2,'world title starts beside edit control');
   assert.equal(layout.infoOverflow,'visible');assert.equal(layout.controlsOverflow,'visible');assert.ok(layout.fits);
  }
  await page.setViewportSize({width:1500,height:1100});
