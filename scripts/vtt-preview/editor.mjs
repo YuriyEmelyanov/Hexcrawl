@@ -12,8 +12,7 @@ export async function startEditorPreview({storagePath, roomPort = 0} = {}) {
   options.port = service.server.address().port;
   const base = service.base;
   let editor;
-  const closeRoom = () => service.server.listening
-    ? new Promise(resolve => service.server.close(resolve)) : Promise.resolve();
+  const closeRoom = () => service.close();
   const close = async () => {
     await Promise.all([editor?.close(), closeRoom()]);
   };

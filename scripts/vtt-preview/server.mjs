@@ -8,6 +8,13 @@ import {readRoutes, routesAt, readMarks, marksAt} from './routes.mjs';
 import {roomStorage} from './room-storage.mjs';
 
 const key = ({q, r}) => `${q},${r}`;
+const newPlayerPath = () => '/play/' + randomBytes(16).toString('base64url');
+
+function roomRole(room, headers) {
+  if (!room) return null;
+  if (headers.authorization === 'Bearer ' + room.masterKey) return 'master';
+  return room.playerPath && headers['x-preview-room'] === room.playerPath ? 'player' : null;
+}
 
 export async function startPreview({port = 0, editorOrigin, launchKey, storagePath} = {}) {
   const storage = storagePath ? await roomStorage(storagePath) : null;
@@ -49,7 +56,9 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
 
   // Check revisions and publish changes in the same order as durable writes.
   let lastMutation = Promise.resolve();
+  let stopping;
   function mutate(change) {
+    if (stopping) return;
     const completion = lastMutation.then(change);
     lastMutation = completion.catch(() => {});
     return completion;
@@ -103,8 +112,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
         if (!room) {
           if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
           try {
-            await saveRoom({...candidate, masterKey: randomBytes(24).toString('base64url'),
-              playerPath: '/play/' + randomBytes(16).toString('base64url')});
+            await saveRoom({...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()});
           } catch {
             return json(res, 503, {error: 'Room could not be saved'});
           }
@@ -112,10 +120,9 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
         return json(res, 200, {masterPath: '/master#' + room.masterKey});
       });
     }
-    const master = room && req.headers.authorization === 'Bearer ' + room.masterKey;
-    const player = room && req.headers['x-preview-room'] === room.playerPath;
     if (req.method === 'GET') {
       if (path === '/master' || path === room?.playerPath) return send(res, 200, 'text/html; charset=utf-8', page);
+      if (path.startsWith('/play/')) return send(res, 404, 'text/html; charset=utf-8', page);
       const asset = assets.get(path);
       if (asset) return send(res, 200, asset.type, asset.body);
       if (engravingPaths.has(path) || poiPaths.has(path)) {
@@ -127,8 +134,10 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
         }
       }
     }
-    if (!room || path !== '/state' || !(master || player)) return json(res, 404, {error: 'Room unavailable'});
+    const role = roomRole(room, req.headers);
+    if (path !== '/state' || !role) return json(res, 404, {error: 'Room unavailable'});
     if (req.method === 'GET') {
+      const master = role === 'master';
       const {state, cells, pois, history, playerPath} = room;
       const points = master ? [...pois.values()].flat()
         : (pois.get(key(state.position)) ?? []).filter(point => point.discovery === 'passage');
@@ -146,13 +155,13 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
       return json(res, 400, {error: 'Invalid action'});
     }
     return mutate(async () => {
-      const state = applyAction(room.cells, room.state, action, master);
-      if (!state) return json(res, 409, {error: 'Action not applied'});
-      const history = action.kind === 'confirm'
-        ? [...new Set([...room.history, ...visibleAt(room.cells, state.position).map(key)])]
-        : room.history;
+      // The link may have been revoked while this request was waiting to write.
+      const currentRole = roomRole(room, req.headers);
+      if (!currentRole) return json(res, 404, {error: 'Room unavailable'});
+      const next = nextRoom(room, action, currentRole === 'master');
+      if (!next) return json(res, 409, {error: 'Action not applied'});
       try {
-        await saveRoom({...room, state, history});
+        await saveRoom(next);
       } catch {
         return json(res, 503, {error: 'Room could not be saved'});
       }
@@ -161,7 +170,31 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
   });
   await new Promise((resolve, reject) => server.listen(port, '127.0.0.1', pipeError(resolve, reject, server)));
   const base = 'http://127.0.0.1:' + server.address().port;
-  return {server, base};
+  function close() {
+    if (!stopping) {
+      const closed = new Promise(resolve => server.close(resolve));
+      // Polling sockets must release the port before a restart. Finish accepted
+      // mutations before another service instance opens the snapshot.
+      stopping = Promise.all([closed, lastMutation]);
+      server.closeAllConnections();
+    }
+    return stopping;
+  }
+  return {server, base, close};
+}
+
+function nextRoom(room, action, master) {
+  if (action.kind === 'close-player-access' || action.kind === 'rotate-player-link') {
+    if (!master || action.expectedPlayerPath !== room.playerPath) return null;
+    const playerPath = action.kind === 'rotate-player-link' ? newPlayerPath() : null;
+    return {...room, playerPath, state: {...room.state, revision: room.state.revision + 1}};
+  }
+  const state = applyAction(room.cells, room.state, action, master);
+  if (!state) return null;
+  const history = action.kind === 'confirm'
+    ? [...new Set([...room.history, ...visibleAt(room.cells, state.position).map(key)])]
+    : room.history;
+  return {...room, state, history};
 }
 
 function restoreRoom(snapshot, poiPaths) {
@@ -172,7 +205,7 @@ function restoreRoom(snapshot, poiPaths) {
         ![null, 'sea', 'lake'].includes(water)) throw new Error('Invalid saved VTT cell');
     return [key({q, r}), {q, r, biome, height, water}];
   }));
-  if (!/^[\w-]{32}$/.test(masterKey) || !/^\/play\/[\w-]{22}$/.test(playerPath) ||
+  if (!/^[\w-]{32}$/.test(masterKey) || (playerPath !== null && !/^\/play\/[\w-]{22}$/.test(playerPath)) ||
       !/^[0-9a-f]{64}$/.test(mapDigest) || !cells.has(key(state.position)) ||
       !['classic', 'knave', 'crows', 'mythic'].includes(state.mapMode) || typeof state.rotated !== 'boolean' ||
       !Number.isSafeInteger(state.revision) || state.revision < 0 ||

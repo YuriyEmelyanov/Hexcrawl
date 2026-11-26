@@ -279,12 +279,81 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
         await verifyPoi(await snapshotPlayer(), null);
       }
       assert.ok(await master.locator('[data-poi="1,1"]').count(), 'a point requiring exploration is master-only on arrival');
+      const currentView = await snapshotPlayer();
+      const playerState = headers => first.request.get(roomUrl + '/state', {headers});
+      const playerHeaders = {'x-preview-room': offeredLink};
+      const playerCommand = (headers, kind) => first.request.post(roomUrl + '/state', {
+        headers, data: {kind, revision: currentView.revision, direction: 2, expectedPlayerPath: offeredLink}
+      });
+      assert.equal(await first.locator('#share-controls').isVisible(), false);
+      for (const kind of ['close-player-access', 'rotate-player-link']) {
+        assert.equal((await playerCommand(playerHeaders, kind)).status(), 409);
+      }
+      assert.deepEqual(await snapshotPlayer(), currentView);
+
+      const waitRevoked = async page => {
+        await page.getByText('Доступ по этой ссылке закрыт', {exact: true}).waitFor();
+        assert.equal((await page.locator('#position').textContent()).trim(), '—');
+        assert.equal(await page.locator('#map > *').count(), 0);
+        assert.equal(await page.locator('#choices button:disabled').count(), 6);
+      };
+      const waitNewLink = previous => master.waitForFunction(old => {
+        const anchor = document.querySelector('#join');
+        const href = anchor.getAttribute('href');
+        return href && href !== old && !anchor.hidden ? href : false;
+      }, previous).then(handle => handle.jsonValue());
+      const sameMap = ({revision, ...view}) => view;
+
+      await master.getByRole('button', {name: 'Сменить ссылку'}).click();
+      const rotatedLink = await waitNewLink(offeredLink);
+      await Promise.all([waitRevoked(first), waitRevoked(second)]);
+      assert.equal((await playerState(playerHeaders)).status(), 404);
+      assert.equal((await playerCommand(playerHeaders, 'propose')).status(), 404);
+      const newcomer = await openPage({width: 420, height: 700});
+      assert.equal((await newcomer.goto(playerUrl)).status(), 404);
+      await waitRevoked(newcomer);
+      const rotatedUrl = new URL(rotatedLink, roomUrl).href;
+      assert.equal((await newcomer.goto(rotatedUrl)).status(), 200);
+      await newcomer.waitForFunction(() => document.querySelector('#position').value === '1,1');
+      assert.deepEqual(sameMap(await (await playerState({'x-preview-room': rotatedLink})).json()), sameMap(currentView));
+      if (process.env.VTT_EVIDENCE_DIR) {
+        await second.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'classic-player-link-revoked.jpg'), quality: 78});
+        await master.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'classic-master-link-rotated.jpg'), quality: 78});
+      }
+
+      await master.getByRole('button', {name: 'Закрыть доступ'}).click();
+      await master.getByText('Доступ игроков закрыт', {exact: true}).waitFor();
+      await waitRevoked(newcomer);
+      await preview.restartRoom();
+      await master.reload();
+      await master.getByText('Доступ игроков закрыт', {exact: true}).waitFor();
+      assert.equal(await master.locator('#join').getAttribute('href'), null);
+      assert.equal(await master.locator('#position').textContent(), '1,1');
+      for (const old of [offeredLink, rotatedLink]) {
+        assert.equal((await playerState({'x-preview-room': old})).status(), 404);
+        assert.equal((await first.request.get(new URL(old, roomUrl).href)).status(), 404);
+      }
+
+      await master.getByRole('button', {name: 'Создать новую ссылку'}).click();
+      const reopenedLink = await waitNewLink(rotatedLink);
+      assert.notEqual(reopenedLink, offeredLink);
+      await preview.restartRoom();
+      assert.equal((await newcomer.goto(new URL(reopenedLink, roomUrl).href)).status(), 200);
+      await newcomer.waitForFunction(() => document.querySelector('#position').value === '1,1');
+      assert.deepEqual(sameMap(await (await playerState({'x-preview-room': reopenedLink})).json()), sameMap(currentView));
+      for (const old of [offeredLink, rotatedLink]) {
+        assert.equal((await playerState({'x-preview-room': old})).status(), 404);
+      }
+      if (process.env.VTT_EVIDENCE_DIR) {
+        await newcomer.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'classic-player-new-link.jpg'), quality: 78});
+      }
       await editor.locator('[data-fine-step]').selectOption('1');
       await editor.locator('[data-fine-world]').waitFor({state: 'attached'});
       assert.equal(await launch.count(), 0, 'one-mile editor view cannot open a game');
     }
     console.log(JSON.stringify({mode, fixture, contexts: contexts.length,
       durableRoomRestart: Boolean(privateDir), failedSavePreservedMove: Boolean(privateDir),
+      revokedOpenTabs: mode === 'classic' ? 2 : undefined, closedAndRotatedLinksSurvivedRestart: mode === 'classic' || undefined,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
       proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), masterPoints: editorIcons.length, playerPointsBefore: before.pois, playerPointsAfter: after.pois, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {

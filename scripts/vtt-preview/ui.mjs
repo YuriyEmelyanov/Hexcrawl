@@ -14,6 +14,9 @@ const position = get('position');
 const progress = get('progress');
 const confirm = get('confirm');
 const cancel = get('cancel');
+const join = get('join');
+const rotateLink = get('rotate-link');
+const closeAccess = get('close-access');
 const vectors = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
 const directionButtons = [];
 const key = ({q, r}) => `${q},${r}`;
@@ -30,6 +33,7 @@ const role = master ? 'Мастер' : 'Игрок';
 get('master-controls').hidden = !master;
 let view;
 let commandError = '';
+let revoked = false;
 
 function shape(name, attrs) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', name);
@@ -43,8 +47,13 @@ function draw(next) {
   get('role').textContent = `${role} · ${modeLabels[next.mapMode]} · 5–6 миль`;
   progress.textContent = commandError || (next.proposal === null ? 'Ход не предложен' : 'Ход предложен');
   if (master) {
-    get('join').href = next.playerPath;
-    get('join').hidden = false;
+    const accessOpen = next.playerPath !== null;
+    get('share-controls').hidden = false;
+    join.hidden = closeAccess.hidden = !accessOpen;
+    get('access-closed').hidden = accessOpen;
+    rotateLink.textContent = accessOpen ? 'Сменить ссылку' : 'Создать новую ссылку';
+    if (accessOpen) join.href = next.playerPath;
+    else join.removeAttribute('href');
     confirm.disabled = cancel.disabled = next.proposal === null;
   }
   const {x, y} = toPixel(next.position.q, next.position.r);
@@ -174,28 +183,43 @@ function directionAngle(direction) {
 }
 
 async function refresh() {
+  if (revoked) return;
   const response = await fetch('/state', {headers});
+  if (!master && response.status === 404) return showRevoked();
   if (!response.ok) throw new Error('Room unavailable');
   const next = await response.json();
-  if (!view || next.revision > view.revision || progress.dataset.error) {
+  if (revoked) return;
+  if (!view || next.revision > view.revision || (next.revision === view.revision && progress.dataset.error)) {
     delete progress.dataset.error;
     draw(next);
   }
 }
 
-async function action(kind, direction) {
+function showRevoked() {
+  revoked = true;
+  view = undefined;
+  position.value = '—';
+  get('role').textContent = role;
+  progress.textContent = 'Доступ по этой ссылке закрыт';
+  map.replaceChildren();
+  for (const button of get('choices').querySelectorAll('button')) button.disabled = true;
+}
+
+async function action(kind, details = {}) {
+  if (revoked) return;
   commandError = '';
   try {
     const response = await fetch('/state', {method: 'POST',
       headers: {...headers, 'content-type': 'application/json'},
-      body: JSON.stringify({kind, direction, revision: view?.revision})});
+      body: JSON.stringify({kind, revision: view?.revision, ...details})});
+    if (!master && response.status === 404) return showRevoked();
     if (response.status === 503) commandError = 'Не удалось сохранить состояние комнаты';
     else if (!response.ok) commandError = 'Действие не применено';
     await refresh();
   } catch {
     commandError = 'Связь с комнатой потеряна';
   }
-  if (commandError) progress.textContent = commandError;
+  if (!revoked && commandError) progress.textContent = commandError;
 }
 
 vectors.forEach((_, direction) => {
@@ -211,19 +235,23 @@ vectors.forEach((_, direction) => {
   icon.append(arrow);
   directionButtons.push(arrow);
   button.append(icon);
-  button.addEventListener('click', () => void action('propose', direction));
+  button.addEventListener('click', () => void action('propose', {direction}));
   get('choices').append(button);
 });
 confirm.addEventListener('click', () => void action('confirm'));
 cancel.addEventListener('click', () => void action('cancel'));
+rotateLink.addEventListener('click', () => void action('rotate-player-link', {expectedPlayerPath: view?.playerPath}));
+closeAccess.addEventListener('click', () => void action('close-player-access', {expectedPlayerPath: view?.playerPath}));
 
 async function followRoom() {
   try {
     await refresh();
   } catch {
-    progress.dataset.error = 'true';
-    progress.textContent = 'Связь с комнатой потеряна';
+    if (!revoked) {
+      progress.dataset.error = 'true';
+      progress.textContent = 'Связь с комнатой потеряна';
+    }
   }
-  setTimeout(followRoom, 200);
+  if (!revoked) setTimeout(followRoom, 200);
 }
 void followRoom();
