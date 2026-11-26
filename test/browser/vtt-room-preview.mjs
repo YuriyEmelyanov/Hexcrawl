@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
+import {HEX_SIZE, getHexPolygonPoints, toPixel} from '../../src/rendering/baseHexArtwork.ts';
 import {startEditorPreview} from '../../scripts/vtt-preview/editor.mjs';
 
 const scenarios = [
@@ -32,6 +33,21 @@ function terrainSnapshot() {
       texture: texture?.getAttribute('href')
     };
   });
+}
+
+function verifyRouteBounds(view) {
+  const {x, y} = toPixel(view.position.q, view.position.r);
+  const hex = getHexPolygonPoints(x, y, HEX_SIZE);
+  for (const route of view.routes) {
+    assert.deepEqual(Object.keys(route).sort(), ['faded', 'kind', 'points', 'solid', 'width']);
+    for (const [px, py] of route.points) {
+      for (let i = 0; i < hex.length; i++) {
+        const a = hex[i], b = hex[(i + 1) % hex.length];
+        assert.ok((b.x - a.x) * (py - a.y) - (b.y - a.y) * (px - a.x) >= -1e-6,
+          `route point ${px},${py} falls outside the current hex ${view.position.q},${view.position.r}`);
+      }
+    }
+  }
 }
 
 async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-regions-seed42.json'}) {
@@ -87,8 +103,14 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       return response.json();
     });
     const before = await snapshotPlayer();
-    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'position', 'proposal', 'revision', 'rotated']);
+    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'position', 'proposal', 'revision', 'rotated', 'routes']);
     assert.equal(before.mapMode, mode);
+    const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .roads-layer .road-line, .roads-layer .trail-line');
+    const editorRouteCount = await editorRoutes.count();
+    assert.ok(editorRouteCount > 0, 'the imported map has real rivers and routes');
+    assert.equal(await master.locator('[data-route-kind]').count(), await editorRoutes.count());
+    assert.equal(await first.locator('[data-route-kind]').count(), before.routes.length);
+    verifyRouteBounds(before);
     assert.equal(before.rotated, rotated);
     assert.equal(await first.locator('#map > g').getAttribute('transform'), rotated ? 'rotate(90)' : null);
     const arrows = await first.locator('[data-direction] > svg > path').evaluateAll(paths =>
@@ -122,7 +144,9 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     await first.locator('[data-direction="2"]').click();
     await Promise.all(pages.map(page => page.locator('[data-proposal="2"]').waitFor()));
     await waitPosition('0,1');
-    assert.deepEqual((await snapshotPlayer()).cells, before.cells);
+    const proposed = await snapshotPlayer();
+    assert.deepEqual(proposed.cells, before.cells);
+    assert.deepEqual(proposed.routes, before.routes);
     await master.reload();
     await master.locator('[data-proposal="2"]').waitFor();
     assert.equal(await master.locator('#join').getAttribute('href'), offeredLink);
@@ -133,6 +157,10 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     await waitPosition('0,0');
     await Promise.all(pages.map(page => page.locator('[data-proposal]').waitFor({state: 'detached'})));
     const after = await snapshotPlayer();
+    verifyRouteBounds(after);
+    assert.equal(await first.locator('[data-route-kind]').count(), after.routes.length);
+    assert.notDeepEqual(after.routes, before.routes, 'a move replaces the currently revealed route fragments');
+    assert.ok(after.routes.length < await editorRoutes.count());
     assert.notDeepEqual(after.cells, before.cells, 'confirmed move updates the authorised projection');
     await master.reload();
     await waitPosition('0,0');
@@ -155,7 +183,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     }
     console.log(JSON.stringify({mode, fixture, contexts: 3,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
-      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
+      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {
     try {
       await Promise.all(contexts.map(context => context.close()));

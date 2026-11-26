@@ -15926,8 +15926,29 @@ export function App() {
   const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
     ? selectedHex : null;
 
+  const captureVttRoutes = () => {
+    const renderedRoutes = mapSvgRef.current?.querySelectorAll<SVGPolylineElement | SVGLineElement>(
+      '.rivers-layer > polyline.river-polyline, .roads-layer .road-line, .roads-layer .trail-line'
+    );
+    return Array.from(renderedRoutes ?? [], stroke => {
+      const kind = stroke.classList.contains('river-polyline') ? 'river'
+        : stroke.classList.contains('trail-line') ? 'trail' : 'road';
+      const points = stroke.tagName === 'polyline'
+        ? stroke.getAttribute('points')!.split(' ').map(point => point.split(',').map(Number))
+        : [['x1', 'y1'], ['x2', 'y2']].map(pair => pair.map(name => Number(stroke.getAttribute(name))));
+      const style = getComputedStyle(stroke);
+      return {
+        kind,
+        width: Number.parseFloat(style.strokeWidth),
+        faded: Number(style.opacity) < 1,
+        solid: style.strokeDasharray === 'none',
+        points: points.map(([x, y]) => [x - riverOffset.x, y - riverOffset.y])
+      };
+    });
+  };
+
   const openVttPreview = async () => {
-    if (!vttPreview || !vttAvailable || !vttStartHex || documentBusy() || vttLaunchStatus === 'pending') return;
+    if (!vttPreview || !vttAvailable || !vttStartHex || !renderDetails || documentBusy() || vttLaunchStatus === 'pending') return;
     const roomTab = window.open('about:blank', '_blank');
     if (!roomTab) {
       setVttLaunchStatus('popup');
@@ -15939,7 +15960,7 @@ export function App() {
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
-        body: JSON.stringify({save: createSaveData(), position: vttStartHex})
+        body: JSON.stringify({save: createSaveData(), position: vttStartHex, routes: captureVttRoutes()})
       });
       if (response.status === 409) {
         roomTab.close();
@@ -18373,7 +18394,7 @@ export function App() {
               ? 'В тестовой комнате уже открыта другая версия карты.' : 'The preview room already contains a different version of the map.'}</p>}
             {vttLaunchStatus === 'error' && <p role="alert">{language === 'ru'
               ? 'Не удалось подключиться к тестовой комнате.' : 'Unable to connect to the preview room.'}</p>}
-            <button type="button" disabled={!vttStartHex || documentBusy() || vttLaunchStatus === 'pending'}
+            <button type="button" disabled={!vttStartHex || !renderDetails || documentBusy() || vttLaunchStatus === 'pending'}
               title={!vttStartHex ? (language === 'ru' ? 'Выберите стартовый гекс' : 'Select a starting hex') : undefined}
               onClick={() => void openVttPreview()}>{language === 'ru' ? 'Гекскроул' : 'Hexcrawl'}</button>
           </div>}

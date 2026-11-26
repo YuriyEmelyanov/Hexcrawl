@@ -4,11 +4,14 @@ import {stripTypeScriptTypes} from 'node:module';
 import {createHash, randomBytes} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {applyAction, mapCells, viewOf} from './room.mjs';
+import {readRoutes, routesAt} from './routes.mjs';
 
 export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
   let cells;
   let state;
   let history;
+  let routes;
+  let playerRoutes;
   let mapDigest;
   const masterKey = randomBytes(24).toString('base64url');
   const playerPath = '/play/' + randomBytes(16).toString('base64url');
@@ -46,7 +49,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
         return json(res, 404, {error: 'Unavailable'});
       }
       try {
-        const {save, position} = await readJson(req, 16 * 1024 * 1024);
+        const {save, position, routes: suppliedRoutes} = await readJson(req, 16 * 1024 * 1024);
         const mapMode = readMapMode(save);
         const viewStep = save?.map?.physicalGrid?.viewStep ?? 6;
         if (!mapMode || viewStep !== 6 ||
@@ -59,6 +62,8 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
         if (!state) {
           const opened = mapCells(save);
           if (!opened.has(`${position.q},${position.r}`)) return json(res, 400, {error: 'Select an existing hex'});
+          routes = readRoutes(suppliedRoutes);
+          playerRoutes = routesAt(routes, position);
           cells = opened;
           mapDigest = digest;
           state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode, rotated};
@@ -86,7 +91,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
     }
     if (!state || path !== '/state' || !(master || player)) return json(res, 404, {error: 'Room unavailable'});
     if (req.method === 'GET') {
-      const view = viewOf(cells, state, master);
+      const view = {...viewOf(cells, state, master), routes: master ? routes : playerRoutes};
       return json(res, 200, master ? {...view, playerPath, history: [...history]} : view);
     }
     if (req.method !== 'POST') return json(res, 405, {error: 'Method unavailable'});
@@ -97,6 +102,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey} = {}) {
       if (!next) return json(res, 409, {error: 'Action not applied'});
       state = next;
       if (action.kind === 'confirm') {
+        playerRoutes = routesAt(routes, state.position);
         history = new Set([...history, ...viewOf(cells, state, true).currentKeys]);
       }
       return json(res, 200, {ok: true});

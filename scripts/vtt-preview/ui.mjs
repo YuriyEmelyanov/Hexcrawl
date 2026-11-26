@@ -52,7 +52,7 @@ function draw(next) {
   map.setAttribute('viewBox', [centerX - 360, centerY - 260, 720, 520].join(' '));
   const {defs, terrain} = drawTerrain(next);
   const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
-  layer.append(...terrain);
+  layer.append(...terrain, drawRoutes(next.routes));
   if (next.proposal !== null) {
     layer.append(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7',
       transform: `translate(${x} ${y}) rotate(${directionAngle(next.proposal)})`,
@@ -98,6 +98,20 @@ function drawTerrain(next) {
     return group;
   });
   return {defs, terrain};
+}
+
+function drawRoutes(routes) {
+  const group = shape('g', {'data-routes': '', 'pointer-events': 'none'});
+  for (const {kind, width, faded, solid, points} of routes) {
+    group.append(shape('polyline', {
+      points: points.map(([x, y]) => `${x},${y}`).join(' '),
+      'data-route-kind': kind,
+      class: `route-${kind}${faded ? ' route-faded' : ''}${solid ? ' route-solid' : ''}`,
+      'stroke-width': width,
+      fill: 'none'
+    }));
+  }
+  return group;
 }
 
 function directionAngle(direction) {
