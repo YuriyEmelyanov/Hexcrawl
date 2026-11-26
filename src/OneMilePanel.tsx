@@ -2,10 +2,11 @@ import type {Discovery} from './knaveClassic';
 import type {ReactNode} from 'react';
 import type {DetailCell} from './detailGrid';
 export type FineDraft={target:DetailCell;revision:number;language:'ru'|'en';name:string;note:string;biome:string;localPlace:Discovery|null;projected:Record<string,Discovery>;baseline:string};
-type Props={classic:boolean;localPlace?:Discovery;discoveryLabels:Record<Discovery,string>;projectedPlaces:readonly {owner:string;label:string}[];newPlaceMode:Discovery;children?:ReactNode;canEdit:boolean;language:'ru'|'en';cell:DetailCell|null;name?:string;biome?:string;note?:string;roads:readonly string[];rivers:readonly string[];pois:readonly string[];draft:FineDraft|null;biomes:readonly {id:string;label:string}[];water:boolean;busy:boolean;error:string|null;
+type Props={worldInfo?:ReactNode;classic:boolean;localPlace?:Discovery;discoveryLabels:Record<Discovery,string>;projectedPlaces:readonly {owner:string;label:string}[];newPlaceMode:Discovery;children?:ReactNode;canEdit:boolean;language:'ru'|'en';cell:DetailCell|null;name?:string;biome?:string;note?:string;roads:readonly string[];rivers:readonly string[];pois:readonly string[];draft:FineDraft|null;biomes:readonly {id:string;label:string}[];water:boolean;busy:boolean;error:string|null;
  onEdit:()=>void;onChange:(fields:Partial<Pick<FineDraft,'name'|'note'|'biome'|'localPlace'|'projected'>>)=>void;onSave:()=>void;onCancel:()=>void;onComposition:(active:boolean)=>void};
 export function OneMilePanel(p:Props){const ru=p.language==='ru';return <section className={`info-block info-block--hex${p.draft?' is-editing':''}`} data-fine-panel aria-label={ru?'Информация о выбранном гексе':'Selected hex information'}>
  <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-label={ru?'Редактировать':'Edit'} disabled={!p.canEdit||p.busy||!!p.draft} onClick={p.onEdit}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z"/></svg></button></div>
+ {p.worldInfo}
  {p.cell?<><strong>{p.name||`${p.cell.q}/${p.cell.r}`}</strong>{p.name&&<p>{p.cell.q}/{p.cell.r}</p>}</>:<p>{ru?'Гекс не выбран':'No hex selected'}</p>}
  {p.children}
  {p.draft?<form data-fine-editor onSubmit={e=>{e.preventDefault();p.onSave();}} onCompositionStart={()=>p.onComposition(true)} onCompositionEnd={()=>p.onComposition(false)}>

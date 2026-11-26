@@ -1,3 +1,4 @@
+import { CROWS_BUILDINGS, rollCrowsPoint, villageBeaconRadius } from '../src/crowsSettlements.ts';
 import {projectOneMile} from '../src/oneMile.ts';
 import {newKnaveLayer,validateKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
@@ -47,6 +48,98 @@ for (const filename of ['lake-reentry-map','sea-pocket-map','terrain-display-map
     assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
   });
 }
+
+test('save validation accepts blank world text and rejects contradictory Classic profiles', () => {
+  const data = structuredClone(valid);
+  data.map.world = { name: 'Свой мир', description: '' };
+  data.map.knave = newKnaveLayer();
+  data.ui.knaveEnabled = false;
+  data.ui.crowsEnabled = true;
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  const invalidWorld = structuredClone(data);
+  invalidWorld.map.world.description = null;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(invalidWorld), /map.world.description/);
+
+  data.ui.knaveEnabled = true;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /ui.crowsEnabled/);
+});
+
+test('Crows save validates home settlement ownership and building limits', () => {
+  const data = structuredClone(valid);
+  const region = data.map.regions[0];
+  region.centralPoiKind = 'village';
+  region.isTract = false;
+  region.suppressCentralPoi = false;
+  region.pointsOfInterest = region.pointsOfInterest.filter(h => h.q !== region.centerHex.q || h.r !== region.centerHex.r);
+  delete region.pointOfInterestKinds;
+  const owner = `poi:${region.id}:${region.centerHex.q},${region.centerHex.r}`;
+  data.map.crowsSettlements = {starterGranted: true, byPoi: {
+    [owner]: {home: true, prosperity: 0, buildings: [{type: 'smithy', level: 4}]}
+  }};
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  const invalidLevel = structuredClone(data);
+  invalidLevel.map.crowsSettlements.byPoi[owner].buildings[0].level = 5;
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(invalidLevel), /map.crowsSettlements/);
+  region.centralPoiKind = 'ruins';
+  assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /map.crowsSettlements/);
+});
+
+test('Crows save accepts manual environment traits only on existing hexes', () => {
+  const data = structuredClone(valid);
+  const {q, r} = data.map.regions[0].centerHex;
+  const key = `${q},${r}`;
+  data.map.crowsEnvironmentByHex = {[key]: ['swamp', 'forest']};
+  assert.doesNotThrow(() => h.geometry.assertHexcrawlSaveData(data));
+
+  for (const layer of [
+    {[key]: ['bog']}, {[key]: ['forest', 'forest']}, {[key]: []}, {'99999,99999': ['forest']}
+  ]) {
+    data.map.crowsEnvironmentByHex = layer;
+    assert.throws(() => h.geometry.assertHexcrawlSaveData(data), /map.crowsEnvironmentByHex/);
+  }
+});
+
+test('Crows village beacon extends to radius six only at level five and prosperity ten', () => {
+  const beacon = level => ({type: 'beacon', level});
+  const radius = (prosperity, buildings) => villageBeaconRadius({home: false, prosperity, buildings});
+  assert.equal(radius(10, []), 0);
+  assert.equal(radius(10, [beacon(1), beacon(4)]), 4);
+  assert.equal(radius(9, [beacon(5)]), 5);
+  assert.equal(radius(10, [beacon(5), beacon(3)]), 6);
+});
+
+test('Crows generates distinct buildings and valid prosperity for every settlement category', () => {
+  const ranges = {
+    village: [-10, 7, 1, 10], town: [-9, 9, 2, 11],
+    city: [-8, 9, 3, 12], capital: [-7, 10, 4, 13]
+  };
+  for (const [kind, [low, high, min, max]] of Object.entries(ranges)) {
+    for (let seed = 0; seed < 128; seed++) {
+      const {settlement} = rollCrowsPoint(kind, seed, 1, {q: 0, r: -1}, false, false);
+      assert.equal(settlement.home, false);
+      assert.ok(settlement.prosperity >= low && settlement.prosperity <= high);
+      assert.ok(settlement.buildings.length >= min && settlement.buildings.length <= max);
+      assert.equal(new Set(settlement.buildings.map(b => b.type)).size, settlement.buildings.length);
+      assert.ok(settlement.buildings.every(b => b.level >= 1 && b.level <= CROWS_BUILDINGS[b.type].max));
+    }
+  }
+});
+
+test('Crows building replacement applies only to eligible Classic structure sites', () => {
+  const here = {q: 0, r: 0};
+  assert.deepEqual(rollCrowsPoint('tower', 1, 1, here, false, false), {});
+  assert.deepEqual(rollCrowsPoint('cave', 1, 1, here, true, true), {});
+  const types = new Set();
+  for (let seed = 0; seed < 256; seed++) {
+    const settled = rollCrowsPoint('tower', seed, 1, here, true, false).building;
+    assert.deepEqual(rollCrowsPoint('tower', seed, 1, here, false, true).building, settled);
+    assert.ok(settled.level >= 1 && settled.level <= CROWS_BUILDINGS[settled.type].max);
+    types.add(settled.type);
+  }
+  assert.equal(types.size, 13);
+});
 
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {
   const proposal = () => ({regions:[{id:1}], rivers:[{id:1}], roads:[{id:1}], kingdoms:[{id:1}],
