@@ -1,0 +1,103 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+  "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+  "tree_sha": "d4ea5777b039391cf009470a9bbce15d348e043e",
+  "review_ready": false,
+  "publication_authorized": false,
+  "scope": [
+    "VTT-R01",
+    "VTT-R06",
+    "VTT-R08",
+    "VTT-AC01 (entry/movement)",
+    "VTT-AC08 (browser reload)"
+  ],
+  "checks": {
+    "typescript": {
+      "command": "./node_modules/.bin/tsc --noEmit",
+      "passed": true
+    },
+    "production_build": {
+      "command": "npm run build",
+      "passed": true
+    },
+    "browser": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "scenarios": [
+        {
+          "mode": "Classic",
+          "fixture": "classic-six-regions-seed42.json",
+          "master_cells": 52,
+          "before_cells": 7,
+          "after_cells": 6
+        },
+        {
+          "mode": "Classic + Knave 2e",
+          "fixture": "classic-six-regions-seed42.json",
+          "master_cells": 52,
+          "before_cells": 7,
+          "after_cells": 6
+        },
+        {
+          "mode": "Classic + Crows (Cornath)",
+          "fixture": "classic-six-regions-seed42.json",
+          "master_cells": 52,
+          "before_cells": 7,
+          "after_cells": 6
+        },
+        {
+          "mode": "Mythic Bastionland",
+          "fixture": "terrain-display-map.json",
+          "master_cells": 206,
+          "before_cells": 7,
+          "after_cells": 7
+        }
+      ],
+      "checks_per_mode": [
+        "native JSON import from editor",
+        "open connected 5–6-mile room at 0,1",
+        "two separate player browsers, desktop and narrow",
+        "server projection omits master note and unseen hexes",
+        "proposal survives master reload",
+        "confirm moves all clients to 0,0 and changes allowed set",
+        "same room and link on master reload and reentry",
+        "player reconnect"
+      ],
+      "one_mile_editor_entry_absent": true,
+      "overlay_content_verified_equal_to_pr_head": true
+    },
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45854899230",
+      "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "220743be93aaf316849b9271dc7b0ca212e110e2",
+    "head_sha": "283ed5b8b4afd8a4c07b605efbfd1fc555386545",
+    "added": 3,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Playwright VTT",
+    "scenario_or_risk": "Запуск из редактора и граница выдачи игрокам по каждому поддерживаемому профилю. В Classic также проверена недоступность входа из одномильного вида.",
+    "reuse_or_new_reason": "Переиспользован один сквозной сценарий. Добавлены три параметра, которые до исправления не проходили проверку на вход или сервере.",
+    "source": "Один логический кейс на каждый элемент scenarios в test/browser/vtt-room-preview.mjs; сравнение c 220743b."
+  },
+  "capture_ref": "agent-work/evidence/HX-BL-078/vtt-map-modes-283ed5b/player-map-modes.jpg",
+  "limitations": [
+    "Сценарии выполнены на реальных импортированных картах. Для Classic дополнения включены штатными переключателями после импорта. Отдельная проверка создания карт каждого профиля впереди.",
+    "Изображение в комнате пока использует упрощённые полигоны и текущую видимость. Совпадение с редактором, права на отдельные объекты и долговечное хранение пока не проверены.",
+    "На узком снимке часть диагональных символов кнопок направления отобразилась квадратами; зарегистрировано для работы над игровым видом."
+  ]
+}
