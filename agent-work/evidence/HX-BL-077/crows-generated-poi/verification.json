@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-077",
+  "stage_id": "CROWS-L1",
+  "status": "implementation_in_progress",
+  "working_branch": "feat/hx077-crows",
+  "base_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
+  "wip_head_sha": "d788bb271f6492ebb9e4da3399f4d5cd889d261f",
+  "wip_tree_sha": "e23826fceb356787671b2ac95861b9244392cf33",
+  "final_spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+  "final_spec_version": "F1",
+  "final_spec_blob_sha": "0626eb96d0312ee7983ceea9c61b57f787a7c71a",
+  "interview_ref": "agent-work/interviews/HX-BL-077/CROWS-L1/decisions.json",
+  "ready_for_development": true,
+  "review_ready": false,
+  "release_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Реализовать автоматические и ручные признаки среды по CROWS-04/Q05. После этого собрать единый пакет, проверить устойчивость данных и иконок, выполнить полный npm run check и браузерный набор, затем передать точный SHA независимому проверяющему.",
+  "result_ref": "agent-work/results/2026-11-26T0300-programmer-HX077-generated-settlements.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-077/crows-generated-poi/verification.json",
+  "recorded_at": "2026-11-26T00:06:27.717Z",
+  "scope": {
+    "verified": [
+      "CROWS-06 all four settlement categories generated on real maps",
+      "CROWS-07 existing Classic structural slots replace only when settled or on a road in wild area, validated one eligible and one rejected wild case in Chromium",
+      "CROWS-08 isolated free-standing beacon: checked boundary and next hex",
+      "CROWS-05 fresh home and tower conversion regression",
+      "CROWS-09 actual save/reopen and PNG"
+    ],
+    "remaining": [
+      "CROWS-04 natural traits",
+      "Complete-package CROWS-01–09 acceptance"
+    ]
+  },
+  "checks": {
+    "typecheck": {
+      "status": "passed",
+      "command": "tsc --noEmit",
+      "node": "24.22.3"
+    },
+    "build": {
+      "status": "passed",
+      "ref": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-build.log"
+    },
+    "node": {
+      "suite": "saveSafety.test.mjs",
+      "status": "passed",
+      "executed": 60,
+      "passed": 60,
+      "skipped": 0,
+      "ref": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-exact-save.log"
+    },
+    "browser": {
+      "status": "passed_scoped",
+      "separate_from_node": true,
+      "executed_scenarios": 2,
+      "passed_scenarios": 2,
+      "ref": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-browser.log",
+      "regression_ref": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-regression.log",
+      "measurements": {
+        "maps": 2,
+        "categories": [
+          "village",
+          "city",
+          "town",
+          "capital"
+        ],
+        "standalone": 19,
+        "eligibleWild": 1,
+        "excludedWild": 1,
+        "freestandingBeaconBoundary": true,
+        "savedReopened": true,
+        "png": 668243,
+        "errors": []
+      },
+      "regression": {
+        "freshHomes": 1,
+        "homeCountsBefore": 1,
+        "homeCountsAfter": 2,
+        "starterBuildings": 6,
+        "generatedOnExisting": true,
+        "changedTower": true,
+        "undoRedo": true,
+        "unassignKeepsVillage": true,
+        "editableBeacons": true,
+        "miasmaRecalculates": true,
+        "saveAndReopen": true,
+        "classicSwitchKeepsVillage": true,
+        "png": 258798,
+        "errors": []
+      }
+    },
+    "full_check": {
+      "status": "pending_integrated_package"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "d115c79006c17b1f97892ddeb7138361c0391b3d",
+    "head_sha": "d788bb271f6492ebb9e4da3399f4d5cd889d261f",
+    "added": 2,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node saveSafety",
+    "scenario": "Границы процветания и уникальность зданий для четырёх категорий; допуск слотов строений и достижимость всех 13 разновидностей.",
+    "reuse_or_new_reason": "Два отдельных контракта CROWS-06/07 в существующем наборе. Временные сценарии Chromium не входят в изменение постоянных тестов.",
+    "source": "git diff test/saveSafety.test.mjs (+2 logical test declarations)"
+  },
+  "artifacts": [
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-building.jpg",
+      "sha": "62e5868c4bf99f7a8e82af36bb547eae2668605d"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-village.jpg",
+      "sha": "07cca3f5babe3c28bb383fc00b14a0ef46adfcfc"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-narrow.jpg",
+      "sha": "bd3a39feb17b20511d6beef55326408ac9a921bb"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-map.png",
+      "sha": "500e6ca5ef51d128fd5455d527c697757aff2d7a"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-map.json",
+      "sha": "906f3e71ffa4ad20a26b5c66687bbfb565ad0887"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-browser.log",
+      "sha": "9f077f997c632e0ca2bd93a5b2aebf08bdba3803"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-077/crows-generated-poi/crows-poi-build.log",
+      "sha": "f48e63426fcd526126cd5fb600471f53184da321"
+    }
+  ],
+  "implementation_note": "Классический генератор выбирает конкретный тип точки. Кандидаты на замену определены по существующим классическим типам строений. Дополнительный бросок меняет представление точки в Crows, сохраняя исходный тип Classic и потоки RNG.",
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "criteria": [
+      "CROWS-PT3-L1-011",
+      "CROWS-PT3-L1-017"
+    ],
+    "status": "partial_implementation",
+    "qualified_delta": null
+  }
+}
