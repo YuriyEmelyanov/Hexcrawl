@@ -1,0 +1,87 @@
+{
+  "task_id": "HX-BL-074",
+  "stage_id": "MANUAL-DELTA",
+  "role": "business_analyst",
+  "status": "ready_for_final_spec",
+  "draft_spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-D1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-074/MANUAL-DELTA/decisions.json",
+  "result_ref": "agent-work/results/20261126093532-interviewer-HX074-close.json",
+  "traceability": [
+    {
+      "question_id": "DELTA-Q01",
+      "owner_answer": "есть же инструмент добавления реки. его и использовать просто.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Создание рукава через существующий инструмент «Добавить реку». Допустимый маршрут от развилки существующей прибрежной реки до отдельного морского устья распознаётся там же. Отдельной кнопки или режима дельты нет. Обычное создание и добавление притоков сохраняют свой контракт.",
+      "requirement_refs": [
+        "D74-R01",
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01",
+        "D74-AC02",
+        "D74-AC04"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q02",
+      "owner_answer": "B",
+      "option_id": "B",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Максимальная допустимая полноводность нового рукава подставляется автоматически и доступна для изменения до подтверждения. При полноводности основного устья 4 значение по умолчанию 3, при 5 — 4. На расчёт переправы берётся итоговое выбранное значение.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q03",
+      "owner_answer": "автоматически добавлять, случайно на основе действующих вероятностей выбирать тим переправы - мост, переправа, брод.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "На пересечении нового рукава с дорогой или тропой переправа добавляется автоматически. Для новой переправы используются действующие вероятности штатного выбора моста, паромной переправы или брода с учётом полноводности рукава, высоты, освоенности и типа пути. При полноводности от 3 брод не выбирается. Отдельный ручной выбор типа не требуется. Существующие переправы сохраняют тип. Применение добавленного рукава и новой переправы остаётся одной операцией Undo/Redo.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R04",
+        "D74-AC02",
+        "D74-AC03"
+      ]
+    }
+  ],
+  "specification_clarifications": [
+    {
+      "id": "DELTA-CL01",
+      "text": "В D74-AC01 прежний отказ редактора следует воспроизводить после удаления только существующего рукава на исходной версии. Иначе занятое ребро смешивает проверяемое ограничение со штатным отказом по конфликту.",
+      "owner_decision_required": false,
+      "final_spec_action": "Аналитик переставляет шаги и отделяет идентичный baseline от новой сборки."
+    }
+  ],
+  "current_rule_evidence": [
+    "https://github.com/YuriyEmelyanov/Hexcrawl/blob/3d85da66a5d115c049a512664ef72ca448eabc20/src/riverCrossings.ts",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/blob/3d85da66a5d115c049a512664ef72ca448eabc20/docs/road-model.md",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/blob/3d85da66a5d115c049a512664ef72ca448eabc20/docs/world-random.md"
+  ],
+  "acceptance_notes": [
+    "Проверить путь через штатное добавление реки, обычный приток и узкий экран.",
+    "Проверить максимальное значение по умолчанию и переопределение. Для новой переправы сверить действующие ветви выбора на контролируемых значениях генератора, включая невозможность брода при F≥3.",
+    "Закреплять выбранный тип в сохранении и восстанавливать его при Redo. Перерисовка, отказ и отмена предпросмотра не должны менять карту и состояние генератора."
+  ],
+  "next_step": "Подготовить чистовую спецификацию HX-BL-074 по DELTA-Q01–Q03 и обновить макет штатного инструмента «Добавить реку».",
+  "ready_for_development": false,
+  "publication_authorized": false
+}

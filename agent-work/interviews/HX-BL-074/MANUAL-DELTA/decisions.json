@@ -4,8 +4,8 @@
   "draft_spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-D1.md",
   "draft_spec_version": "D1",
   "draft_spec_blob_sha": "780159af1ade3e24a7f39f36b97e0ebb0c3bbe7e",
-  "interview_status": "awaiting_owner_answers",
-  "interview_completed": false,
+  "interview_status": "completed",
+  "interview_completed": true,
   "round_refs": [
     "agent-work/interviews/HX-BL-074/MANUAL-DELTA/round-001.json"
   ],
@@ -26,13 +26,121 @@
     "Предпросмотр не меняет документ. Успешное добавление — одна операция с Undo/Redo; JSON и PNG входят в приёмку.",
     "Автогенерация, перерасчёт стока, многорёберные рукава и другие масштабы остаются вне выпуска."
   ],
-  "open_question_ids": [
-    "DELTA-Q01",
-    "DELTA-Q02",
-    "DELTA-Q03"
+  "open_question_ids": [],
+  "owner_answers": [
+    {
+      "question_id": "DELTA-Q01",
+      "owner_answer": "есть же инструмент добавления реки. его и использовать просто.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Создание рукава через существующий инструмент «Добавить реку». Допустимый маршрут от развилки существующей прибрежной реки до отдельного морского устья распознаётся там же. Отдельной кнопки или режима дельты нет. Обычное создание и добавление притоков сохраняют свой контракт.",
+      "requirement_refs": [
+        "D74-R01",
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01",
+        "D74-AC02",
+        "D74-AC04"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q02",
+      "owner_answer": "B",
+      "option_id": "B",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Максимальная допустимая полноводность нового рукава подставляется автоматически и доступна для изменения до подтверждения. При полноводности основного устья 4 значение по умолчанию 3, при 5 — 4. На расчёт переправы берётся итоговое выбранное значение.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q03",
+      "owner_answer": "автоматически добавлять, случайно на основе действующих вероятностей выбирать тим переправы - мост, переправа, брод.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "На пересечении нового рукава с дорогой или тропой переправа добавляется автоматически. Для новой переправы используются действующие вероятности штатного выбора моста, паромной переправы или брода с учётом полноводности рукава, высоты, освоенности и типа пути. При полноводности от 3 брод не выбирается. Отдельный ручной выбор типа не требуется. Существующие переправы сохраняют тип. Применение добавленного рукава и новой переправы остаётся одной операцией Undo/Redo.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R04",
+        "D74-AC02",
+        "D74-AC03"
+      ]
+    }
   ],
-  "owner_answers": [],
-  "decisions": [],
+  "decisions": [
+    {
+      "question_id": "DELTA-Q01",
+      "owner_answer": "есть же инструмент добавления реки. его и использовать просто.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Создание рукава через существующий инструмент «Добавить реку». Допустимый маршрут от развилки существующей прибрежной реки до отдельного морского устья распознаётся там же. Отдельной кнопки или режима дельты нет. Обычное создание и добавление притоков сохраняют свой контракт.",
+      "requirement_refs": [
+        "D74-R01",
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01",
+        "D74-AC02",
+        "D74-AC04"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q02",
+      "owner_answer": "B",
+      "option_id": "B",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "Максимальная допустимая полноводность нового рукава подставляется автоматически и доступна для изменения до подтверждения. При полноводности основного устья 4 значение по умолчанию 3, при 5 — 4. На расчёт переправы берётся итоговое выбранное значение.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R03",
+        "D74-AC01"
+      ]
+    },
+    {
+      "question_id": "DELTA-Q03",
+      "owner_answer": "автоматически добавлять, случайно на основе действующих вероятностей выбирать тим переправы - мост, переправа, брод.",
+      "option_id": "free_text",
+      "answer_source": {
+        "kind": "owner_chat",
+        "date": "2026-11-26",
+        "message_ref": null,
+        "channel": "existing_task_chat"
+      },
+      "interpretation": "На пересечении нового рукава с дорогой или тропой переправа добавляется автоматически. Для новой переправы используются действующие вероятности штатного выбора моста, паромной переправы или брода с учётом полноводности рукава, высоты, освоенности и типа пути. При полноводности от 3 брод не выбирается. Отдельный ручной выбор типа не требуется. Существующие переправы сохраняют тип. Применение добавленного рукава и новой переправы остаётся одной операцией Undo/Redo.",
+      "requirement_refs": [
+        "D74-R02",
+        "D74-R04",
+        "D74-AC02",
+        "D74-AC03"
+      ]
+    }
+  ],
   "specification_clarifications": [
     {
       "id": "DELTA-CL01",
@@ -41,9 +149,9 @@
       "final_spec_action": "Аналитик переставляет шаги и отделяет идентичный baseline от новой сборки."
     }
   ],
-  "ui_preview_pending": false,
+  "ui_preview_pending": true,
   "ui_preview_owner": "business_analyst",
-  "ui_preview_status": "presented_proposal",
+  "ui_preview_status": "update_pending_after_owner_answers",
   "ui_preview": {
     "status": "presented_proposal",
     "version": "D1",
@@ -54,8 +162,9 @@
     "owner_design_response_required": false
   },
   "ready_for_development": false,
-  "next_role": "interviewer",
+  "next_role": "business_analyst",
   "next_role_after_answers": "business_analyst",
-  "next_step": "После ответов по DELTA-Q01–Q03 интервьюер фиксирует решения и проверяет зависимые вопросы. Затем аналитик готовит чистовую спецификацию.",
-  "updated_at": "2026-11-26T08:01:17.487Z"
+  "next_step": "Подготовить чистовую спецификацию HX-BL-074 по DELTA-Q01–Q03 и обновить макет штатного инструмента «Добавить реку».",
+  "updated_at": "2026-11-26T09:36:21.472Z",
+  "closure_result_ref": "agent-work/results/20261126093532-interviewer-HX074-close.json"
 }
