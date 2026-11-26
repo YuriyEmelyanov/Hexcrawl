@@ -369,10 +369,101 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
   }
 }
 
+async function verifyEditorRestore(browser) {
+  const preview = await startEditorPreview();
+  const masterContext = await browser.newContext({viewport: {width: 1120, height: 720}});
+  const playerContext = await browser.newContext({viewport: {width: 420, height: 700}});
+  masterContext.setDefaultTimeout(20000);
+  playerContext.setDefaultTimeout(20000);
+  try {
+    const editor = await masterContext.newPage();
+    const player = await playerContext.newPage();
+    await editor.goto(preview.editorUrl);
+    const seed = editor.getByRole('textbox', {name: /^(World seed|Seed мира)$/i});
+    const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
+    await seed.fill('42');
+    await seed.press('Tab');
+    await editor.locator('polygon.hex.candidate').first().dispatchEvent('click');
+    const selected = editor.locator('[data-selected-hex]');
+    await selected.waitFor({state: 'attached'});
+    const selection = await selected.getAttribute('data-selected-hex');
+    const geography = await editor.evaluate(terrainSnapshot);
+    const screenshot = async (page, label) => {
+      if (process.env.VTT_EVIDENCE_DIR) {
+        await page.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'generated-' + label + '.jpg'), quality: 78});
+      }
+    };
+    await screenshot(editor, 'editor-before');
+    const openRoom = async () => {
+      const [page] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
+      await page.locator('#join').waitFor();
+      return page;
+    };
+    let master = await openRoom();
+    const originalLink = await master.locator('#join').getAttribute('href');
+    const playerUrl = new URL(originalLink, preview.roomUrl).href;
+    await player.goto(playerUrl);
+    await player.waitForFunction(value => document.querySelector('#position').value === value, selection);
+    const state = () => player.evaluate(async () => {
+      const response = await fetch('/state', {headers: {'x-preview-room': location.pathname}});
+      if (!response.ok) throw new Error('Expected an active player view');
+      return response.json();
+    });
+    const initial = await state();
+    const directions = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+    const direction = directions.findIndex(([dq, dr]) =>
+      initial.cells.some(cell => cell.q === initial.position.q + dq && cell.r === initial.position.r + dr));
+    assert.notEqual(direction, -1, 'the generated map has a traversable adjacent hex');
+    const propose = async dir => {
+      await player.locator(`[data-direction="${dir}"]`).click();
+      await master.locator(`[data-proposal="${dir}"]`).waitFor();
+    };
+    await propose(direction);
+    await master.locator('#confirm').click();
+    const [dq, dr] = directions[direction];
+    const destination = `${initial.position.q + dq},${initial.position.r + dr}`;
+    await player.waitForFunction(value => document.querySelector('#position').value === value, destination);
+    const confirmed = await state();
+
+    const restoreEditor = async () => {
+      await master.close();
+      await editor.reload();
+      await editor.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
+      assert.equal(await selected.getAttribute('data-selected-hex'), selection);
+      assert.equal(await seed.inputValue(), '42');
+      assert.deepEqual(await editor.evaluate(terrainSnapshot), geography);
+      master = await openRoom();
+      assert.equal(await master.locator('#join').getAttribute('href'), originalLink);
+      assert.equal(await master.locator('#position').textContent(), destination);
+      assert.equal(player.url(), playerUrl);
+    };
+    await restoreEditor();
+    assert.deepEqual(await state(), confirmed);
+    await propose((direction + 3) % 6);
+    const pending = await state();
+    await restoreEditor();
+    assert.equal(await master.locator('[data-proposal]').getAttribute('data-proposal'), String(pending.proposal));
+    assert.deepEqual(await state(), pending);
+    await screenshot(editor, 'editor-restored');
+    await screenshot(master, 'master-after-reopen');
+    await screenshot(player, 'player-original-link');
+    console.log(JSON.stringify({mode: 'classic-generated-editor-restore', seed:42, startingHex:selection,
+      confirmedHex:destination, sameEditorGeography:true, samePlayerLink:true,
+      confirmedReload:true, pendingProposalReload:true, fileImport:false}));
+  } finally {
+    try {
+      await Promise.all([masterContext.close(), playerContext.close()]);
+    } finally {
+      await preview.close();
+    }
+  }
+}
+
 const browser = await chromium.launch({executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined,
   headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage']});
 try {
   for (const scenario of scenarios) await verifyRoom(browser, scenario);
+  await verifyEditorRestore(browser);
 } finally {
   await browser.close();
 }

@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 import {createServer} from 'vite';
 import {startPreview} from './server.mjs';
 
-export async function startEditorPreview({storagePath, roomPort = 0} = {}) {
+export async function startEditorPreview({storagePath, roomPort = 0, editorPort = 0} = {}) {
   const launchKey = randomBytes(24).toString('base64url');
   let editorUrl;
   const options = {port: roomPort, storagePath, editorOrigin: () => editorUrl, launchKey};
@@ -22,7 +22,7 @@ export async function startEditorPreview({storagePath, roomPort = 0} = {}) {
         __HEXCRAWL_VTT_PREVIEW_URL__: JSON.stringify(base),
         __HEXCRAWL_VTT_PREVIEW_KEY__: JSON.stringify(launchKey)
       },
-      server: {host: '127.0.0.1', port: 0}
+      server: {host: '127.0.0.1', port: editorPort, strictPort: true}
     });
     await editor.listen();
     editorUrl = 'http://127.0.0.1:' + editor.httpServer.address().port;
@@ -37,9 +37,10 @@ export async function startEditorPreview({storagePath, roomPort = 0} = {}) {
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
-  // An existing private directory and the same room port keep links stable across launches.
+  // Use the same editor and room origins to recover browser maps and player links.
   const storagePath = process.env.VTT_PREVIEW_STORAGE_PATH;
   const roomPort = Number(process.env.VTT_PREVIEW_PORT ?? (storagePath ? 4175 : 0));
-  const preview = await startEditorPreview({storagePath, roomPort});
+  const editorPort = Number(process.env.VTT_PREVIEW_EDITOR_PORT ?? (storagePath ? 4174 : 0));
+  const preview = await startEditorPreview({storagePath, roomPort, editorPort});
   console.log(preview.editorUrl);
 }
