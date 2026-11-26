@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-26-programmer-HX078-130222",
+  "run_id": "2026-11-26-programmer-HX078-editor-140653",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -57,7 +57,7 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-26T1042-analyst-HX074-delta-D1.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Подключить штатную карту редактора к отработанному сценарию, чтобы мастер мог открыть живую игру из своей созданной или загруженной карты. Затем сверить два представления на той же карте и проверить долговечное хранение комнаты.",
+  "next_step": "Подключить штатный рендерер 5–6 миль к виду мастера и разрешённой проекции игрока. Сравнить ту же карту с редактором на компьютере и узком экране. Затем проверить хранение состояния и ссылки после перезапуска комнаты.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -157,7 +157,7 @@
   "evidence_path": "agent-work/evidence/HX-BL-077/crows-generated-poi/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
-  "head_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+  "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
   "tree_sha": "7ed571b3bf2ebd1aa07b93d2724154ff881aadbd",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45766857198",
@@ -251,12 +251,12 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-26T13:01:43.226Z",
+      "at": "2026-11-26T14:05:15.175Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-26T13:10:16.153Z",
+      "at": "2026-11-26T14:13:21.126Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -856,7 +856,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-26T13:11:20.350Z",
+  "updated_at": "2026-11-26T14:14:11.161Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1097,7 +1097,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-first-23de552/browser.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/browser.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1474,7 +1474,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-130222-programmer.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-editor-140653-programmer.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -8005,7 +8005,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-130222.json",
+  "result_ref": "agent-work/results/2026-11-26-programmer-HX078-editor-140653.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -12463,7 +12463,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-130222.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-editor-140653.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -19842,65 +19842,120 @@
     "implementation_slice_id": "VTT-RELEASE-1",
     "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
     "branch": "agent/hx078-vtt-live-1",
-    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-    "head_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
     "pr": 519,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
-    "publication_authorized": false,
+    "base_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+    "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+    "tree_sha": "adab485d9a7c8eada9767c41cbbc8ccb4339221a",
     "review_ready": false,
+    "publication_authorized": false,
+    "run_id": "2026-11-26-programmer-HX078-editor-140653",
+    "role": "programmer",
     "status": "implementation_checkpoint",
-    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-130222.json",
-    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-first-23de552/browser.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-130222-programmer.json",
+    "recorded_at": "2026-11-26T14:13:21.126Z",
+    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-editor-140653.json",
+    "result_commit_sha": "24e9c58cf7b9a1d18a7850a1dc19fe48242c973f",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/browser.json",
+    "capture_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/editor-to-player.jpg",
+    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-editor-140653-programmer.json",
+    "execution_lock_released": true,
     "next_role": "programmer",
-    "next_step": "Подключить штатную карту редактора к отработанному сценарию, чтобы мастер мог открыть живую игру из своей созданной или загруженной карты. Затем сверить два представления на той же карте и проверить долговечное хранение комнаты.",
+    "next_step": "Подключить штатный рендерер 5–6 миль к виду мастера и разрешённой проекции игрока. Сравнить ту же карту с редактором на компьютере и узком экране. Затем проверить хранение состояния и ссылки после перезапуска комнаты.",
     "forecast": {
       "remaining_first_release_runs": [
-        13,
-        20
+        12,
+        19
       ],
       "confidence": "low",
-      "basis": "Один сквозной проход из оценки 14–21 завершён. Проверить прогноз после подключения штатной карты и подтверждения размещения."
+      "basis": "Завершён вход из редактора с открытой картой. Переоценить после подключения штатного рендерера и проверки размещения."
     },
-    "recorded_at": "2026-11-26T13:10:16.153Z",
-    "result_commit_sha": "954628c13b70629219073976c9f49c86faff645b",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "at": "2026-11-26T13:01:43.226Z",
+        "at": "2026-11-26T14:05:15.175Z",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "at": "2026-11-26T13:10:16.153Z",
+        "at": "2026-11-26T14:13:21.126Z",
         "status": "checked",
         "is_enabled": true
       },
       "restored": false,
       "errors": []
     },
-    "ci": {
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45825985809"
-    },
-    "execution_lock_released": true
-  },
-  "active_claim": {
-    "task_id": "HX-BL-078",
-    "role": "programmer",
-    "run_id": "2026-11-26-programmer-HX078-editor-140653",
-    "branch": "agent/hx078-vtt-live-1",
-    "base_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
-    "claim_ref": "agent-work/claims/2026-11-26-programmer-HX078-editor-140653.json",
-    "acquired_at": "2026-11-26T14:06:53.010Z",
-    "heartbeat_at": "2026-11-26T14:06:53.010Z",
-    "generation": 917,
-    "programmer_slot": true
+    "ci": [
+      {
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585347"
+      },
+      {
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585264"
+      }
+    ]
   },
   "latest_HX_BL_078_editor_execution": {
+    "task_id": "HX-BL-078",
+    "stage_id": "VTT-FIRST",
+    "implementation_slice_id": "VTT-RELEASE-1",
+    "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+    "branch": "agent/hx078-vtt-live-1",
+    "pr": 519,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+    "base_sha": "23de55281bb2332d696959dc281e8e3470c3b3e2",
+    "head_sha": "c5cfc691c1e43616e24d957408b53db93608cd1a",
+    "tree_sha": "adab485d9a7c8eada9767c41cbbc8ccb4339221a",
+    "review_ready": false,
+    "publication_authorized": false,
     "run_id": "2026-11-26-programmer-HX078-editor-140653",
-    "status": "implementation_in_progress",
-    "next_step": "Запуск живой комнаты из открытой карты редактора."
+    "role": "programmer",
+    "status": "implementation_checkpoint",
+    "recorded_at": "2026-11-26T14:13:21.126Z",
+    "result_ref": "agent-work/results/2026-11-26-programmer-HX078-editor-140653.json",
+    "result_commit_sha": "24e9c58cf7b9a1d18a7850a1dc19fe48242c973f",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/browser.json",
+    "capture_ref": "agent-work/evidence/HX-BL-078/vtt-editor-c5cfc69/editor-to-player.jpg",
+    "handoff_ref": "agent-work/handoffs/2026-11-26-programmer-HX078-editor-140653-programmer.json",
+    "execution_lock_released": true,
+    "next_role": "programmer",
+    "next_step": "Подключить штатный рендерер 5–6 миль к виду мастера и разрешённой проекции игрока. Сравнить ту же карту с редактором на компьютере и узком экране. Затем проверить хранение состояния и ссылки после перезапуска комнаты.",
+    "forecast": {
+      "remaining_first_release_runs": [
+        12,
+        19
+      ],
+      "confidence": "low",
+      "basis": "Завершён вход из редактора с открытой картой. Переоценить после подключения штатного рендерера и проверки размещения."
+    },
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-26T14:05:15.175Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-26T14:13:21.126Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    },
+    "ci": [
+      {
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585347"
+      },
+      {
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45836585264"
+      }
+    ]
   }
 }
