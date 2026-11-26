@@ -15928,10 +15928,12 @@ export function App() {
 
   const captureVttRoutes = () => {
     const renderedRoutes = mapSvgRef.current?.querySelectorAll<SVGPolylineElement | SVGLineElement>(
-      '.rivers-layer > polyline.river-polyline, .roads-layer .road-line, .roads-layer .trail-line'
+      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail'
     );
     return Array.from(renderedRoutes ?? [], stroke => {
       const kind = stroke.classList.contains('river-polyline') ? 'river'
+        : stroke.classList.contains('river-rapid-mark') ? 'rapid'
+        : stroke.classList.contains('bridge-rail') ? 'rail'
         : stroke.classList.contains('trail-line') ? 'trail' : 'road';
       const points = stroke.tagName === 'polyline'
         ? stroke.getAttribute('points')!.split(' ').map(point => point.split(',').map(Number))
@@ -15947,6 +15949,11 @@ export function App() {
     });
   };
 
+  const captureVttMarks = () => [
+    ...renderedCrossings.map(({kind, x, y}) => ({kind, x: x - riverOffset.x, y: y - riverOffset.y})),
+    ...riverWaterfalls.map(({x, y}) => ({kind: 'waterfall', x: x - riverOffset.x, y: y - riverOffset.y}))
+  ];
+
   const openVttPreview = async () => {
     if (!vttPreview || !vttAvailable || !vttStartHex || !renderDetails || documentBusy() || vttLaunchStatus === 'pending') return;
     const roomTab = window.open('about:blank', '_blank');
@@ -15960,7 +15967,7 @@ export function App() {
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
-        body: JSON.stringify({save: createSaveData(), position: vttStartHex, routes: captureVttRoutes()})
+        body: JSON.stringify({save: createSaveData(), position: vttStartHex, routes: captureVttRoutes(), marks: captureVttMarks()})
       });
       if (response.status === 409) {
         roomTab.close();

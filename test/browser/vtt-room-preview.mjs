@@ -38,15 +38,20 @@ function terrainSnapshot() {
 function verifyRouteBounds(view) {
   const {x, y} = toPixel(view.position.q, view.position.r);
   const hex = getHexPolygonPoints(x, y, HEX_SIZE);
+  function verifyPoint(px, py) {
+    for (let i = 0; i < hex.length; i++) {
+      const a = hex[i], b = hex[(i + 1) % hex.length];
+      assert.ok((b.x - a.x) * (py - a.y) - (b.y - a.y) * (px - a.x) >= -1e-6,
+        `feature point ${px},${py} falls outside the current hex ${view.position.q},${view.position.r}`);
+    }
+  }
   for (const route of view.routes) {
     assert.deepEqual(Object.keys(route).sort(), ['faded', 'kind', 'points', 'solid', 'width']);
-    for (const [px, py] of route.points) {
-      for (let i = 0; i < hex.length; i++) {
-        const a = hex[i], b = hex[(i + 1) % hex.length];
-        assert.ok((b.x - a.x) * (py - a.y) - (b.y - a.y) * (px - a.x) >= -1e-6,
-          `route point ${px},${py} falls outside the current hex ${view.position.q},${view.position.r}`);
-      }
-    }
+    for (const [px, py] of route.points) verifyPoint(px, py);
+  }
+  for (const mark of view.marks) {
+    assert.deepEqual(Object.keys(mark).sort(), ['kind', 'x', 'y']);
+    verifyPoint(mark.x, mark.y);
   }
 }
 
@@ -103,13 +108,22 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       return response.json();
     });
     const before = await snapshotPlayer();
-    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'position', 'proposal', 'revision', 'rotated', 'routes']);
+    assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'marks', 'position', 'proposal', 'revision', 'rotated', 'routes']);
     assert.equal(before.mapMode, mode);
-    const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .roads-layer .road-line, .roads-layer .trail-line');
+    const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail');
     const editorRouteCount = await editorRoutes.count();
     assert.ok(editorRouteCount > 0, 'the imported map has real rivers and routes');
     assert.equal(await master.locator('[data-route-kind]').count(), await editorRoutes.count());
     assert.equal(await first.locator('[data-route-kind]').count(), before.routes.length);
+    const editorMarkCount = await editor.locator('.river-crossing, .river-waterfall').count();
+    assert.equal(await master.locator('[data-mark-kind]').count(), editorMarkCount);
+    assert.equal(await first.locator('[data-mark-kind]').count(), before.marks.length);
+    const markTypes = await master.locator('[data-mark-kind]').evaluateAll(marks => marks.map(mark => mark.dataset.markKind));
+    assert.ok(markTypes.includes('bridge'));
+    if (mode === 'mythic') {
+      assert.ok(markTypes.includes('ferry'));
+      assert.ok(markTypes.includes('waterfall'));
+    }
     verifyRouteBounds(before);
     assert.equal(before.rotated, rotated);
     assert.equal(await first.locator('#map > g').getAttribute('transform'), rotated ? 'rotate(90)' : null);
@@ -147,6 +161,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const proposed = await snapshotPlayer();
     assert.deepEqual(proposed.cells, before.cells);
     assert.deepEqual(proposed.routes, before.routes);
+    assert.deepEqual(proposed.marks, before.marks);
     await master.reload();
     await master.locator('[data-proposal="2"]').waitFor();
     assert.equal(await master.locator('#join').getAttribute('href'), offeredLink);
@@ -159,6 +174,9 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const after = await snapshotPlayer();
     verifyRouteBounds(after);
     assert.equal(await first.locator('[data-route-kind]').count(), after.routes.length);
+    assert.equal(await first.locator('[data-mark-kind]').count(), after.marks.length);
+    if (mode === 'mythic') assert.ok(after.marks.some(mark => mark.kind === 'ferry'));
+    else assert.ok(after.marks.some(mark => mark.kind === 'bridge'));
     assert.notDeepEqual(after.routes, before.routes, 'a move replaces the currently revealed route fragments');
     assert.ok(after.routes.length < await editorRoutes.count());
     assert.notDeepEqual(after.cells, before.cells, 'confirmed move updates the authorised projection');
@@ -183,7 +201,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     }
     console.log(JSON.stringify({mode, fixture, contexts: 3,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
-      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
+      proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {
     try {
       await Promise.all(contexts.map(context => context.close()));

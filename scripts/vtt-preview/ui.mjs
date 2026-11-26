@@ -52,7 +52,7 @@ function draw(next) {
   map.setAttribute('viewBox', [centerX - 360, centerY - 260, 720, 520].join(' '));
   const {defs, terrain} = drawTerrain(next);
   const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
-  layer.append(...terrain, drawRoutes(next.routes));
+  layer.append(...terrain, drawRoutes(next.routes), drawMarks(next.marks, next.rotated));
   if (next.proposal !== null) {
     layer.append(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7',
       transform: `translate(${x} ${y}) rotate(${directionAngle(next.proposal)})`,
@@ -110,6 +110,28 @@ function drawRoutes(routes) {
       'stroke-width': width,
       fill: 'none'
     }));
+  }
+  return group;
+}
+
+const markLabels = {bridge: 'Мост', ferry: 'Переправа', ford: 'Брод', waterfall: 'Водопад'};
+
+function drawMarks(marks, rotated) {
+  const group = shape('g', {'data-route-marks': ''});
+  for (const {kind, x, y} of marks) {
+    const mark = shape('g', {'data-mark-kind': kind, role: 'img', 'aria-label': markLabels[kind]});
+    const title = shape('title', {});
+    title.textContent = markLabels[kind];
+    mark.append(title);
+    if (kind === 'waterfall') {
+      const image = shape('image', {href: '/waterfall-color.svg', x: x - 8, y: y - 8, width: 16, height: 16});
+      if (rotated) image.setAttribute('transform', `rotate(-90 ${x} ${y})`);
+      mark.append(image);
+    } else {
+      // Bridge rails, the ford stroke and the ferry gap are already in the editor's route layer.
+      mark.append(shape('circle', {cx: x, cy: y, r: 7, fill: 'transparent'}));
+    }
+    group.append(mark);
   }
   return group;
 }

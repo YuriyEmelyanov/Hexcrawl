@@ -1,6 +1,7 @@
 import {HEX_SIZE, getHexPolygonPoints, toPixel} from '../../src/rendering/baseHexArtwork.ts';
 
-const kinds = new Set(['river', 'road', 'trail']);
+const kinds = new Set(['river', 'road', 'trail', 'rapid', 'rail']);
+const markKinds = new Set(['bridge', 'ford', 'ferry', 'waterfall']);
 const epsilon = 1e-7;
 const samePoint = ([ax, ay], [bx, by]) => Math.abs(ax - bx) < epsilon && Math.abs(ay - by) < epsilon;
 
@@ -17,14 +18,36 @@ export function readRoutes(routes) {
   });
 }
 
+export function readMarks(marks) {
+  if (!Array.isArray(marks)) throw new Error('Invalid marks');
+  return marks.map(({kind, x, y}) => {
+    if (!markKinds.has(kind) || !Number.isFinite(x) || !Number.isFinite(y)) throw new Error('Invalid map mark');
+    return {kind, x, y};
+  });
+}
+
+function hexPolygon({q, r}) {
+  const {x, y} = toPixel(q, r);
+  return getHexPolygonPoints(x, y, HEX_SIZE);
+}
+
+function edgeSide(from, to, x, y) {
+  return (to.x - from.x) * (y - from.y) - (to.y - from.y) * (x - from.x);
+}
+
+export function marksAt(marks, position) {
+  const hex = hexPolygon(position);
+  return marks.filter(({x, y}) => hex.every((from, i) =>
+    edgeSide(from, hex[(i + 1) % hex.length], x, y) >= -epsilon));
+}
+
 // Intersect each segment with the six half planes of the current hex.
 function clipSegment(a, b, polygon) {
   let start = 0, end = 1;
   for (let i = 0; i < polygon.length; i++) {
     const from = polygon[i], to = polygon[(i + 1) % polygon.length];
-    const dx = to.x - from.x, dy = to.y - from.y;
-    const da = dx * (a[1] - from.y) - dy * (a[0] - from.x);
-    const db = dx * (b[1] - from.y) - dy * (b[0] - from.x);
+    const da = edgeSide(from, to, ...a);
+    const db = edgeSide(from, to, ...b);
     if (da < -epsilon && db < -epsilon) return null;
     if (da < -epsilon) start = Math.max(start, da / (da - db));
     if (db < -epsilon) end = Math.min(end, da / (da - db));
@@ -36,9 +59,8 @@ function clipSegment(a, b, polygon) {
   return samePoint(first, last) ? null : [first, last];
 }
 
-export function routesAt(routes, {q, r}) {
-  const {x, y} = toPixel(q, r);
-  const polygon = getHexPolygonPoints(x, y, HEX_SIZE);
+export function routesAt(routes, position) {
+  const polygon = hexPolygon(position);
   const visible = [];
   for (const route of routes) {
     let current = null;
