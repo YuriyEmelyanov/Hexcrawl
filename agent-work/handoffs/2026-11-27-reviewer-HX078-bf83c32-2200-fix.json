@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "run_id": "2026-11-27-reviewer-HX078-bf83c32-2200",
+  "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
+  "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "from_role": "reviewer",
+  "to_role": "programmer",
+  "status": "changes_requested",
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "scope": "Утверждённый выпуск 1. Исправление привязки комнаты и восстановления камеры без новых механик.",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
+  "findings": [
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "severity": "P1",
+      "blocking": true,
+      "status": "reopened",
+      "confidence": "browser_confirmed",
+      "acceptance_ids": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "summary": "Вторая игра, начатая из вкладки редактора, открытой из первой, перезаписывает привязку автосохранения. Повторный вход в первую игру восстанавливает позицию и приглашение второй.",
+      "expected": "Две игры на одинаковой карте сохраняют свои позиции и ссылки после повторного входа. Проверить также редактор, открытый из другой вкладки, и действующие чистые вкладки.",
+      "refs": [
+        "src/App.tsx:15927-15936",
+        "src/App.tsx:16168-16179",
+        "src/vttMapCache.ts:32-45",
+        "agent-work/evidence/HX-BL-078/review-bf83c32/linked-editor-recovered.jpg"
+      ],
+      "evidence": {
+        "mode": "recovery-after-opening-second-editor-from-first",
+        "originalPosition": "0,1",
+        "secondPosition": "1,1",
+        "recoveredPosition": "1,1",
+        "rejoinedOriginalRoom": false,
+        "rejoinedSecondRoom": true
+      }
+    },
+    {
+      "id": "F519-SCALE-RESTORE-007",
+      "severity": "P2",
+      "blocking": false,
+      "status": "open",
+      "confidence": "browser_confirmed",
+      "acceptance_ids": [
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "summary": "Карта из старого одномильного сохранения запускается на 5–6 милях, но после восстановления редактора её экранное увеличение само меняется с 1× до 6×.",
+      "expected": "Сохранить действительное увеличение редактора при нормализации 1 → 5–6 миль и повторном входе.",
+      "refs": [
+        "src/App.tsx:14031-14035",
+        "src/App.tsx:14110-14112",
+        "src/App.tsx:15939-15944"
+      ],
+      "evidence": {
+        "mode": "native-zoom-after-restoring-legacy-one-mile-map",
+        "before": 1,
+        "after": 6,
+        "selectedScale": "6",
+        "zoomPreserved": false
+      }
+    }
+  ],
+  "verified_findings": [
+    {
+      "id": "F519-RESTORE-004",
+      "status": "verified_fixed",
+      "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
+    },
+    {
+      "id": "F519-SCALE-006",
+      "status": "verified_fixed",
+      "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
+    }
+  ],
+  "next_step": "Исправить восстановление ожидаемой игры в связанных вкладках редактора (F519-ROOM-BINDING-005) и сохранение масштаба камеры для старой карты (F519-SCALE-RESTORE-007). Расширить два имеющихся сценария, сохранить повторный вход мастера в режиме чтения и вернуть новый SHA для независимой проверки.",
+  "completion": "В новом SHA первоначальная и вторая игры восстанавливают каждая своё состояние и ссылку в связанных вкладках. После возврата старой карты увеличение сохраняется. Повторить существующий сценарий восстановления мастера и проверку масштаба."
+}
