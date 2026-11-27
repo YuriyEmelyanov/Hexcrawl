@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "run_id": "2026-11-27-reviewer-HX078-7f602111-1800",
+  "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "tree_sha": "afc1fdc07488168e771444f0c3597289478a0d69",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "result": "Независимая приёмка PR519 потребовала изменений: основной сценарий двух независимых комнат прошёл, но ранее работавшее восстановление последней позиции при повторном входе не прошло.",
+  "role": "reviewer",
+  "independent_review": {
+    "mode": "fresh_context_read_only_reviewer_plus_primary_independent_browser_execution",
+    "scope": "Original review items, exact-tree/browser evidence, autosave/recovery, invitation lifecycle and 5–6 mile eligibility."
+  },
+  "checks": {
+    "tree_binding": {
+      "remote_commit": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+      "remote_tree": "afc1fdc07488168e771444f0c3597289478a0d69",
+      "independent_checkout": "git archive of content-identical tree afc1fdc"
+    },
+    "ci": {
+      "run_id": 46008396707,
+      "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "world-random",
+          "conclusion": "success"
+        },
+        {
+          "name": "engraved-map-comparison",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "check",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "downloaded_artifact": {
+      "id": 15204305386,
+      "sha256": "800aef83c9220fccb4065f3d216bc84754025b6640fa737ab1b85df0059463d8",
+      "checked": [
+        "result.json",
+        "master-after-restart.jpg",
+        "player-after-restart.jpg"
+      ],
+      "observations": {
+        "two_different_maps": true,
+        "retained_links_after_service_restart": true,
+        "authorized_player_view": true,
+        "move": "0,1 → 0,0"
+      }
+    },
+    "local_https": {
+      "command": "npm run test:browser:vtt-production",
+      "exit_code": 0
+    },
+    "local_full_vtt_room": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "node": "24.22.3",
+      "exit_code": 1,
+      "passed_profiles": [
+        "classic",
+        "knave",
+        "crows",
+        "mythic"
+      ],
+      "failed": "verifyEditorRestore test/browser/vtt-room-preview.mjs:606, waited 20 seconds for the cached-position notice",
+      "not_run": "subsequent cases after failure"
+    }
+  },
+  "prior_findings": [
+    {
+      "id": "F519-SEC-001",
+      "status": "fixed_in_reviewed_sha",
+      "scope": "Публичная сборка не содержит постоянный ключ открытия, использованный в проверке."
+    },
+    {
+      "id": "F519-DEPLOY-002",
+      "status": "resolved_for_temporary_https_only",
+      "scope": "Две разные карты проходят независимо с сохранением после перезапуска. Хостинг, подключение к Pages и пользовательская приёмка удалённого стенда отдельно ожидают подтверждения."
+    },
+    {
+      "id": "F519-TEST-003",
+      "status": "resolved_for_original_scope",
+      "scope": "HTTPS-проверка больше не ограничена PR519 и защищает два случая. Падающая проверка повторного входа из существующего suite пока не запускается в обычном CI: использовать её для предотвращения регрессии."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F519-RESTORE-004",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "confidence": "browser_confirmed",
+      "summary": "При повторном входе из редактора в новую вкладку мастера недоступная комната не восстанавливает последнее сохранённое положение.",
+      "refs": [
+        "test/browser/vtt-room-preview.mjs:550-558,602-618",
+        "scripts/vtt-preview/ui.mjs:25-41",
+        "src/App.tsx:15984-16018"
+      ],
+      "acceptance": "Повторный вход в том же браузере показывает последнюю подтверждённую позицию в режиме чтения. При восстановлении комнаты возвращаются живая позиция, состояние и прежняя ссылка. Обновление двух открытых вкладок мастера сохраняет их независимость."
+    },
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "confidence": "static_confirmed_design_gap",
+      "summary": "Восстановление сопоставляет карту с первой подходящей комнатой. Привязка к конкретной игре и подтверждённым полномочиям мастера обязательна при независимых играх на одной карте.",
+      "refs": [
+        "scripts/vtt-preview/server.mjs:138-171",
+        "src/vttMapCache.ts:32-38"
+      ],
+      "acceptance": "Две независимые игры на одной карте сохраняют каждая свою ссылку и позицию после повторного входа. Сервер подтверждает полномочия мастера для конкретной комнаты."
+    },
+    {
+      "id": "F519-SCALE-006",
+      "severity": "P2",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC01"
+      ],
+      "confidence": "static_confirmed_unrun",
+      "summary": "У ранее сохранённой карты с положением 1 миля переключение редактора на 5–6 миль может показать кнопку, но передаваемый сохранённый масштаб остаётся 1 миля и не проходит серверную проверку.",
+      "refs": [
+        "src/App.tsx:15879-15885,15994-16000,17233-17244",
+        "scripts/vtt-preview/server.mjs:119-125"
+      ],
+      "acceptance": "Открыть сохранённую 1-мильную карту, перевести её в 5–6 миль и успешно войти. На 1 миле вход по-прежнему скрыт."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: existing test/browser/vtt-production-preview.mjs and test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Reusable public-bundle authority, cross-room state/credential collision, durable restore of multiple rooms, and loss of the production regression outside PR519.",
+    "reuse_or_new_reason": "Extended the two existing VTT scenarios instead of adding a duplicate suite: production HTTPS now asserts a secret-free bundle and two isolated durable rooms; the local room scenario asserts no launch bearer and per-tab master authority.",
+    "count_source": "git diff 9dbbd6c662bdd834155a1522df769f0e1e29f03b..7f602111fcce88b8e2d157baa252b32f3954eae1; logical top-level scenarios",
+    "scope": "Changes since the previous independent review. No product files edited by reviewer.",
+    "necessity": "Проверка публичной сборки и независимости комнат защищает риски, которых не проверял один локальный room. Изменение локальной проверки учитывает раздельные сессии, но теряет сценарий восстановления при недоступном серверном состоянии. Использовать существующий сценарий, а не дублировать тест.",
+    "checks": {
+      "configured_https_ci": {
+        "executed": 1,
+        "passed": 1
+      },
+      "configured_https_reviewer": {
+        "executed": 1,
+        "passed": 1
+      },
+      "reviewer_vtt_room_browser": {
+        "observed_passed": [
+          "classic",
+          "knave",
+          "crows",
+          "mythic"
+        ],
+        "observed_failed": [
+          "classic-generated-editor-restore"
+        ],
+        "remaining": "subsequent cases did not execute after timeout"
+      }
+    }
+  },
+  "publication_authorized": false,
+  "live_deployment_verified": false,
+  "limitations": [
+    "Временная HTTPS-сборка с отдельными адресами редактора, мастера и игрока; стандартная сборка Pages не конфигурирует сервис комнат.",
+    "При отсутствии сервиса снаружи проверка реального доступа отложена; дефект локального восстановления можно исправить независимо.",
+    "Проверка масштаба и привязки комнаты основана на статическом анализе; браузерный результат относится к F519-RESTORE-004."
+  ],
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
+  "next_role": "programmer",
+  "next_step": "Исправить восстановление комнаты на последнем сохранённом состоянии, привязку конкретной игры к полномочиям мастера и вход на 5–6 миль из старого сохранения. Повторить существующие браузерные сценарии, затем вернуть новый SHA.",
+  "recorded_at": "2026-11-27T15:03:43.160Z"
+}
