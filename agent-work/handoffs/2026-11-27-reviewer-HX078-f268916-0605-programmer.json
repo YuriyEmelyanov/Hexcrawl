@@ -1,0 +1,71 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-f268916-0605",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+  "tree_sha": "7b451512a4ede3fd71f2bf475ad8689bbbd74745",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX078-f268916-0605.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-f268916-0605-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/score-assessment.json",
+  "capture_refs": {
+    "confirmed_snapshot": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-saved-room.jpg",
+    "first_reopen_failure": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-reopen-no-credential.jpg",
+    "bridge_before": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-before.jpg",
+    "bridge_after": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Исправить повторный вход после прерванной первой загрузки мастера и вид тропной переправы. На новом SHA независимо перепроверить эти случаи и затем пройти удалённый HTTPS-сценарий.",
+  "status": "changes_requested",
+  "checks_status": "success_with_review_findings",
+  "review_ready": false,
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Два точечных исправления, повторная проверка, удалённый HTTPS-сценарий и разрешённый выпуск. Внешнее ожидание не входит."
+  },
+  "role_selection_reason": "Успешный Check на точном SHA и передача от программиста. Свобода задачи, актуальные замечания владельца и GitHub-активность подтверждены.",
+  "new_findings": [
+    {
+      "id": "HX078-VTT1-R07",
+      "acceptance": [
+        "VTT-AC08"
+      ],
+      "completion": "После принятого создания комнаты остановить начальную загрузку окна, затем повторить вход из сохранённой карты в том же профиле. Мастер видит исходную комнату, её позицию и прежнюю ссылку. При недоступной комнате остаётся режим просмотра без скрытого создания новой игры."
+    },
+    {
+      "id": "HX078-VTT1-R08",
+      "acceptance": [
+        "VTT-AC03"
+      ],
+      "completion": "На карте с допустимой переправой на тропе игрок видит саму переправу и разрешённый участок тропы на её текущем ребре. Сохранить редакторский стиль, отображение дорожного парома, мостов, бродов и отсечение дальних участков."
+    }
+  ],
+  "external_dependency": {
+    "status": "missing_evidence",
+    "detail": "Указан локальный вход через loopback. В deploy.yml и штатной конфигурации Pages нет адреса сервиса комнаты. В действующих решениях для HX-BL-078 не найден разрешённый HTTPS-стенд. Для удалённой проверки нужен адрес существующего стенда и доступ к приватному входу мастера с постоянным состоянием.",
+    "source": [
+      ".github/workflows/deploy.yml",
+      "vite.config.ts:6",
+      "scripts/vtt-preview/server.mjs:206",
+      "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json"
+    ]
+  },
+  "completion_check": "Сначала прерванная первая загрузка мастера и повторный вход в ту же комнату; затем разрешённая тропная переправа и отсутствие дальних фрагментов. Материалы на точном SHA."
+}

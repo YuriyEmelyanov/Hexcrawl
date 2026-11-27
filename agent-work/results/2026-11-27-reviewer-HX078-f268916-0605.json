@@ -1,0 +1,187 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-f268916-0605",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+  "tree_sha": "7b451512a4ede3fd71f2bf475ad8689bbbd74745",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX078-f268916-0605.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-f268916-0605-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/score-assessment.json",
+  "capture_refs": {
+    "confirmed_snapshot": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-saved-room.jpg",
+    "first_reopen_failure": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-reopen-no-credential.jpg",
+    "bridge_before": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-before.jpg",
+    "bridge_after": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Исправить повторный вход после прерванной первой загрузки мастера и вид тропной переправы. На новом SHA независимо перепроверить эти случаи и затем пройти удалённый HTTPS-сценарий.",
+  "status": "changes_requested",
+  "checks_status": "success_with_review_findings",
+  "review_ready": false,
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Два точечных исправления, повторная проверка, удалённый HTTPS-сценарий и разрешённый выпуск. Внешнее ожидание не входит."
+  },
+  "result": "Подтверждены сохранение хода после успешного входа, прежняя ссылка и целые мост и брод. Воспроизведены отказ повторного входа после прерванной первой загрузки и невидимая разрешённая переправа на тропе.",
+  "role_selection_reason": "Успешный Check на точном SHA и передача от программиста. Свобода задачи, актуальные замечания владельца и GitHub-активность подтверждены.",
+  "prior_findings": [
+    {
+      "id": "HX078-VTT1-R05",
+      "outcome": "confirmed_after_successful_first_entry",
+      "evidence": "При обрыве только у мастера после подтверждённого перехода позиция и история восстанавливаются из браузера. Игрок продолжает видеть комнату, а после восстановления связи видна новая живая стрелка и сохраняется та же ссылка."
+    },
+    {
+      "id": "HX078-VTT1-R06",
+      "outcome": "verified_for_bridge_and_ford",
+      "evidence": "Перила Classic имеют полную длину 23,21 с обеих сторон, а центральный штрих брода 14 единиц на каждой стороне. Разрешённая тропная переправа проверена отдельным новым замечанием."
+    }
+  ],
+  "finding_ids": [
+    "HX078-VTT1-R07",
+    "HX078-VTT1-R08"
+  ],
+  "checks": {
+    "ci": {
+      "id": 45943874687,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45943874687",
+      "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "check",
+          "conclusion": "success"
+        },
+        {
+          "name": "world-random",
+          "conclusion": "success"
+        },
+        {
+          "name": "engraved-map-comparison",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "browser_vtt": {
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    },
+    "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json"
+  },
+  "test_change_summary": {
+    "base_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+    "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "review",
+    "scenario": "Точный SHA, отдельные временные браузерные проверки.",
+    "reuse_or_new_reason": "Выполнены имеющиеся шесть случаев, целевые диагностические проверки не меняют репозиторий продукта.",
+    "count_source": "git diff на совпадающем SHA пуст; дельта принятого на ревью пакета сверена e22b45d…f268916.",
+    "package_diff": {
+      "base_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+      "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+      "added": 0,
+      "removed": 0,
+      "modified": 5,
+      "suite": "browser/VTT",
+      "assessment": "Изменения полезны для восстановления живой комнаты и полных перил. Нет первого прерванного входа, отдельного исходного брода и парома на тропе. VTT-набор отдельно от штатного CI."
+    }
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-078",
+    "model_version": "1.3-rc8",
+    "level": "L2",
+    "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "status": "insufficient_evidence",
+    "phase": "pre_release_review",
+    "baseline_ref": "agent-work/score/current-score.json#levels",
+    "formula_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/README.md",
+    "confirmed_delta": null,
+    "points_awarded": 0,
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "grade_before": null,
+        "points_before": null,
+        "grade_after": null,
+        "points_after": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Сверка двух берегов рубежа, геометрии моста и брода, отдельный импорт тропной переправы, локальные проекции мастера и игрока.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json",
+          "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+        ],
+        "limits": "Тропная переправа и её фрагмент пока не отображаются. Удалённый вход не подтверждён."
+      },
+      {
+        "criterion_id": "S02-C05",
+        "grade_before": null,
+        "points_before": null,
+        "grade_after": null,
+        "points_after": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Пара независимых браузерных сценариев восстановления и отдельное прерывание первой загрузки. Вес L1 не переносится.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json",
+          "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-saved-room.jpg",
+          "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/review-reopen-no-credential.jpg"
+        ],
+        "limits": "Подтверждённое состояние после первого успешного входа сохраняется, а прерванная первая загрузка блокирует повторный вход."
+      }
+    ],
+    "posted_to_current_or_history": false
+  },
+  "external_dependency": {
+    "status": "missing_evidence",
+    "detail": "Указан локальный вход через loopback. В deploy.yml и штатной конфигурации Pages нет адреса сервиса комнаты. В действующих решениях для HX-BL-078 не найден разрешённый HTTPS-стенд. Для удалённой проверки нужен адрес существующего стенда и доступ к приватному входу мастера с постоянным состоянием.",
+    "source": [
+      ".github/workflows/deploy.yml",
+      "vite.config.ts:6",
+      "scripts/vtt-preview/server.mjs:206",
+      "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json"
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T06:05:18.212Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T06:11:21.360Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T06:11:21.360Z",
+  "run_status": "completed"
+}
