@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "from_role": "programmer",
+  "to_role": "reviewer",
+  "run_id": "2026-11-27-programmer-HX078-room-recovery-2000",
+  "status": "prepared_for_exact_sha_review",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-room-recovery-2000.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/verification.json",
+  "screenshot_ref": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/master-saved-position.jpg",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071/artifacts/15219614024",
+  "verified_artifact": {
+    "id": 15219614024,
+    "sha256": "aa93d6b15d73ffb797ed44eb1c189b01402989d168a1e2956b17fa76f17bd96d",
+    "result": {
+      "mode": "production-https",
+      "editorOrigin": true,
+      "separateMasterAndPlayerOrigins": true,
+      "productionEntry": true,
+      "confirmedMove": true,
+      "roomRestart": true,
+      "samePlayerLink": true,
+      "authorisedProjectionAfterRestart": true,
+      "publicBundleSecretFree": true,
+      "isolatedRooms": true,
+      "sameMapEditorRecovery": true,
+      "from": "0,1",
+      "to": "0,0"
+    }
+  },
+  "local_checks": {
+    "status": "success",
+    "node": "24.22.3",
+    "executed": 460,
+    "passed": 460,
+    "skipped": 0,
+    "build": "passed",
+    "source_equivalence": {
+      "sha": "a31e20c7f4f24c46377ac4240fe09436e2d24edb",
+      "confirmation": "Later commit changes only browser harness, not Node test glob, tsconfig inputs or build.",
+      "files": [
+        "test/browser/vtt-production-preview.mjs",
+        "test/browser/vtt-room-preview.mjs"
+      ]
+    },
+    "browser": {
+      "https_count": 1,
+      "room_count": 7,
+      "passed": 8
+    }
+  },
+  "findings": [
+    {
+      "id": "F519-RESTORE-004",
+      "status": "fixed_pending_independent_review",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "observed": "При недоступной комнате видна подтверждённая позиция 4,-2 в режиме чтения. После восстановления возвращаются игра и прежняя ссылка."
+    },
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "status": "fixed_pending_independent_review",
+      "acceptance_ids": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "observed": "Две игры на одной карте вернулись к позициям 0,0 и 1,1 со своими ссылками после закрытия обеих вкладок и перезапуска."
+    },
+    {
+      "id": "F519-SCALE-006",
+      "status": "fixed_pending_independent_review",
+      "acceptance_ids": [
+        "VTT-AC01"
+      ],
+      "observed": "Старое сохранение с видом 1 миля не предлагает VTT на 1 миле. При переключении на 5–6 миль мастер вошёл на 0,0."
+    }
+  ],
+  "review_scope": [
+    "Восстановить игру после закрытия вкладки мастера и временной недоступности состояния, проверить позицию в режиме чтения, автоматическое переподключение и прежнюю ссылку.",
+    "Повторно войти в две игры на одинаковой карте. Проверить отдельные позиции, ссылки и подтверждение полномочий в каждой комнате.",
+    "Сохранение с видом 1 миля открыть в редакторе, перейти на 5–6 миль и запустить VTT. В самом одномильном виде вход должен быть скрыт.",
+    "Проверить текущий результат Check на точном SHA и зафиксировать независимое заключение и предварительную оценку 1.3-rc8."
+  ],
+  "test_change_summary": {
+    "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+    "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: production HTTPS and the Classic room scenario",
+    "scenario_risk": "Раздельный вход в игры на одной карте и допуск старого сохранения после перехода на 5–6 миль. Существующая проверка восстановления перенесена в регулярный CI.",
+    "reuse_or_new_reason": "Расширены имеющиеся сценарии. Ожидание готовности импорта в смежных сценариях устраняет ложный тайм-аут без изменения их контрактов.",
+    "count_source": "Logical assertions in git diff 7f602111..bf83c329",
+    "runners": {
+      "local_https_chromium": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "local_room_chromium": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      }
+    }
+  },
+  "publication_authorized": false,
+  "limitations": [
+    "Временная HTTPS-среда. Перед выпуском требуется отдельное подтверждение сервиса в поставляемой сборке.",
+    "Режим чтения проверен при недоступном состоянии комнаты, когда саму страницу мастера можно открыть.",
+    "Старый кэш, содержавший только карту без полномочий комнаты, восстанавливает карту. Для безопасного возвращения в ту же игру требуется сохранённый доступ мастера."
+  ],
+  "created_at": "2026-11-27T17:23:27.942Z"
+}
