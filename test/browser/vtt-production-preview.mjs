@@ -216,20 +216,23 @@ try {
   const reopen = async page => {
     await page.reload();
     await page.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
+    await page.bringToFront();
     const [room] = await Promise.all([
       page.waitForEvent('popup'), page.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/}).click()
     ]);
     await room.locator('#join').waitFor();
     return room;
   };
-  const [restoredMaster, restoredSecond] = await Promise.all([reopen(editor), reopen(secondEditor)]);
-  assert.equal(await restoredMaster.locator('#join').getAttribute('href'), playerLink);
-  assert.equal(await restoredSecond.locator('#join').getAttribute('href'), secondPlayerLink);
+  const restoredMaster = await reopen(editor);
+  const restoredSecond = await reopen(secondEditor);
+  assert.ok(await restoredMaster.locator('#join').getAttribute('href') === playerLink, 'first editor keeps its own invitation');
+  assert.ok(await restoredSecond.locator('#join').getAttribute('href') === secondPlayerLink, 'second editor keeps its own invitation');
   await Promise.all([waitPosition(restoredMaster, '0,0'), waitPosition(restoredSecond, '1,1')]);
 
   await mkdir(evidenceDir, {recursive: true});
   await Promise.all([
     restoredMaster.screenshot({path: join(evidenceDir, 'master-after-restart.jpg'), quality: 76}),
+    restoredSecond.screenshot({path: join(evidenceDir, 'second-master-after-restart.jpg'), quality: 76}),
     player.screenshot({path: join(evidenceDir, 'player-after-restart.jpg'), quality: 76})
   ]);
   const result = {mode: 'production-https', editorOrigin: true, separateMasterAndPlayerOrigins: true,
