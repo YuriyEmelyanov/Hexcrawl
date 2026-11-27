@@ -17,13 +17,15 @@
   "score_assessment_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/review/score-assessment.json",
   "finding_ids": [
     "F519-SEC-001",
-    "F519-DEPLOY-002"
+    "F519-DEPLOY-002",
+    "F519-TEST-003"
   ],
   "scope": [
     "Remove the reusable room-launch secret from public editor assets and establish server-side room-creation authority/abuse controls.",
     "Replace the single global room/storage slot with an independent durable room identity/storage boundary suitable for more than one game.",
     "Extend the existing production HTTPS scenario (do not add a duplicate suite) to prove no reusable secret appears in dist and two independent maps do not collide.",
-    "Return a new exact SHA with required checks; external stand and publication remain separate owner decisions."
+    "Return a new exact SHA with required checks; external stand and publication remain separate owner decisions.",
+    "Make the production HTTPS scenario a persistent relevant CI regression and extend it with negative build/secret checks rather than adding another suite."
   ],
   "acceptance": "A new exact SHA contains no reusable server secret in downloadable assets, supports isolated independent room identities, passes the extended production HTTPS scenario and full required checks, and is handed back for independent review.",
   "test_change_summary": {
@@ -43,5 +45,14 @@
   },
   "publication_authorized": false,
   "release_authorized": false,
-  "created_at": "2026-11-27T12:53:15.960Z"
+  "created_at": "2026-11-27T12:53:15.960Z",
+  "independent_reviewer_summary": {
+    "verdict": "findings",
+    "exact_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "method": "fresh-context independent reviewer",
+    "key_observation": "Configured production bundle contains the reusable launch Bearer; player URL itself does not contain that key.",
+    "ci_observation": "Exact SHA CI and digest-verified artifact passed the bounded one-room HTTPS scenario.",
+    "score_delta": 0,
+    "score_status": "insufficient_evidence"
+  }
 }
