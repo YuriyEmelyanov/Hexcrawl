@@ -273,6 +273,27 @@
       "ref": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/master-saved-position.jpg",
       "blob": "de4142668542e5e1da6bd4db63ae559e7d0cae0f",
       "operational_commit": "1ae8785519df1952e8d85de6f799c5ef5ba5c9b3"
+    },
+    "npm_check": {
+      "status": "success",
+      "node": "24.22.3",
+      "executed": 460,
+      "passed": 460,
+      "skipped": 0,
+      "build": "passed",
+      "source_equivalence": {
+        "sha": "a31e20c7f4f24c46377ac4240fe09436e2d24edb",
+        "confirmation": "Later commit changes only browser harness, not Node test glob, tsconfig inputs or build.",
+        "files": [
+          "test/browser/vtt-production-preview.mjs",
+          "test/browser/vtt-room-preview.mjs"
+        ]
+      },
+      "browser": {
+        "https_count": 1,
+        "room_count": 7,
+        "passed": 8
+      }
     }
   },
   "findings": [
@@ -332,5 +353,52 @@
     "Старый кэш, содержавший только карту без полномочий комнаты, восстанавливает карту. Для безопасного возвращения в ту же игру требуется сохранённый доступ мастера."
   ],
   "publication_authorized": false,
-  "recorded_at": "2026-11-27T17:12:58.689Z"
+  "recorded_at": "2026-11-27T17:12:58.689Z",
+  "ci": {
+    "run_id": 46039697071,
+    "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "world-random",
+        "conclusion": "success",
+        "id": 140644140505
+      },
+      {
+        "name": "browser",
+        "conclusion": "success",
+        "id": 140644141060
+      },
+      {
+        "name": "check",
+        "conclusion": "success",
+        "id": 140644141084
+      },
+      {
+        "name": "engraved-map-comparison",
+        "conclusion": "skipped",
+        "id": 140644142609
+      }
+    ],
+    "verified_https_artifact": {
+      "id": 15219614024,
+      "sha256": "aa93d6b15d73ffb797ed44eb1c189b01402989d168a1e2956b17fa76f17bd96d",
+      "result": {
+        "mode": "production-https",
+        "editorOrigin": true,
+        "separateMasterAndPlayerOrigins": true,
+        "productionEntry": true,
+        "confirmedMove": true,
+        "roomRestart": true,
+        "samePlayerLink": true,
+        "authorisedProjectionAfterRestart": true,
+        "publicBundleSecretFree": true,
+        "isolatedRooms": true,
+        "sameMapEditorRecovery": true,
+        "from": "0,1",
+        "to": "0,0"
+      }
+    }
+  }
 }
