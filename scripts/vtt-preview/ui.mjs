@@ -52,7 +52,7 @@ function draw(next) {
     join.hidden = closeAccess.hidden = !accessOpen;
     get('access-closed').hidden = accessOpen;
     rotateLink.textContent = accessOpen ? 'Сменить ссылку' : 'Создать новую ссылку';
-    if (accessOpen) join.href = next.playerPath;
+    if (accessOpen) join.href = next.playerUrl ?? next.playerPath;
     else join.removeAttribute('href');
     confirm.disabled = cancel.disabled = next.proposal === null;
   }

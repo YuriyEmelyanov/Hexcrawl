@@ -370,14 +370,19 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
 }
 
 async function verifyEditorRestore(browser) {
-  const preview = await startEditorPreview();
+  const privateDir = await mkdtemp(join(tmpdir(), 'hexcrawl-vtt-ingress-'));
   const masterContext = await browser.newContext({viewport: {width: 1120, height: 720}});
   const playerContext = await browser.newContext({viewport: {width: 420, height: 700}});
+  const secondContext = await browser.newContext({viewport: {width: 880, height: 650}});
   masterContext.setDefaultTimeout(20000);
   playerContext.setDefaultTimeout(20000);
+  secondContext.setDefaultTimeout(20000);
+  let preview;
   try {
+    preview = await startEditorPreview({storagePath: join(privateDir, 'room.json'), playerPort: 0});
     const editor = await masterContext.newPage();
     const player = await playerContext.newPage();
+    const second = await secondContext.newPage();
     await editor.goto(preview.editorUrl);
     const seed = editor.getByRole('textbox', {name: /^(World seed|Seed мира)$/i});
     const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
@@ -399,17 +404,35 @@ async function verifyEditorRestore(browser) {
       await page.locator('#join').waitFor();
       return page;
     };
-    let master = await openRoom();
+    const [firstOpen, masterPage] = await Promise.all([
+      editor.waitForRequest(request => request.url() === preview.roomUrl + '/open' && request.method() === 'POST'),
+      openRoom()
+    ]);
+    let master = masterPage;
     const originalLink = await master.locator('#join').getAttribute('href');
-    const playerUrl = new URL(originalLink, preview.roomUrl).href;
-    await player.goto(playerUrl);
+    const playerUrl = new URL(originalLink).href;
+    assert.equal(new URL(playerUrl).origin, preview.playerUrl);
+    assert.notEqual(preview.playerUrl, preview.roomUrl);
+    assert.equal((await player.request.get(preview.playerUrl + '/master')).status(), 404);
+    const authorization = (await firstOpen.allHeaders()).authorization;
+    assert.equal((await player.request.post(preview.playerUrl + '/open', {
+      headers: {origin: preview.editorUrl, authorization}, data: firstOpen.postData()
+    })).status(), 404);
+    const masterKey = await master.evaluate(() => localStorage.getItem('vtt-preview-master'));
+    assert.equal((await player.request.get(preview.playerUrl + '/state', {
+      headers: {authorization: 'Bearer ' + masterKey}
+    })).status(), 404);
+    await Promise.all([player.goto(playerUrl), second.goto(playerUrl)]);
     await player.waitForFunction(value => document.querySelector('#position').value === value, selection);
-    const state = () => player.evaluate(async () => {
+    await second.waitForFunction(value => document.querySelector('#position').value === value, selection);
+    const state = (page = player) => page.evaluate(async () => {
       const response = await fetch('/state', {headers: {'x-preview-room': location.pathname}});
       if (!response.ok) throw new Error('Expected an active player view');
       return response.json();
     });
     const initial = await state();
+    assert.deepEqual(await state(second), initial);
+    assert.ok(initial.cells.length < await master.locator('[data-cell]').count());
     const directions = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
     const direction = directions.findIndex(([dq, dr]) =>
       initial.cells.some(cell => cell.q === initial.position.q + dq && cell.r === initial.position.r + dr));
@@ -424,6 +447,7 @@ async function verifyEditorRestore(browser) {
     const destination = `${initial.position.q + dq},${initial.position.r + dr}`;
     await player.waitForFunction(value => document.querySelector('#position').value === value, destination);
     const confirmed = await state();
+    await screenshot(player, 'player-before-service-restart');
 
     const restoreEditor = async () => {
       await master.close();
@@ -437,24 +461,34 @@ async function verifyEditorRestore(browser) {
       assert.equal(await master.locator('#position').textContent(), destination);
       assert.equal(player.url(), playerUrl);
     };
+    await preview.restartRoom();
     await restoreEditor();
     assert.deepEqual(await state(), confirmed);
+    assert.deepEqual(await state(second), confirmed);
     await propose((direction + 3) % 6);
     const pending = await state();
     await restoreEditor();
     assert.equal(await master.locator('[data-proposal]').getAttribute('data-proposal'), String(pending.proposal));
     assert.deepEqual(await state(), pending);
+    await second.reload();
+    await second.waitForFunction(value => document.querySelector('#position').value === value, destination);
+    assert.deepEqual(await state(second), pending);
     await screenshot(editor, 'editor-restored');
     await screenshot(master, 'master-after-reopen');
     await screenshot(player, 'player-original-link');
     console.log(JSON.stringify({mode: 'classic-generated-editor-restore', seed:42, startingHex:selection,
       confirmedHex:destination, sameEditorGeography:true, samePlayerLink:true,
-      confirmedReload:true, pendingProposalReload:true, fileImport:false}));
+      confirmedReload:true, pendingProposalReload:true, fileImport:false, distinctPlayerOrigin:true,
+      playerContexts:2, deniedMasterRoutesOnPlayerOrigin:true, samePlayerLinkAfterServiceRestart:true}));
   } finally {
     try {
-      await Promise.all([masterContext.close(), playerContext.close()]);
+      await Promise.all([masterContext.close(), playerContext.close(), secondContext.close()]);
     } finally {
-      await preview.close();
+      try {
+        await preview?.close();
+      } finally {
+        await rm(privateDir, {recursive: true, force: true});
+      }
     }
   }
 }

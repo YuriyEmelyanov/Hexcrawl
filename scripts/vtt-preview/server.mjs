@@ -10,13 +10,25 @@ import {roomStorage} from './room-storage.mjs';
 const key = ({q, r}) => `${q},${r}`;
 const newPlayerPath = () => '/play/' + randomBytes(16).toString('base64url');
 
-function roomRole(room, headers) {
+function roomRole(room, headers, playerOnly) {
   if (!room) return null;
-  if (headers.authorization === 'Bearer ' + room.masterKey) return 'master';
+  if (!playerOnly && headers.authorization === 'Bearer ' + room.masterKey) return 'master';
   return room.playerPath && headers['x-preview-room'] === room.playerPath ? 'player' : null;
 }
 
-export async function startPreview({port = 0, editorOrigin, launchKey, storagePath} = {}) {
+function playerLinkOrigin(value) {
+  const url = new URL(value);
+  const loopback = ['127.0.0.1', '[::1]', 'localhost'].includes(url.hostname);
+  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash ||
+      (url.protocol !== 'https:' && !(url.protocol === 'http:' && loopback))) {
+    throw new Error('Use an HTTPS origin for player links outside loopback');
+  }
+  return url.origin;
+}
+
+export async function startPreview({port = 0, playerPort, playerOrigin, editorOrigin, launchKey, storagePath} = {}) {
+  if (playerOrigin !== undefined && playerPort === undefined) throw new Error('Configure a separate player port');
+  let linkOrigin = playerOrigin === undefined ? undefined : playerLinkOrigin(playerOrigin);
   const storage = storagePath ? await roomStorage(storagePath) : null;
   const assets = new Map(await Promise.all([
     ['/ui.mjs', 'text/javascript; charset=utf-8', './ui.mjs'],
@@ -75,8 +87,9 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
     res.end(body);
   };
   const json = (res, status, body) => send(res, status, 'application/json; charset=utf-8', JSON.stringify(body));
-  const server = createServer(async (req, res) => {
+  async function handle(req, res, playerOnly) {
     const path = new URL(req.url, 'http://localhost').pathname;
+    if (playerOnly && (path === '/open' || path === '/master')) return json(res, 404, {error: 'Room unavailable'});
     if (path === '/open') {
       if (!editorOrigin?.() || req.headers.origin !== editorOrigin()) return json(res, 404, {error: 'Unavailable'});
       res.setHeader('access-control-allow-origin', req.headers.origin);
@@ -134,7 +147,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
         }
       }
     }
-    const role = roomRole(room, req.headers);
+    const role = roomRole(room, req.headers, playerOnly);
     if (path !== '/state' || !role) return json(res, 404, {error: 'Room unavailable'});
     if (req.method === 'GET') {
       const master = role === 'master';
@@ -144,7 +157,8 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
       const drawings = points.map(({q, r, icon, fill}) => ({q, r, icon, fill}));
       const {routes, marks} = master ? room : local;
       const view = {...viewOf(cells, state, master), routes, marks, pois: drawings};
-      return json(res, 200, master ? {...view, playerPath, history} : view);
+      const playerUrl = playerPath && linkOrigin ? new URL(playerPath, linkOrigin).href : undefined;
+      return json(res, 200, master ? {...view, playerPath, playerUrl, history} : view);
     }
     if (req.method !== 'POST') return json(res, 405, {error: 'Method unavailable'});
     let action;
@@ -156,7 +170,7 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
     }
     return mutate(async () => {
       // The link may have been revoked while this request was waiting to write.
-      const currentRole = roomRole(room, req.headers);
+      const currentRole = roomRole(room, req.headers, playerOnly);
       if (!currentRole) return json(res, 404, {error: 'Room unavailable'});
       const next = nextRoom(room, action, currentRole === 'master');
       if (!next) return json(res, 409, {error: 'Action not applied'});
@@ -167,20 +181,36 @@ export async function startPreview({port = 0, editorOrigin, launchKey, storagePa
       }
       return json(res, 200, {ok: true});
     });
-  });
-  await new Promise((resolve, reject) => server.listen(port, '127.0.0.1', pipeError(resolve, reject, server)));
+  }
+  const server = createServer((req, res) => handle(req, res, false));
+  const playerServer = playerPort === undefined ? null : createServer((req, res) => handle(req, res, true));
+  const listen = (listener, port) => new Promise((resolve, reject) =>
+    listener.listen(port, '127.0.0.1', pipeError(resolve, reject, listener)));
+  await listen(server, port);
   const base = 'http://127.0.0.1:' + server.address().port;
+  let playerBase;
+  if (playerServer) {
+    try {
+      await listen(playerServer, playerPort);
+      playerBase = 'http://127.0.0.1:' + playerServer.address().port;
+      linkOrigin ??= playerBase;
+    } catch (error) {
+      await close();
+      throw error;
+    }
+  }
   function close() {
     if (!stopping) {
-      const closed = new Promise(resolve => server.close(resolve));
+      const listeners = [server, playerServer].filter(listener => listener?.listening);
+      const closed = listeners.map(listener => new Promise(resolve => listener.close(resolve)));
       // Polling sockets must release the port before a restart. Finish accepted
       // mutations before another service instance opens the snapshot.
-      stopping = Promise.all([closed, lastMutation]);
-      server.closeAllConnections();
+      stopping = Promise.all([...closed, lastMutation]);
+      for (const listener of listeners) listener.closeAllConnections();
     }
     return stopping;
   }
-  return {server, base, close};
+  return {server, base, playerBase, close};
 }
 
 function nextRoom(room, action, master) {
