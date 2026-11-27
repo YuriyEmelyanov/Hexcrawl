@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T11:48:51.340Z",
+  "updated_at": "2026-11-27T12:37:57.623Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3902,24 +3902,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Программисту собрать конфигурацию предпросмотра PR №519 через production build и прогнать временную HTTPS-среду Playwright в существующем CI. Отдельный результат — рабочий вход из сборки, состояние после перезапуска и прежняя ссылка в отдельном контексте игрока.",
+      "next_step": "Independently review exact SHA 9dbbd6c: inspect the build-time secret boundary, validate the production HTTPS artifact and default Pages-disabled behavior, then refresh acceptance and score assessment.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T10:42:32.889Z",
+      "updated_at": "2026-11-27T12:37:57.623Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "local_review_passed_release_blocked",
+      "execution_state": "review_ready_production_https",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-2bf312d-1105.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-https-production-1506.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-https-production-1506-review.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3990,11 +3990,11 @@
         "basis": "Зависит от готового пути размещения; в оценке повтор внешней приёмки и выпуск после согласования, возможная подготовка конфигурации. Ожидание решения и недоступная среда вне прогноза."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+      "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
-      "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-2bf312d/verification.json",
+      "review_ready": true,
+      "evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -4010,7 +4010,7 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "local_success_remote_blocked",
+      "checks_status": "success",
       "review_submission": {
         "state": "local_review_passed_release_blocked",
         "role": "strategist_manager",
@@ -4042,7 +4042,12 @@
         "next_step": "После локальной проверки при необходимости предложить владельцу конкретный вариант тестовой среды и условия его запуска.",
         "confirmed_pages_entry_missing": true,
         "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
-        "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json"
+        "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+        "ci_https_completed": true,
+        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+        "external_public_stand_missing": true,
+        "default_pages_vtt_configured": false,
+        "note": "The exact PR SHA passed an ephemeral three-origin HTTPS production-build scenario. A durable external room service and owner-facing stand remain separate decisions."
       },
       "local_review_completed": true,
       "review_completed": false,
@@ -4050,7 +4055,19 @@
         "HX078-VTT1-R07",
         "HX078-VTT1-R08"
       ],
-      "delivery_validation_plan_ref": "agent-work/results/2026-11-27-HX078-vtt-https-ci-plan.json"
+      "delivery_validation_plan_ref": "agent-work/results/2026-11-27-HX078-vtt-https-ci-plan.json",
+      "candidate_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+      "test_change_summary": {
+        "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+        "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+        "scenario_risk": "Production packaging plus HTTPS origins and durable room restart.",
+        "count_source": "git diff 2bf312d..9dbbd6c"
+      }
     }
   ],
   "retired_pr_packages": {
