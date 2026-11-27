@@ -1,0 +1,59 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "head_sha": "77c2712e429d4f60a3428d8472a90e90bef045e0",
+  "tree_sha": "63c2bde23cb7817ad2b3924c4ff81d3431b865e4",
+  "previous_checkpoint_sha": "77c2712e429d4f60a3428d8472a90e90bef045e0",
+  "publication_authorized": false,
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-generated-235745.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-generated-235745-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/browser.json",
+  "capture_refs": {
+    "crows-editor-before": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/crows-editor-before.jpg",
+    "crows-editor-restored": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/crows-editor-restored.jpg",
+    "crows-master-after-reopen": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/crows-master-after-reopen.jpg",
+    "crows-player-original-link": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/crows-player-original-link.jpg",
+    "mythic-editor-before": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/mythic-editor-before.jpg",
+    "mythic-editor-restored": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/mythic-editor-restored.jpg",
+    "mythic-master-after-reopen": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/mythic-master-after-reopen.jpg",
+    "mythic-player-original-link": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/mythic-player-original-link.jpg",
+    "knave-editor-before": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/knave-editor-before.jpg",
+    "knave-editor-restored": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/knave-editor-restored.jpg",
+    "knave-master-after-reopen": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/knave-master-after-reopen.jpg",
+    "knave-player-original-link": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/knave-player-original-link.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Подтвердить допустимую среду размещения для режима 5–6 миль. Подготовить и проверить конфигурацию комнатного сервиса с постоянным адресом, приватным хранилищем и серверным подтверждением полномочий мастера. Проверяемый результат — мастер и два браузера на внешнем тестовом адресе продолжают ту же комнату после перезапуска, игрок получает только свой вид. Публикация и расходы требуют соответствующего разрешения.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      4,
+      11
+    ],
+    "confidence": "low",
+    "basis": "Создание и восстановление проверены во всех четырёх поддерживаемых профилях, подтверждён текущий статический маршрут выпуска. Остаются размещение, полная независимая приёмка, возможные исправления и выпуск. Срок зависит от доступности разрешённой среды."
+  },
+  "limitations": [
+    "Crows, Mythic Bastionland и Knave 2e проверены на созданных в редакторе картах seed 42 с двумя отдельными браузерными контекстами игрока. Classic без дополнений подтверждён предыдущей проверкой на том же SHA.",
+    "Crows и Knave включаются каждый отдельно, как в текущем редакторе. Браузерные сценарии этого запуска проверяли локальный предпросмотр. Полная приёмка пакета и проверка предоставления доступа за пределами локальной машины остаются впереди."
+  ],
+  "completion_check": "На разрешённом тестовом адресе отдельный мастер и два игрока видят ту же комнату после перезапуска сервиса. Игровая ссылка сохраняется и выдаёт только разрешённые игроку данные. Дочерние этапы UI приёмки и выпуска проходят отдельно.",
+  "checks_status": "completed",
+  "deployment_gap": {
+    "status": "public_environment_unverified",
+    "basis": [
+      ".github/workflows/deploy.yml публикует ./dist в GitHub Pages.",
+      "vite.config.ts отключает подключение к службе предпросмотра.",
+      "scripts/vtt-preview/server.mjs принимает соединения только на 127.0.0.1.",
+      "scripts/vtt-preview/editor.mjs передаёт ключ запуска клиенту разработки. Для общего адреса нужны серверное подтверждение полномочий мастера и приватное хранилище."
+    ],
+    "authorized_next": "Описать допустимую среду и проверить запуск по внешнему тестовому адресу после получения среды. Можно подготовить конфигурацию и проверить её изолированно без расходов и выпуска."
+  }
+}
