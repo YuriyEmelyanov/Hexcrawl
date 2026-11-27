@@ -9,18 +9,43 @@
       "game_id": "SALV",
       "disposition": "out_of_scope",
       "source": {
-        "edition": "Salvage Union, Leyline Press, Workshop Manual / Core Book; публичный материал издателя и сверка с SRD, EN",
+        "edition": "Salvage Union Core Book / Workshop Manual, EN. Цифровая V2.0a объявлена издателем 02.08.2024.",
         "primary_url": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
         "source_ref": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
         "supporting_urls": [
-          "https://salvageunion.io/schema/guides/item/map-movement/",
-          "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/470816-sample.pdf"
+          "https://salvageunion.io/guides/map-movement/",
+          "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/470816-sample.pdf",
+          "https://leyline.press/blogs/leyline-press-blog/salvage-union-core-book-and-all-adventure-modules-updated-to-version-2-0a",
+          "https://leyline.press/pages/salvage-union-changelog"
         ],
-        "locator": "Leyline Press, Scrap as XP, Exploration, абзац о трёх уровнях; Workshop Manual, Map Movement, с. 263 по локатору SRD; Core Book Quick Reference, Map Movement",
+        "locator": "Quick Reference → Map Movement; публичный SRD → Map Movement, Workshop Manual с. 263; Leyline Press Scrap as XP → Exploration",
         "access_level": "official_publisher_article_and_preview_with_licensed_srd",
         "author_project_key": "leyline-press:salvage-union:workshop-manual",
         "recorded_facts": "Кампания, регион и место образуют три уровня pointcrawl. Переходы между точками измеряются игровым временем по типу путешественника. Масштабы не задаются физической шириной гекса, общим набором координат или геометрическим вложением.",
-        "verification": "selected_source_sections_rechecked"
+        "verification": "selected_source_sections_rechecked",
+        "mapping_example": {
+          "actors": [
+            "Crawler",
+            "Mech",
+            "Pilot"
+          ],
+          "campaign": [
+            "1 неделя",
+            "1 день",
+            "1 неделя"
+          ],
+          "region": [
+            "1 день",
+            "1 час",
+            "1 день"
+          ],
+          "area": [
+            "1 час",
+            "10 минут",
+            "1 час"
+          ],
+          "units": "игровое время перехода по связи"
+        }
       },
       "model": {
         "game_unit_id": "SALV",
@@ -67,9 +92,9 @@
       "open_checks": [],
       "disposition_reason": "Это граф переходов, а не вложенная физическая сетка. Связь с map.nested_scales сохранена как историческая аналогия; региональную операцию из неё не выводим.",
       "scope_review_case": {
-        "given": "Мастер ведёт Campaign, Region и Area как граф узлов.",
-        "when": "Проверить применимость исходной операции к L1 региональной карты.",
-        "expected": "Из исходного правила не выводятся гексы, длина ячейки или координатные переходы. Граф остаётся за пределами L1."
+        "given": "Одна связь на Region Map. Для меха 1 час, для пилота и Crawler — 1 день.",
+        "when": "Сопоставить связь с критерием физической сетки.",
+        "expected": "У связи нет фиксированной ширины в милях или координатного правила совпадения сеток. Игровой переход остаётся L2."
       }
     },
     {
@@ -77,17 +102,19 @@
       "game_id": "SALV",
       "disposition": "keep_L1",
       "source": {
-        "edition": "Salvage Union, Leyline Press, Workshop Manual / Core Book; публичный материал издателя и сверка с SRD, EN",
-        "primary_url": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
-        "source_ref": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
+        "edition": "Salvage Union Core Book / Workshop Manual, EN. Цифровая V2.0a объявлена издателем 02.08.2024.",
+        "primary_url": "https://salvageunion.io/guides/salvaging/",
+        "source_ref": "https://salvageunion.io/guides/salvaging/",
         "supporting_urls": [
           "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/470816-sample.pdf",
-          "https://salvageunion.io/guides/salvaging/"
+          "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
+          "https://leyline.press/blogs/leyline-press-blog/salvage-union-core-book-and-all-adventure-modules-updated-to-version-2-0a",
+          "https://leyline.press/pages/salvage-union-changelog"
         ],
-        "locator": "Leyline Press, Scrap as XP, Area Salvage; Workshop Manual, с. 245 по локатору SRD; Core Book Quick Reference, Area Salvage",
+        "locator": "Salvaging → Area Salvage, Workshop Manual с. 245 и Reclamation of the Wastes с. 28 по локаторам SRD; Core Book Quick Reference → Area Salvage",
         "access_level": "official_publisher_article_and_preview_with_licensed_srd",
         "author_project_key": "leyline-press:salvage-union:workshop-manual",
-        "recorded_facts": "Мастер назначает Area Salvage отдельному месту. Tech Level определяет категорию лома, Supply — число доступных попыток; в SRD по умолчанию 5 с правом мастера менять. Не все места подходят; перед фактическим сбором место должно быть безопасно.",
+        "recorded_facts": "Место обычно относится к карте региона. Мастер выбирает доступность, Tech Level и Supply независимо. Supply задаёт число попыток, по умолчанию 5. Примеры: завод T1/8, лаборатория T4/2. Во время игры для сбора нужно безопасное место. При 0 сбор исчерпан.",
         "verification": "selected_source_sections_rechecked"
       },
       "model": {
@@ -104,7 +131,7 @@
         ],
         "criterion_fit": {
           "status": "bounded_component_only",
-          "basis": "Операция — указать наличие конкретного ресурса у выбранного места и сохранить сведения вместе с ним. map.resource_availability описывает пищу и воду, поэтому оставлена только как прежняя аналогия; игровой сбор и изменение остатка в этот тест не входят.",
+          "basis": "Существующий rule_id content.place_description напрямую соответствует S05-C01 по содержанию места. S04-C04 относится к отдельной проверке сохранения данных. Точного игрового binding SALV в общей таблице нет.",
           "model_operation_id": "SALV-obs-02"
         }
       },
@@ -120,23 +147,24 @@
       },
       "formalization": "new_primary_verified_draft",
       "operational_requirement": {
-        "source_rule_ref": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg (Leyline Press, Scrap as XP, Area Salvage; Workshop Manual, с. 245 по локатору SRD; Core Book Quick Reference, Area Salvage)",
+        "source_rule_ref": "https://salvageunion.io/guides/salvaging/#area-salvage (Workshop Manual, c. 245 по локатору SRD; Core Book Quick Reference)",
         "normative_kind": "optional_authored_hex_projection_of_site_preparation",
         "applicability": "Мастер самостоятельно переносит регион Salvage Union на гекс-карту и отмечает конкретно выбранный объект. Штатная карта игры узловая.",
         "layer": "L1",
-        "trigger_or_user_action": "Выбрать на карте существующее или создаваемое место и явно назначить его источником лома.",
+        "trigger_or_user_action": "Мастер явно назначает или редактирует Area Salvage у выбранной точки региона до игры.",
         "inputs_and_units": {
           "map_object": "ID точки интереса и координаты q/r в гексах",
           "salvage_kind": "необязательное свойство Area Salvage конкретного места",
-          "tech_level": "категория уровня технологии, например T2",
-          "initial_supply": "целое число попыток сбора; исходный ориентир SRD 5, можно изменить"
+          "tech_level": "Категория Tech, например T1, T2, T4.",
+          "initial_supply": "Целое число доступных попыток сбора. Если при назначении мастер оставил Supply незаданным, исходное значение 5. Явный 0 в загруженной карте означает исчерпание."
         },
         "product_operation": "Привязать исходные свойства добычи к выбранному объекту, отображать их у этого объекта и восстановить при повторном открытии карты.",
-        "expected_output": "Отмеченное место отличимо от одноимённой точки без добычи; выбранные уровень технологии и число попыток сохранены без выполнения игровых действий.",
+        "expected_output": "Назначение, Tech Level и Supply принадлежат только выбранному POI и переживают круг JSON. При открытии Supply остаётся прежним.",
         "constraints_and_exceptions": [
           "Название, значок или вид объекта сами по себе не назначают добычу. Поле не заполняется у соседних точек автоматически.",
           "Supply измеряется числом попыток, не массой, количеством лома или деньгами. 5 не является обязательным значением.",
-          "Безопасность, броски, AP/EP, расход попыток и начисление наград относятся к ведению и интеграциям. Из источника не следует автоматическое превращение узлов в гексы."
+          "Безопасность, броски, AP/EP, расход попыток и начисление наград относятся к ведению и интеграциям. Из источника не следует автоматическое превращение узлов в гексы.",
+          "При импорте явно сохранённый Supply=0 сохраняет назначение и не возвращается к 5. Это проверка сохранения, расход попыток вне L1."
         ],
         "acceptance_cases": [
           {
@@ -148,13 +176,25 @@
             "given": "Мастер отметил заброшенный объект как обычный ориентир и не выбрал добычу.",
             "when": "Сохранить и открыть.",
             "expected": "У объекта остаются исходные имя, тип и адрес. Признак добычи и значения Tech/Supply отсутствуют."
+          },
+          {
+            "given": "Завод T1/Supply 8, лаборатория T4/Supply 2 и бункер T2, для которого мастер не задал Supply.",
+            "when": "Сохранить и открыть. У завода заменить 8 на 2, повторить круг JSON.",
+            "expected": "До правки (T1,8), (T4,2), (T2,5). После правки (T1,2), (T4,2), (T2,5). Адреса и остальные значения совпадают."
+          },
+          {
+            "given": "Загружаются одноимённые места. Первому назначено T2/Supply 0, второму ничего не назначено.",
+            "when": "Открыть и снова сохранить карту, не выполняя игрового действия.",
+            "expected": "Первое место всё ещё имеет назначение и T2/0. Второе не имеет параметров добычи. Значение 5 ни у одного не появляется."
           }
         ],
         "source_vs_product_interpretation": "Источник задаёт два параметра места. Привязка к ID объекта в гексе и сохранение без игровой симуляции — продуктовая проверка условного переноса.",
         "canonical_rule_refs": [
           "agent-work/rules/common-rules.json#content.place_description"
         ],
-        "unresolved_parameters": []
+        "unresolved_parameters": [
+          "Предел допустимых категорий Tech для формы ввода и верхняя граница Supply при валидации: из примеров диапазоны не выводятся."
+        ]
       },
       "model_fixture": {
         "user_action": "Назначить конкретный узел местом Area Salvage.",
@@ -162,7 +202,7 @@
         "previous_checks": null
       },
       "implementation": {
-        "current_status": "unknown",
+        "current_status": "partial",
         "historical_evidence": {
           "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-016-L1-v2-draft; src/App.tsx; src/knaveClassic.ts; score13-surface.mjs",
           "sha": null,
@@ -170,14 +210,88 @@
           "finding": "Места на карте сохраняются. Признак Area Salvage у узла не продемонстрирован. Расход очков и награда за столом исключены из L1.",
           "scope": "unresolved_or_analogy",
           "matching_prior_operation": "DND5-2014-016-L1-v2-draft"
+        },
+        "full_salvage_operation_status": "unknown",
+        "evidence": {
+          "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+          "ref": "agent-work/research/runs/2026-11-27-top20-l1-salv-corpus-1030.json#verification",
+          "finding": "Общая метка сохранилась только у выбранного из двух одноимённых мест. Структурированные Tech и Supply не проверены."
         }
       },
       "open_checks": [
-        "На опубликованном SHA проверить привязку к объекту и сохранение Tech/Supply отдельно от текста гекса."
+        "В штатном интерфейсе проверить числовые поля и сохранение трёх состояний: без назначения, заданное значение, явный 0.",
+        "При доступе к официальному V2.0a сверить с. 245 и тематический остаток с. 258–262."
       ],
-      "disposition_reason": "Операция — указать наличие конкретного ресурса у выбранного места и сохранить сведения вместе с ним. map.resource_availability описывает пищу и воду, поэтому оставлена только как прежняя аналогия; игровой сбор и изменение остатка в этот тест не входят."
+      "disposition_reason": "Операция — указать наличие конкретного ресурса у выбранного места и сохранить сведения вместе с ним. map.resource_availability описывает пищу и воду, поэтому оставлена только как прежняя аналогия; игровой сбор и изменение остатка в этот тест не входят.",
+      "requirement_readiness": "source_verified_operation_ready_for_model_review"
     }
   ],
-  "latest_formalization_base_sha": "ea3b35774d88d7023643dbabaf6d6fcbf57c9b1c",
-  "latest_formalization_run_id": "2026-11-25-top20-l1-salv-dcc-0430"
+  "latest_formalization_base_sha": "620377bfb377e2f6eb0f1804f4737f857cc73acc",
+  "latest_formalization_run_id": "2026-11-27-top20-l1-salv-corpus-1030",
+  "source_coverage": {
+    "release": {
+      "edition": "Salvage Union Core Book / Workshop Manual, EN. Цифровая V2.0a объявлена издателем 02.08.2024.",
+      "url": "https://leyline.press/blogs/leyline-press-blog/salvage-union-core-book-and-all-adventure-modules-updated-to-version-2-0a",
+      "errata": "https://leyline.press/pages/salvage-union-changelog",
+      "limitation": "Использованы издательский Quick Reference и публичный SRD. Полный PDF V2.0a не сверялся; номера страниц основного текста приведены по ссылкам SRD."
+    },
+    "read": [
+      {
+        "url": "https://salvageunion.io/guides/salvaging/",
+        "locator": "Salvaging → Area Salvage, Salvaging a Mech, Salvaging a Non-Mech, Cargo Capacity"
+      },
+      {
+        "url": "https://salvageunion.io/guides/map-movement/",
+        "locator": "Map Movement, с. 263; Campaign, Region, Area и действия"
+      },
+      {
+        "url": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
+        "locator": "Exploration, абзацы до и после Hope Falls Area Map, 11.07.2023"
+      },
+      {
+        "url": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/470816-sample.pdf",
+        "locator": "Core Book Quick Reference, Area Salvage и Map Movement; оглавление Workshop Manual"
+      },
+      {
+        "url": "https://leyline.press/pages/salvage-union-changelog",
+        "locator": "Core Book V1.2 → V2.0a; отдельно False Flag с. 19, исправление адреса задания"
+      }
+    ],
+    "remaining": "Сверить полный Workshop Manual V2.0a с. 245 и тематически просмотреть Campaign Design с. 258–261, Scrap Progression & Placing Scrap с. 262. The Downing of the Atychos с. 304–313 и дополнения — отдельный корпус."
+  },
+  "source_screen": [
+    {
+      "disposition": "keep_L1",
+      "row_ref": "agent-work/research/top20-l1/games/SALV.json#SALV-obs-02",
+      "url": "https://salvageunion.io/guides/salvaging/",
+      "locator": "Workshop Manual с. 245 → Area Salvage",
+      "basis": "Два постоянных параметра конкретного регионального места. На гекс-карту место переносит мастер."
+    },
+    {
+      "disposition": "out_of_scope",
+      "row_ref": "agent-work/research/top20-l1/games/SALV.json#SALV-obs-01",
+      "url": "https://salvageunion.io/guides/map-movement/",
+      "locator": "Workshop Manual с. 263 → Campaign, Region, Area",
+      "basis": "Семантические уровни и времена перехода не воспроизводят физические размеры ячейки."
+    },
+    {
+      "disposition": "needs_owner_decision",
+      "url": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
+      "locator": "Exploration, сразу после Hope Falls Area Map",
+      "basis": "Заранее заданный модуль в кабине самолёта — локальный объект в городской сцене. Чтобы вывести отдельное требование региональной карты, нужен пример отдельной привязки к региональному месту и подтверждённый картографический результат."
+    },
+    {
+      "disposition": "defer_L2",
+      "url": "https://salvageunion.io/guides/salvaging/",
+      "locator": "Workshop Manual с. 245 и 248 → Area Salvage",
+      "basis": "Безопасность, бросок, расход попытки, истощение происходят во время игры."
+    },
+    {
+      "disposition": "integration_L3",
+      "url": "https://salvageunion.io/guides/salvaging/",
+      "locator": "Salvaging → Salvaging a Mech / Non-Mech, Cargo Capacity",
+      "basis": "Компоненты поверженных объектов и грузовые слоты зависят от игры и инвентаря."
+    }
+  ],
+  "development_handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-salv-corpus-1030.json"
 }

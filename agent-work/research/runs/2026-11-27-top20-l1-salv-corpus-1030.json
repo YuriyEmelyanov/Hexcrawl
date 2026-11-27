@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-RSR-001",
+  "run_id": "2026-11-27-top20-l1-salv-corpus-1030",
+  "status": "completed_bounded_topic",
+  "selected_task": {
+    "id": "top20_l1_salv_primary_corpus",
+    "game_id": "SALV",
+    "create_rank": 19,
+    "completion_condition": "Определены картографические свойства Area Salvage, границы трёх карт, проверяемые выходы и действительное состояние на SHA."
+  },
+  "selection_reason": "Продолжение checkpoint после Mausritter помогает отделить физические масштабы от переходов по узлам и найти заранее привязанные к карте ресурсы.",
+  "alternatives": [
+    {
+      "id": "PF1",
+      "reason": "Сверка Ultimate Campaign продолжает неполную проверку модели после текущего среза."
+    },
+    {
+      "id": "DCC",
+      "reason": "Для Purple Planet нужен новый доступный оригинал ключа. Прежний индексированный источник нужные страницы не открывал."
+    }
+  ],
+  "inputs_and_versions": {
+    "research_sha": "620377bfb377e2f6eb0f1804f4737f857cc73acc",
+    "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "model_version": "1.3-rc8",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422",
+    "source_coverage": {
+      "release": {
+        "edition": "Salvage Union Core Book / Workshop Manual, EN. Цифровая V2.0a объявлена издателем 02.08.2024.",
+        "url": "https://leyline.press/blogs/leyline-press-blog/salvage-union-core-book-and-all-adventure-modules-updated-to-version-2-0a",
+        "errata": "https://leyline.press/pages/salvage-union-changelog",
+        "limitation": "Использованы издательский Quick Reference и публичный SRD. Полный PDF V2.0a не сверялся; номера страниц основного текста приведены по ссылкам SRD."
+      },
+      "read": [
+        {
+          "url": "https://salvageunion.io/guides/salvaging/",
+          "locator": "Salvaging → Area Salvage, Salvaging a Mech, Salvaging a Non-Mech, Cargo Capacity"
+        },
+        {
+          "url": "https://salvageunion.io/guides/map-movement/",
+          "locator": "Map Movement, с. 263; Campaign, Region, Area и действия"
+        },
+        {
+          "url": "https://leyline.press/blogs/leyline-press-blog/scrap-as-xp-how-old-school-dnd-inspired-the-progression-system-in-salvage-union-a-post-apocalyptic-mech-ttrpg",
+          "locator": "Exploration, абзацы до и после Hope Falls Area Map, 11.07.2023"
+        },
+        {
+          "url": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/470816-sample.pdf",
+          "locator": "Core Book Quick Reference, Area Salvage и Map Movement; оглавление Workshop Manual"
+        },
+        {
+          "url": "https://leyline.press/pages/salvage-union-changelog",
+          "locator": "Core Book V1.2 → V2.0a; отдельно False Flag с. 19, исправление адреса задания"
+        }
+      ],
+      "remaining": "Сверить полный Workshop Manual V2.0a с. 245 и тематически просмотреть Campaign Design с. 258–261, Scrap Progression & Placing Scrap с. 262. The Downing of the Atychos с. 304–313 и дополнения — отдельный корпус."
+    }
+  },
+  "findings": [
+    {
+      "type": "source",
+      "statement": "Сверены две исходные строки Salvage Union. Одно требование L1: Tech Level и Supply у выбранной точки, четыре сценария. Подтверждена сохранность адресной метки; сквозная операция с Tech/Supply unknown."
+    },
+    {
+      "type": "source",
+      "statement": "Три карты pointcrawl не определяют размеры гекса. Индивидуальный модуль в авторском примере расположен в локальной сцене. Сбор и инвентарь за пределами подготовки карты."
+    },
+    {
+      "type": "implementation",
+      "statement": "Из двух одноимённых мест только выбранное удержало общую метку после JSON. Сквозной статус Tech Level и Supply unknown."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/top20-l1/games/SALV.json",
+    "agent-work/research/top20-l1/index.json",
+    "agent-work/research/top20-l1/README.md",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-salv-corpus-1030.json",
+    "agent-work/latest.json#research_agent"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "game_id": "SALV",
+    "create_rank": 19,
+    "rows": 2,
+    "working_l1": 1,
+    "excluded_l1": 1,
+    "new_rows": 0,
+    "acceptance_cases": 4,
+    "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "implementation": {
+      "completed": 0,
+      "partial": 1,
+      "full_operation_unknown": 1
+    },
+    "binding_matches": 0,
+    "model_operation_ids": [
+      "SALV-obs-01",
+      "SALV-obs-02"
+    ],
+    "criterion_ids": [
+      "S05-C01",
+      "S04-C04"
+    ],
+    "actual": {
+      "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+      "publication_ref": "agent-work/results/2026-11-26-PR518-publication.json",
+      "scope": "classic_app_callbacks_json_round_trip_without_dom",
+      "method": "Два одноимённых POI с разными владельцами. mutateTag назначает существующую метку mb.feature первому. createSaveData → handleImportJson в новом экземпляре → createSaveData.",
+      "observed": {
+        "owners": [
+          {
+            "kind": "poi",
+            "regionId": 1,
+            "hexKey": "2,0"
+          },
+          {
+            "kind": "poi",
+            "regionId": 2,
+            "hexKey": "3,1"
+          }
+        ],
+        "names": {
+          "poi:1:2,0": {
+            "ru": "Завод",
+            "en": "Factory"
+          },
+          "poi:2:3,1": {
+            "ru": "Завод",
+            "en": "Factory"
+          }
+        },
+        "tagCountA": 1,
+        "tagCountB": 0,
+        "identicalTagsAfterReopen": true,
+        "inputSupplyWasSynthetic": true,
+        "importedSyntheticFieldReexported": false
+      },
+      "assertion_source": "import assert from 'node:assert/strict';\nimport { createGenerationHarness } from './bsh-product/test/helpers/generation-harness.mjs';\nimport { regionFixture } from './bsh-product/test/helpers/region-fixture.mjs';\n\nasync function open(data) {\n  const harness = createGenerationHarness(42);\n  harness.render();\n  harness.guardRandom();\n  harness.setWindow({alert: message => { throw new Error(message); }, matchMedia: () => ({matches:false})});\n  harness.injectFunction('readTextFile', async file => file.text);\n  await harness.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}], value:''}});\n  harness.render();\n  return harness;\n}\n\nconst save = harness => JSON.parse(JSON.stringify(harness.render().createSaveData()));\nconst fixture = regionFixture('classic');\nconst regionB = fixture.map.regions[1];\nregionB.pointsOfInterest = [{q:3,r:1}];\nregionB.pointOfInterestKinds = {'3,1':'village'};\nconst ownerA = {kind:'poi',regionId:1,hexKey:'2,0'};\nconst ownerB = {kind:'poi',regionId:2,hexKey:'3,1'};\nconst seed = save(await open(fixture));\nseed.map.editorNames = {'poi:1:2,0':{ru:'Завод',en:'Factory'},'poi:2:3,1':{ru:'Завод',en:'Factory'}};\nconst harness = await open(seed);\nassert.equal(harness.render().mutateTag(ownerA,'mb.feature'),true);\nconst authored = save(harness);\nconst reopened = save(await open(authored));\nconst tagsAt = (data, owner) => data.map.tags.instances.filter(record => record.owner.kind===owner.kind && record.owner.regionId===owner.regionId && record.owner.hexKey===owner.hexKey);\nassert.equal(tagsAt(reopened,ownerA).length,1);\nassert.equal(tagsAt(reopened,ownerB).length,0);\nassert.deepEqual(reopened.map.editorNames,seed.map.editorNames);\nassert.deepEqual(reopened.map.tags,authored.map.tags);\n\nconst hypothetical = structuredClone(reopened);\nhypothetical.map.areaSalvageByPoi = {'poi:1:2,0':{techLevel:2,initialSupply:3}};\nconst reexported = save(await open(hypothetical));\nassert.equal(Object.hasOwn(reexported.map,'areaSalvageByPoi'),false);\nassert.deepEqual(reexported.map.tags,reopened.map.tags);\nconst result = {owners:[ownerA,ownerB], names:reopened.map.editorNames, tagCountA:tagsAt(reopened,ownerA).length, tagCountB:tagsAt(reopened,ownerB).length, identicalTagsAfterReopen:true, inputSupplyWasSynthetic:true, importedSyntheticFieldReexported:Object.hasOwn(reexported.map,'areaSalvageByPoi')};\nconsole.log(JSON.stringify(result));\n",
+      "limitation": "Метка mb.feature подтверждает принадлежность объекта и механизм JSON. areaSalvageByPoi — синтетическое поле, его пропуск при повторном экспорте характеризует только этот способ ввода. Штатный интерфейс ввода и показа Tech Level и Supply не проверялся."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "status": "in_progress"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "status": "completed"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "status": "in_progress"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "status": "completed"
+      }
+    ]
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-27-top20-l1-salv-corpus-1030",
+    "result_ref": "agent-work/research/runs/2026-11-27-top20-l1-salv-corpus-1030.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-salv-corpus-1030.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Сверены две исходные строки Salvage Union. Одно требование L1: Tech Level и Supply у выбранной точки, четыре сценария. Подтверждена сохранность адресной метки; сквозная операция с Tech/Supply unknown.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2.",
+      "pirate": "Проверить на опубликованном SHA сценарии 50-мильной карты и кораблекрушений на суше/отмели. В Core с. 134–135 подтверждён ключ готовой карты Black Coral Bay, точные измерения подложки по HTML не установлены. С. 156–165 и правила Starter Set, Cabin Fever, Port Generator — отдельные корпуса или остаток; сканы нужны только при новом подходящем источнике. Не считать игровой балл пересчитанным.",
+      "crows": "Дождаться связанного SHA F1 для проверок CROWS-04–08 и полного CROWS-01–09. Селективная карта игроков, адресная связь карты с тайником и готовые места PT3 требуют отдельной проверки применимости и фактической поддержки. Спорные детали Best Steward Ever и локальных укрытий не считать невыполненными критериями F1.",
+      "shadowdark": "На точном опубликованном SHA повторно проверить независимую видимость признака, категории стационарной опасности, danger, связи POI и сцен. Сохранённый Classic/Knave runtime датирован 20.11. Неопределённый рецепт двух колонок и текущая поддержка остаются открытыми. Поздние errata и дополнения не пересматривались.",
+      "pf2": "Проверить опубликованный UI и сохранения отдельно от выполненной пробы масштаба. Пять ST-кандидатов не имеют отдельных bindings. На GM Core с.146–165 остаётся печатный остаток по планам, Player Core 3–8 и приложениям требуется свой тематический скрининг. Базовый L1 и Kingmaker пополнять раздельно при новом источнике.",
+      "knave2": "На точном опубликованном SHA проверить владельца и видимость признака, перенос посвящения святилища, ручной выбор строки и сохранение нескольких исходов. Для ссылки без следующей обычной строки или неоднозначной целевой таблицы правило оставляет решение мастеру. Остальные вспомогательные таблицы сохраняют локаторы перевода; английские исходы не пересверены сплошь. При новом основании проверить подходящее дополнение отдельно от основной книги.",
+      "wwn": "Сверить перевод Deluxe для шага 1. Точечно проверить One-Roll Terrain Feature Details с. 123 и выбранные результаты размещения из Making the Kingdom Map / Nation с. 124+ при продолжении WWN. На опубликованном интерфейсе требуется проверить океанские границы после JSON, принадлежность имён рельефным объектам, перенос крупных форм в отдельную детализацию и несколько независимых POI в одном гексе.",
+      "ose": "Проверить сквозную подготовку 24→6 с JSON, принадлежность численности логову, применение формулы и принадлежность сведений о службах городу. Полный Referee’s Book 2026, номера зеркальных печатных экземпляров, дополнительные монстры и Starter Set остаются отдельными источниками.",
+      "cairn2": "Нужны сохранение независимых статусов пути и выбранных результатов таблиц, сравнение нумерации с независимыми именами, типизированные связи с водным маршрутом и Heart, сквозной прогон выборочной проекции через интерфейс. Ресурс Hexcrawls in Cairn хранится отдельным источником L2. Номер печатной ревизии в этом проходе не устанавливался.",
+      "root": "Сквозная приёмка: 12 полян и счётчики сообществ, постоянные факты места, уникальность имён, JSON явного графа, выбор углов и мест, сток новой пары, пределы озера и раздельные входы. ROOT-TO-Q04 вне ветки d6=6, знак Q05 и метрика Q07 открыты. Crownland в просмотренном первичном тексте не найдено. Происхождение термина unknown. Блоки фракционного ведения вне выбранного L1.",
+      "bsh": "Сквозная приёмка пяти операций остаётся открыта в части: режим с одновременными подписями непосредственно на карте; разметка произвольной политической границы вдоль рубежа и ничейного гекса; типизированное неподвижное убежище; три портальные ссылки между городами; связь в днях без вывода геометрии. Проверены §§8–10 и тематические части §11 открытого SRD, печатные вставки/дополнения Chaos Crier и чужие гексовые адаптации — отдельные источники.",
+      "swc": "Открыты произвольная маска расширения, точное 5-мильное значение и неизвестная авторская ось ширины, адресуемая связь замка и деревни, отдельный крупный обзор с общими якорями, полный сценарий освоенной крепости. Другие редакции и дополнения отдельны. Возможная несогласованность правила потери направления не закрывалась в L1.",
+      "maus": "Проверить сквозное создание 25 одномильных гексов с центром, адресное наполнение и контроль категорий, поселения и их статические данные, привязку слухов и ключей к местам, подготовку карты игроков и добавление отдельного одномильного гекса. Таблица Governance остаётся за пределами рабочего L1 до решения о территориальной/адресной связи. Другие редакции, печатная книга и кампании отдельны.",
+      "salv": "Workshop Manual V2.0a, с. 245 и 258–262. Для отдельной региональной находки нужен подтверждённый эффект на карте. Проверить штатный ввод, редактирование и обратимый JSON для Tech и Supply, включая явный 0."
+    },
+    "next": "Pathfinder 1e (#16 create). Сопоставить 13 строк Ultimate Campaign с прежними тематическими матрицами и решениями по границам. На опубликованном SHA проверить сохранение постоянных результатов подсистемы: рельеф, дорога и размещённое место. Kingmaker и ходы управления — отдельный объём.",
+    "needs_owner_action": false
+  },
+  "next_candidate": {
+    "id": "top20_l1_pf1_ultimate_campaign_crosswalk",
+    "description": "Pathfinder 1e (#16 create). Сопоставить 13 строк Ultimate Campaign с прежними тематическими матрицами и решениями по границам. На опубликованном SHA проверить сохранение постоянных результатов подсистемы: рельеф, дорога и размещённое место. Kingmaker и ходы управления — отдельный объём."
+  }
+}
