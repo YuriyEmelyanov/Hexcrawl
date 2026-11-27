@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-28",
-  "branch": "agent/hx074-manual-delta",
+  "branch": "agent/hx078-vtt-live-1",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
+  "run_id": "2026-11-28-reviewer-HX078-412e20c-0200",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "review_ready",
+  "status": "changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -47,7 +47,10 @@
     "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
     "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
     "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
-    "latest_written_last": true
+    "latest_written_last": true,
+    "review_artifacts_commit": "8c0ce2be1164202a24567dd0eb731a8d2b2448c3",
+    "review_result_commit": "51a5bf5aecfdd214cea46838d05e7a3f1ddaca67",
+    "execution_registry_release_commit": "5eb313a633575a22b50105ed5f2a77eb2d09a169"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -55,25 +58,25 @@
   "schedule_start_at": "2026-11-27T18:00:00+03:00",
   "schedule_frequency": "every_two_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-078",
   "spec_path": "agent-work/specs/HX-BL-074-classic-manual-delta-D1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+  "result_path": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
+  "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
   "owner_decisions_needed": [],
   "release_approval": false,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+  "evidence_path": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
   "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
   "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
-  "checks_status": "success",
+  "checks_status": "ci_passed_targeted_independent_diagnostic_failed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
-  "review_verdict": "pending_exact_sha_recheck",
+  "review_verdict": "changes_requested",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -169,20 +172,25 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-27T21:04:51.257Z",
+      "at": "2026-11-27T23:02:39.834Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "method": "automations.peek"
     },
     "end": {
-      "at": "2026-11-27T21:24:13.112Z",
+      "at": "2026-11-27T23:07:52.233Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "method": "automations.peek"
     },
-    "restored": false,
+    "restoration_performed": false,
     "errors": []
   },
-  "open_findings": [],
-  "current_review_score_assessment_status": "pending_exact_sha_recheck",
+  "open_findings": [
+    "F519-PLAYER-RECONNECT-008",
+    "F519-MASTER-MAP-PARITY-009"
+  ],
+  "current_review_score_assessment_status": "insufficient_evidence",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -500,16 +508,10 @@
     "F519-SCALE-RESTORE-007"
   ],
   "verified_fixed_findings": [
-    {
-      "id": "F519-RESTORE-004",
-      "status": "verified_fixed",
-      "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
-    },
-    {
-      "id": "F519-SCALE-006",
-      "status": "verified_fixed",
-      "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
-    }
+    "F519-RESTORE-004",
+    "F519-SCALE-006",
+    "F519-ROOM-BINDING-005",
+    "F519-SCALE-RESTORE-007"
   ],
   "recovery_health": {
     "previous_start": {
@@ -682,8 +684,8 @@
     "recovery": "Stable generation draw order and corrected destination fixture"
   },
   "review_request": null,
-  "reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "current_review_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -783,7 +785,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-27T21:24:52.469Z",
+  "updated_at": "2026-11-27T23:07:52.233Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -993,6 +995,26 @@
         "executed_suites": 2,
         "failures_at_intended_assertions": 2
       }
+    },
+    "independent_reviewer_disposition": "Изменения целевые: расширены два существующих сценария, каждый покрывает отдельную проблему. Отдельный временный сценарий восстановления вкладки подтверждает новый дефект и не входит в PR.",
+    "reviewer_runners": {
+      "preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_diagnostic": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "tracked": false
+      }
     }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012923161",
@@ -1040,7 +1062,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1417,7 +1439,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0.4938271604938272,
-  "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1821,7 +1843,7 @@
     }
   },
   "previous_result_path": "agent-work/results/2026-11-21T1000-programmer-HX-BL-056-RV10.json",
-  "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+  "handoff_path": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
   "ui_actual_preview": {
     "kind": "runtime_exact_SHA",
     "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
@@ -2245,7 +2267,7 @@
     },
     "evidence_ref": "agent-work/evidence/HX-BL-076/reset/4d1a975/browser.json"
   },
-  "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/HX-BL-076/poi-open/40aae78/review/score-assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2348,14 +2370,14 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
   "spec_blob_sha": "0626eb96d0312ee7983ceea9c61b57f787a7c71a",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-25T1744-programmer-PR517-single-POI.json",
-  "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
+  "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
   "github_review_state": "COMMENTED",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
   "owner_visual_correction": {
@@ -2461,15 +2483,16 @@
   "current_stage_id": "VTT-FIRST",
   "implementation_started": true,
   "current_stage_release_approved": true,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": {
     "task_id": "HX-BL-078",
-    "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
-    "generation": 1000,
+    "run_id": "2026-11-28-reviewer-HX078-412e20c-0200",
+    "generation": 1004,
     "status": "completed_released",
-    "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
-    "released_at": "2026-11-27T21:24:49.725Z"
+    "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "released_at": "2026-11-27T23:08:35.335Z",
+    "claim_ref": "agent-work/claims/2026-11-28-reviewer-HX078-412e20c-0200.json"
   },
   "evidence_commit_sha": "7d4403ff4da7b5c7201ba572f96b8469a3893562",
   "finding_ids": [],
@@ -8034,7 +8057,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+  "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -8470,7 +8493,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-25T0800-programmer-HX076-reset",
+  "previous_run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
   "next_role_after_approval": "business_analyst",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -8836,8 +8859,8 @@
     ],
     "actual_UI_shown_in_chat": true
   },
-  "fix_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
-  "role": "programmer",
+  "fix_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+  "role": "reviewer",
   "latest_result_ref": "agent-work/results/2026-11-25T0900-reviewer-PR516-reset.json",
   "checks": {
     "status": "success",
@@ -9843,7 +9866,7 @@
     },
     "Scribd_uploaded": false
   },
-  "task_id": "HX-BL-074",
+  "task_id": "HX-BL-078",
   "review_completed": true,
   "release_readiness": "changes_requested",
   "bounded_feature_accepted": false,
@@ -10031,7 +10054,7 @@
     "ci_run": 42736194155,
     "checks": "all_passed"
   },
-  "pr_head_sha": "63d6d194acfc6df61d6d0572edf6365450092f68",
+  "pr_head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
   "pr_updated": false,
   "execution_routing": {
     "schema_version": 1,
@@ -10355,7 +10378,7 @@
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
-  "independent_accepted": true,
+  "independent_accepted": false,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
     "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
@@ -10521,7 +10544,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-26T0600-reviewer-PR517-score",
+  "last_completed_run_id": "2026-11-28-reviewer-HX078-412e20c-0200",
   "storage_verification": {
     "materials_commit_sha": "c87d02f7fd7fe7c5ed3117bb790cbf40ecd91ae0",
     "result_readback": true,
@@ -10550,7 +10573,7 @@
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "review_verdict": "pending_new_exact_SHA"
   },
-  "full_package_accepted": true,
+  "full_package_accepted": false,
   "current_stage_code_status": "implemented",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
@@ -10669,7 +10692,7 @@
     "review_result_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
     "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json"
   },
-  "review_base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
   "latest_TABLES1_UI": {
     "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
     "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
@@ -11031,7 +11054,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: живые unit-кандидаты/защита данных, интеграция App/JSONv13/истории/потерь и правки категории, затем PF2 UI и actual exactSHA evidence; только после полного пакета — независимая проверка."
   },
-  "pr_base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "pr_base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
   "latest_PF2_BATCH1_App_v13": {
     "run_id": "2026-11-11T0356-programmer-PF2-App-v13",
     "head_sha": "77a6ce64cd5cf6d9de1fc9ab0bd5fe621053e36c",
@@ -11705,8 +11728,8 @@
     "GRID_Q01": "Question on generation extent remains unresolved; requested concrete choice, no answer received."
   },
   "checkpoint_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
-  "working_branch": "feat/hx077-crows",
-  "pr_number": 520,
+  "working_branch": "agent/hx078-vtt-live-1",
+  "pr_number": 519,
   "latest_PR496_owner_corrections": {
     "run_id": "2026-11-11T0838-programmer-PR496-canonical",
     "task_id": "HX-BL-051",
@@ -12501,7 +12524,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-ingress-010511.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -13081,7 +13104,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-24T1600-reviewer-HX067.json",
+  "last_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -13325,7 +13348,7 @@
     "head_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
     "status": "checkpoint_saved_GEO2_finite_water_in_progress"
   },
-  "next_step_authorization": "independent review of approved F1; separate release approval required",
+  "next_step_authorization": "approved_first_release_fix",
   "activation": false,
   "latest_GEO2_storage_verification": {
     "source_head": "cea2f93266913303833ef09477bc8f0c33be63d3",
@@ -13451,7 +13474,7 @@
   "owner_answers_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
   "latest_owner_interview_decision_ref": "agent-work/interviews/HX-BL-062/DISC/decisions.json",
   "previous_run_before_GEO2_v2_final": "2026-11-14T1124-interviewer-GEO2-owner-answers",
-  "final_spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
   "final_spec_version": "F1",
   "latest_GEO2_final_specification": {
     "run_id": "2026-11-14T1201-analyst-GEO2-final",
@@ -15477,8 +15500,8 @@
   "draft_clarification_review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
   "draft_clarifications_closed": true,
   "unchanged_draft_rewrite_needed": false,
-  "task_next_role": "reviewer",
-  "task_next_step": "Независимо перепроверить HX074-RV01 и HX074-RV02 на SHA e860943a94d25bcd7eb9eb05a356fffae5a95f1a, сопоставить с D74-AC01–AC05 и обновить предварительную оценку 1.3-rc8. Выпуск — отдельное решение владельца.",
+  "task_next_role": "programmer",
+  "task_next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
   "last_visible_release_D2_confirmation": {
     "run_id": "2026-11-15T1701-interviewer-GEO2-visible-D2",
     "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
@@ -15687,7 +15710,7 @@
     "old_queues_superseded": true,
     "updated_at": "2026-11-15T20:46:38.231Z"
   },
-  "execution_state": "implementation_checkpoint",
+  "execution_state": "review_changes_requested",
   "latest_PR503_score": {
     "result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
     "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -16105,12 +16128,12 @@
     "publication_authorized": false
   },
   "forecast": {
-    "remaining_release_runs": [
-      2,
-      4
+    "remaining_first_release_runs": [
+      3,
+      6
     ],
-    "confidence": "medium",
-    "basis": "Повторная независимая приёмка, возможное точечное исправление и выпуск после отдельного решения. Ожидание решения вне прогноза."
+    "confidence": "low",
+    "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
   },
   "actual_ui": {
     "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
@@ -16657,12 +16680,12 @@
       "release_authorized": false
     }
   ],
-  "task_status": "спецификация",
-  "current_result_ref": "agent-work/results/2026-11-27-programmer-HX074-review-fixes-1310.json",
-  "result_commit_sha": "ad6a45d0a15fa60bc7d20cf7b8afd346957b3940",
+  "task_status": "review_changes_requested",
+  "current_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+  "result_commit_sha": "51a5bf5aecfdd214cea46838d05e7a3f1ddaca67",
   "independent_review_status": "pending",
   "execution_locks_ref": "agent-work/execution-locks.json",
-  "execution_lock_generation": 913,
+  "execution_lock_generation": 1004,
   "execution_lock_released": true,
   "acceptance_trace_ref": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/review.json",
   "accepted_sha": null,
@@ -16950,7 +16973,7 @@
   "review_status": "changes_requested",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
   "review_ref": "agent-work/results/2026-11-24T0300-reviewer-HX062.json",
-  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
   "publication_gate": {
     "pr": 513,
     "head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
@@ -17042,42 +17065,218 @@
     "status": "completed",
     "release_sha": "172155071ca1408abf6960dbc876ba030fc61613"
   },
-  "current_spec_ref": "agent-work/specs/HX-BL-077-crows-F1.md",
+  "current_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
   "current_review_package": {
-    "task_id": "HX-BL-074",
-    "pr": 520,
-    "pr_number": 520,
-    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/520",
-    "branch": "agent/hx074-manual-delta",
+    "task_id": "HX-BL-078",
+    "stage_id": "VTT-FIRST",
+    "implementation_slice_id": "VTT-RELEASE-1",
+    "pr": 519,
+    "pr_number": 519,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+    "branch": "agent/hx078-vtt-live-1",
     "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-    "head_sha": "e860943a94d25bcd7eb9eb05a356fffae5a95f1a",
-    "tree_sha": "525c467b6968faa5f191512d0890cfb28587a645",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+    "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "reviewed_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
     "accepted_sha": null,
-    "status": "review_ready",
-    "review_ready": true,
-    "verdict": null,
-    "result_ref": "agent-work/results/2026-11-27-programmer-HX074-review-fixes-1310.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX074-review-fixes-1310-reviewer.json",
-    "implementation_evidence_ref": "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json",
+    "status": "changes_requested",
+    "verdict": "changes_requested",
+    "review_status": "changes_requested",
+    "review_verdict": "changes_requested",
+    "review_ready": false,
+    "review_completed": true,
+    "local_review_completed": true,
+    "review_findings": [
+      {
+        "id": "F519-PLAYER-RECONNECT-008",
+        "severity": "P1",
+        "blocking": true,
+        "status": "open",
+        "confidence": "browser_confirmed_with_independent_source_confirmation",
+        "acceptance_ids": [
+          "VTT-AC08"
+        ],
+        "requirement_ids": [
+          "VTT-R02",
+          "VTT-R08"
+        ],
+        "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+        "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+        "refs": [
+          "scripts/vtt-preview/ui.mjs:296-304",
+          "scripts/vtt-preview/ui.mjs:321-328",
+          "scripts/vtt-preview/ui.mjs:390",
+          "test/browser/vtt-room-preview.mjs:643-664",
+          "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+        ],
+        "evidence": {
+          "mode": "existing-player-after-room-recovery",
+          "originalLinkStillWorksInNewTab": true,
+          "existingTabRecoveredWithoutReload": false,
+          "existingTabStatus": "Доступ по этой ссылке закрыт",
+          "masterRecoveredSameInvite": true,
+          "observedAfterRecoveryMs": 3500
+        }
+      },
+      {
+        "id": "F519-MASTER-MAP-PARITY-009",
+        "severity": "P2",
+        "blocking": true,
+        "status": "open",
+        "confidence": "independent_source_and_fixture_confirmed",
+        "acceptance_ids": [
+          "VTT-AC03"
+        ],
+        "requirement_ids": [
+          "VTT-R09"
+        ],
+        "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+        "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+        "refs": [
+          "src/App.tsx:17627-17632",
+          "src/App.tsx:16013-16014",
+          "scripts/vtt-preview/ui.mjs:159-165",
+          "test/browser/vtt-room-preview.mjs:15"
+        ],
+        "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
+      }
+    ],
+    "open_findings": [
+      "F519-PLAYER-RECONNECT-008",
+      "F519-MASTER-MAP-PARITY-009"
+    ],
+    "verified_findings": [
+      {
+        "id": "F519-RESTORE-004",
+        "status": "verified_fixed",
+        "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
+      },
+      {
+        "id": "F519-SCALE-006",
+        "status": "verified_fixed",
+        "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
+      },
+      {
+        "id": "F519-ROOM-BINDING-005",
+        "status": "verified_fixed",
+        "proof": "Второй редактор открыт из первой вкладки. У каждой из двух игр после восстановления свои позиция и действующая ссылка."
+      },
+      {
+        "id": "F519-SCALE-RESTORE-007",
+        "status": "verified_fixed",
+        "proof": "После повторного входа старая карта сохраняет экранное увеличение при нормализации шага карты 1 → 6."
+      }
+    ],
+    "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "result_path": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+    "prior_programmer_result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "evidence_path": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "screenshot_ref": "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
+    "score_assessment_status": "insufficient_evidence",
+    "score_update_status": "not_due_unpublished",
+    "score_assessment": {
+      "model_version": "1.3-rc8",
+      "status": "insufficient_evidence",
+      "confirmed_delta": 0,
+      "points_awarded": 0,
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b"
+    },
+    "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+    "fix_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+    "handoff_path": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+    "release_authorized": false,
     "publication_authorized": false,
     "pending_publication": false,
     "published": false,
-    "score_update_status": "not_due_unpublished",
-    "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45980274165",
-    "next_role": "reviewer",
-    "next_step": "Независимо перепроверить HX074-RV01 и HX074-RV02 на SHA e860943a94d25bcd7eb9eb05a356fffae5a95f1a, сопоставить с D74-AC01–AC05 и обновить предварительную оценку 1.3-rc8. Выпуск — отдельное решение владельца.",
-    "reviewed_sha": null,
-    "review_completed": false,
-    "review_result_ref": null,
-    "review_evidence_ref": null,
-    "score_assessment_ref": null,
-    "review_findings": [],
-    "local_review_completed": false,
-    "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX074-45d835d-1302.json",
-    "addressed_findings_pending_review": [
-      "HX074-RV01",
-      "HX074-RV02"
-    ]
+    "checks_status": "ci_passed_targeted_independent_diagnostic_failed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_dependency": {
+      "status": "public_hosting_unverified",
+      "owner_has_existing_stand": false,
+      "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "local_review_blocked": false,
+      "remote_review_completed": false,
+      "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+      "next_step": "Отдельно подтвердить рабочий сервис комнат и конфигурацию поставляемой сборки.",
+      "confirmed_pages_entry_missing": true,
+      "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+      "ci_https_completed": true,
+      "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+      "external_public_stand_missing": true,
+      "default_pages_vtt_configured": false,
+      "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+      "release_blockers": [
+        "F519-PLAYER-RECONNECT-008",
+        "F519-MASTER-MAP-PARITY-009"
+      ],
+      "public_hosting_required_before_release": true
+    },
+    "forecast": {
+      "remaining_first_release_runs": [
+        3,
+        6
+      ],
+      "confidence": "low",
+      "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
+    },
+    "test_change_summary": {
+      "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+      "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+      "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+      "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+      "runners": {
+        "local_browser_https": {
+          "executed": 1,
+          "passed": 1,
+          "skipped": 0
+        },
+        "local_room_browser": {
+          "executed": 7,
+          "passed": 7,
+          "skipped": 0
+        },
+        "differential_baseline": {
+          "executed_suites": 2,
+          "failures_at_intended_assertions": 2
+        }
+      },
+      "independent_reviewer_disposition": "Изменения целевые: расширены два существующих сценария, каждый покрывает отдельную проблему. Отдельный временный сценарий восстановления вкладки подтверждает новый дефект и не входит в PR.",
+      "reviewer_runners": {
+        "preview": {
+          "executed": 7,
+          "passed": 7,
+          "skipped": 0
+        },
+        "https": {
+          "executed": 1,
+          "passed": 1,
+          "skipped": 0
+        },
+        "temporary_diagnostic": {
+          "executed": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0,
+          "tracked": false
+        }
+      }
+    },
+    "next_role": "programmer",
+    "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
+    "addressed_findings_pending_review": []
   },
   "current_candidate_published": false,
   "previous_publication_gate": {
@@ -17776,7 +17975,7 @@
     "owner_decisions_needed": []
   },
   "previous_programmer_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
-  "current_score_assessment_ref": "agent-work/results/2026-11-24T0300-reviewer-HX062.json",
+  "current_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
   "latest_HX_BL_056_review": {
     "task_id": "HX-BL-056",
     "role": "reviewer",
@@ -17806,7 +18005,7 @@
     "completed_at": "2026-11-21T22:55:44.882Z",
     "execution_running": false
   },
-  "head_tree_sha": "4dc17d5252bcbde51e8f58ff1148e62d9f625701",
+  "head_tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
   "latest_independent_run": "2026-11-21-manual-HX-BL-058-final",
   "latest_HX_BL_063_intake": {
     "task_id": "HX-BL-063",
@@ -18046,28 +18245,63 @@
     "L2": null,
     "L3": null
   },
-  "open_review_findings": [],
+  "open_review_findings": [
+    "F519-PLAYER-RECONNECT-008",
+    "F519-MASTER-MAP-PARITY-009"
+  ],
   "review_findings": [
     {
-      "id": "F519-SEC-001",
+      "id": "F519-PLAYER-RECONNECT-008",
       "severity": "P1",
       "blocking": true,
       "status": "open",
-      "summary": "Reusable room-launch Bearer is embedded in the public production bundle."
+      "confidence": "browser_confirmed_with_independent_source_confirmation",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "requirement_ids": [
+        "VTT-R02",
+        "VTT-R08"
+      ],
+      "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+      "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+      "refs": [
+        "scripts/vtt-preview/ui.mjs:296-304",
+        "scripts/vtt-preview/ui.mjs:321-328",
+        "scripts/vtt-preview/ui.mjs:390",
+        "test/browser/vtt-room-preview.mjs:643-664",
+        "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+      ],
+      "evidence": {
+        "mode": "existing-player-after-room-recovery",
+        "originalLinkStillWorksInNewTab": true,
+        "existingTabRecoveredWithoutReload": false,
+        "existingTabStatus": "Доступ по этой ссылке закрыт",
+        "masterRecoveredSameInvite": true,
+        "observedAfterRecoveryMs": 3500
+      }
     },
     {
-      "id": "F519-DEPLOY-002",
+      "id": "F519-MASTER-MAP-PARITY-009",
       "severity": "P2",
       "blocking": true,
       "status": "open",
-      "summary": "The service has one global room/storage slot and no durable public multi-room deployment."
-    },
-    {
-      "id": "F519-TEST-003",
-      "severity": "P2",
-      "blocking": false,
-      "status": "open",
-      "summary": "The production HTTPS scenario only runs for PR519 and lacks the negative secret assertion."
+      "confidence": "independent_source_and_fixture_confirmed",
+      "acceptance_ids": [
+        "VTT-AC03"
+      ],
+      "requirement_ids": [
+        "VTT-R09"
+      ],
+      "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+      "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+      "refs": [
+        "src/App.tsx:17627-17632",
+        "src/App.tsx:16013-16014",
+        "scripts/vtt-preview/ui.mjs:159-165",
+        "test/browser/vtt-room-preview.mjs:15"
+      ],
+      "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
     }
   ],
   "previous_review_ref": "agent-work/evidence/HX-BL-062-F1/review-449e6fe/review.json",
@@ -18159,7 +18393,7 @@
     "completed_at": "2026-11-21T22:55:44.882Z",
     "execution_running": false
   },
-  "execution_lock_release_commit": "9e7f764bb619cd4d61387da85cf95789b177fa97",
+  "execution_lock_release_commit": "5eb313a633575a22b50105ed5f2a77eb2d09a169",
   "ci_checkout": "e5a1f57c7ea8f45a4c61a06a5a39c50ba8d59b55",
   "measurements_ref": "agent-work/results/2026-11-22T2258-reviewer-HX061.json",
   "visual_ref": "agent-work/evidence/HX-BL-061-F1/a9253b2/bridge-mouth.jpg",
@@ -18202,7 +18436,7 @@
     "status": "insufficient_evidence",
     "confirmed_delta": 0,
     "points_awarded": 0,
-    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b"
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b"
   },
   "bounded_accepted": true,
   "strategy_proposal_task_id": "HX-BL-074",
@@ -18266,7 +18500,7 @@
     "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-23-one-mile-midpoint-accepted.json",
     "release_sha": "94f24f6d337a0816aeb4a1ed8a9f1c7ed06d4390"
   },
-  "latest_reviewer_result_ref": "agent-work/results/2026-11-27-reviewer-HX074-45d835d-1302.json",
+  "latest_reviewer_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
   "latest_HX_BL_069_acceptance_preparation": {
     "run_id": "2026-11-22T2357-analyst-HX069",
     "task_id": "HX-BL-069",
@@ -18687,7 +18921,7 @@
     }
   ],
   "preserved_active_interview": null,
-  "review_ready_sha": "63d6d194acfc6df61d6d0572edf6365450092f68",
+  "review_ready_sha": null,
   "latest_HX_BL_073_implementation": {
     "task_id": "HX-BL-073",
     "role": "programmer",
@@ -18710,7 +18944,7 @@
     "fix_ref": "HX073-RV02-01",
     "result_commit_sha": "1130452c25d43e07a1454b5b8991655671a0bc9e"
   },
-  "reviewed_head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+  "reviewed_head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
   "latest_HX_BL_073_review": {
     "task_id": "HX-BL-073",
     "role": "reviewer",
@@ -19578,7 +19812,7 @@
     "publication_approved": false,
     "note": "Legacy PF2 handoff absent from the canonical backlog. Preserve its evidence and historical approval outside the ready execution queue."
   },
-  "last_run_role": "strategist-manager",
+  "last_run_role": "reviewer",
   "last_full_daily_summary_date": "2026-11-26",
   "last_full_daily_summary_ref": "agent-work/results/2026-11-26-daily-summary.md",
   "latest_strategy_coordination": {
@@ -19824,7 +20058,7 @@
     "recorded_at": "2026-11-26T12:02:28.896Z"
   },
   "implementation_slice_id": "VTT-RELEASE-1",
-  "recorded_at": "2026-11-27T01:09:54.608Z",
+  "recorded_at": "2026-11-27T23:07:52.233Z",
   "latest_HX_BL_078_implementation": {
     "task_id": "HX-BL-078",
     "stage_id": "VTT-FIRST",
@@ -21172,23 +21406,23 @@
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
       "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
       "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
-      "reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "reviewed_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
       "accepted_sha": null,
-      "status": "review_ready",
-      "verdict": "pending_exact_sha_recheck",
-      "review_ready": true,
-      "review_completed": false,
-      "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-      "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
-      "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
+      "status": "changes_requested",
+      "verdict": "changes_requested",
+      "review_ready": false,
+      "review_completed": true,
+      "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+      "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+      "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
       "publication_authorized": false,
       "pending_publication": false,
       "published": false,
       "score_update_status": "not_due_unpublished",
-      "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
-      "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+      "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+      "next_role": "programmer",
+      "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
+      "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
       "external_dependency": {
         "status": "public_hosting_unverified",
         "owner_has_existing_stand": false,
@@ -21206,22 +21440,21 @@
         "default_pages_vtt_configured": false,
         "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
         "release_blockers": [
-          "F519-ROOM-BINDING-005"
-        ]
+          "F519-PLAYER-RECONNECT-008",
+          "F519-MASTER-MAP-PARITY-009"
+        ],
+        "public_hosting_required_before_release": true
       },
-      "checks_status": "success",
+      "checks_status": "ci_passed_targeted_independent_diagnostic_failed",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
-      "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
-      "evidence_path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
-      "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
-      "result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
-      "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+      "evidence_path": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+      "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+      "result_path": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+      "handoff_path": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
       "release_authorized": false,
-      "addressed_findings_pending_review": [
-        "F519-ROOM-BINDING-005",
-        "F519-SCALE-RESTORE-007"
-      ],
-      "review_verdict": "pending_exact_sha_recheck",
+      "addressed_findings_pending_review": [],
+      "review_verdict": "changes_requested",
       "test_change_summary": {
         "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
         "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
@@ -21247,12 +21480,134 @@
             "executed_suites": 2,
             "failures_at_intended_assertions": 2
           }
+        },
+        "independent_reviewer_disposition": "Изменения целевые: расширены два существующих сценария, каждый покрывает отдельную проблему. Отдельный временный сценарий восстановления вкладки подтверждает новый дефект и не входит в PR.",
+        "reviewer_runners": {
+          "preview": {
+            "executed": 7,
+            "passed": 7,
+            "skipped": 0
+          },
+          "https": {
+            "executed": 1,
+            "passed": 1,
+            "skipped": 0
+          },
+          "temporary_diagnostic": {
+            "executed": 1,
+            "passed": 0,
+            "failed": 1,
+            "skipped": 0,
+            "tracked": false
+          }
         }
       },
       "local_review_completed": true,
       "review_status": "changes_requested",
-      "fix_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
-      "score_assessment_status": "insufficient_evidence"
+      "fix_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+      "score_assessment_status": "insufficient_evidence",
+      "implementation_slice_id": "VTT-RELEASE-1",
+      "pr_number": 519,
+      "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "review_findings": [
+        {
+          "id": "F519-PLAYER-RECONNECT-008",
+          "severity": "P1",
+          "blocking": true,
+          "status": "open",
+          "confidence": "browser_confirmed_with_independent_source_confirmation",
+          "acceptance_ids": [
+            "VTT-AC08"
+          ],
+          "requirement_ids": [
+            "VTT-R02",
+            "VTT-R08"
+          ],
+          "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+          "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+          "refs": [
+            "scripts/vtt-preview/ui.mjs:296-304",
+            "scripts/vtt-preview/ui.mjs:321-328",
+            "scripts/vtt-preview/ui.mjs:390",
+            "test/browser/vtt-room-preview.mjs:643-664",
+            "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+          ],
+          "evidence": {
+            "mode": "existing-player-after-room-recovery",
+            "originalLinkStillWorksInNewTab": true,
+            "existingTabRecoveredWithoutReload": false,
+            "existingTabStatus": "Доступ по этой ссылке закрыт",
+            "masterRecoveredSameInvite": true,
+            "observedAfterRecoveryMs": 3500
+          }
+        },
+        {
+          "id": "F519-MASTER-MAP-PARITY-009",
+          "severity": "P2",
+          "blocking": true,
+          "status": "open",
+          "confidence": "independent_source_and_fixture_confirmed",
+          "acceptance_ids": [
+            "VTT-AC03"
+          ],
+          "requirement_ids": [
+            "VTT-R09"
+          ],
+          "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+          "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+          "refs": [
+            "src/App.tsx:17627-17632",
+            "src/App.tsx:16013-16014",
+            "scripts/vtt-preview/ui.mjs:159-165",
+            "test/browser/vtt-room-preview.mjs:15"
+          ],
+          "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
+        }
+      ],
+      "open_findings": [
+        "F519-PLAYER-RECONNECT-008",
+        "F519-MASTER-MAP-PARITY-009"
+      ],
+      "verified_findings": [
+        {
+          "id": "F519-RESTORE-004",
+          "status": "verified_fixed",
+          "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
+        },
+        {
+          "id": "F519-SCALE-006",
+          "status": "verified_fixed",
+          "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
+        },
+        {
+          "id": "F519-ROOM-BINDING-005",
+          "status": "verified_fixed",
+          "proof": "Второй редактор открыт из первой вкладки. У каждой из двух игр после восстановления свои позиция и действующая ссылка."
+        },
+        {
+          "id": "F519-SCALE-RESTORE-007",
+          "status": "verified_fixed",
+          "proof": "После повторного входа старая карта сохраняет экранное увеличение при нормализации шага карты 1 → 6."
+        }
+      ],
+      "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+      "prior_programmer_result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+      "screenshot_ref": "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg",
+      "score_assessment": {
+        "model_version": "1.3-rc8",
+        "status": "insufficient_evidence",
+        "confirmed_delta": 0,
+        "points_awarded": 0,
+        "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b"
+      },
+      "forecast": {
+        "remaining_first_release_runs": [
+          3,
+          6
+        ],
+        "confidence": "low",
+        "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
+      }
     }
   },
   "latest_HX_BL_074_manual_delta": {
@@ -21352,37 +21707,216 @@
     "publication_authorized": false
   },
   "latest_HX_BL_078_independent_review": {
-    "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-    "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
-    "review_ready": false,
-    "reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-    "review_completed": true,
-    "local_review_completed": true,
+    "task_id": "HX-BL-078",
+    "stage_id": "VTT-FIRST",
+    "implementation_slice_id": "VTT-RELEASE-1",
+    "pr": 519,
+    "pr_number": 519,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+    "branch": "agent/hx078-vtt-live-1",
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+    "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "reviewed_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "accepted_sha": null,
+    "status": "changes_requested",
+    "verdict": "changes_requested",
     "review_status": "changes_requested",
     "review_verdict": "changes_requested",
-    "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
-    "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-    "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
-    "fix_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+    "review_ready": false,
+    "review_completed": true,
+    "local_review_completed": true,
+    "review_findings": [
+      {
+        "id": "F519-PLAYER-RECONNECT-008",
+        "severity": "P1",
+        "blocking": true,
+        "status": "open",
+        "confidence": "browser_confirmed_with_independent_source_confirmation",
+        "acceptance_ids": [
+          "VTT-AC08"
+        ],
+        "requirement_ids": [
+          "VTT-R02",
+          "VTT-R08"
+        ],
+        "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+        "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+        "refs": [
+          "scripts/vtt-preview/ui.mjs:296-304",
+          "scripts/vtt-preview/ui.mjs:321-328",
+          "scripts/vtt-preview/ui.mjs:390",
+          "test/browser/vtt-room-preview.mjs:643-664",
+          "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+        ],
+        "evidence": {
+          "mode": "existing-player-after-room-recovery",
+          "originalLinkStillWorksInNewTab": true,
+          "existingTabRecoveredWithoutReload": false,
+          "existingTabStatus": "Доступ по этой ссылке закрыт",
+          "masterRecoveredSameInvite": true,
+          "observedAfterRecoveryMs": 3500
+        }
+      },
+      {
+        "id": "F519-MASTER-MAP-PARITY-009",
+        "severity": "P2",
+        "blocking": true,
+        "status": "open",
+        "confidence": "independent_source_and_fixture_confirmed",
+        "acceptance_ids": [
+          "VTT-AC03"
+        ],
+        "requirement_ids": [
+          "VTT-R09"
+        ],
+        "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+        "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+        "refs": [
+          "src/App.tsx:17627-17632",
+          "src/App.tsx:16013-16014",
+          "scripts/vtt-preview/ui.mjs:159-165",
+          "test/browser/vtt-room-preview.mjs:15"
+        ],
+        "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
+      }
+    ],
+    "open_findings": [
+      "F519-PLAYER-RECONNECT-008",
+      "F519-MASTER-MAP-PARITY-009"
+    ],
+    "verified_findings": [
+      {
+        "id": "F519-RESTORE-004",
+        "status": "verified_fixed",
+        "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
+      },
+      {
+        "id": "F519-SCALE-006",
+        "status": "verified_fixed",
+        "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
+      },
+      {
+        "id": "F519-ROOM-BINDING-005",
+        "status": "verified_fixed",
+        "proof": "Второй редактор открыт из первой вкладки. У каждой из двух игр после восстановления свои позиция и действующая ссылка."
+      },
+      {
+        "id": "F519-SCALE-RESTORE-007",
+        "status": "verified_fixed",
+        "proof": "После повторного входа старая карта сохраняет экранное увеличение при нормализации шага карты 1 → 6."
+      }
+    ],
+    "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "result_path": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+    "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+    "prior_programmer_result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "evidence_path": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+    "screenshot_ref": "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
     "score_assessment_status": "insufficient_evidence",
-    "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
-    "checks_status": "ci_passed_independent_diagnostics_failed",
-    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
-    "publication_authorized": false,
+    "score_update_status": "not_due_unpublished",
+    "score_assessment": {
+      "model_version": "1.3-rc8",
+      "status": "insufficient_evidence",
+      "confirmed_delta": 0,
+      "points_awarded": 0,
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b"
+    },
+    "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+    "fix_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+    "handoff_path": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
     "release_authorized": false,
-    "next_role": "programmer",
-    "next_step": "Исправить восстановление ожидаемой игры в связанных вкладках редактора (F519-ROOM-BINDING-005) и сохранение масштаба камеры для старой карты (F519-SCALE-RESTORE-007). Расширить два имеющихся сценария, сохранить повторный вход мастера в режиме чтения и вернуть новый SHA для независимой проверки.",
-    "status": "changes_requested",
+    "publication_authorized": false,
+    "pending_publication": false,
+    "published": false,
+    "checks_status": "ci_passed_targeted_independent_diagnostic_failed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_dependency": {
+      "status": "public_hosting_unverified",
+      "owner_has_existing_stand": false,
+      "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "local_review_blocked": false,
+      "remote_review_completed": false,
+      "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+      "next_step": "Отдельно подтвердить рабочий сервис комнат и конфигурацию поставляемой сборки.",
+      "confirmed_pages_entry_missing": true,
+      "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+      "ci_https_completed": true,
+      "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+      "external_public_stand_missing": true,
+      "default_pages_vtt_configured": false,
+      "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+      "release_blockers": [
+        "F519-PLAYER-RECONNECT-008",
+        "F519-MASTER-MAP-PARITY-009"
+      ],
+      "public_hosting_required_before_release": true
+    },
     "forecast": {
       "remaining_first_release_runs": [
         3,
         6
       ],
       "confidence": "low",
-      "basis": "Исправления и независимый повтор, подключение/приёмка рабочей среды и отдельный выпуск. Ожидание внешнего сервиса и разрешения не включено."
+      "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
     },
-    "screenshot_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/linked-editor-recovered.jpg"
+    "test_change_summary": {
+      "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+      "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+      "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+      "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+      "runners": {
+        "local_browser_https": {
+          "executed": 1,
+          "passed": 1,
+          "skipped": 0
+        },
+        "local_room_browser": {
+          "executed": 7,
+          "passed": 7,
+          "skipped": 0
+        },
+        "differential_baseline": {
+          "executed_suites": 2,
+          "failures_at_intended_assertions": 2
+        }
+      },
+      "independent_reviewer_disposition": "Изменения целевые: расширены два существующих сценария, каждый покрывает отдельную проблему. Отдельный временный сценарий восстановления вкладки подтверждает новый дефект и не входит в PR.",
+      "reviewer_runners": {
+        "preview": {
+          "executed": 7,
+          "passed": 7,
+          "skipped": 0
+        },
+        "https": {
+          "executed": 1,
+          "passed": 1,
+          "skipped": 0
+        },
+        "temporary_diagnostic": {
+          "executed": 1,
+          "passed": 0,
+          "failed": 1,
+          "skipped": 0,
+          "tracked": false
+        }
+      }
+    },
+    "next_role": "programmer",
+    "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
+    "addressed_findings_pending_review": []
   },
   "latest_HX_BL_078_room_recovery": {
     "stage_id": "VTT-FIRST",
@@ -21513,5 +22047,6 @@
       "confidence": "low",
       "basis": "Независимая приёмка, возможная настройка и проверка рабочей среды, отдельный выпуск. Ожидание внешнего размещения и разрешения не включено."
     }
-  }
+  },
+  "reviewed": true
 }
