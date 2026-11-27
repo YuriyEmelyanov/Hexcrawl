@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "run_id": "2026-11-27-reviewer-HX078-7f602111-1800",
+  "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "tree_sha": "afc1fdc07488168e771444f0c3597289478a0d69",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "from_role": "reviewer",
+  "to_role": "programmer",
+  "status": "changes_requested",
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "scope": "Имеющаяся согласованная спецификация VTT-RELEASE-1.",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-7f602111/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
+  "findings": [
+    {
+      "id": "F519-RESTORE-004",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "confidence": "browser_confirmed",
+      "summary": "При повторном входе из редактора в новую вкладку мастера недоступная комната не восстанавливает последнее сохранённое положение.",
+      "refs": [
+        "test/browser/vtt-room-preview.mjs:550-558,602-618",
+        "scripts/vtt-preview/ui.mjs:25-41",
+        "src/App.tsx:15984-16018"
+      ],
+      "acceptance": "Повторный вход в том же браузере показывает последнюю подтверждённую позицию в режиме чтения. При восстановлении комнаты возвращаются живая позиция, состояние и прежняя ссылка. Обновление двух открытых вкладок мастера сохраняет их независимость."
+    },
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "confidence": "static_confirmed_design_gap",
+      "summary": "Восстановление сопоставляет карту с первой подходящей комнатой. Привязка к конкретной игре и подтверждённым полномочиям мастера обязательна при независимых играх на одной карте.",
+      "refs": [
+        "scripts/vtt-preview/server.mjs:138-171",
+        "src/vttMapCache.ts:32-38"
+      ],
+      "acceptance": "Две независимые игры на одной карте сохраняют каждая свою ссылку и позицию после повторного входа. Сервер подтверждает полномочия мастера для конкретной комнаты."
+    },
+    {
+      "id": "F519-SCALE-006",
+      "severity": "P2",
+      "blocking": true,
+      "status": "open",
+      "acceptance_ids": [
+        "VTT-AC01"
+      ],
+      "confidence": "static_confirmed_unrun",
+      "summary": "У ранее сохранённой карты с положением 1 миля переключение редактора на 5–6 миль может показать кнопку, но передаваемый сохранённый масштаб остаётся 1 миля и не проходит серверную проверку.",
+      "refs": [
+        "src/App.tsx:15879-15885,15994-16000,17233-17244",
+        "scripts/vtt-preview/server.mjs:119-125"
+      ],
+      "acceptance": "Открыть сохранённую 1-мильную карту, перевести её в 5–6 миль и успешно войти. На 1 миле вход по-прежнему скрыт."
+    }
+  ],
+  "next_step": "Исправить восстановление комнаты на последнем сохранённом состоянии, привязку конкретной игры к полномочиям мастера и вход на 5–6 миль из старого сохранения. Повторить существующие браузерные сценарии, затем вернуть новый SHA.",
+  "completion": "Использовать существующие браузерные сценарии для закрытия указанных критериев. Независимое ревью нового SHA. Проверка внешнего сервиса и отдельное разрешение на выпуск остаются самостоятельными этапами.",
+  "recorded_at": "2026-11-27T15:03:46.196Z"
+}
