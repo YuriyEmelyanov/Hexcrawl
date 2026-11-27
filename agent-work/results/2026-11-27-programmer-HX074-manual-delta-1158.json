@@ -1,0 +1,243 @@
+{
+  "task_id": "HX-BL-074",
+  "run_id": "2026-11-27-programmer-HX074-manual-delta-1158",
+  "role": "programmer",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX074-manual-delta-1158.json",
+  "branch": "agent/hx074-manual-delta",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+  "tree_sha": "f073208b46e19c6e469fc55b567267245b9d7721",
+  "pr": 520,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/520",
+  "final_spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "start_approval_ref": "agent-work/decisions/owner-2026-11-26-approve-HX074-delta.json",
+  "changed_files": [
+    "docs/river-model-integration.md",
+    "src/App.tsx",
+    "src/manualRiverDependencies.ts",
+    "src/manualRivers.ts",
+    "test/riverIntegration.test.mjs"
+  ],
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX074-manual-delta-1158.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX074-manual-delta-1158-reviewer.json",
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45971289740",
+      "run_id": 45971289740,
+      "status": "success",
+      "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+      "jobs": [
+        {
+          "name": "check",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "world-random",
+          "conclusion": "success"
+        },
+        {
+          "name": "engraved-map-comparison",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "local_node": {
+      "manual_river_and_crossing_suites": {
+        "executed": 12,
+        "passed": 12,
+        "skipped": 0
+      },
+      "manual_delta_integration": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    },
+    "baseline_seed_44": {
+      "head_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+      "execution": "production editor callbacks exercised through the existing generation harness",
+      "result": {
+        "seed": 44,
+        "control": 2,
+        "rivers": 3,
+        "regionSize": 9,
+        "fork": "96.995,-28",
+        "mouth": "96.995,-56",
+        "selectedHex": {
+          "q": 2,
+          "r": -1
+        },
+        "parentF": 4,
+        "baseError": "Недопустимый исток, устье или разветвление; море не может быть истоком."
+      }
+    },
+    "chromium_seed_44": {
+      "status": "success",
+      "script": "temporary diagnostic",
+      "result": {
+        "seed": 44,
+        "regionCells": 9,
+        "parent": 1,
+        "parentMouth": "121.244,-14",
+        "arm": 4,
+        "fork": "96.995,-28",
+        "armMouth": "96.995,-56",
+        "defaultF": 3,
+        "chosenF": 2,
+        "previewExportsUnchanged": true,
+        "pngChanged": true,
+        "undo": true,
+        "redo": true,
+        "jsonReopened": true,
+        "narrowPreview": true,
+        "cancelUnchanged": true
+      }
+    },
+    "chromium_trail_crossing": {
+      "status": "success",
+      "script": "temporary diagnostic",
+      "setup": "Seed 44 с добавленной тропой через ребро будущего рукава и без конфликтующего малого озера в тестовой копии.",
+      "result": {
+        "seed": 44,
+        "trail": true,
+        "defaultProposal": "Река 4 · 2,-1 ↔ 3,-1 · Нет переправы → Переправа",
+        "lowProposal": "Река 4 · 2,-1 ↔ 3,-1 · Нет переправы → Брод",
+        "committedKind": "ford",
+        "selectedF": 1,
+        "stableAcrossFullnessChanges": true,
+        "savedRng": true,
+        "undoRedo": true,
+        "jsonReopened": true
+      }
+    },
+    "chromium_narrow_touch": {
+      "status": "success",
+      "script": "temporary diagnostic",
+      "result": {
+        "viewport": [
+          390,
+          844
+        ],
+        "actualTouch": true,
+        "panelVertexSelection": true,
+        "confirmed": true,
+        "mouth": "96.995,-56"
+      }
+    },
+    "atomic_refusals": {
+      "status": "success",
+      "script": "temporary App-handler diagnostic",
+      "result": {
+        "seed": 44,
+        "occupiedEdgeRejected": true,
+        "nonSeaMouthRejected": true,
+        "outOfRangeFullnessRejected": true,
+        "staleDraftRejected": true,
+        "savedMapCountersAndHistoryUnchanged": true
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node / test/riverIntegration.test.mjs",
+    "scenario_risk": "D74-R03–R05: штатный инструмент, предложение для дороги/тропы, F4/F5 основного устья, расход случайности только при подтверждении, сохранность исходных переправ и точный Undo/Redo.",
+    "reuse_or_new_reason": "Продолжает существующий раннер и настоящий обработчик редактора. Прежние проверки покрывают валидацию дельт и вероятности по отдельности; нет связки с превью, картой и историей.",
+    "count_source": "Один новый логический test(...) в git diff базы и SHA. Временные Chromium-проверки и проверки отказов отдельно.",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "status": "awaits_reviewer",
+    "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+    "confirmed_delta": null,
+    "posted_to_current_or_history": false,
+    "criteria": [
+      {
+        "criterion_id": "S03-C01",
+        "rule_id": "EDIT-30",
+        "expected_delta": 0.4938271605,
+        "method": "Через штатный инструмент два устья на карте, PNG и JSON, изменение F, Undo/Redo.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/verification.json",
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-before.png",
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-after.png"
+        ]
+      },
+      {
+        "criterion_id": "S01-C02",
+        "rule_id": "RIV-019",
+        "expected_delta": 0,
+        "method": "Сохранены основная река, вид существующих речных объектов и валидация.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/verification.json"
+        ]
+      },
+      {
+        "criterion_id": "S01-C04",
+        "rule_id": "ROAD-10",
+        "expected_delta": 0,
+        "method": "Штатный выбор новой переправы для дороги/тропы, устойчивый предпросмотр и тип через JSON и Undo/Redo.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/verification.json",
+          "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-preview.jpg"
+        ]
+      }
+    ]
+  },
+  "capture_refs": {
+    "seed44-before.png": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-before.png",
+    "seed44-after.png": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-after.png",
+    "seed44-preview.jpg": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-preview.jpg",
+    "seed44-narrow-preview.jpg": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-narrow-preview.jpg",
+    "seed44-crossing-preview.jpg": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-preview.jpg",
+    "seed44-control.json": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-control.json",
+    "seed44-crossing-fixture.json": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-fixture.json"
+  },
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "role_selection_reason": "Выпуск HX-BL-078 заблокирован маршрутом поставки. Утверждённый HX-BL-074 F1 готов к реализации, незавершённых claims и владельцев слота нет.",
+  "result": "В Classic 5–6 миль «Добавить реку» восстановил рукав от развилки к отдельному морскому устью. На карте seed 44 два устья, основное русло прежнее. Выбранная полноводность и предложенная переправа сохраняются при JSON и Undo/Redo; PNG показывает только подтверждённый рукав.",
+  "status": "review_ready",
+  "run_status": "completed",
+  "review_ready": true,
+  "checks_status": "success",
+  "next_role": "reviewer",
+  "next_step": "Проверяющий независимо принимает D74-AC01–AC05 на SHA 45d835d283f4912e0f7583f5aaf783c161d4af4a и фиксирует предварительную 1.3-rc8. Начать со сквозной карты Classic seed 44 и отдельно проверить новую переправу.",
+  "forecast": {
+    "remaining_release_runs": [
+      2,
+      4
+    ],
+    "confidence": "medium",
+    "basis": "Независимая приёмка, возможное точечное исправление и повторная проверка, выпуск после отдельного решения. Внешнее ожидание не входит."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T08:57:49.727Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T09:24:07.051Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T09:24:07.051Z"
+}
