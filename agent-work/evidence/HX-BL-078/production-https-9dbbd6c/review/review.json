@@ -113,6 +113,23 @@
       ],
       "impact": "The CI result proves one room can survive a process restart, but it does not yield a usable shared service for independent games or an owner-accessible test stand.",
       "required_fix": "Provide a production-safe room identity/storage boundary for independent games and then validate it on a durable HTTPS stand. Hosting and publication remain separate owner decisions."
+    },
+    {
+      "id": "F519-TEST-003",
+      "severity": "P2",
+      "classification": "test_governance_gap",
+      "blocking": false,
+      "requirement_refs": [
+        "owner-decision-2026-10-26-test-governance"
+      ],
+      "summary": "The new production delivery scenario is useful, but the workflow executes it only when pull_request.number == 519, so the permanent test file will not protect later changes after merge.",
+      "evidence": [
+        ".github/workflows/check.yml gates the scenario and artifact on PR number 519.",
+        "The scenario's distinct value is production build plus three HTTPS origins; restart and projection details reuse coverage from vtt-room-preview.mjs.",
+        "It lacks a negative assertion that reusable credentials are absent from public assets."
+      ],
+      "impact": "The test can pass for this PR but silently stop being a regression guard for subsequent production/VTT changes.",
+      "required_fix": "Keep this one scenario and make it run for the relevant permanent CI path; extend it with negative build/secret assertions instead of adding a duplicate suite."
     }
   ],
   "review_ready": false,
@@ -153,5 +170,14 @@
     "restored": false,
     "errors": []
   },
-  "created_at": "2026-11-27T12:53:15.960Z"
+  "created_at": "2026-11-27T12:53:15.960Z",
+  "independent_reviewer_summary": {
+    "verdict": "findings",
+    "exact_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "method": "fresh-context independent reviewer",
+    "key_observation": "Configured production bundle contains the reusable launch Bearer; player URL itself does not contain that key.",
+    "ci_observation": "Exact SHA CI and digest-verified artifact passed the bounded one-room HTTPS scenario.",
+    "score_delta": 0,
+    "score_status": "insufficient_evidence"
+  }
 }
