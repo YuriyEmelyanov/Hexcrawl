@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-production-hardening-1601",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-production-hardening-1601.json",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "status": "review_ready",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "tree_sha": "afc1fdc07488168e771444f0c3597289478a0d69",
+  "result": "Addressed all three reviewer findings and produced an exact-SHA green package: the public bundle has no reusable room authority, multiple independent rooms persist and reload without master-tab collisions, and permanent CI protects the production HTTPS contract.",
+  "addressed_findings_pending_review": [
+    "F519-SEC-001",
+    "F519-DEPLOY-002",
+    "F519-TEST-003"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-078/production-hardening-7f602111/verification.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707/artifacts/15204305386",
+  "test_change_summary": {
+    "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: existing test/browser/vtt-production-preview.mjs and test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Reusable public-bundle authority, cross-room state/credential collision, durable restore of multiple rooms, and loss of the production regression outside PR519.",
+    "reuse_or_new_reason": "Extended the two existing VTT scenarios instead of adding a duplicate suite: production HTTPS now asserts a secret-free bundle and two isolated durable rooms; the local room scenario asserts no launch bearer and per-tab master authority.",
+    "count_source": "git diff 9dbbd6c662bdd834155a1522df769f0e1e29f03b..7f602111fcce88b8e2d157baa252b32f3954eae1; logical top-level scenarios",
+    "executed": {
+      "node": 460,
+      "browser_production_https": 1,
+      "browser_existing_suite": 1,
+      "world_random": 1
+    },
+    "passed": {
+      "node": 460,
+      "browser_production_https": 1,
+      "browser_existing_suite": 1,
+      "world_random": 1
+    },
+    "skipped": 0,
+    "runners": [
+      "Node test runner",
+      "GitHub Actions Chromium",
+      "GitHub Actions world-random"
+    ]
+  },
+  "publication_authorized": false,
+  "external_public_stand_created": false,
+  "limitations": [
+    "The verified HTTPS environment is ephemeral and not an owner-accessible durable/public stand.",
+    "No publication or merge to main was authorized or performed.",
+    "The normal Pages build remains VTT-disabled when no room-service URL is configured."
+  ],
+  "next_role": "reviewer",
+  "next_step": "Independently review exact SHA 7f602111fcce88b8e2d157baa252b32f3954eae1 against F519-SEC-001, F519-DEPLOY-002 and F519-TEST-003, re-inspect the artifact and refresh the acceptance verdict and 1.3-rc8 score assessment.",
+  "role_selection_reason": "The exact approved HX-BL-078 package had blocking reviewer findings and the single programmer slot was idle; correcting those findings was the nearest ready independent work.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T13:00:47.111Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T14:03:06.061Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T14:03:06.061Z"
+}
