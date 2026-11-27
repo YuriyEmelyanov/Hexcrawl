@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-https-production-1506",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "status": "review_ready",
+  "result": "Production build VTT verified over separate HTTPS editor, master and player origins in existing CI. Confirmed move survived room-process restart and the player retained the same restricted link.",
+  "scope": [
+    "Build-time production configuration for room URL and private launch key",
+    "Temporary HTTPS editor/master/player origins in CI",
+    "Classic seed 42 move 0,1→0,0; room restart; same player link and restricted projection"
+  ],
+  "checks": {
+    "local_check": {
+      "command": "npm run check",
+      "status": "success",
+      "node": "24.22.3",
+      "tests": {
+        "executed": 460,
+        "passed": 460,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "success",
+      "duration_ms": 722315
+    },
+    "local_targeted": {
+      "commands": [
+        "git diff --check",
+        "node --check test/browser/vtt-production-preview.mjs",
+        "npx tsc --noEmit"
+      ],
+      "status": "success"
+    },
+    "local_browser_limit": {
+      "status": "not_used_as_acceptance",
+      "reason": "Workspace Chromium installation was unavailable; the required browser scenario ran in existing GitHub CI with its installed Chromium."
+    },
+    "ci": {
+      "run_id": 45998232065,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": {
+        "check": "success",
+        "browser": "success",
+        "world_random": "success"
+      }
+    },
+    "production_https": {
+      "status": "success",
+      "performed_in": "GitHub Actions browser job",
+      "editor_origin_https": true,
+      "separate_master_and_player_origins": true,
+      "production_entry": true,
+      "confirmed_move": true,
+      "room_restart": true,
+      "same_player_link": true,
+      "authorised_projection_after_restart": true,
+      "from": "0,1",
+      "to": "0,0",
+      "artifact_id": 15196798727,
+      "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065/artifacts/15196798727",
+      "artifact_sha256": "d60ff0267af1f8a762c57b763fe2ac4ddf5e218c35260a52b6e71b7dea6bf7f3",
+      "files": [
+        "result.json",
+        "master-after-restart.jpg",
+        "player-after-restart.jpg"
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+    "scenario_risk": "The locally accepted VTT existed only behind a development server; the new case protects the production build entry, HTTPS origin split, durable room restart and old player link.",
+    "reuse_or_new_reason": "Existing local VTT scenarios remain the detailed functional coverage. A new case is justified because production packaging and HTTPS origins are a distinct delivery contract that the previous suite did not execute.",
+    "count_source": "git diff 2bf312d..9dbbd6c; one new top-level production HTTPS scenario",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0,
+    "runner": "GitHub Actions Chromium"
+  },
+  "limitations": [
+    "The CI environment is temporary and not reachable by the owner after the job.",
+    "No external public test stand or production publication was created.",
+    "Default GitHub Pages build still omits the VTT entry unless a room service is configured at build time."
+  ],
+  "next_role": "reviewer",
+  "next_step": "Independently review exact SHA 9dbbd6c: inspect the build-time secret boundary, reproduce or validate the production HTTPS artifact, and refresh the acceptance/score assessment. External stand and publication remain separate owner decisions.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T12:06:28.000Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T12:35:55.451Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T12:35:55.451Z"
+}
