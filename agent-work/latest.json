@@ -57,7 +57,7 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-27-programmer-HX078-reentry-ferry-0700.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Независимо перепроверить первый повторный вход, переправу на тропе и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Для завершения приёмки проверить удалённое подключение по HTTPS на разрешённом стенде.",
+  "next_step": "Независимо локально проверить первый повторный вход, тропную переправу и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Удалённая HTTPS-проверка потребует отдельного решения о тестовой среде: по уточнению владельца готового стенда у него нет.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-064",
@@ -859,7 +859,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-27T07:17:08.257Z",
+  "updated_at": "2026-11-27T07:21:57.146Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -17197,10 +17197,19 @@
     "score_update_status": "not_due_unpublished",
     "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45956099826",
     "next_role": "reviewer",
-    "next_step": "Независимо перепроверить первый повторный вход, переправу на тропе и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Для завершения приёмки проверить удалённое подключение по HTTPS на разрешённом стенде.",
+    "next_step": "Независимо локально проверить первый повторный вход, тропную переправу и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Удалённая HTTPS-проверка потребует отдельного решения о тестовой среде: по уточнению владельца готового стенда у него нет.",
     "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-reentry-ferry-0700-reviewer.json",
     "implementation_evidence_ref": "agent-work/evidence/HX-BL-078/vtt-reentry-ferry-2bf312d/verification.json",
-    "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json"
+    "prior_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+    "external_dependency": {
+      "status": "blocked_for_remote_verification",
+      "owner_has_existing_stand": false,
+      "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "local_review_blocked": false,
+      "remote_review_completed": false,
+      "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+      "next_step": "После локальной проверки при необходимости предложить владельцу конкретный вариант тестовой среды и условия его запуска."
+    }
   },
   "current_candidate_published": false,
   "previous_publication_gate": {
@@ -21228,5 +21237,37 @@
     "publication_authorized": false,
     "next_role": "reviewer",
     "next_step": "Независимо перепроверить первый повторный вход, переправу на тропе и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Для завершения приёмки проверить удалённое подключение по HTTPS на разрешённом стенде."
+  },
+  "latest_HX_BL_078_https_clarification": {
+    "result_ref": "agent-work/results/2026-11-27-HX078-owner-https-stand-clarification.json",
+    "result_commit_sha": "92fd45b46c1bbc915af563be4a42d9904fe32662",
+    "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "external_dependency": {
+      "status": "blocked_for_remote_verification",
+      "owner_has_existing_stand": false,
+      "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+      "local_review_blocked": false,
+      "remote_review_completed": false,
+      "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+      "next_step": "После локальной проверки при необходимости предложить владельцу конкретный вариант тестовой среды и условия его запуска."
+    },
+    "next_role": "reviewer",
+    "next_step": "Независимо локально проверить первый повторный вход, тропную переправу и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Удалённая HTTPS-проверка потребует отдельного решения о тестовой среде: по уточнению владельца готового стенда у него нет.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-27T07:21:32.197Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-27T07:21:57.146Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    }
   }
 }
