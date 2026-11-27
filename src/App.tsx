@@ -1194,10 +1194,14 @@ function splitImportedRegions(data: ValidatedHexcrawlSaveData): ValidatedHexcraw
   return imported;
 }
 
+function riverSourceKey(river: River): string | undefined {
+  return river.deltaParentRiverId === undefined ? river.vertexPath[0]?.key : undefined;
+}
+
 function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<string,HexTerrainData>,crossings:RiverCrossing[]):FeatureEligibility{
   const hidden=new Set([...getLakeEdgeKeys(regions.flatMap(r=>r.hexes),terrain),...getSeaEdgeKeys(terrain)]);
   const crossingEdges=new Set(crossings.map(c=>c.riverEdgeKey));
-  const starts=new Set(rivers.flatMap(r=>r.vertexPath.length?[r.vertexPath[0].key]:[]));
+  const starts=new Set(rivers.map(riverSourceKey));
   const confluences=new Set(getRiverConfluences(rivers).map(c=>c.vertexKey));
   const lake=new Set(getLakeVertices(regions.flatMap(r=>r.hexes),terrain).map(v=>v.key));
   const sea=getSeaVertexKeysFromSeaKeys(getSeaHexKeys(terrain));
@@ -1851,7 +1855,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
   const deltaCrossingKinds=deltaArm?Object.fromEntries(
     reconcileRiverCrossings(map.roads,[deltaArm],map.regions,[],{
       geography:()=>draw(generation,'geography'),poi:()=>draw(generation,'poi')
-    }).map(c=>[c.key,c.kind])
+    },{uniqueKeys:true}).map(c=>[c.key,c.kind])
   ):undefined;
   // A preview may stage a safe candidate, but never supplies an implicit answer
   // to the user's ford/marker choices. The ordinary writer remains strict.
@@ -9540,7 +9544,7 @@ function getRiverCrossingKey(roadId: number, roadSegmentKey: string, riverId: nu
 
 // Пересечения создаются после построения геометрии рек и дорог. Уже существующий
 // тип сохраняется, поэтому добавление следующего региона не меняет старые мосты.
-function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[], rng: RandomStreams = fallbackRandomStreams): RiverCrossing[] {
+function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[], rng: RandomStreams = fallbackRandomStreams, options: {uniqueKeys?: boolean} = {}): RiverCrossing[] {
   const existingByKey = new Map(existing.map((crossing) => [crossing.key, crossing]));
   const regionById = new Map(regions.map((region) => [region.id, region]));
   const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
@@ -9555,6 +9559,9 @@ function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region
   }
 
   const crossings: RiverCrossing[] = [];
+  // Accepted saves can repeat a road segment. For manual delta edits, roll
+  // only once per new crossing, before any random draws for that key.
+  const seen = options.uniqueKeys ? new Set<string>() : undefined;
   for (const road of roads) {
     const region = regionById.get(road.regionId);
     for (const segment of road.segments) {
@@ -9567,6 +9574,8 @@ function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region
       const roadSegmentKey = normalizeRoadSegmentKey(segment.from, segment.to);
       for (const river of crossedRivers) {
         const key = getRiverCrossingKey(road.id, roadSegmentKey, river.id);
+        if (seen?.has(key)) continue;
+        seen?.add(key);
         crossings.push(existingByKey.get(key) ?? {
           key,
           roadId: road.id,
@@ -16718,7 +16727,7 @@ export function App() {
         onChange={event=>change(rapid?{type:'rapid',riverId:river.id,edgeKey:key,state:event.target.value as FeatureEdit['state']}:{type:'waterfall',vertexKey:key,state:event.target.value as FeatureEdit['state']})}>
         <option value="auto">{language==='ru'?'Авто':'Auto'}</option><option value="on" disabled={!onAllowed}>{language==='ru'?'Есть':'On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option>
       </select> <span>{language==='ru'?(effective?'Есть':'Нет'):(effective?'Present':'Absent')} ({state?(language==='ru'?'вручную':'manual'):(language==='ru'?'авто':'auto')})</span>
-      {!onAllowed&&<span className="river-feature-reason">{rapid?(crossings.some(c=>c.riverId===river.id&&c.riverEdgeKey===key)?(language==='ru'?'На участке есть переправа.':'This edge has a crossing.'):(language==='ru'?'Участок скрыт водой.':'This edge is hidden by water.')):rivers.some(r=>r.vertexPath[0]?.key===key)?(language==='ru'?'Водопад недопустим в начале реки.':'A waterfall cannot start a river.'):(language==='ru'?'Вершина у воды или в месте слияния.':'The vertex touches water or a confluence.')}</span>}</div>;
+      {!onAllowed&&<span className="river-feature-reason">{rapid?(crossings.some(c=>c.riverId===river.id&&c.riverEdgeKey===key)?(language==='ru'?'На участке есть переправа.':'This edge has a crossing.'):(language==='ru'?'Участок скрыт водой.':'This edge is hidden by water.')):rivers.some(r=>riverSourceKey(r)===key)?(language==='ru'?'Водопад недопустим в начале реки.':'A waterfall cannot start a river.'):(language==='ru'?'Вершина у воды или в месте слияния.':'The vertex touches water or a confluence.')}</span>}</div>;
     };
     const choice=target.edgeKey;
     const currentF=choice?knownRiverEdgeFullness(river,choice):undefined;

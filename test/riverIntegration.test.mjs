@@ -16,13 +16,16 @@ test('D74 manual delta previews a new crossing and commits it with one undoable 
   const [fork, mouth] = arm.vertexPath;
   assert.deepEqual([fork.key,mouth.key], ['96.995,-28','96.995,-56']);
   assert.ok(harness.render().editRiverDocument({type:'remove',riverId:arm.id,includeArms:false},{confirmed:true}));
+  assert.ok(harness.render().editRiverFeatures([{type:'waterfall',vertexKey:fork.key,state:'on'}]));
   const control = harness.render().captureDocument();
   const stable = () => JSON.parse(JSON.stringify(harness.render().createSaveData(), (key,value) => key==='savedAt'?undefined:value));
   const parent = control.map.rivers.find(r => r.id===1);
   for (const kind of ['road','trail']) {
     const crossingSegment = {from:{q:2,r:-1},to:{q:3,r:-1},kind};
     const [road,...rest] = control.map.roads;
-    const roads = [{...road,segments:[...road.segments,crossingSegment]},...rest];
+    // Legacy saves can represent the same trail segment in both directions.
+    const repeated = kind==='trail'?[{...crossingSegment,from:crossingSegment.to,to:crossingSegment.from}]:[];
+    const roads = [{...road,segments:[...road.segments,crossingSegment,...repeated]},...rest];
     // This edge crosses the short arm on the coarse map. The generated fine
     // lake covers that crossing and belongs to a separate rejection case.
     const physicalGrid = control.map.physicalGrid;
@@ -30,12 +33,14 @@ test('D74 manual delta previews a new crossing and commits it with one undoable 
     harness.render().applyDocument({...control,map:{...control.map,roads,physicalGrid:withoutSmallLakes}});
     harness.render().setEditMode(true);
     const before = stable();
+    harness.geometry.assertHexcrawlSaveData(before);
     assert.ok(harness.render().startRiverDraft());
     assert.ok(harness.render().appendRiverDraft(fork.key));
     assert.ok(harness.render().appendRiverDraft(mouth.key));
     assert.equal(harness.render().finishRiverDraft(),false,'requires confirmation');
     let app = harness.render();
     assert.equal(app.riverCommandPreview.edit.fullness,3);
+    assert.equal(app.riverPreviewPlan.plan.unresolvedFeatures.length,0,'the existing waterfall stays eligible');
     const getCrossing = () => harness.render().riverPreviewPlan.plan.map.crossings.find(c=>c.riverId===control.map.nextRiverId);
     const region = control.map.regions.find(r=>r.id===road.regionId);
     const expectedState = cloneGenerationState(control.map.generation);
@@ -56,8 +61,11 @@ test('D74 manual delta previews a new crossing and commits it with one undoable 
     assert.ok(confirmed,harness.render().editError??'confirmation must commit the proposal');
     const after = stable();
     assert.deepEqual(after.generation,expectedState);
+    assert.deepEqual(after.map.riverFeatures.waterfalls,before.map.riverFeatures.waterfalls);
+    assert.ok(harness.render().riverWaterfalls.some(w=>w.vertexKey===fork.key));
     assert.deepEqual(after.map.rivers.find(r=>r.id===parent.id),JSON.parse(JSON.stringify(parent)));
     assert.deepEqual(after.map.crossings.find(c=>c.key===crossing.key),JSON.parse(JSON.stringify(crossing)));
+    assert.equal(after.map.crossings.filter(c=>c.key===crossing.key).length,1);
     assert.deepEqual(after.map.crossings.filter(c=>c.key!==crossing.key),before.map.crossings);
     assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);
     harness.render().undoMap();
