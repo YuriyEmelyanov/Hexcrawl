@@ -24,10 +24,12 @@ const key = ({q, r}) => `${q},${r}`;
 const catalog = await fetch('/engraving-catalog.json').then(response => response.json());
 const onboard = location.hash.slice(1);
 if (master && onboard) {
-  localStorage.setItem('vtt-preview-master', onboard);
+  // Each master tab owns its room. A shared localStorage key would make two
+  // concurrently open rooms overwrite each other's authority on reload.
+  sessionStorage.setItem('vtt-preview-master', onboard);
   history.replaceState(null, '', location.pathname);
 }
-const masterKey = master ? localStorage.getItem('vtt-preview-master') : null;
+const masterKey = master ? sessionStorage.getItem('vtt-preview-master') : null;
 const headers = master
   ? {authorization: 'Bearer ' + masterKey}
   : {'x-preview-room': location.pathname};

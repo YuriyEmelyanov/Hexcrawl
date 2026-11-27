@@ -132,7 +132,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     });
     const snapshotMaster = () => master.evaluate(async () => {
       const response = await fetch('/state', {headers: {
-        authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')
+        authorization: 'Bearer ' + sessionStorage.getItem('vtt-preview-master')
       }});
       return response.json();
     });
@@ -491,7 +491,7 @@ async function verifyEditorRestore(browser) {
     ]);
     await firstWindow.waitForURL(url => url.origin === preview.roomUrl && url.pathname === '/master', {waitUntil: 'load'});
     assert.equal(interrupted, true);
-    assert.equal(await firstWindow.evaluate(() => localStorage.getItem('vtt-preview-master')), null);
+    assert.equal(await firstWindow.evaluate(() => sessionStorage.getItem('vtt-preview-master')), null);
     await firstWindow.close();
     await masterContext.unroute(masterScript);
     const firstRoom = JSON.parse(await readFile(storagePath, 'utf8'));
@@ -516,7 +516,7 @@ async function verifyEditorRestore(browser) {
     assert.equal((await player.request.post(preview.playerUrl + '/open', {
       headers: {origin: preview.editorUrl}, data: firstOpen.postData()
     })).status(), 404);
-    const masterKey = await master.evaluate(() => localStorage.getItem('vtt-preview-master'));
+    const masterKey = await master.evaluate(() => sessionStorage.getItem('vtt-preview-master'));
     assert.equal((await player.request.get(preview.playerUrl + '/state', {
       headers: {authorization: 'Bearer ' + masterKey}
     })).status(), 404);
