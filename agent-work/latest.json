@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-11-27",
+  "date": "2026-11-28",
   "branch": "agent/hx074-manual-delta",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-27-reviewer-HX078-bf83c32-2200",
+  "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "changes_requested",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,13 +40,13 @@
   "unverified_weight": null,
   "last_completed_task": "HX-BL-056",
   "operational_state_write": {
-    "at": "2026-11-27T19:04:14.915Z",
+    "at": "2026-11-27T21:24:52.469Z",
     "backlog_updated": true,
     "claim_completed": true,
     "execution_lock_released": true,
-    "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-    "evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+    "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
     "latest_written_last": true
   },
   "budget_status": "owner_waived_usage_gate",
@@ -55,25 +55,25 @@
   "schedule_start_at": "2026-11-27T18:00:00+03:00",
   "schedule_frequency": "every_two_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "programmer",
+  "current_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-078",
   "spec_path": "agent-work/specs/HX-BL-074-classic-manual-delta-D1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Исправить восстановление ожидаемой игры в связанных вкладках редактора (F519-ROOM-BINDING-005) и сохранение масштаба камеры для старой карты (F519-SCALE-RESTORE-007). Расширить два имеющихся сценария, сохранить повторный вход мастера в режиме чтения и вернуть новый SHA для независимой проверки.",
+  "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
   "owner_decisions_needed": [],
   "release_approval": false,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
+  "evidence_path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
-  "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-  "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
-  "checks_status": "ci_passed_independent_diagnostics_failed",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
-  "review_verdict": "changes_requested",
+  "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+  "checks_status": "success",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+  "review_verdict": "pending_exact_sha_recheck",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -155,7 +155,7 @@
   "score_update_task_id": "HX-BL-074",
   "score_update_release_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Утверждённый PR519 имел review_ready с успешными проверками, исполнительский слот задачи свободен. Выпуски PR511 и PR520 уже учтены по 1.3-rc8. HX-BL-064/069 ждут ответов.",
+  "role_selection_reason": "Согласованный HX-BL-078 имел два подтверждённых замечания к PR519. Слот программиста свободен, исправления независимы от хостинга и согласования выпуска.",
   "score_update_result_ref": "agent-work/results/2026-11-27-reviewer-PR520-score-1446.json",
   "score_update_completed_at": "2026-11-27T11:48:51.340Z",
   "score_update_delta": 0.4938271604938272,
@@ -165,27 +165,24 @@
   "approval_ref": "agent-work/decisions/owner-2026-11-26-approve-HX074-delta.json",
   "last_completed_stage": "POI-OPEN-COARSE",
   "previous_release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
-  "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-27T18:58:51.172Z",
+      "at": "2026-11-27T21:04:51.257Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-27T19:03:36.180Z",
+      "at": "2026-11-27T21:24:13.112Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored": false,
     "errors": []
   },
-  "open_findings": [
-    "F519-ROOM-BINDING-005",
-    "F519-SCALE-RESTORE-007"
-  ],
-  "current_review_score_assessment_status": "insufficient_evidence",
+  "open_findings": [],
+  "current_review_score_assessment_status": "pending_exact_sha_recheck",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -497,8 +494,11 @@
     },
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
-  "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
-  "addressed_findings_pending_review": [],
+  "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
+  "addressed_findings_pending_review": [
+    "F519-ROOM-BINDING-005",
+    "F519-SCALE-RESTORE-007"
+  ],
   "verified_fixed_findings": [
     {
       "id": "F519-RESTORE-004",
@@ -617,7 +617,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 520,
-  "last_material_result_path": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "last_material_result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
   "last_wait_check_at": "2026-11-22T06:59:13.314Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -683,7 +683,7 @@
   },
   "review_request": null,
   "reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-  "current_review_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -783,7 +783,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-27T19:04:14.915Z",
+  "updated_at": "2026-11-27T21:24:52.469Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -938,7 +938,7 @@
     "schedule_changed": false,
     "limitation": "Pointintime observations only; no future service guarantee"
   },
-  "previous_reviewed_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "previous_reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
   "test_governance": {
     "decision_ref": "owner-decision-2026-10-26-test-governance",
     "feedback_id": "HX-FB-002",
@@ -969,33 +969,30 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
-    "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
     "added": 0,
     "removed": 0,
     "modified": 2,
-    "suite": "Chromium: production HTTPS and the Classic room scenario",
-    "scenario_risk": "Раздельный вход в игры на одной карте и допуск старого сохранения после перехода на 5–6 миль. Существующая проверка восстановления перенесена в регулярный CI.",
-    "reuse_or_new_reason": "Расширены имеющиеся сценарии. Ожидание готовности импорта в смежных сценариях устраняет ложный тайм-аут без изменения их контрактов.",
-    "count_source": "Logical assertions in git diff 7f602111..bf83c329",
+    "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+    "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+    "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+    "count_source": "Logical product cases in git diff bf83c329..412e20cc",
     "runners": {
-      "local_https_chromium": {
+      "local_browser_https": {
         "executed": 1,
         "passed": 1,
         "skipped": 0
       },
-      "local_room_chromium": {
+      "local_room_browser": {
         "executed": 7,
         "passed": 7,
         "skipped": 0
+      },
+      "differential_baseline": {
+        "executed_suites": 2,
+        "failures_at_intended_assertions": 2
       }
-    },
-    "necessity": "Содержательно изменены два существующих случая. Отдельные проверки открытия одной вкладки из другой и масштаба после восстановления являются временной диагностикой. Оба результата показывают риски, которые не проверяли два новых чистых таба и успешный вход без повторного открытия.",
-    "reviewer_diagnostics": {
-      "executed": 2,
-      "passed": 0,
-      "failed": 2,
-      "persistent_cases_added": 0
     }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012923161",
@@ -1043,7 +1040,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1420,7 +1417,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0.4938271604938272,
-  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1824,7 +1821,7 @@
     }
   },
   "previous_result_path": "agent-work/results/2026-11-21T1000-programmer-HX-BL-056-RV10.json",
-  "handoff_path": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+  "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
   "ui_actual_preview": {
     "kind": "runtime_exact_SHA",
     "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
@@ -2464,15 +2461,15 @@
   "current_stage_id": "VTT-FIRST",
   "implementation_started": true,
   "current_stage_release_approved": true,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": {
     "task_id": "HX-BL-078",
-    "run_id": "2026-11-27-reviewer-HX078-bf83c32-2200",
-    "generation": 998,
+    "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
+    "generation": 1000,
     "status": "completed_released",
-    "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-    "released_at": "2026-11-27T19:04:12.507Z"
+    "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "released_at": "2026-11-27T21:24:49.725Z"
   },
   "evidence_commit_sha": "7d4403ff4da7b5c7201ba572f96b8469a3893562",
   "finding_ids": [],
@@ -8037,7 +8034,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -21173,14 +21170,14 @@
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "branch": "agent/hx078-vtt-live-1",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
-      "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+      "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
       "reviewed_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
       "accepted_sha": null,
-      "status": "review_changes_requested",
-      "verdict": "changes_requested",
-      "review_ready": false,
-      "review_completed": true,
+      "status": "review_ready",
+      "verdict": "pending_exact_sha_recheck",
+      "review_ready": true,
+      "review_completed": false,
       "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
       "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/verification.json",
       "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
@@ -21189,9 +21186,9 @@
       "published": false,
       "score_update_status": "not_due_unpublished",
       "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
-      "next_role": "programmer",
-      "next_step": "Исправить восстановление ожидаемой игры в связанных вкладках редактора (F519-ROOM-BINDING-005) и сохранение масштаба камеры для старой карты (F519-SCALE-RESTORE-007). Расширить два имеющихся сценария, сохранить повторный вход мастера в режиме чтения и вернуть новый SHA для независимой проверки.",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
+      "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
       "external_dependency": {
         "status": "public_hosting_unverified",
         "owner_has_existing_stand": false,
@@ -21199,53 +21196,56 @@
         "local_review_blocked": false,
         "remote_review_completed": false,
         "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
-        "next_step": "После исправлений проверить независимый результат на новом SHA. Для выпуска нужен работающий HTTPS-сервис комнат.",
+        "next_step": "Отдельно подтвердить рабочий сервис комнат и конфигурацию поставляемой сборки.",
         "confirmed_pages_entry_missing": true,
         "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
         "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
         "ci_https_completed": true,
-        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
+        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
         "external_public_stand_missing": true,
         "default_pages_vtt_configured": false,
-        "note": "Временный HTTPS работает. Отдельное подключение рабочего сервиса к Pages нужно для выпуска, исправления независимы.",
+        "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
         "release_blockers": [
           "F519-ROOM-BINDING-005"
         ]
       },
-      "checks_status": "ci_passed_independent_diagnostics_failed",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
-      "evidence_ref": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/verification.json",
-      "evidence_path": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/verification.json",
-      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-      "result_path": "agent-work/results/2026-11-27-programmer-HX078-room-recovery-2000.json",
-      "handoff_path": "agent-work/handoffs/2026-11-27-programmer-HX078-room-recovery-2000-review.json",
+      "checks_status": "success",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+      "evidence_path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+      "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+      "result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+      "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
       "release_authorized": false,
       "addressed_findings_pending_review": [
-        "F519-RESTORE-004",
         "F519-ROOM-BINDING-005",
-        "F519-SCALE-006"
+        "F519-SCALE-RESTORE-007"
       ],
-      "review_verdict": "changes_requested",
+      "review_verdict": "pending_exact_sha_recheck",
       "test_change_summary": {
-        "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
-        "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+        "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+        "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
         "added": 0,
         "removed": 0,
         "modified": 2,
-        "suite": "Chromium: production HTTPS and the Classic room scenario",
-        "scenario_risk": "Раздельный вход в игры на одной карте и допуск старого сохранения после перехода на 5–6 миль. Существующая проверка восстановления перенесена в регулярный CI.",
-        "reuse_or_new_reason": "Расширены имеющиеся сценарии. Ожидание готовности импорта в смежных сценариях устраняет ложный тайм-аут без изменения их контрактов.",
-        "count_source": "Logical assertions in git diff 7f602111..bf83c329",
+        "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+        "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+        "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+        "count_source": "Logical product cases in git diff bf83c329..412e20cc",
         "runners": {
-          "local_https_chromium": {
+          "local_browser_https": {
             "executed": 1,
             "passed": 1,
             "skipped": 0
           },
-          "local_room_chromium": {
+          "local_room_browser": {
             "executed": 7,
             "passed": 7,
             "skipped": 0
+          },
+          "differential_baseline": {
+            "executed_suites": 2,
+            "failures_at_intended_assertions": 2
           }
         }
       },
@@ -21440,6 +21440,78 @@
       "confidence": "low",
       "excludes": "Время ожидания внешнего сервиса и согласования публикации",
       "reason": "Независимая приёмка, возможная настройка доступного сервиса и выпуск. Ожидаемый результат — рабочая живая карта с прежней ссылкой после возврата."
+    }
+  },
+  "latest_HX_BL_078_tab_camera": {
+    "stage_id": "VTT-FIRST",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+    "checks_status": "success",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+    "evidence_path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+    "result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "result_path": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+    "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+    "review_ready": true,
+    "next_role": "reviewer",
+    "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
+    "publication_authorized": false,
+    "release_authorized": false,
+    "addressed_findings_pending_review": [
+      "F519-ROOM-BINDING-005",
+      "F519-SCALE-RESTORE-007"
+    ],
+    "review_verdict": "pending_exact_sha_recheck",
+    "test_change_summary": {
+      "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+      "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+      "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+      "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+      "runners": {
+        "local_browser_https": {
+          "executed": 1,
+          "passed": 1,
+          "skipped": 0
+        },
+        "local_room_browser": {
+          "executed": 7,
+          "passed": 7,
+          "skipped": 0
+        },
+        "differential_baseline": {
+          "executed_suites": 2,
+          "failures_at_intended_assertions": 2
+        }
+      }
+    },
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005/artifacts/15232535719",
+    "screenshots": {
+      "commit": "33856a32afb63e44be9de303c804296eace64a38",
+      "files": [
+        {
+          "path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/master-after-restart.jpg",
+          "blob_sha": "e82317d656b2710e423aa4771a880aba9d4a545d"
+        },
+        {
+          "path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/second-master-after-restart.jpg",
+          "blob_sha": "25cd63850b4d806144cba7f09912f3b5d57b93d7"
+        }
+      ]
+    },
+    "forecast": {
+      "remaining_first_release_runs": [
+        2,
+        5
+      ],
+      "confidence": "low",
+      "basis": "Независимая приёмка, возможная настройка и проверка рабочей среды, отдельный выпуск. Ожидание внешнего размещения и разрешения не включено."
     }
   }
 }
