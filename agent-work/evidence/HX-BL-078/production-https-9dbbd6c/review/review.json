@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-9dbbd6c-1541",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "tree_sha": "5647b12a609f4f6d3791b144adf80b35dbcc8836",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "programmer_evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
+  "independent_review": {
+    "performed": true,
+    "method": "Separate fresh-context reviewer plus root verification; no GitHub mutation by the independent reviewer.",
+    "exact_sha_verified": true,
+    "checks": [
+      {
+        "name": "GitHub Actions exact head",
+        "status": "passed",
+        "evidence": "run 45998232065: check, browser and world-random succeeded on 9dbbd6c"
+      },
+      {
+        "name": "Production HTTPS log",
+        "status": "passed",
+        "evidence": "Step emitted confirmedMove, roomRestart, samePlayerLink and authorisedProjectionAfterRestart=true"
+      },
+      {
+        "name": "Artifact integrity",
+        "status": "passed",
+        "evidence": "artifact 15196798727; 62465 bytes; ZIP SHA256 d60ff0267af1f8a762c57b763fe2ac4ddf5e218c35260a52b6e71b7dea6bf7f3; result.json plus master/player screenshots"
+      },
+      {
+        "name": "Default production build without VTT env",
+        "status": "passed",
+        "evidence": "npm run build succeeded; vite config defines both values as null and the entry is gated by vttPreview"
+      },
+      {
+        "name": "Incomplete env pair",
+        "status": "passed",
+        "evidence": "URL without key failed build with Configure both HEXCRAWL_VTT_PREVIEW_URL and HEXCRAWL_VTT_PREVIEW_KEY"
+      },
+      {
+        "name": "Type/static checks",
+        "status": "passed",
+        "evidence": "node --check, npx tsc --noEmit and git diff --check passed"
+      },
+      {
+        "name": "Public bundle secret boundary",
+        "status": "failed",
+        "evidence": "Sentinel launch key appeared verbatim once in dist/assets/index-*.js"
+      }
+    ]
+  },
+  "artifact": {
+    "id": 15196798727,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065/artifacts/15196798727",
+    "zip_sha256": "d60ff0267af1f8a762c57b763fe2ac4ddf5e218c35260a52b6e71b7dea6bf7f3",
+    "files": [
+      "result.json",
+      "master-after-restart.jpg",
+      "player-after-restart.jpg"
+    ],
+    "visual_observation": "Master screenshot shows the full map at 0,0; player screenshot shows a restricted local projection at the same position after restart."
+  },
+  "accepted_evidence": [
+    "Exact production build can launch one room through separate HTTPS origins.",
+    "A player move 0,1→0,0 is confirmed and survives room-process restart.",
+    "The original player URL stays valid and still returns a restricted projection.",
+    "An ordinary Pages build stays disabled without configuration."
+  ],
+  "findings": [
+    {
+      "id": "F519-SEC-001",
+      "severity": "P1",
+      "classification": "confirmed_security_defect",
+      "blocking": true,
+      "requirement_refs": [
+        "VTT-R08",
+        "VTT-AC06"
+      ],
+      "summary": "The production build embeds HEXCRAWL_VTT_PREVIEW_KEY verbatim in the public editor JavaScript bundle, so the reusable Bearer value is not a server-side secret.",
+      "evidence": [
+        "vite.config.ts defines __HEXCRAWL_VTT_PREVIEW_KEY__ from the environment and src/App.tsx sends it as Authorization: Bearer.",
+        "Independent sentinel build: HEXCRAWL_VTT_PREVIEW_KEY=HX078_REVIEW_SENTINEL_KEY_9dbbd6c; rg found the exact sentinel once in dist/assets/index-*.js.",
+        "scripts/vtt-preview/server.mjs accepts /open when the same Bearer is presented; Origin validation is a browser/CORS boundary, not server authentication."
+      ],
+      "impact": "Anyone able to download the public bundle can recover the shared launch credential and call the room creation endpoint. Rotating or hiding the build variable cannot repair this boundary.",
+      "required_fix": "Do not put a reusable server credential in downloadable assets. Define a production room-creation/auth boundary with server-issued/per-room authority and server-side abuse controls; extend the existing production scenario to fail if a reusable secret appears in dist."
+    },
+    {
+      "id": "F519-DEPLOY-002",
+      "severity": "P2",
+      "classification": "confirmed_release_gap",
+      "blocking": true,
+      "requirement_refs": [
+        "VTT-R01",
+        "VTT-R02",
+        "VTT-R07",
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "summary": "The verified room service owns one global room per process/storage file and returns 409 for a different map; no public durable multi-room deployment exists.",
+      "evidence": [
+        "scripts/vtt-preview/server.mjs has one `let room` and rejects a different map digest with 409.",
+        "The CI proof uses one ephemeral process and one temporary storagePath.",
+        "The normal GitHub Pages workflow supplies no VTT server URL/key, so the published static build remains VTT-disabled."
+      ],
+      "impact": "The CI result proves one room can survive a process restart, but it does not yield a usable shared service for independent games or an owner-accessible test stand.",
+      "required_fix": "Provide a production-safe room identity/storage boundary for independent games and then validate it on a durable HTTPS stand. Hosting and publication remain separate owner decisions."
+    }
+  ],
+  "review_ready": false,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "test_change_summary": {
+    "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+    "scenario_risk": "Production packaging, three HTTPS origins, durable room restart and the same restricted player link were not covered by the local functional suite.",
+    "reuse_or_new_reason": "The existing local VTT suite remains the detailed behavior coverage. One new top-level scenario is useful for the distinct production delivery path; it should be extended, not duplicated, to assert that no reusable server secret is shipped in public assets.",
+    "count_source": "git diff 2bf312d..9dbbd6c; one new top-level Chromium scenario",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0,
+    "runner": "GitHub Actions Chromium"
+  },
+  "limitations": [
+    "No durable external/public stand was verified.",
+    "The production test proves fewer player cells than master; detailed field isolation relies on the previously accepted local suite.",
+    "No product score is posted before publication."
+  ],
+  "next_role": "programmer",
+  "next_step": "Fix F519-SEC-001 and F519-DEPLOY-002 within HX-BL-078: remove reusable secrets from public assets, define independent durable room identity/storage, extend the existing production HTTPS scenario with the negative security assertion, and return a new exact SHA for review.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T12:41:08.542Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "status": "pending"
+    },
+    "restored": false,
+    "errors": []
+  },
+  "created_at": "2026-11-27T12:53:15.960Z"
+}
