@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "from_role": "programmer",
+  "to_role": "reviewer",
+  "run_id": "2026-11-27-programmer-HX078-https-production-1506",
+  "status": "review_ready",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-https-production-1506.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065/artifacts/15196798727",
+  "review_scope": [
+    "Inspect the production build-time room URL/key injection and confirm the room key is not shipped to the player bundle or exposed through the player URL.",
+    "Independently validate or reproduce the three-origin HTTPS artifact: editor creates room, player moves, master confirms, room process restarts, and the same player link still restores the restricted projection.",
+    "Confirm an ordinary GitHub Pages build without HEXCRAWL_VTT_PREVIEW_URL and HEXCRAWL_VTT_PREVIEW_KEY remains VTT-disabled.",
+    "Refresh the acceptance verdict and score_assessment for exact SHA 9dbbd6c662bdd834155a1522df769f0e1e29f03b."
+  ],
+  "acceptance_criterion": "A reviewer result on the exact SHA records findings or acceptance, independent evidence, and an updated score assessment; any changed SHA requires a new review.",
+  "limitations": [
+    "The verified CI stand is ephemeral and cannot be opened by the owner after the job.",
+    "No external/public stand and no production publication were created.",
+    "The normal Pages build remains VTT-disabled until a durable room service is selected and configured."
+  ],
+  "publication_authorized": false,
+  "external_public_stand_authorized": false,
+  "test_change_summary": {
+    "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+    "scenario_risk": "Production packaging, HTTPS origin separation, room restart and old player-link continuity were absent from the previous local-only suite.",
+    "reuse_or_new_reason": "The detailed local VTT suite was retained; this is one distinct delivery-path scenario.",
+    "count_source": "git diff 2bf312d..9dbbd6c",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "created_at": "2026-11-27T12:35:55.451Z"
+}
