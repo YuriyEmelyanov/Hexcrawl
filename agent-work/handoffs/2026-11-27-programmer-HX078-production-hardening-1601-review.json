@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "from_role": "programmer",
+  "to_role": "reviewer",
+  "run_id": "2026-11-27-programmer-HX078-production-hardening-1601",
+  "status": "review_ready",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+  "tree_sha": "afc1fdc07488168e771444f0c3597289478a0d69",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/production-hardening-7f602111/verification.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-production-hardening-1601.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707/artifacts/15204305386",
+  "review_scope": [
+    "Confirm no reusable room/master credential is present in production assets or sent by the public editor; assess exact-Origin and capacity boundary.",
+    "Open two distinct maps in separate master tabs and verify independent master/player authority before and after service restart.",
+    "Inspect version-1 compatibility and version-2 multi-room durable storage; verify one room cannot read or mutate another.",
+    "Confirm the production HTTPS scenario is unconditional for PRs and that the negative bundle secret and multi-room assertions are meaningful and stable.",
+    "Refresh exact-SHA acceptance and score_assessment under model 1.3-rc8; a changed SHA requires a new review."
+  ],
+  "acceptance_criterion": "Reviewer independently records acceptance or concrete findings for exact SHA 7f602111fcce88b8e2d157baa252b32f3954eae1 with artifact evidence and an updated 1.3-rc8 score assessment.",
+  "findings_addressed_pending_review": [
+    "F519-SEC-001",
+    "F519-DEPLOY-002",
+    "F519-TEST-003"
+  ],
+  "test_change_summary": {
+    "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: existing test/browser/vtt-production-preview.mjs and test/browser/vtt-room-preview.mjs",
+    "scenario_risk": "Reusable public-bundle authority, cross-room state/credential collision, durable restore of multiple rooms, and loss of the production regression outside PR519.",
+    "reuse_or_new_reason": "Extended the two existing VTT scenarios instead of adding a duplicate suite: production HTTPS now asserts a secret-free bundle and two isolated durable rooms; the local room scenario asserts no launch bearer and per-tab master authority.",
+    "count_source": "git diff 9dbbd6c662bdd834155a1522df769f0e1e29f03b..7f602111fcce88b8e2d157baa252b32f3954eae1; logical top-level scenarios",
+    "executed": {
+      "node": 460,
+      "browser_production_https": 1,
+      "browser_existing_suite": 1,
+      "world_random": 1
+    },
+    "passed": {
+      "node": 460,
+      "browser_production_https": 1,
+      "browser_existing_suite": 1,
+      "world_random": 1
+    },
+    "skipped": 0,
+    "runners": [
+      "Node test runner",
+      "GitHub Actions Chromium",
+      "GitHub Actions world-random"
+    ]
+  },
+  "limitations": [
+    "The verified HTTPS environment is ephemeral and not an owner-accessible durable/public stand.",
+    "No publication or merge to main was authorized or performed.",
+    "The normal Pages build remains VTT-disabled when no room-service URL is configured."
+  ],
+  "publication_authorized": false,
+  "external_public_stand_authorized": false,
+  "created_at": "2026-11-27T14:03:06.061Z"
+}
