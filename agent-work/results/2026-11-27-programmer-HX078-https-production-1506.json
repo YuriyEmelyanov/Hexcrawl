@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-https-production-1506",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-https-production-1506.json",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "status": "review_ready",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+  "result": "PR519 now has a production-build entry path and a passing three-origin HTTPS CI scenario. A player move survived room restart and the original restricted player link remained valid.",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065/artifacts/15196798727",
+  "test_change_summary": {
+    "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+    "scenario_risk": "The locally accepted VTT existed only behind a development server; the new case protects the production build entry, HTTPS origin split, durable room restart and old player link.",
+    "reuse_or_new_reason": "Existing local VTT scenarios remain the detailed functional coverage. A new case is justified because production packaging and HTTPS origins are a distinct delivery contract that the previous suite did not execute.",
+    "count_source": "git diff 2bf312d..9dbbd6c; one new top-level production HTTPS scenario",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0,
+    "runner": "GitHub Actions Chromium"
+  },
+  "publication_authorized": false,
+  "external_test_stand_created": false,
+  "limitations": [
+    "The CI environment is temporary and not reachable by the owner after the job.",
+    "No external public test stand or production publication was created.",
+    "Default GitHub Pages build still omits the VTT entry unless a room service is configured at build time."
+  ],
+  "next_role": "reviewer",
+  "next_step": "Independently review exact SHA 9dbbd6c: inspect the build-time secret boundary, reproduce or validate the production HTTPS artifact, and refresh the acceptance/score assessment. External stand and publication remain separate owner decisions.",
+  "role_selection_reason": "PR520 accounting was completed; HX-BL-078/PR519 was the next approved independent programmer step with an idle task and programmer slot.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T12:06:28.000Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T12:35:55.451Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T12:35:55.451Z"
+}
