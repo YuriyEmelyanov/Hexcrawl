@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T15:04:01.927Z",
+  "updated_at": "2026-11-27T17:25:57.625Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3902,24 +3902,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Исправить восстановление комнаты на последнем сохранённом состоянии, привязку конкретной игры к полномочиям мастера и вход на 5–6 миль из старого сохранения. Повторить существующие браузерные сценарии, затем вернуть новый SHA.",
+      "next_step": "Независимо перепроверить SHA bf83c32921dae2df9d4e098695742e75e2535162 по F519-RESTORE-004/F519-ROOM-BINDING-005/F519-SCALE-006 и обновить предварительную оценку 1.3-rc8. Для выпуска отдельно подтвердить поставляемую конфигурацию рабочего сервиса комнат и разрешение владельца.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T15:04:01.927Z",
+      "updated_at": "2026-11-27T17:25:57.625Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "review_changes_requested",
+      "execution_state": "review_ready",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-7f602111-1800-fix.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-room-recovery-2000.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-room-recovery-2000-review.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3939,10 +3939,10 @@
           "id": "VTT-RELEASE-1",
           "title": "Живая карта отряда",
           "remaining_runs": [
-            14,
-            21
+            2,
+            5
           ],
-          "state": "ready_for_development",
+          "state": "review_ready",
           "acceptance": [
             "VTT-AC01",
             "VTT-AC02",
@@ -3982,19 +3982,20 @@
         }
       ],
       "forecast": {
-        "remaining_first_release_runs": [
+        "further_working_stages": [
           2,
           5
         ],
         "confidence": "low",
-        "basis": "Зависит от готового пути размещения; в оценке повтор внешней приёмки и выпуск после согласования, возможная подготовка конфигурации. Ожидание решения и недоступная среда вне прогноза."
+        "excludes": "Время ожидания внешнего сервиса и согласования публикации",
+        "reason": "Независимая приёмка, возможная настройка доступного сервиса и выпуск. Ожидаемый результат — рабочая живая карта с прежней ссылкой после возврата."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+      "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
-      "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/production-hardening-7f602111/verification.json",
+      "review_ready": true,
+      "evidence_ref": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -4010,11 +4011,12 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "ci_passed_independent_browser_regression_failed",
+      "checks_status": "success",
       "review_submission": {
-        "state": "changes_requested",
-        "role": "programmer",
-        "scope": "Fix accepted requirements referenced in the independent handoff."
+        "state": "review_ready",
+        "role": "reviewer",
+        "scope": "VTT-RELEASE-1 corrections on new SHA",
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071/artifacts/15219614024"
       },
       "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
       "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
@@ -4023,7 +4025,7 @@
           "id": "F519-RESTORE-004",
           "severity": "P1",
           "blocking": true,
-          "status": "open",
+          "status": "addressed_pending_independent_review",
           "acceptance_ids": [
             "VTT-AC08"
           ],
@@ -4040,7 +4042,7 @@
           "id": "F519-ROOM-BINDING-005",
           "severity": "P1",
           "blocking": true,
-          "status": "open",
+          "status": "addressed_pending_independent_review",
           "acceptance_ids": [
             "VTT-AC01",
             "VTT-AC06",
@@ -4058,7 +4060,7 @@
           "id": "F519-SCALE-006",
           "severity": "P2",
           "blocking": true,
-          "status": "open",
+          "status": "addressed_pending_independent_review",
           "acceptance_ids": [
             "VTT-AC01"
           ],
@@ -4072,11 +4074,15 @@
         }
       ],
       "reviewed_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
-      "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-production-hardening-1601.json",
-      "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-2bf312d/score-assessment.json",
+      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
+      "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
       "previous_reviewed_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
       "previous_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-2bf312d-1105.json",
-      "addressed_findings_pending_review": [],
+      "addressed_findings_pending_review": [
+        "F519-RESTORE-004",
+        "F519-ROOM-BINDING-005",
+        "F519-SCALE-006"
+      ],
       "publication_authorized": false,
       "external_dependency": {
         "status": "public_hosting_unverified",
@@ -4085,23 +4091,23 @@
         "local_review_blocked": false,
         "remote_review_completed": false,
         "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
-        "next_step": "Продолжить утверждённые исправления. Для выпуска подтвердить рабочий HTTPS-сервис и подключение поставляемой сборки.",
+        "next_step": "Отдельно подтвердить рабочий HTTPS-сервис и подключение поставляемой сборки перед согласованием выпуска.",
         "confirmed_pages_entry_missing": true,
         "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
         "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
         "ci_https_completed": true,
-        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
+        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
         "external_public_stand_missing": true,
         "default_pages_vtt_configured": false,
-        "note": "Временный HTTPS пройден. Устранение замечаний по приёмке независимо от размещения комнаты.",
+        "note": "Временный HTTPS проверен на новом SHA. Независимая приёмка готова. Для выпуска нужен подтверждённый сервис в поставляемой сборке.",
         "release_blockers": [
           "F519-RESTORE-004",
           "F519-ROOM-BINDING-005",
           "F519-SCALE-006"
         ]
       },
-      "local_review_completed": true,
-      "review_completed": true,
+      "local_review_completed": false,
+      "review_completed": false,
       "verified_findings": [
         {
           "id": "F519-SEC-001",
@@ -4120,45 +4126,33 @@
         }
       ],
       "delivery_validation_plan_ref": "agent-work/results/2026-11-27-HX078-vtt-https-ci-plan.json",
-      "candidate_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
+      "candidate_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46039697071",
       "test_change_summary": {
-        "base_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
-        "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+        "base_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+        "head_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
         "added": 0,
         "removed": 0,
         "modified": 2,
-        "suite": "Chromium: existing test/browser/vtt-production-preview.mjs and test/browser/vtt-room-preview.mjs",
-        "scenario_risk": "Reusable public-bundle authority, cross-room state/credential collision, durable restore of multiple rooms, and loss of the production regression outside PR519.",
-        "reuse_or_new_reason": "Extended the two existing VTT scenarios instead of adding a duplicate suite: production HTTPS now asserts a secret-free bundle and two isolated durable rooms; the local room scenario asserts no launch bearer and per-tab master authority.",
-        "count_source": "git diff 9dbbd6c662bdd834155a1522df769f0e1e29f03b..7f602111fcce88b8e2d157baa252b32f3954eae1; logical top-level scenarios",
-        "scope": "Changes since the previous independent review. No product files edited by reviewer.",
-        "necessity": "Проверка публичной сборки и независимости комнат защищает риски, которых не проверял один локальный room. Изменение локальной проверки учитывает раздельные сессии, но теряет сценарий восстановления при недоступном серверном состоянии. Использовать существующий сценарий, а не дублировать тест.",
-        "checks": {
-          "configured_https_ci": {
+        "suite": "Chromium: production HTTPS and the Classic room scenario",
+        "scenario_risk": "Раздельный вход в игры на одной карте и допуск старого сохранения после перехода на 5–6 миль. Существующая проверка восстановления перенесена в регулярный CI.",
+        "reuse_or_new_reason": "Расширены имеющиеся сценарии. Ожидание готовности импорта в смежных сценариях устраняет ложный тайм-аут без изменения их контрактов.",
+        "count_source": "Logical assertions in git diff 7f602111..bf83c329",
+        "runners": {
+          "local_https_chromium": {
             "executed": 1,
-            "passed": 1
+            "passed": 1,
+            "skipped": 0
           },
-          "configured_https_reviewer": {
-            "executed": 1,
-            "passed": 1
-          },
-          "reviewer_vtt_room_browser": {
-            "observed_passed": [
-              "classic",
-              "knave",
-              "crows",
-              "mythic"
-            ],
-            "observed_failed": [
-              "classic-generated-editor-restore"
-            ],
-            "remaining": "subsequent cases did not execute after timeout"
+          "local_room_chromium": {
+            "executed": 7,
+            "passed": 7,
+            "skipped": 0
           }
         }
       },
-      "review_status": "changes_requested",
-      "review_verdict": "changes_requested",
+      "review_status": "awaiting_exact_sha_recheck",
+      "review_verdict": "pending_exact_sha_recheck",
       "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-7f602111/verification.json",
       "fix_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-7f602111-1800-fix.json",
       "score_assessment": {
@@ -4168,7 +4162,11 @@
         "points_awarded": 0,
         "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1"
       },
-      "score_assessment_status": "insufficient_evidence"
+      "score_assessment_status": "pending_exact_sha_recheck",
+      "tree_sha": "8b66363c8a1d95ba109c113f677521a2a385a604",
+      "evidence_path": "agent-work/evidence/HX-BL-078/room-recovery-bf83c32/verification.json",
+      "result_path": "agent-work/results/2026-11-27-programmer-HX078-room-recovery-2000.json",
+      "handoff_path": "agent-work/handoffs/2026-11-27-programmer-HX078-room-recovery-2000-review.json"
     }
   ],
   "retired_pr_packages": {
