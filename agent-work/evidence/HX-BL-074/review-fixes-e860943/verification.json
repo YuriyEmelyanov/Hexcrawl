@@ -1,0 +1,182 @@
+{
+  "task_id": "HX-BL-074",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX074-review-fixes-1310",
+  "branch": "agent/hx074-manual-delta",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "previous_head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+  "head_sha": "e860943a94d25bcd7eb9eb05a356fffae5a95f1a",
+  "tree_sha": "525c467b6968faa5f191512d0890cfb28587a645",
+  "pr": 520,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/520",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX074-review-fixes-1310.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "prior_review_ref": "agent-work/results/2026-11-27-reviewer-HX074-45d835d-1302.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX074-review-fixes-1310.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX074-review-fixes-1310-reviewer.json",
+  "capture_refs": {
+    "waterfall-before.png": "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-before.png",
+    "waterfall-after.png": "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-after.png",
+    "waterfall-preview.png": "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-preview.png"
+  },
+  "changes": [
+    {
+      "id": "HX074-RV01",
+      "state": "implemented_for_review",
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json",
+        "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-preview.png",
+        "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-after.png"
+      ],
+      "notes": "Ручная отметка остаётся «Есть» в исходной вершине; экспорт SVG для PNG содержит тот же знак; JSON и Undo/Redo сохраняют результат."
+    },
+    {
+      "id": "HX074-RV02",
+      "state": "implemented_for_review",
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json"
+      ],
+      "notes": "Одинаковый тип и состояние географической случайности при одном и двух записях. Контекст первого уникального участка используется до выбора. Дедупликация включена для ручного рукава."
+    }
+  ],
+  "changed_files": [
+    "docs/river-editing.md",
+    "src/App.tsx",
+    "test/riverIntegration.test.mjs"
+  ],
+  "checks": {
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45980274165",
+      "workflow_run_id": 45980274165,
+      "status": "success",
+      "head_sha": "e860943a94d25bcd7eb9eb05a356fffae5a95f1a",
+      "jobs": [
+        [
+          "browser",
+          "success"
+        ],
+        [
+          "check",
+          "success"
+        ],
+        [
+          "world-random",
+          "success"
+        ],
+        [
+          "engraved-map-comparison",
+          "skipped"
+        ]
+      ]
+    },
+    "node": {
+      "integration": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "prior_revision_with_updated_test": "failed on existing waterfall conflict"
+      },
+      "river_domain": {
+        "executed": 12,
+        "passed": 12,
+        "skipped": 0
+      }
+    },
+    "typescript": "success",
+    "production_build": "success",
+    "chromium": {
+      "preserve_manual_waterfall": {
+        "seed": 44,
+        "armConfirmed": true,
+        "oldWaterfallStillOn": true,
+        "sameWaterfallVisibleInMapAndPng": true,
+        "jsonReopens": true,
+        "undoRedo": true
+      },
+      "legacy_duplicate_road": {
+        "browserImportAcceptedBoth": true,
+        "normalizedDuplicateRetainedInInput": true,
+        "oneCreatedCrossing": true,
+        "sameKindAndGeneration": true,
+        "kind": "ferry",
+        "geographyBefore": 1256095084,
+        "geographyAfter": 3087660897,
+        "undoRedoBoth": true
+      },
+      "ordinary_seed_44": {
+        "seed": 44,
+        "regionCells": 9,
+        "parent": 1,
+        "parentMouth": "121.244,-14",
+        "arm": 4,
+        "fork": "96.995,-28",
+        "armMouth": "96.995,-56",
+        "defaultF": 3,
+        "chosenF": 2,
+        "previewExportsUnchanged": true,
+        "pngChanged": true,
+        "undo": true,
+        "redo": true,
+        "jsonReopened": true,
+        "narrowPreview": true,
+        "cancelUnchanged": true
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+    "head_sha": "e860943a94d25bcd7eb9eb05a356fffae5a95f1a",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node / test/riverIntegration.test.mjs",
+    "scenario_risk": "D74-R02/R04/R05 и HX074-RV01/RV02: сохранить ручной водопад на развилке и выполнить один случайный выбор на уникальную переправу при дублированном участке.",
+    "reuse_or_new_reason": "Расширен существующий продуктовый сценарий D74, без второго постоянного теста. Браузерные проверки временные и дельту набора не увеличивают.",
+    "count_source": "git diff предыдущего проверенного SHA и кандидата, одно изменённое тело test D74",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "status": "awaits_reviewer",
+    "head_sha": "e860943a94d25bcd7eb9eb05a356fffae5a95f1a",
+    "confirmed_delta": null,
+    "posted_to_current_or_history": false,
+    "criteria": [
+      {
+        "criterion_id": "S03-C01",
+        "rule_id": "EDIT-30",
+        "proposed_delta": 0.4938271605,
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json",
+          "agent-work/evidence/HX-BL-074/review-fixes-e860943/waterfall-after.png"
+        ],
+        "notes": "Сквозная карта и сохранность ручного водопада."
+      },
+      {
+        "criterion_id": "S01-C02",
+        "rule_id": "RIV-019",
+        "proposed_delta": 0,
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json"
+        ],
+        "notes": "Проверка исходной реки и повторного открытия."
+      },
+      {
+        "criterion_id": "S01-C04",
+        "rule_id": "ROAD-10",
+        "proposed_delta": 0,
+        "evidence": [
+          "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json"
+        ],
+        "notes": "Один уникальный ключ, равные результаты и состояние генератора при повторе записи участка."
+      }
+    ]
+  },
+  "publication_authorized": false,
+  "release_authorized": false,
+  "implementation_authorized": true
+}
