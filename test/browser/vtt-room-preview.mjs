@@ -180,7 +180,8 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
         const matrix = layer.getScreenCTM();
         return [...layer.querySelectorAll('[data-cell]')].filter(cell => Array.from(cell.points).some(point => {
           const {x, y} = point.matrixTransform(matrix);
-          return x < box.left - .5 || x > box.right + .5 || y < box.top - .5 || y > box.bottom + .5;
+          return x < Math.max(0, box.left) - .5 || x > Math.min(innerWidth, box.right) + .5 ||
+            y < Math.max(0, box.top) - .5 || y > Math.min(innerHeight, box.bottom) + .5;
         })).length;
       });
       const fit = await frame();
