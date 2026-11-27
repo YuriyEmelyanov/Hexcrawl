@@ -1,0 +1,142 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-autosave-crossings-0500",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+  "tree_sha": "7b451512a4ede3fd71f2bf475ad8689bbbd74745",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "branch": "agent/hx078-vtt-live-1",
+  "previous_checkpoint_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-e22b45d-0357-programmer.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/verification.json",
+  "capture_refs": {
+    "browser_saved": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/generated-master-saved-position.jpg",
+    "bridge_before": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-before.jpg",
+    "bridge_after": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+  },
+  "next_role": "reviewer",
+  "next_step": "После Check независимо проверить новый SHA по R05–R06, включая браузерный снимок и полную геометрию пересечения, затем подтвердить внешний HTTPS-сценарий.",
+  "status": "implementation_checkpoint",
+  "checks_status": "in_progress",
+  "review_ready": false,
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Оба замечания исправлены и локально проверены. Остаются завершение CI на точном SHA, независимая проверка, внешний HTTPS-сценарий и выпуск при согласовании. Время ожидания не входит."
+  },
+  "review_submission": {
+    "state": "pending_ci",
+    "role": "reviewer",
+    "scope": "Браузерное автосохранение подтверждённого состояния, авторизованная геометрия пересечений и непрерывность комнаты",
+    "release_gate": "Проверить внешний HTTPS-стенд и получить отдельное согласование на точный принятый пакет."
+  },
+  "checks": {
+    "id": 45943874687,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45943874687",
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa"
+  },
+  "review_input": [
+    {
+      "id": "HX078-VTT1-R05",
+      "acceptance": [
+        "VTT-AC08"
+      ],
+      "result": "В профиле мастера сохраняется последний подтверждённый снимок карты, позиции и истории. При недоступной комнате интерфейс показывает последний подтверждённый гекс без записи и новой комнаты. При повторном подключении действительная комната остаётся источником живого состояния; прежняя ссылка и ожидающая стрелка восстановлены, как только доступ вернулся.",
+      "runtime": {
+        "mode": "classic-generated-editor-restore",
+        "seed": 42,
+        "startingHex": "3,-2",
+        "confirmedHex": "4,-2",
+        "sameEditorGeography": true,
+        "samePlayerLink": true,
+        "confirmedReload": true,
+        "pendingProposalReload": true,
+        "fileImport": false,
+        "distinctPlayerOrigin": true,
+        "playerContexts": 2,
+        "deniedMasterRoutesOnPlayerOrigin": true,
+        "samePlayerLinkAfterServiceRestart": true,
+        "browserConfirmedSnapshot": true,
+        "offlineReadOnly": true,
+        "oldRoomReconnected": true
+      },
+      "capture_ref": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/generated-master-saved-position.jpg"
+    },
+    {
+      "id": "HX078-VTT1-R06",
+      "acceptance": [
+        "VTT-AC03"
+      ],
+      "result": "Перила моста и центральный штрих брода выданы целиком, когда их разрешённый маркер попадает на ребро текущего гекса. При отсутствии разрешённого маркера их геометрия недоступна, обычные участки маршрута по-прежнему отсекаются. Паром проверен в существующем сценарии Mythic.",
+      "runtime": {
+        "classic": {
+          "bridgeBefore": {
+            "kind": "bridge",
+            "position": "0,1",
+            "railLengths": [
+              11.605551275464027,
+              11.605551275464032
+            ]
+          },
+          "bridgeAfter": {
+            "kind": "bridge",
+            "position": "0,1",
+            "railLengths": [
+              23.211102550928032,
+              23.211102550928032
+            ]
+          }
+        },
+        "ford": {
+          "fixture": "e5-river-editor.json",
+          "editorFordMarks": 1,
+          "wholeFordBothBanks": true,
+          "banks": [
+            "0,0",
+            "1,0"
+          ],
+          "glyphLength": 14,
+          "faded": true
+        },
+        "legacyUpgrade": {
+          "editorIndexedDbUpgrade": [
+            1,
+            2
+          ],
+          "oldRoomArtworkUpgrade": true,
+          "samePlayerLink": true,
+          "sameConfirmedPosition": true,
+          "sameHistory": true,
+          "legacyRailNowComplete": true
+        }
+      },
+      "capture_refs": [
+        "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-before.jpg",
+        "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+      ]
+    }
+  ],
+  "limitations": [
+    "Удалённый вход по публичной ссылке ещё требует разрешённого HTTPS-стенда с постоянным серверным хранилищем и приватным входом мастера.",
+    "Режим просмотра использует локальный снимок, когда страница мастера открывается, а состояние комнаты недоступно. Восстановление удалённого сервиса из кэша браузера вне текущего пакета.",
+    "Ручная видимость, перенос JSON и журнал остаются в согласованных последующих выпусках."
+  ],
+  "completion_check": "Сверить раздельно восстановление с сохранённым серверным снимком и в режиме просмотра при недоступной комнате, сохранение исходной ссылки, мост и брод на обеих сторонах, паром и отсечение остального пути. Проверка L2 по действующей версии модели."
+}

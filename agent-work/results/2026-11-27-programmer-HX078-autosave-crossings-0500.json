@@ -1,0 +1,152 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-autosave-crossings-0500",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+  "tree_sha": "7b451512a4ede3fd71f2bf475ad8689bbbd74745",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "branch": "agent/hx078-vtt-live-1",
+  "previous_checkpoint_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-e22b45d-0357-programmer.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/verification.json",
+  "capture_refs": {
+    "browser_saved": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/generated-master-saved-position.jpg",
+    "bridge_before": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-before.jpg",
+    "bridge_after": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/bridge-after.jpg"
+  },
+  "next_role": "reviewer",
+  "next_step": "После Check независимо проверить новый SHA по R05–R06, включая браузерный снимок и полную геометрию пересечения, затем подтвердить внешний HTTPS-сценарий.",
+  "status": "implementation_checkpoint",
+  "checks_status": "in_progress",
+  "review_ready": false,
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Оба замечания исправлены и локально проверены. Остаются завершение CI на точном SHA, независимая проверка, внешний HTTPS-сценарий и выпуск при согласовании. Время ожидания не входит."
+  },
+  "result": "Мастер продолжает с подтверждённой позиции и историей из браузера. Когда комната доступна, игрокам служит прежняя ссылка. У игрока мост и брод на разрешённом ребре видны целиком.",
+  "role_selection_reason": "Утверждённая F1 с двумя конкретными замечаниями независимого проверяющего. Текущий SHA и свобода общего слота программиста сверены.",
+  "checks": {
+    "ci": {
+      "id": 45943874687,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45943874687",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa"
+    },
+    "local_node": {
+      "command": "npm run check",
+      "node": "24.22.3",
+      "exit": 0,
+      "executed": 460,
+      "passed": 460,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser_vtt": {
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    },
+    "temporary": {
+      "bridge": {
+        "before": {
+          "kind": "bridge",
+          "position": "0,1",
+          "railLengths": [
+            11.605551275464027,
+            11.605551275464032
+          ]
+        },
+        "after": {
+          "kind": "bridge",
+          "position": "0,1",
+          "railLengths": [
+            23.211102550928032,
+            23.211102550928032
+          ]
+        }
+      },
+      "ford": {
+        "fixture": "e5-river-editor.json",
+        "editorFordMarks": 1,
+        "wholeFordBothBanks": true,
+        "banks": [
+          "0,0",
+          "1,0"
+        ],
+        "glyphLength": 14,
+        "faded": true
+      },
+      "upgrade": {
+        "editorIndexedDbUpgrade": [
+          1,
+          2
+        ],
+        "oldRoomArtworkUpgrade": true,
+        "samePlayerLink": true,
+        "sameConfirmedPosition": true,
+        "sameHistory": true,
+        "legacyRailNowComplete": true
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+    "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": "browser/VTT",
+    "scenario": "Четыре уже существующих случая импорта проверяют геометрию разрешённых пересечений и отсутствие запрещённых штрихов. Уже существующий случай Classic проверяет браузерный снимок без серверного файла, режим просмотра и возврат прежней ссылки.",
+    "reuse_or_new_reason": "Риски относятся к прежнему игровому сценарию и могут проверяться в том же прохождении. Диагностика брода, старого снимка и снимков моста временная.",
+    "count_source": "git diff e22b45d..f268916; 4 параметризованных verifyRoom и один verifyEditorRestore; случай запуска на озере использован без изменений."
+  },
+  "finding_response_ids": [
+    "HX078-VTT1-R05",
+    "HX078-VTT1-R06"
+  ],
+  "review_submission": {
+    "state": "pending_ci",
+    "role": "reviewer",
+    "scope": "Браузерное автосохранение подтверждённого состояния, авторизованная геометрия пересечений и непрерывность комнаты",
+    "release_gate": "Проверить внешний HTTPS-стенд и получить отдельное согласование на точный принятый пакет."
+  },
+  "limitations": [
+    "Удалённый вход по публичной ссылке ещё требует разрешённого HTTPS-стенда с постоянным серверным хранилищем и приватным входом мастера.",
+    "Режим просмотра использует локальный снимок, когда страница мастера открывается, а состояние комнаты недоступно. Восстановление удалённого сервиса из кэша браузера вне текущего пакета.",
+    "Ручная видимость, перенос JSON и журнал остаются в согласованных последующих выпусках."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T04:59:59.924Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T05:17:40.513Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T05:17:40.513Z",
+  "run_status": "completed"
+}

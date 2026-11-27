@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T04:03:35.105Z",
+  "updated_at": "2026-11-27T05:17:40.513Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3857,24 +3857,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Завершить браузерное автосохранение подтверждённого хода и истории, восстановить полную геометрию разрешённых мостов и перепроверить другие пересечения. Передать новый SHA для повторной независимой проверки.",
+      "next_step": "После Check независимо проверить новый SHA по R05–R06, включая браузерный снимок и полную геометрию пересечения, затем подтвердить внешний HTTPS-сценарий.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T04:03:35.105Z",
+      "updated_at": "2026-11-27T05:17:40.513Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "changes_requested",
+      "execution_state": "implementation_checkpoint",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-e22b45d-0357-programmer.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-autosave-crossings-0500.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3939,17 +3939,17 @@
       "forecast": {
         "remaining_first_release_runs": [
           3,
-          7
+          6
         ],
         "confidence": "low",
-        "basis": "Два локальных исправления в утверждённых границах, повторная приёмка, HTTPS-проверка и выпуск при разрешении. Ожидание внешней среды и решения владельца не входит."
+        "basis": "Оба замечания исправлены и локально проверены. Остаются завершение CI на точном SHA, независимая проверка, внешний HTTPS-сценарий и выпуск при согласовании. Время ожидания не входит."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+      "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
       "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/verification.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-autosave-crossings-f268916/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -3965,12 +3965,12 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "success_with_review_findings",
+      "checks_status": "in_progress",
       "review_submission": {
-        "state": "changes_requested",
+        "state": "pending_ci",
         "role": "reviewer",
-        "scope": "VTT F1, точный SHA",
-        "release_gate": "Два локальных исправления, повторное ревью и внешний HTTPS-стенд, затем решение владельца."
+        "scope": "Браузерное автосохранение подтверждённого состояния, авторизованная геометрия пересечений и непрерывность комнаты",
+        "release_gate": "Проверить внешний HTTPS-стенд и получить отдельное согласование на точный принятый пакет."
       },
       "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/score-assessment.json",
       "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json",
@@ -3979,7 +3979,7 @@
         "HX078-VTT1-R06"
       ],
       "reviewed_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
-      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json"
+      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json"
     }
   ],
   "retired_pr_packages": {
