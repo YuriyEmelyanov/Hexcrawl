@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "review_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+  "findings": [
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "status": "fixed_pending_independent_review",
+      "criteria": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "observed": "После открытия второй вкладки из первой, подтверждённого хода и перезапуска сервера две игры повторно вошли с отдельными позициями 0,0 и 1,1 и каждая сохранила свою ссылку."
+    },
+    {
+      "id": "F519-SCALE-RESTORE-007",
+      "status": "fixed_pending_independent_review",
+      "criteria": [
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "observed": "Сохранение с видом 1 миля перешло на 5–6 миль. Перезагрузка вернула те же масштаб камеры и игровую ссылку."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+    "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+    "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+    "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+    "runners": {
+      "local_browser_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "local_room_browser": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "differential_baseline": {
+        "executed_suites": 2,
+        "failures_at_intended_assertions": 2
+      }
+    }
+  },
+  "publication_authorized": false,
+  "limitations": [
+    "Временная HTTPS-среда. Для выпуска ещё предстоит подтвердить рабочий сервис комнат на поставляемой сборке.",
+    "При недоступности tab storage доступна последняя подтверждённая привязка из браузерного хранилища. Изоляция конкретных вкладок подтверждена с доступным tab storage."
+  ],
+  "local": {
+    "https": {
+      "mode": "production-https",
+      "editorOrigin": true,
+      "separateMasterAndPlayerOrigins": true,
+      "productionEntry": true,
+      "confirmedMove": true,
+      "roomRestart": true,
+      "samePlayerLink": true,
+      "authorisedProjectionAfterRestart": true,
+      "publicBundleSecretFree": true,
+      "isolatedRooms": true,
+      "sameMapEditorRecovery": true,
+      "linkedEditorTabsIsolated": true,
+      "from": "0,1",
+      "to": "0,0"
+    },
+    "room": [
+      {
+        "mode": "classic",
+        "fixture": "classic-six-regions-seed42.json",
+        "contexts": 5,
+        "durableRoomRestart": true,
+        "failedSavePreservedMove": true,
+        "revokedOpenTabs": 2,
+        "closedAndRotatedLinksSurvivedRestart": true,
+        "nativeLaunchFromSavedFineView": true,
+        "nativeZoomRetainedAfterRecovery": true,
+        "allCells": 52,
+        "firstCells": 7,
+        "afterCells": 6,
+        "from": {
+          "q": 0,
+          "r": 1
+        },
+        "to": {
+          "q": 0,
+          "r": 0
+        },
+        "proposedDirection": 2,
+        "rotated": false,
+        "matchedEngravings": 3,
+        "matchedBlends": 1,
+        "editorRoutes": 92,
+        "playerRoutesBefore": 7,
+        "playerRoutesAfter": 7,
+        "markTypes": [
+          "bridge"
+        ],
+        "marksBefore": [
+          "bridge"
+        ],
+        "marksAfter": [
+          "bridge"
+        ],
+        "masterPoints": 12,
+        "playerPointsBefore": [],
+        "playerPointsAfter": [
+          {
+            "q": 0,
+            "r": 0,
+            "icon": "/poi/v2/land/village.svg",
+            "fill": "#ACB978"
+          }
+        ],
+        "editorImport": true,
+        "reopenedFromEditor": true,
+        "previewSurvivesReload": true,
+        "samePlayerLink": true
+      },
+      {
+        "mode": "knave",
+        "fixture": "classic-six-regions-seed42.json",
+        "contexts": 3,
+        "durableRoomRestart": false,
+        "failedSavePreservedMove": false,
+        "allCells": 52,
+        "firstCells": 7,
+        "afterCells": 6,
+        "from": {
+          "q": 0,
+          "r": 1
+        },
+        "to": {
+          "q": 0,
+          "r": 0
+        },
+        "proposedDirection": 2,
+        "rotated": false,
+        "matchedEngravings": 3,
+        "matchedBlends": 1,
+        "editorRoutes": 92,
+        "playerRoutesBefore": 7,
+        "playerRoutesAfter": 7,
+        "markTypes": [
+          "bridge"
+        ],
+        "marksBefore": [
+          "bridge"
+        ],
+        "marksAfter": [
+          "bridge"
+        ],
+        "masterPoints": 12,
+        "playerPointsBefore": [],
+        "playerPointsAfter": [
+          {
+            "q": 0,
+            "r": 0,
+            "icon": "/poi/v2/land/village.svg",
+            "fill": "#ACB978"
+          }
+        ],
+        "editorImport": true,
+        "reopenedFromEditor": true,
+        "previewSurvivesReload": true,
+        "samePlayerLink": true
+      },
+      {
+        "mode": "crows",
+        "fixture": "classic-six-regions-seed42.json",
+        "contexts": 3,
+        "durableRoomRestart": false,
+        "failedSavePreservedMove": false,
+        "allCells": 52,
+        "firstCells": 7,
+        "afterCells": 6,
+        "from": {
+          "q": 0,
+          "r": 1
+        },
+        "to": {
+          "q": 0,
+          "r": 0
+        },
+        "proposedDirection": 2,
+        "rotated": false,
+        "matchedEngravings": 3,
+        "matchedBlends": 1,
+        "editorRoutes": 92,
+        "playerRoutesBefore": 7,
+        "playerRoutesAfter": 7,
+        "markTypes": [
+          "bridge"
+        ],
+        "marksBefore": [
+          "bridge"
+        ],
+        "marksAfter": [
+          "bridge"
+        ],
+        "masterPoints": 12,
+        "playerPointsBefore": [],
+        "playerPointsAfter": [
+          {
+            "q": 0,
+            "r": 0,
+            "icon": "/poi/v2/land/village.svg",
+            "fill": "#ACB978"
+          }
+        ],
+        "editorImport": true,
+        "reopenedFromEditor": true,
+        "previewSurvivesReload": true,
+        "samePlayerLink": true
+      },
+      {
+        "mode": "mythic",
+        "fixture": "terrain-display-map.json",
+        "contexts": 3,
+        "durableRoomRestart": false,
+        "failedSavePreservedMove": false,
+        "allCells": 206,
+        "firstCells": 7,
+        "afterCells": 7,
+        "from": {
+          "q": 0,
+          "r": 1
+        },
+        "to": {
+          "q": 0,
+          "r": 0
+        },
+        "proposedDirection": 2,
+        "rotated": true,
+        "matchedEngravings": 6,
+        "matchedBlends": 1,
+        "editorRoutes": 398,
+        "playerRoutesBefore": 13,
+        "playerRoutesAfter": 9,
+        "markTypes": [
+          "ferry",
+          "bridge",
+          "waterfall"
+        ],
+        "marksBefore": [
+          "bridge"
+        ],
+        "marksAfter": [
+          "ferry"
+        ],
+        "masterPoints": 41,
+        "playerPointsBefore": [
+          {
+            "q": 0,
+            "r": 1,
+            "icon": "/poi/v2/land/capital.svg",
+            "fill": "#ACB978"
+          }
+        ],
+        "playerPointsAfter": [],
+        "editorImport": true,
+        "reopenedFromEditor": true,
+        "previewSurvivesReload": true,
+        "samePlayerLink": true
+      },
+      {
+        "mode": "classic-generated-editor-restore",
+        "seed": 42,
+        "startingHex": "3,-2",
+        "confirmedHex": "4,-2",
+        "sameEditorGeography": true,
+        "samePlayerLink": true,
+        "confirmedReload": true,
+        "pendingProposalReload": true,
+        "fileImport": false,
+        "distinctPlayerOrigin": true,
+        "playerContexts": 2,
+        "deniedMasterRoutesOnPlayerOrigin": true,
+        "samePlayerLinkAfterServiceRestart": true,
+        "browserConfirmedSnapshot": true,
+        "offlineReadOnly": true,
+        "oldRoomReconnected": true,
+        "firstMasterLoadInterrupted": true,
+        "resumedOriginalRoomFromCachedMap": true
+      },
+      {
+        "mode": "lake-start-and-return",
+        "regionlessLake": "-2,12",
+        "waterInRegion": "-2,10",
+        "waterBiomeOmittedAfterReload": true,
+        "playerLinkPreserved": true
+      },
+      {
+        "mode": "trail-ferry",
+        "banks": [
+          "0,0",
+          "1,0"
+        ],
+        "nativeApproaches": 2,
+        "wholeGlyph": true,
+        "visibleTrailApproachesPerBank": 1,
+        "hiddenFrom": "2,0"
+      }
+    ],
+    "chrome": "149.0.7827.0",
+    "node": "24.22.3",
+    "before": {
+      "sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+      "linked_editor": "Исходная вкладка получает ссылку второй комнаты.",
+      "legacy_camera": "Увеличение после восстановления было 6 вместо 1."
+    },
+    "after": {
+      "positions": [
+        "0,0",
+        "1,1"
+      ],
+      "separate_links": true,
+      "legacy_camera_preserved": true
+    },
+    "visual_evidence": [
+      "master-after-restart.jpg",
+      "second-master-after-restart.jpg",
+      "player-after-restart.jpg"
+    ]
+  },
+  "ci": {
+    "run_id": 46068466005,
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "status": "in_progress"
+  },
+  "recorded_at": "2026-11-27T21:10:41.107Z"
+}
