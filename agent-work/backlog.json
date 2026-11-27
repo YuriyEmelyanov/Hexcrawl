@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T01:09:54.608Z",
+  "updated_at": "2026-11-27T02:07:29.200Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3857,24 +3857,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "После успешного Check независимо проверить локальный пакет первого выпуска на этом SHA. В объём входят отдельный вход игрока, отказ маршрутов мастера на нём, прежняя ссылка и подтверждённый ход после перезапуска. Отдельно требуется разрешённый внешний HTTPS-стенд, чтобы подтвердить работу для удалённых участников.",
+      "next_step": "Исправить вход и ход на озеро без региона, повторный вход после поворота, полный обзор и оформление карты мастера. Сузить данные игрока о водном гексе и передать новый SHA проверяющему.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T01:09:54.608Z",
+      "updated_at": "2026-11-27T02:07:29.200Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "implementation_checkpoint",
+      "execution_state": "changes_requested",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "reviewer",
-      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-ingress-010511.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-ingress-010511-reviewer.json",
+      "next_role": "programmer",
+      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-local-015844-programmer.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3938,18 +3938,18 @@
       ],
       "forecast": {
         "remaining_first_release_runs": [
-          3,
+          4,
           10
         ],
         "confidence": "low",
-        "basis": "Проверен локальный вход по отдельному адресу и сохранение двух участников после перезапуска. Остаются независимая проверка пакета, проверка за пределами локальной машины на разрешённом HTTPS-стенде, возможные исправления и выпуск. Срок зависит от наличия стенда."
+        "basis": "Исправления, сравнение карты и повторная приёмка, затем проверка публикации при наличии разрешений. Внешний HTTPS-стенд учитывается как отдельная зависимость."
       },
       "branch": "agent/hx078-vtt-live-1",
       "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
       "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/browser.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -3965,13 +3965,22 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "in_progress",
+      "checks_status": "local_changes_requested",
       "review_submission": {
-        "state": "pending_ci",
+        "state": "changes_requested",
         "role": "reviewer",
-        "scope": "Локальное разделение входов и связный игровой сценарий на точном SHA",
-        "release_gate": "Остаётся проверка удалённого входа и отдельное разрешение владельца."
-      }
+        "scope": "Локальная приёмка выпуска 1",
+        "release_gate": "Исправления, проверка нового SHA, разрешённый внешний HTTPS-стенд и отдельное решение владельца."
+      },
+      "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/score-assessment.json",
+      "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+      "review_findings": [
+        "HX078-VTT1-R01",
+        "HX078-VTT1-R02",
+        "HX078-VTT1-R03",
+        "HX078-VTT1-R04"
+      ],
+      "reviewed_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5"
     }
   ],
   "retired_pr_packages": {

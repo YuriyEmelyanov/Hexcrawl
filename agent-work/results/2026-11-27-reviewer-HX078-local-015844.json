@@ -1,0 +1,200 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-local-015844",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+  "tree_sha": "96a20c012ed0d7210bad2cac30ca188ae7c14945",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX078-local-015844.json",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-local-015844-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/score-assessment.json",
+  "capture_refs": {
+    "generated_player": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/generated-player-before-service-restart.jpg",
+    "mythic_master": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/mythic-master-viewport.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Исправить вход и ход на озеро без региона, повторный вход после поворота, полный обзор и оформление карты мастера. Сузить данные игрока о водном гексе и передать новый SHA проверяющему.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      4,
+      10
+    ],
+    "confidence": "low",
+    "basis": "Исправления, сравнение карты и повторная приёмка, затем проверка публикации при наличии разрешений. Внешний HTTPS-стенд учитывается как отдельная зависимость."
+  },
+  "status": "changes_requested",
+  "review_ready": false,
+  "checks_status": "local_changes_requested",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "role_selection_reason": "Успешный Check на точном SHA и ограниченная передача от программиста. Реестр был свободен, уточнения владельца и активность PR сверены.",
+  "result": "Подтверждены пять локальных сценариев входа, хода и восстановления. Зафиксированы четыре отклонения, включая отказ на озере, повторном входе после поворота и неполный обзор мастера.",
+  "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-ingress-010511.json",
+  "finding_ids": [
+    "HX078-VTT1-R01",
+    "HX078-VTT1-R02",
+    "HX078-VTT1-R03",
+    "HX078-VTT1-R04"
+  ],
+  "checks": {
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45920863601",
+    "vtt_browser": {
+      "executed": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "temporary_diagnostics_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json"
+  },
+  "test_change_summary": {
+    "base_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+    "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "review run",
+    "scenario": "Независимая проверка переданного SHA",
+    "reuse_or_new_reason": "Штатный браузерный сценарий и временная диагностика конкретных расхождений.",
+    "count_source": "Совпадающий SHA на входе и выходе проверки.",
+    "package_diff": {
+      "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+      "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+      "added": 5,
+      "removed": 0,
+      "modified": 0,
+      "suite": "VTT browser",
+      "scenario": "Четыре режима импорта и созданная Classic с восстановлением",
+      "reuse_or_new_reason": "Общие браузерные проверки не открывают общую комнату с двумя игроками и не проверяют ход, отзыв ссылки и перезапуск. Затронутые ветви можно добавить в существующий VTT-набор.",
+      "count_source": "git diff базы PR и точного SHA; четыре verifyRoom и один verifyGeneratedEditorRestore."
+    }
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-078",
+    "model_version": "1.3-rc8",
+    "level": "L2",
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+    "status": "insufficient_evidence",
+    "phase": "pre_release_review",
+    "basis_ref": "agent-work/score/current-score.json#levels",
+    "formula_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/README.md",
+    "confirmed_delta": null,
+    "points_awarded": 0,
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "before": {
+          "grade": null,
+          "points": null
+        },
+        "after": {
+          "grade": null,
+          "points": null
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Локальные браузерные сценарии на точном SHA, дальность по высоте, просмотр большой карты мастером и сравнение данных игрока.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json",
+          "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/mythic-master-viewport.jpg"
+        ],
+        "limitations": [
+          "Отклонения по старту, полному обзору и выдаче данных.",
+          "Удалённый HTTPS-вход ожидает проверку."
+        ]
+      },
+      {
+        "criterion_id": "S02-C05",
+        "before": {
+          "grade": null,
+          "points": null
+        },
+        "after": {
+          "grade": null,
+          "points": null
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Вход, ход и перезапуск с отдельным входом игрока. Правила L1 не переносились в L2.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json",
+          "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/generated-player-before-service-restart.jpg",
+          "agent-work/score/rules/S02-C05.md"
+        ],
+        "limitations": [
+          "Карта восстановилась из браузера, состояние комнаты из серверного снимка.",
+          "Текущий продуктовый срез L2 не содержит принятой исходной оценки."
+        ]
+      }
+    ],
+    "posted_to_current_or_history": false
+  },
+  "blocked_gates": [
+    {
+      "state": "missing_evidence",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "subject": "Удалённый вход HTTPS и сохранение между встречами",
+      "detail": "Два порта работают локально. Штатная Pages-сборка не подключает сервис комнаты. Нужна разрешённая HTTPS-среда с приватным входом мастера и постоянным хранилищем.",
+      "source": [
+        "scripts/vtt-preview/server.mjs:185",
+        "vite.config.ts:6"
+      ]
+    },
+    {
+      "state": "partial",
+      "acceptance": [
+        "VTT-AC08"
+      ],
+      "subject": "Автосохранение подтверждённого состояния в браузере",
+      "detail": "Карта восстановлена из браузера. Позиция, стрелка и ссылка восстановлены из серверного снимка. Для решения владельца требуется отдельное доказательство браузерного автосохранения подтверждённого состояния в границах выпуска 1.",
+      "source": [
+        "agent-work/decisions/owner-2026-11-26-HX078-autosave.json",
+        "src/App.tsx:15996"
+      ]
+    },
+    {
+      "state": "partial",
+      "acceptance": [
+        "VTT-AC03"
+      ],
+      "subject": "Визуальные детали путей",
+      "detail": "Статическая проверка показала усечение порогов на текущем ребре и отсутствие указателей направления течения. Сопоставить браузерный пример по фактической геометрии.",
+      "source": [
+        "scripts/vtt-preview/routes.mjs:62",
+        "src/App.tsx:8792",
+        "src/App.tsx:17482"
+      ]
+    }
+  ],
+  "release_status": "not_authorized",
+  "run_status": "completed",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T01:57:56.736Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T02:07:29.200Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T02:07:29.200Z",
+  "lesson": "Тест наличия всех гексов в SVG не подтверждает обзор: на большой карте нужно проверять доступность краёв. Равенство ключа комнаты проверять при изменении только поворота."
+}

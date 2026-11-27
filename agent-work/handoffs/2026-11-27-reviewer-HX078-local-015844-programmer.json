@@ -1,0 +1,115 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-local-015844",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+  "tree_sha": "96a20c012ed0d7210bad2cac30ca188ae7c14945",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX078-local-015844.json",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-local-015844-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/score-assessment.json",
+  "capture_refs": {
+    "generated_player": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/generated-player-before-service-restart.jpg",
+    "mythic_master": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/mythic-master-viewport.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Исправить вход и ход на озеро без региона, повторный вход после поворота, полный обзор и оформление карты мастера. Сузить данные игрока о водном гексе и передать новый SHA проверяющему.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      4,
+      10
+    ],
+    "confidence": "low",
+    "basis": "Исправления, сравнение карты и повторная приёмка, затем проверка публикации при наличии разрешений. Внешний HTTPS-стенд учитывается как отдельная зависимость."
+  },
+  "status": "changes_requested",
+  "review_ready": false,
+  "checks_status": "local_changes_requested",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "role_selection_reason": "Успешный Check на точном SHA и ограниченная передача от программиста. Реестр был свободен, уточнения владельца и активность PR сверены.",
+  "input_findings": [
+    {
+      "id": "HX078-VTT1-R01",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC02"
+      ],
+      "completion": "Ставить отряд на такой гекс, видеть его и подтверждать на него ход с соседней суши. На обычном краю карты сосед не появляется."
+    },
+    {
+      "id": "HX078-VTT1-R02",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "completion": "После поворота этой карты вернуться с прежними позицией, историей и ссылкой. Другая карта сохраняет изоляцию."
+    },
+    {
+      "id": "HX078-VTT1-R03",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC03"
+      ],
+      "completion": "Мастер просматривает края большой карты. На реальной карте можно сопоставить масштаб, центр, поворот и штатную сетку. Отдельно проверить вид порога и знак течения без расширения видимости."
+    },
+    {
+      "id": "HX078-VTT1-R04",
+      "acceptance": [
+        "VTT-AC06"
+      ],
+      "completion": "Оставить только данные водного представления у игрока. Сверить при входе, ходе и переподключении."
+    }
+  ],
+  "completion_check": "Сквозной сценарий с подтверждённым ходом и восстановлением, точный новый SHA, затронутые проверки и сравнение карты. Внешнюю среду и автосохранение проверить отдельно по evidence.",
+  "external_gaps": [
+    {
+      "state": "missing_evidence",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "subject": "Удалённый вход HTTPS и сохранение между встречами",
+      "detail": "Два порта работают локально. Штатная Pages-сборка не подключает сервис комнаты. Нужна разрешённая HTTPS-среда с приватным входом мастера и постоянным хранилищем.",
+      "source": [
+        "scripts/vtt-preview/server.mjs:185",
+        "vite.config.ts:6"
+      ]
+    },
+    {
+      "state": "partial",
+      "acceptance": [
+        "VTT-AC08"
+      ],
+      "subject": "Автосохранение подтверждённого состояния в браузере",
+      "detail": "Карта восстановлена из браузера. Позиция, стрелка и ссылка восстановлены из серверного снимка. Для решения владельца требуется отдельное доказательство браузерного автосохранения подтверждённого состояния в границах выпуска 1.",
+      "source": [
+        "agent-work/decisions/owner-2026-11-26-HX078-autosave.json",
+        "src/App.tsx:15996"
+      ]
+    },
+    {
+      "state": "partial",
+      "acceptance": [
+        "VTT-AC03"
+      ],
+      "subject": "Визуальные детали путей",
+      "detail": "Статическая проверка показала усечение порогов на текущем ребре и отсутствие указателей направления течения. Сопоставить браузерный пример по фактической геометрии.",
+      "source": [
+        "scripts/vtt-preview/routes.mjs:62",
+        "src/App.tsx:8792",
+        "src/App.tsx:17482"
+      ]
+    }
+  ]
+}
