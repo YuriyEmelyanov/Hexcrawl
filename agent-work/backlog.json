@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T00:01:39.284Z",
+  "updated_at": "2026-11-27T01:09:54.608Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3857,9 +3857,9 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Подтвердить допустимую среду размещения для режима 5–6 миль. Подготовить и проверить конфигурацию комнатного сервиса с постоянным адресом, приватным хранилищем и серверным подтверждением полномочий мастера. Проверяемый результат — мастер и два браузера на внешнем тестовом адресе продолжают ту же комнату после перезапуска, игрок получает только свой вид. Публикация и расходы требуют соответствующего разрешения.",
+      "next_step": "После успешного Check независимо проверить локальный пакет первого выпуска на этом SHA. В объём входят отдельный вход игрока, отказ маршрутов мастера на нём, прежняя ссылка и подтверждённый ход после перезапуска. Отдельно требуется разрешённый внешний HTTPS-стенд, чтобы подтвердить работу для удалённых участников.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T00:01:39.284Z",
+      "updated_at": "2026-11-27T01:09:54.608Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
@@ -3872,9 +3872,9 @@
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-generated-235745.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-generated-235745-programmer.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-ingress-010511.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-ingress-010511-reviewer.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3938,18 +3938,18 @@
       ],
       "forecast": {
         "remaining_first_release_runs": [
-          4,
-          11
+          3,
+          10
         ],
         "confidence": "low",
-        "basis": "Создание и восстановление проверены во всех четырёх поддерживаемых профилях, подтверждён текущий статический маршрут выпуска. Остаются размещение, полная независимая приёмка, возможные исправления и выпуск. Срок зависит от доступности разрешённой среды."
+        "basis": "Проверен локальный вход по отдельному адресу и сохранение двух участников после перезапуска. Остаются независимая проверка пакета, проверка за пределами локальной машины на разрешённом HTTPS-стенде, возможные исправления и выпуск. Срок зависит от наличия стенда."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "77c2712e429d4f60a3428d8472a90e90bef045e0",
+      "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
       "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-generated-profiles-77c2712/browser.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/browser.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -3965,7 +3965,13 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "passed"
+      "checks_status": "in_progress",
+      "review_submission": {
+        "state": "pending_ci",
+        "role": "reviewer",
+        "scope": "Локальное разделение входов и связный игровой сценарий на точном SHA",
+        "release_gate": "Остаётся проверка удалённого входа и отдельное разрешение владельца."
+      }
     }
   ],
   "retired_pr_packages": {

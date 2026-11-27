@@ -1,0 +1,47 @@
+{
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "scope_decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "base_sha": "43f165d5e7dab4c3b1bda8ab960ac694c866db9e",
+  "head_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+  "tree_sha": "96a20c012ed0d7210bad2cac30ca188ae7c14945",
+  "previous_checkpoint_sha": "77c2712e429d4f60a3428d8472a90e90bef045e0",
+  "publication_authorized": false,
+  "review_ready": false,
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-ingress-010511.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-ingress-010511-reviewer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/browser.json",
+  "capture_refs": {
+    "generated-master-after-reopen": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/generated-master-after-reopen.jpg",
+    "generated-player-before-service-restart": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/generated-player-before-service-restart.jpg",
+    "generated-player-original-link": "agent-work/evidence/HX-BL-078/vtt-player-origin-d2c202e/generated-player-original-link.jpg"
+  },
+  "next_role": "reviewer",
+  "next_step": "После успешного Check независимо проверить локальный пакет первого выпуска на этом SHA. В объём входят отдельный вход игрока, отказ маршрутов мастера на нём, прежняя ссылка и подтверждённый ход после перезапуска. Отдельно требуется разрешённый внешний HTTPS-стенд, чтобы подтвердить работу для удалённых участников.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      10
+    ],
+    "confidence": "low",
+    "basis": "Проверен локальный вход по отдельному адресу и сохранение двух участников после перезапуска. Остаются независимая проверка пакета, проверка за пределами локальной машины на разрешённом HTTPS-стенде, возможные исправления и выпуск. Срок зависит от наличия стенда."
+  },
+  "limitations": [
+    "Отдельный адрес игрока проверен на втором HTTP-порту loopback. Проверка подстановки постоянного HTTPS-адреса использует тестовое имя, TLS и удалённый доступ не проверены.",
+    "Редактор и мастер используют приватный адрес тестового сервиса. GitHub Pages сохраняет статический маршрут редактора.",
+    "Проверенный сценарий с отдельным адресом выполнен на созданной карте Classic. Прежние импортированные карты проверены в четырёх профилях."
+  ],
+  "review_submission": {
+    "state": "pending_ci",
+    "role": "reviewer",
+    "scope": "Локальное разделение входов и связный игровой сценарий на точном SHA",
+    "release_gate": "Остаётся проверка удалённого входа и отдельное разрешение владельца."
+  },
+  "completion_check": "Перепроверить отказ мастеру на адресе игрока, ход двух игроков на созданной карте, сохранение прежней ссылки и позиции после перезапуска. Зафиксировать результат на точном SHA и отдельно указать ограничение локального стенда.",
+  "checks_status": "in_progress"
+}
