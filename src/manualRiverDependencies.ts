@@ -6,6 +6,12 @@ const fail=(reason:string):never=>{throw new Error(reason);};
 export function knownRiverEdgeFullness(r:EditableRiver,key:string):number|undefined{
   const values=new Set(r.sectors.filter(s=>s.edgeKeys.includes(key)).map(s=>s.fullness));return values.size===1?[...values][0]:undefined;
 }
+export function manualDeltaMaximum(parent:EditableRiver):3|4|undefined{
+  const path=parent.vertexPath;
+  if(path.length<3)return;
+  const fullness=knownRiverEdgeFullness(parent,riverFeatureEdge(path[path.length-2],path[path.length-1]));
+  return fullness===5?4:fullness===4?3:undefined;
+}
 const physical=(r:EditableRiver)=>JSON.stringify([r.id,r.deltaParentRiverId??null,r.vertexPath.map(v=>v.key),r.sectors.flatMap(s=>s.edgeKeys.map(k=>[k,s.fullness,s.assignedRegionId??r.regionId])).sort()]);
 /** Preserve every unaffected crossing and kind literally. Only changed river
  * interactions are prepared, never the random/global generation reconciler. */
@@ -45,12 +51,12 @@ export function validateEditedRiverDeltas(before:EditableRiver[],after:EditableR
     if(group(before,parentId)===group(after,parentId)&&seaSupport(before,beforeGeometry)===seaSupport(after,geometry))continue;
     const parent=after.find(r=>r.id===parentId),arms=after.filter(r=>r.deltaParentRiverId===parentId);
     if(!parent||parent.deltaParentRiverId!==undefined||parent.vertexPath.length<3)fail('delta_parent_conflict');
-    const path=parent!.vertexPath,f=knownRiverEdgeFullness(parent!,riverFeatureEdge(path[path.length-2],path[path.length-1]));
-    if(!geometry.seaVertices.has(path[path.length-1].key)||f===undefined||f<4||arms.length>(f===4?1:2))fail('delta_parent_conflict');
+    const path=parent!.vertexPath,maximum=manualDeltaMaximum(parent!);
+    if(!geometry.seaVertices.has(path[path.length-1].key)||maximum===undefined||arms.length>(maximum===3?1:2))fail('delta_parent_conflict');
     const branches=new Set<string>();
     for(const arm of arms){
       if(arm.vertexPath.length!==2)fail('delta_geometry_conflict');const [a,b]=arm.vertexPath,key=riverFeatureEdge(a,b),af=knownRiverEdgeFullness(arm,key);
-      if(!path.slice(Math.max(1,path.length-3),path.length-1).some(v=>v.key===a.key)||branches.has(a.key)||geometry.seaVertices.has(a.key)||!geometry.seaVertices.has(b.key)||af===undefined||af<1||af>(f===4?3:4))fail('delta_geometry_conflict');
+      if(!path.slice(Math.max(1,path.length-3),path.length-1).some(v=>v.key===a.key)||branches.has(a.key)||geometry.seaVertices.has(a.key)||!geometry.seaVertices.has(b.key)||af===undefined||af<1||af>maximum!)fail('delta_geometry_conflict');
       if(after.some(r=>r!==arm&&r.vertexPath.slice(1).some((v,i)=>riverFeatureEdge(r.vertexPath[i],v)===key)))fail('delta_overlap');branches.add(a.key);
     }
   }

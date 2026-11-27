@@ -34,7 +34,7 @@ import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaCho
 import {parseWaterHex,prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
 import {prepareRegionGeometry,prepareRegionPoiIdentity,RegionEditError,type RegionEdit} from './manualRegions';
 import { nextRegionId, prepareRegionSplits, regionNumber, type SplitRegionNumber } from './regionSplit';
-import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness} from './manualRiverDependencies';
+import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness,manualDeltaMaximum} from './manualRiverDependencies';
 import {buildManualRiverNetwork,solveManualRiverPath, type RiverEditingGeometry} from './manualRiverGeometry';
 import {prepareRiverEdit,validateEditedRiverNetwork,rebuildRiverWaterSectors,rebuildRiverRegionSectors,validateRegionRiverHeights,resolveRiverFeatureEdits,type RiverEdit,type FeatureEdit,emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
 import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
@@ -1238,7 +1238,7 @@ function buildManualRiverGeometryContext(map:Pick<MapSnapshot,'regions'|'rivers'
   };
   return {geometry,solvePath:(before,river,path,fixed)=>solveManualRiverPath(before,river,path,fixed,geometry),vertex:key=>geometry.vertices.get(key),edgeOwners:key=>edgeOwners.get(key)??[],blocked:key=>blocked.has(key),network,
     event:(key,rivers)=>lakeByVertex.has(key)||geometry.seaVertices.has(key)||confluence(key,rivers),
-    reason:(key,start,endpoint,river)=>lakeByVertex.has(key)?'lake':confluence(key,[...map.rivers.filter(r=>r.id!==river.id),river])?'river_confluence':endpoint?(start?'river_start':'river_end'):boundaries.has(key)?'region_boundary':'split'};
+    reason:(key,start,endpoint,river)=>start&&endpoint&&river.deltaParentRiverId!==undefined?'split':lakeByVertex.has(key)?'lake':confluence(key,[...map.rivers.filter(r=>r.id!==river.id),river])?'river_confluence':endpoint?(start?'river_start':'river_end'):boundaries.has(key)?'region_boundary':'split'};
 }
 class RiverFeatureConflict extends Error {
   constructor(readonly featureCode:string){super('Ручная отметка реки конфликтует с изменением. Снимите отметку или измените действие.');this.name='RiverFeatureConflict';}
@@ -1842,12 +1842,23 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
       const violation=getNewRiverLakeReentryViolation(after,map.regions,map.hexTerrainByKey,before,map.regions,map.hexTerrainByKey);
       if(violation)throw new Error('river_lake_reentry');
     }});
+  const deltaArm=edit.type==='create'&&edit.deltaParentRiverId!==undefined
+    ? result.rivers.find(r=>r.id===map.nextRiverId)
+    : undefined;
+  // Replaying the proposal from a detached stream keeps the preview stable.
+  // The same map transaction commits both the chosen crossings and the stream.
+  const generation=deltaArm?cloneGenerationState(map.generation):map.generation;
+  const deltaCrossingKinds=deltaArm?Object.fromEntries(
+    reconcileRiverCrossings(map.roads,[deltaArm],map.regions,[],{
+      geography:()=>draw(generation,'geography'),poi:()=>draw(generation,'poi')
+    }).map(c=>[c.key,c.kind])
+  ):undefined;
   // A preview may stage a safe candidate, but never supplies an implicit answer
   // to the user's ford/marker choices. The ordinary writer remains strict.
   const deepFords=map.crossings.filter(c=>c.kind==='ford'&&result.rivers.some(r=>r.id===c.riverId&&r.vertexPath.slice(1).some((v,i)=>edgeKey(r.vertexPath[i],v)===c.riverEdgeKey)&&Number(knownRiverEdgeFullness(r,c.riverEdgeKey))>=3&&knownRiverEdgeFullness(r,c.riverEdgeKey)!==knownRiverEdgeFullness(map.rivers.find(old=>old.id===r.id)!,c.riverEdgeKey)));
   const unresolvedCrossings=deepFords.filter(c=>!options.crossingKinds?.[c.key]);
   const crossingKinds=preview?{...Object.fromEntries(unresolvedCrossings.map(c=>[c.key,'bridge' as const])),...options.crossingKinds}:options.crossingKinds;
-  const crossings=prepareEditedRiverCrossings(map.rivers,result.rivers,map.roads,map.crossings,(a,b)=>getSharedHexEdgeVertexKeys(a,b)?.sort().join('|'),crossingKinds);
+  const crossings=prepareEditedRiverCrossings(map.rivers,result.rivers,map.roads,map.crossings,(a,b)=>getSharedHexEdgeVertexKeys(a,b)?.sort().join('|'),{...crossingKinds,...deltaCrossingKinds});
   const eligibility=riverFeatureEligibility(result.rivers,map.regions,map.hexTerrainByKey,crossings);
   const invalidFeatures:FeatureEdit[]=[...result.riverFeatures.rapids.filter(e=>e.state==='on'&&!eligibility.rapid(e.riverId,e.edgeKey)).map(e=>({type:'rapid' as const,...e})),...result.riverFeatures.waterfalls.filter(e=>e.state==='on'&&!eligibility.waterfall(e.vertexKey)).map(e=>({type:'waterfall' as const,...e}))];
   const sameFeature=(a:FeatureEdit,b:FeatureEdit)=>a.type===b.type&&(a.type==='rapid'&&b.type==='rapid'?a.riverId===b.riverId&&a.edgeKey===b.edgeKey:a.type==='waterfall'&&b.type==='waterfall'&&a.vertexKey===b.vertexKey);
@@ -1858,7 +1869,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
   const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
   const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
   const permittedScopeRemovals:GeometryScopeRemovalIntent={riverIds:edit.type==='remove'?new Set([edit.riverId,...map.rivers.filter(r=>edit.includeArms&&r.deltaParentRiverId===edit.riverId).map(r=>r.id)]):new Set<number>()};
-  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures},new Map(),permittedScopeRemovals)):map,losses,unresolvedCrossings,unresolvedFeatures,permittedScopeRemovals,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
+  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures,generation},new Map(),permittedScopeRemovals)):map,losses,unresolvedCrossings,unresolvedFeatures,permittedScopeRemovals,confirmationRequired:changed&&(!!deltaArm||edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
@@ -14311,6 +14322,9 @@ export function App() {
     const geography=geometryCommandError(error,language);if(geography)return geography;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const reason=error instanceof Error?error.message:'';
+    if(reason==='delta_mouth_occupied')return language==='ru'?'Выберите отдельное свободное устье у моря.':'Choose a separate, unused mouth by the sea.';
+    if(reason==='delta_parent_conflict')return language==='ru'?'У основной реки должно быть морское устье с полноводностью не ниже 4 и свободное место для рукава.':'The main river needs a sea mouth with fullness of at least 4 and room for another arm.';
+    if(reason==='delta_geometry_conflict')return language==='ru'?'Выберите свободную развилку у устья и одно ребро к морю.':'Choose a free fork near the mouth and one edge to the sea.';
     const rules:[string,string,string][]=[['CYCLE','Русло создаёт замкнутый цикл.','The route creates a directed cycle.'],['RIV-007','Сухопутный исток должен иметь полноводность 1.','A dry source must have fullness 1.'],['RIV-005','Полноводность в месте слияния несовместима с притоками.','Fullness at the confluence conflicts with its tributaries.'],['RIV-008','Площадь озера недостаточна для этого истока.','The lake is too small for this source.'],['RIV-009','Площадь озера не выдерживает разницу входа и выхода.','The lake cannot support this inflow/outflow difference.'],['RIV-010','Площадь озера недостаточна для закрытого устья.','The lake is too small for this closed mouth.'],['RIV-006','Недопустимый исток, устье или разветвление; море не может быть истоком.','Invalid source, mouth or split; the sea cannot be a source.'],['owner','Регион владельца не прилегает к ребру.','The owner region does not adjoin the edge.'],['unknown_fixed_river_fullness','Неоднозначная полноводность старого участка.','The old reach has ambiguous fullness.']];
     const rule=rules.find(r=>reason.includes(r[0]));if(rule)return rule[language==='ru'?1:2];
     return language==='ru'?(reason.includes('solver_limit')?'Проверка слишком сложна; упростите русло.':reason.includes('crossing_kind_required')?'Брод стал слишком глубоким. Выберите мост или переправу.':reason.includes('delta_')?'Рукав дельты несовместим с этим изменением.':reason.includes('ineligible_')?'Ручная отметка конфликтует с изменением. Выберите «Авто» или «Нет».':reason.includes('solver_unsatisfiable')?'Полноводность несовместима с соседними участками или размером озера.':'Реку не удалось изменить. Карта не изменена.')
@@ -16832,8 +16846,19 @@ export function App() {
     if(owner===undefined)return draftError('Участок вне созданной карты.','The edge is outside the created map.');
     if(riverCommandPreviewRef.current)return false;
     const original=draft.riverId===undefined?undefined:rivers.find(r=>r.id===draft.riverId);
-    const edit:RiverEdit=original?{type:'replace',riverId:original.id,path:draft.path,regionId:original.regionId}:{type:'create',path:draft.path,regionId:owner};
     if(draft.riverId!==undefined&&!original)return false;
+    const [fork,mouth]=draft.path;
+    const parent=!original&&generationMode==='classic'&&!fineActive&&draft.path.length===2&&draft.context.geometry.seaVertices.has(mouth.key)
+      ?rivers.filter(r=>r.deltaParentRiverId===undefined&&r.vertexPath.slice(1,-1).some(v=>v.key===fork.key))
+      :[];
+    if(parent.length>1)return draftError('В этой вершине сходятся русла. Выберите развилку на одной основной реке.','Several rivers meet here. Choose a fork on one main river.');
+    const edit:RiverEdit=original?{type:'replace',riverId:original.id,path:draft.path,regionId:original.regionId}:{type:'create',path:draft.path,regionId:owner};
+    if(edit.type==='create'&&parent[0]){
+      const fullness=manualDeltaMaximum(parent[0]);
+      if(fullness===undefined){setEditError(riverCommandError(new Error('delta_parent_conflict')));return false;}
+      edit.deltaParentRiverId=parent[0].id;
+      edit.fullness=fullness;
+    }
     if(!requestRiverCommand(edit,draft.options,draft))return false;
     updateRiverDraft(null);return true;
   };
@@ -16882,7 +16907,7 @@ export function App() {
     updateRiverPreview({...expected,options:{...expected.options,...options}});
   };
   const riverPreviewPanel=riverCommandPreview?<div className="river-command-preview" data-river-preview role="group" aria-label={language==='ru'?'Предпросмотр изменения реки':'River change preview'} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();cancelRiverCommand(riverCommandPreview);}}}>
-    <strong>{language==='ru'?'Предпросмотр':'Preview'} · {riverCommandPreview.edit.type==='create'?(language==='ru'?'Новая река':'New river'):riverLabel(riverCommandPreview.edit.riverId)}</strong>
+    <strong>{language==='ru'?'Предпросмотр':'Preview'} · {riverCommandPreview.edit.type==='create'?(riverCommandPreview.edit.deltaParentRiverId!==undefined?(language==='ru'?'Рукав дельты':'Delta arm'):(language==='ru'?'Новая река':'New river')):riverLabel(riverCommandPreview.edit.riverId)}</strong>
     {riverPreviewPlan?.error&&<p role="alert">{riverPreviewPlan.error}</p>}
     {riverPreviewPlan?.plan&&(()=>{
       const plan=riverPreviewPlan.plan,edit=riverCommandPreview.edit,removed=plan.losses.removedRiverIds;
@@ -16893,7 +16918,16 @@ export function App() {
       const featureConflicts=[...plan.unresolvedFeatures,...(riverCommandPreview.options.featureEdits??[])];
       const tagsLost=tags.instances.filter(t=>t.owner.kind==='river'&&removed.includes(t.owner.id)).length;
       const arms=rivers.filter(r=>r.deltaParentRiverId!==undefined&&(removed.includes(r.id)||edit.type!=='create'&&(r.id===edit.riverId||r.deltaParentRiverId===edit.riverId)));
+      const parent=edit.type==='create'&&edit.deltaParentRiverId!==undefined?rivers.find(r=>r.id===edit.deltaParentRiverId):undefined;
+      const maxDeltaFullness=parent?manualDeltaMaximum(parent):undefined;
       return <>
+        {edit.type==='create'&&parent&&maxDeltaFullness!==undefined&&<label className="river-feature-control">
+          {language==='ru'?'Полноводность рукава':'Arm fullness'} · {riverLabel(parent.id)}
+          <select className="direct-value" data-delta-fullness aria-label={language==='ru'?'Полноводность рукава':'Arm fullness'} value={edit.fullness} onChange={event=>{
+            if(riverCommandPreview===riverCommandPreviewRef.current&&riverCommandPreview.revision===documentRevision.current&&!documentBusy())
+              updateRiverPreview({...riverCommandPreview,edit:{...edit,fullness:Number(event.target.value) as RiverFullness}});
+          }}>{Array.from({length:maxDeltaFullness},(_,i)=><option value={i+1} key={i+1}>{i+1}</option>)}</select>
+        </label>}
         {subject&&<p>{riverPlace(subject)}{edit.type==='fullness'?` · ${language==='ru'?'Полноводность':'Fullness'} ${knownRiverEdgeFullness(rivers.find(r=>r.id===edit.riverId)!,edit.edgeKey)??'?'} → ${edit.fullness}`:edit.type==='reverse'?` · ${language==='ru'?'Направление меняется на обратное':'Direction reverses'}`:''}</p>}
         {subject&&edit.type==='replace'&&<p>{language==='ru'?'Владелец русла':'Route owner'}: {nameTargets.find(t=>t.key===`region:${subject.regionId}`)?.[language]??subject.regionId}</p>}
         {edit.type==='remove'&&<p>{removed.map(id=>`${riverLabel(id)} (${riverPlace(rivers.find(r=>r.id===id)!)})`).join('; ')}</p>}

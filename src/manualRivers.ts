@@ -108,7 +108,7 @@ export function featuresForSurvivingRivers(features:RiverFeatures,rivers:readonl
 
 export type EditableRiverSector={id:string;riverId:number|string;sectorIndex:number;vertexPath:RiverVertexValue[];edgeKeys:string[];startVertexKey:string;endVertexKey:string;startReason:'river_start'|'river_confluence'|'lake'|'region_boundary'|'split'|'unknown';endReason:'river_confluence'|'lake'|'region_boundary'|'split'|'unknown'|'river_end';fullness:RiverFullness;assignedRegionId?:number};
 export type EditableRiver=RiverGeometry&{regionId:number;sectors:EditableRiverSector[];controlPoints?:{startVertex:RiverVertexValue;endVertex:RiverVertexValue;middlePurpleVertex?:RiverVertexValue;startMode:'existing river endpoint'|'red vertex'|'mountain source'}};
-export type RiverEdit={type:'create';path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>}|{type:'replace';riverId:number;path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>}|{type:'reverse';riverId:number}|{type:'fullness';riverId:number;edgeKey:string;fullness:RiverFullness}|{type:'remove';riverId:number;includeArms:boolean};
+export type RiverEdit={type:'create';path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>;deltaParentRiverId?:number}|{type:'replace';riverId:number;path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>}|{type:'reverse';riverId:number}|{type:'fullness';riverId:number;edgeKey:string;fullness:RiverFullness}|{type:'remove';riverId:number;includeArms:boolean};
 export type RiverEditDocument={rivers:EditableRiver[];riverFeatures:RiverFeatures;nextRiverId:number};
 export type RiverEditContext=FeatureEligibility&{
   vertex:(key:string)=>RiverVertexValue|undefined;
@@ -299,7 +299,15 @@ export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverE
     }
     for(let i=1;i<path.length;i++){const key=riverFeatureEdge(path[i-1],path[i]);if(!ctx.edgeOwners(key).length)fail('non_adjacent_river_vertices');if(used.has(key))fail('duplicate_river_edge');if(!oldEdges.has(key)&&ctx.blocked(key))fail('obstacle_river_edge');}
     let river=old;
-    if(edit.type==='create'){const allocation=allocateRiverId(doc.rivers,doc.nextRiverId);nextRiverId=allocation.nextRiverId;river={id:allocation.id,regionId:edit.regionId,vertexPath:[],sectors:[]};}
+    if(edit.type==='create'){
+      const allocation=allocateRiverId(doc.rivers,doc.nextRiverId);
+      nextRiverId=allocation.nextRiverId;river={id:allocation.id,regionId:edit.regionId,vertexPath:[],sectors:[]};
+      if(edit.deltaParentRiverId!==undefined){
+        if(path.length!==2||!isFullness(edit.fullness))fail('delta_geometry_conflict');
+        if(contacts.has(path[1].key))fail('delta_mouth_occupied');
+        river.deltaParentRiverId=edit.deltaParentRiverId;
+      }
+    }
     let values:Map<string,RiverFullness>;
     if(edit.type==='reverse')values=fullnessByEdge(old!);
     else{
