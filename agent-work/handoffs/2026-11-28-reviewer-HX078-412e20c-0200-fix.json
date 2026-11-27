@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "from_role": "reviewer",
+  "to_role": "programmer",
+  "run_id": "2026-11-28-reviewer-HX078-412e20c-0200",
+  "recorded_at": "2026-11-27T23:07:16.196Z",
+  "status": "ready_for_programmer_fixes",
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+  "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "scope_authority": "Approved VTT release 1 and existing F1 contract. No new product scope.",
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+  "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
+  "review_findings": [
+    {
+      "id": "F519-PLAYER-RECONNECT-008",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "confidence": "browser_confirmed_with_independent_source_confirmation",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "requirement_ids": [
+        "VTT-R02",
+        "VTT-R08"
+      ],
+      "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+      "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+      "refs": [
+        "scripts/vtt-preview/ui.mjs:296-304",
+        "scripts/vtt-preview/ui.mjs:321-328",
+        "scripts/vtt-preview/ui.mjs:390",
+        "test/browser/vtt-room-preview.mjs:643-664",
+        "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+      ],
+      "evidence": {
+        "mode": "existing-player-after-room-recovery",
+        "originalLinkStillWorksInNewTab": true,
+        "existingTabRecoveredWithoutReload": false,
+        "existingTabStatus": "Доступ по этой ссылке закрыт",
+        "masterRecoveredSameInvite": true,
+        "observedAfterRecoveryMs": 3500
+      }
+    },
+    {
+      "id": "F519-MASTER-MAP-PARITY-009",
+      "severity": "P2",
+      "blocking": true,
+      "status": "open",
+      "confidence": "independent_source_and_fixture_confirmed",
+      "acceptance_ids": [
+        "VTT-AC03"
+      ],
+      "requirement_ids": [
+        "VTT-R09"
+      ],
+      "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+      "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+      "refs": [
+        "src/App.tsx:17627-17632",
+        "src/App.tsx:16013-16014",
+        "scripts/vtt-preview/ui.mjs:159-165",
+        "test/browser/vtt-room-preview.mjs:15"
+      ],
+      "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
+    }
+  ],
+  "verified_fixes": [
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "status": "verified_fixed",
+      "proof": "Второй редактор открыт из первой вкладки. У каждой из двух игр после восстановления свои позиция и действующая ссылка."
+    },
+    {
+      "id": "F519-SCALE-RESTORE-007",
+      "status": "verified_fixed",
+      "proof": "После повторного входа старая карта сохраняет экранное увеличение при нормализации шага карты 1 → 6."
+    }
+  ],
+  "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
+  "completion_evidence": [
+    "В действующем сценарии временной недоступности открытая вкладка игрока возобновляет показ карты по тому же URL без перезагрузки, а при явном отзыве старый URL перестаёт работать в открытой вкладке.",
+    "На штатной карте Mythic сравнить редактор и мастера при одинаковом ракурсе. Подтвердить границу королевства и сохранённые препятствия. Сохранить проверку фильтрации представления игрока.",
+    "Проверить обе исправленные ветки в существующих Chromium сценариях и передать новый точный SHA с доказательствами."
+  ],
+  "external_dependency": {
+    "status": "public_hosting_unverified",
+    "owner_has_existing_stand": false,
+    "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "local_review_blocked": false,
+    "remote_review_completed": false,
+    "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+    "next_step": "Отдельно подтвердить рабочий сервис комнат и конфигурацию поставляемой сборки.",
+    "confirmed_pages_entry_missing": true,
+    "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+    "ci_https_completed": true,
+    "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_public_stand_missing": true,
+    "default_pages_vtt_configured": false,
+    "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+    "release_blockers": [
+      "F519-PLAYER-RECONNECT-008",
+      "F519-MASTER-MAP-PARITY-009"
+    ],
+    "public_hosting_required_before_release": true
+  },
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
+  }
+}
