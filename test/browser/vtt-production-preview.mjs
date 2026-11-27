@@ -175,8 +175,13 @@ try {
   await master.locator('#confirm').click();
   await Promise.all([waitPosition(master, '0,0'), waitPosition(player, '0,0')]);
 
-  const secondEditor = await masterContext.newPage();
-  await secondEditor.goto(editorOrigin);
+  // A tab opened from the existing editor starts with a copy of its session
+  // state. A second game must keep its binding separate after both reload.
+  const [secondEditor] = await Promise.all([
+    editor.waitForEvent('popup'),
+    editor.evaluate(() => { window.open(location.href, '_blank'); })
+  ]);
+  await secondEditor.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
   await secondEditor.locator('.controls--transfer > button:not([disabled])').waitFor();
   const secondFixture = structuredClone(fixture);
   secondFixture.ui.selectedHex = {q: 1, r: 1};
@@ -218,9 +223,9 @@ try {
     return room;
   };
   const [restoredMaster, restoredSecond] = await Promise.all([reopen(editor), reopen(secondEditor)]);
-  await Promise.all([waitPosition(restoredMaster, '0,0'), waitPosition(restoredSecond, '1,1')]);
   assert.equal(await restoredMaster.locator('#join').getAttribute('href'), playerLink);
   assert.equal(await restoredSecond.locator('#join').getAttribute('href'), secondPlayerLink);
+  await Promise.all([waitPosition(restoredMaster, '0,0'), waitPosition(restoredSecond, '1,1')]);
 
   await mkdir(evidenceDir, {recursive: true});
   await Promise.all([
@@ -230,7 +235,7 @@ try {
   const result = {mode: 'production-https', editorOrigin: true, separateMasterAndPlayerOrigins: true,
     productionEntry: true, confirmedMove: true, roomRestart: true, samePlayerLink: true,
     authorisedProjectionAfterRestart: true, publicBundleSecretFree: true, isolatedRooms: true,
-    sameMapEditorRecovery: true,
+    sameMapEditorRecovery: true, linkedEditorTabsIsolated: true,
     from: '0,1', to: '0,0'};
   await writeFile(join(evidenceDir, 'result.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));

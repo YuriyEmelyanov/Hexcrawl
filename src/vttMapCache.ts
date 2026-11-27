@@ -29,20 +29,43 @@ async function cacheTransaction<T>(name: string, mode: IDBTransactionMode, opera
   }
 }
 
-export async function readVttMap(roomOrigin: string, editorSession: string): Promise<unknown> {
-  const current = await cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'tab', editorSession]));
+const tabRoomKey = (roomOrigin: string) => `hexcrawl-vtt-editor-room:${roomOrigin}`;
+
+export function rememberVttMap(roomOrigin: string, masterKey: string): void {
+  // A new tab may inherit the initial session storage. Later writes are
+  // local to that tab, unlike a shared IndexedDB tab-id entry.
+  try {
+    sessionStorage.setItem(tabRoomKey(roomOrigin), masterKey);
+  } catch {
+    // The latest saved map remains available when tab storage is disabled.
+  }
+}
+
+export async function readVttMap(roomOrigin: string): Promise<unknown> {
+  let remembered: string | null = null;
+  let legacySession: string | null = null;
+  try {
+    remembered = sessionStorage.getItem(tabRoomKey(roomOrigin));
+    if (!remembered) legacySession = sessionStorage.getItem('hexcrawl-vtt-editor-session');
+  } catch {
+    // Fall back to the durable latest entry.
+  }
+  if (remembered) return cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'room', remembered]));
+  const current = legacySession
+    ? await cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'tab', legacySession]))
+    : undefined;
   const entry = current ?? await cacheTransaction(mapStore, 'readonly', store => store.get(roomOrigin));
   if (typeof entry !== 'string') return entry; // Older browsers stored the map at the origin key.
   return cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'room', entry]));
 }
 
-export function writeVttMap(roomOrigin: string, editorSession: string, save: unknown, masterKey: string): Promise<IDBValidKey> {
-  return cacheTransaction(mapStore, 'readwrite', store => {
+export async function writeVttMap(roomOrigin: string, save: unknown, masterKey: string): Promise<void> {
+  await cacheTransaction(mapStore, 'readwrite', store => {
     const record = {save, masterKey};
     store.put(masterKey, roomOrigin);
-    store.put(masterKey, [roomOrigin, 'tab', editorSession]);
     return store.put(record, [roomOrigin, 'room', masterKey]);
   });
+  rememberVttMap(roomOrigin, masterKey);
 }
 
 export function readVttRoom(cacheKey: string): Promise<unknown> {

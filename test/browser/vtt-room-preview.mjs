@@ -436,6 +436,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       const legacyFine = JSON.parse(JSON.stringify(savedEditor.render().createSaveData()));
       legacyFine.map.physicalGrid.viewStep = 1;
       legacyFine.ui.selectedHex = {q: 0, r: 0};
+      legacyFine.ui.mapScale = 6;
       await editor.locator('input[type=file]').setInputFiles({name: 'saved-one-mile.json',
         mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(legacyFine))});
       await editor.waitForFunction(() => {
@@ -448,12 +449,26 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       const [legacyMaster] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
       await legacyMaster.locator('#join').waitFor();
       await legacyMaster.waitForFunction(() => document.querySelector('#position').value === '0,0');
+      const previousLink = await legacyMaster.locator('#join').getAttribute('href');
+      const cameraZoom = () => editor.locator('svg[data-render-phase]').evaluate(svg =>
+        new DOMMatrix(getComputedStyle(svg).transform).a);
+      const nativeZoom = await cameraZoom();
       await legacyMaster.close();
+      await editor.reload();
+      await editor.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
+      await editor.locator('svg[data-render-phase="ready"]').waitFor();
+      assert.equal(await editor.locator('[data-fine-step]').inputValue(), '6');
+      assert.equal(await cameraZoom(), nativeZoom, 'restoring a legacy map preserves the current native camera');
+      const [restoredLegacyMaster] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
+      await restoredLegacyMaster.locator('#join').waitFor();
+      assert.equal(await restoredLegacyMaster.locator('#join').getAttribute('href'), previousLink);
+      await restoredLegacyMaster.close();
     }
     console.log(JSON.stringify({mode, fixture, contexts: contexts.length,
       durableRoomRestart: Boolean(privateDir), failedSavePreservedMove: Boolean(privateDir),
       revokedOpenTabs: mode === 'classic' ? 2 : undefined, closedAndRotatedLinksSurvivedRestart: mode === 'classic' || undefined,
       nativeLaunchFromSavedFineView: mode === 'classic' || undefined,
+      nativeZoomRetainedAfterRecovery: mode === 'classic' || undefined,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
       proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), masterPoints: editorIcons.length, playerPointsBefore: before.pois, playerPointsAfter: after.pois, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {

@@ -3,7 +3,7 @@ import { CROWS_BUILDINGS, CROWS_SETTLEMENTS, EMPTY_CROWS_SETTLEMENTS, isCrowsSet
 import { CrowsVillageInfo } from './CrowsVillageInfo';
 import { fillCornathWorld, type MapWorld } from './crowsWorld';
 import { MapWorldInfo } from './MapWorldInfo';
-import {readVttMap, writeVttMap} from './vttMapCache';
+import {readVttMap, rememberVttMap, writeVttMap} from './vttMapCache';
 import {assignDiscovery, type DiscoveryMap} from './poiDiscovery';
 import {routeClearance} from './routeClearance';
 import {refinedRouteBends} from './refinedRouteBends';
@@ -15924,21 +15924,16 @@ export function App() {
   const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
   const [vttCacheStatus, setVttCacheStatus] = useState<'idle' | 'restored' | 'restore-error' | 'write-error'>('idle');
   const vttCachedRoom = useRef<{identity: string; masterKey: string}>();
-  const vttEditorSession = useRef<string>();
-  const getVttEditorSession = () => {
-    if (vttEditorSession.current) return vttEditorSession.current;
-    const storageKey = 'hexcrawl-vtt-editor-session';
-    try {
-      const session = sessionStorage.getItem(storageKey) ?? crypto.randomUUID();
-      sessionStorage.setItem(storageKey, session);
-      return vttEditorSession.current = session;
-    } catch {
-      return vttEditorSession.current = crypto.randomUUID();
-    }
-  };
   const vttNativeSave = (save: ReturnType<typeof createSaveData>): ReturnType<typeof createSaveData> => {
     const grid = save.map.physicalGrid;
-    return grid ? {...save, map: {...save.map, physicalGrid: {...grid, viewStep: 6}}} : save;
+    if (!grid || grid.viewStep === 6) return save;
+    // The stored zoom uses the saved grid's step. Preserve the view when
+    // rewriting that step for the native-scale room and editor restoration.
+    return {
+      ...save,
+      map: {...save.map, physicalGrid: {...grid, viewStep: 6}},
+      ui: {...save.ui, mapScale: save.ui.mapScale * grid.viewStep / 6}
+    };
   };
   const vttMapIdentity = (save: ReturnType<typeof createSaveData>) =>
     JSON.stringify([save.ui.generationMode, !!save.ui.knaveEnabled, !!save.ui.crowsEnabled, vttNativeSave(save).map]);
@@ -16036,7 +16031,7 @@ export function App() {
       if (!openedKey || (masterKey && openedKey !== masterKey)) throw new Error('Unexpected master room');
       vttCachedRoom.current = {identity, masterKey: openedKey};
       try {
-        await writeVttMap(vttPreview.url, getVttEditorSession(), save, openedKey);
+        await writeVttMap(vttPreview.url, save, openedKey);
         setVttCacheStatus('idle');
       } catch {
         setVttCacheStatus('write-error');
@@ -16167,7 +16162,7 @@ export function App() {
     let cancelled = false;
     const restore = async () => {
       try {
-        const cached = await readVttMap(vttPreview.url, getVttEditorSession());
+        const cached = await readVttMap(vttPreview.url);
         if (cancelled || cached === undefined) return;
         const record = cached && typeof cached === 'object' && 'save' in cached && 'masterKey' in cached ? cached : null;
         const saved = record ? record.save : cached;
@@ -16175,6 +16170,7 @@ export function App() {
         applySavedDocument(prepareSavedDocument(saved), false);
         if (typeof record?.masterKey === 'string' && /^[A-Za-z0-9_-]{32}$/.test(record.masterKey)) {
           vttCachedRoom.current = {identity: vttMapIdentity(saved), masterKey: record.masterKey};
+          rememberVttMap(vttPreview.url, record.masterKey);
         }
         setVttCacheStatus('restored');
       } catch {
