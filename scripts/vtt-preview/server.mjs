@@ -108,7 +108,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       res.setHeader('access-control-allow-origin', req.headers.origin);
       res.setHeader('vary', 'Origin');
       if (req.method === 'OPTIONS') {
-        res.setHeader('access-control-allow-headers', 'content-type');
+        res.setHeader('access-control-allow-headers', 'authorization, content-type');
         res.setHeader('access-control-allow-methods', 'POST');
         return send(res, 204, 'text/plain', '');
       }
@@ -136,20 +136,19 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       }
       return mutate(async () => {
         const {mapMode, rotated} = candidate.state;
-        // Earlier snapshots included the original orientation in their digest. A
-        // normal open creates an independent game; only a browser restore resumes
-        // the matching map.
         let room;
         let legacyMatch = false;
         if (reopening) {
-          room = [...rooms.values()].find(saved => {
-            if (saved.mapDigest === candidate.mapDigest) return true;
-            const legacy = saved.mapDigest === digestMap([mapMode, saved.state.rotated, editorMap]);
-            legacyMatch ||= legacy;
-            return legacy;
-          });
+          const authority = roomAccess(rooms, req.headers, false);
+          if (authority?.role !== 'master') return json(res, 404, {error: 'Room unavailable'});
+          room = authority.room;
+          // Earlier snapshots included the original orientation in their digest.
+          legacyMatch = room.mapDigest !== candidate.mapDigest &&
+            room.mapDigest === digestMap([mapMode, room.state.rotated, editorMap]);
+          if (room.mapDigest !== candidate.mapDigest && !legacyMatch) {
+            return json(res, 409, {error: 'The room belongs to another map'});
+          }
         }
-        if (reopening && !room) return json(res, 200, {masterPath: '/master'});
         const upgradeArtwork = room && (legacyMatch || candidate.crossingArtworkVersion > room.crossingArtworkVersion);
         try {
           if (!room) {

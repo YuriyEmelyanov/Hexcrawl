@@ -15923,9 +15923,25 @@ export function App() {
 
   const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
   const [vttCacheStatus, setVttCacheStatus] = useState<'idle' | 'restored' | 'restore-error' | 'write-error'>('idle');
-  const vttCachedMap = useRef<string>();
+  const vttCachedRoom = useRef<{identity: string; masterKey: string}>();
+  const vttEditorSession = useRef<string>();
+  const getVttEditorSession = () => {
+    if (vttEditorSession.current) return vttEditorSession.current;
+    const storageKey = 'hexcrawl-vtt-editor-session';
+    try {
+      const session = sessionStorage.getItem(storageKey) ?? crypto.randomUUID();
+      sessionStorage.setItem(storageKey, session);
+      return vttEditorSession.current = session;
+    } catch {
+      return vttEditorSession.current = crypto.randomUUID();
+    }
+  };
+  const vttNativeSave = (save: ReturnType<typeof createSaveData>): ReturnType<typeof createSaveData> => {
+    const grid = save.map.physicalGrid;
+    return grid ? {...save, map: {...save.map, physicalGrid: {...grid, viewStep: 6}}} : save;
+  };
   const vttMapIdentity = (save: ReturnType<typeof createSaveData>) =>
-    JSON.stringify([save.ui.generationMode, !!save.ui.knaveEnabled, !!save.ui.crowsEnabled, save.map]);
+    JSON.stringify([save.ui.generationMode, !!save.ui.knaveEnabled, !!save.ui.crowsEnabled, vttNativeSave(save).map]);
   const vttAvailable = vttPreview && !fineActive && !automaticFinePreparing && !editMode;
   const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
     ? selectedHex : null;
@@ -15991,12 +16007,15 @@ export function App() {
     roomTab.opener = null;
     setVttLaunchStatus('pending');
     try {
-      const save = structuredClone(createSaveData());
+      // The detached editor viewport is already at native scale. Keep the
+      // physical grid edits, but send the scale of the view being played.
+      const save = vttNativeSave(createSaveData());
       const identity = vttMapIdentity(save);
+      const masterKey = vttCachedRoom.current?.identity === identity ? vttCachedRoom.current.masterKey : undefined;
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
-        headers: {'content-type': 'application/json'},
-        body: JSON.stringify({save, position: vttStartHex, resume: identity === vttCachedMap.current, crossingArtworkVersion: 2,
+        headers: {'content-type': 'application/json', ...(masterKey ? {authorization: 'Bearer ' + masterKey} : {})},
+        body: JSON.stringify({save, position: vttStartHex, resume: Boolean(masterKey), crossingArtworkVersion: 2,
           routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
       });
       if (response.status === 409) {
@@ -16004,16 +16023,25 @@ export function App() {
         setVttLaunchStatus('different-map');
         return;
       }
+      if (masterKey && response.status === 404) {
+        // The same master can view the confirmed browser snapshot while its
+        // room is absent. The room page will reconnect with this authority.
+        roomTab.location.replace(new URL('/master#' + masterKey, vttPreview.url).href);
+        setVttLaunchStatus('idle');
+        return;
+      }
       if (!response.ok) throw new Error('Unable to open preview room');
       const {masterPath} = await response.json();
+      const openedKey = typeof masterPath === 'string' && /^\/master#([A-Za-z0-9_-]{32})$/.exec(masterPath)?.[1];
+      if (!openedKey || (masterKey && openedKey !== masterKey)) throw new Error('Unexpected master room');
+      vttCachedRoom.current = {identity, masterKey: openedKey};
       try {
-        await writeVttMap(vttPreview.url, save);
-        vttCachedMap.current = identity;
+        await writeVttMap(vttPreview.url, getVttEditorSession(), save, openedKey);
         setVttCacheStatus('idle');
       } catch {
         setVttCacheStatus('write-error');
       }
-      roomTab.location.replace(new URL(masterPath, vttPreview.url).href);
+      roomTab.location.replace(new URL('/master#' + openedKey, vttPreview.url).href);
       setVttLaunchStatus('idle');
     } catch {
       roomTab.close();
@@ -16139,11 +16167,15 @@ export function App() {
     let cancelled = false;
     const restore = async () => {
       try {
-        const saved = await readVttMap(vttPreview.url);
-        if (cancelled || saved === undefined) return;
+        const cached = await readVttMap(vttPreview.url, getVttEditorSession());
+        if (cancelled || cached === undefined) return;
+        const record = cached && typeof cached === 'object' && 'save' in cached && 'masterKey' in cached ? cached : null;
+        const saved = record ? record.save : cached;
         assertHexcrawlSaveData(saved);
         applySavedDocument(prepareSavedDocument(saved), false);
-        vttCachedMap.current = vttMapIdentity(saved as ReturnType<typeof createSaveData>);
+        if (typeof record?.masterKey === 'string' && /^[A-Za-z0-9_-]{32}$/.test(record.masterKey)) {
+          vttCachedRoom.current = {identity: vttMapIdentity(saved), masterKey: record.masterKey};
+        }
         setVttCacheStatus('restored');
       } catch {
         if (!cancelled) setVttCacheStatus('restore-error');
@@ -16168,6 +16200,7 @@ export function App() {
       const parsed:unknown=JSON.parse(text); stage='validation'; assertHexcrawlSaveData(parsed);
       stage='preparation';
       applySavedDocument(prepareSavedDocument(parsed), true);
+      vttCachedRoom.current = undefined;
       trackGoal('import_json');
     } catch(error) {
       console.error('JSON import failed', {stage, path: error instanceof SaveValidationError ? error.path : '$'});

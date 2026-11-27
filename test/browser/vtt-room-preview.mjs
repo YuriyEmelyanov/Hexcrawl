@@ -6,6 +6,7 @@ import {join} from 'node:path';
 import {chromium} from 'playwright';
 import {HEX_SIZE, getHexPolygonPoints, toPixel} from '../../src/rendering/baseHexArtwork.ts';
 import {startEditorPreview} from '../../scripts/vtt-preview/editor.mjs';
+import {createGenerationHarness} from '../helpers/generation-harness.mjs';
 
 const scenarios = [
   {mode: 'classic', label: 'Classic'},
@@ -424,10 +425,34 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       await editor.locator('[data-fine-step]').selectOption('1');
       await editor.locator('[data-fine-world]').waitFor({state: 'attached'});
       assert.equal(await launch.count(), 0, 'one-mile editor view cannot open a game');
+
+      // Generate the accepted pre-existing save shape through the real editor
+      // adapter, then open it through the actual browser file input.
+      const savedEditor = createGenerationHarness(42);
+      savedEditor.render().addFallbackTractToMap({q: 0, r: 0});
+      const adapter = savedEditor.render();
+      assert.ok(adapter.applyOneMilePreview(adapter.previewOneMile()));
+      const legacyFine = JSON.parse(JSON.stringify(savedEditor.render().createSaveData()));
+      legacyFine.map.physicalGrid.viewStep = 1;
+      legacyFine.ui.selectedHex = {q: 0, r: 0};
+      await editor.locator('input[type=file]').setInputFiles({name: 'saved-one-mile.json',
+        mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(legacyFine))});
+      await editor.waitForFunction(() => {
+        const select = document.querySelector('[data-fine-step]');
+        return select?.value === '1' && !select.disabled;
+      });
+      assert.equal(await launch.count(), 0);
+      await editor.locator('[data-fine-step]').selectOption('6');
+      await editor.locator('[data-selected-hex="0,0"]').waitFor({state: 'attached'});
+      const [legacyMaster] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
+      await legacyMaster.locator('#join').waitFor();
+      await legacyMaster.waitForFunction(() => document.querySelector('#position').value === '0,0');
+      await legacyMaster.close();
     }
     console.log(JSON.stringify({mode, fixture, contexts: contexts.length,
       durableRoomRestart: Boolean(privateDir), failedSavePreservedMove: Boolean(privateDir),
       revokedOpenTabs: mode === 'classic' ? 2 : undefined, closedAndRotatedLinksSurvivedRestart: mode === 'classic' || undefined,
+      nativeLaunchFromSavedFineView: mode === 'classic' || undefined,
       allCells, firstCells, afterCells: after.cells.length, from: before.position, to: after.position,
       proposedDirection: 2, rotated, matchedEngravings: comparable.length, matchedBlends: textureMatches, editorRoutes: editorRouteCount, playerRoutesBefore: before.routes.length, playerRoutesAfter: after.routes.length, markTypes: [...new Set(markTypes)], marksBefore: before.marks.map(mark => mark.kind), marksAfter: after.marks.map(mark => mark.kind), masterPoints: editorIcons.length, playerPointsBefore: before.pois, playerPointsAfter: after.pois, editorImport: true, reopenedFromEditor: true, previewSurvivesReload: true, samePlayerLink: true}));
   } finally {

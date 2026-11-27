@@ -177,7 +177,6 @@ try {
   const secondEditor = await masterContext.newPage();
   await secondEditor.goto(editorOrigin);
   const secondFixture = structuredClone(fixture);
-  secondFixture.map.toponyms.seed += 1;
   secondFixture.ui.selectedHex = {q: 1, r: 1};
   await secondEditor.locator('input[type=file]').setInputFiles({name: 'second-map.json',
     mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(secondFixture))});
@@ -188,7 +187,7 @@ try {
   ]);
   await secondMaster.locator('#join').waitFor();
   const secondPlayerLink = await secondMaster.locator('#join').getAttribute('href');
-  assert.notEqual(secondPlayerLink, playerLink, 'independent maps receive independent rooms');
+  assert.notEqual(secondPlayerLink, playerLink, 'two games on the same map receive independent rooms');
   const secondPlayer = await playerContext.newPage();
   await secondPlayer.goto(secondPlayerLink);
   await Promise.all([waitPosition(secondMaster, '1,1'), waitPosition(secondPlayer, '1,1')]);
@@ -206,14 +205,30 @@ try {
   assert.ok(await player.locator('[data-cell]').count() < await master.locator('[data-cell]').count(),
     'the player still receives only the authorised projection');
 
+  await Promise.all([master.close(), secondMaster.close()]);
+  const reopen = async page => {
+    await page.reload();
+    await page.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
+    const [room] = await Promise.all([
+      page.waitForEvent('popup'), page.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/}).click()
+    ]);
+    await room.locator('#join').waitFor();
+    return room;
+  };
+  const [restoredMaster, restoredSecond] = await Promise.all([reopen(editor), reopen(secondEditor)]);
+  await Promise.all([waitPosition(restoredMaster, '0,0'), waitPosition(restoredSecond, '1,1')]);
+  assert.equal(await restoredMaster.locator('#join').getAttribute('href'), playerLink);
+  assert.equal(await restoredSecond.locator('#join').getAttribute('href'), secondPlayerLink);
+
   await mkdir(evidenceDir, {recursive: true});
   await Promise.all([
-    master.screenshot({path: join(evidenceDir, 'master-after-restart.jpg'), quality: 76}),
+    restoredMaster.screenshot({path: join(evidenceDir, 'master-after-restart.jpg'), quality: 76}),
     player.screenshot({path: join(evidenceDir, 'player-after-restart.jpg'), quality: 76})
   ]);
   const result = {mode: 'production-https', editorOrigin: true, separateMasterAndPlayerOrigins: true,
     productionEntry: true, confirmedMove: true, roomRestart: true, samePlayerLink: true,
     authorisedProjectionAfterRestart: true, publicBundleSecretFree: true, isolatedRooms: true,
+    sameMapEditorRecovery: true,
     from: '0,1', to: '0,0'};
   await writeFile(join(evidenceDir, 'result.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));

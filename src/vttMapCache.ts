@@ -29,12 +29,20 @@ async function cacheTransaction<T>(name: string, mode: IDBTransactionMode, opera
   }
 }
 
-export function readVttMap(roomOrigin: string): Promise<unknown> {
-  return cacheTransaction(mapStore, 'readonly', store => store.get(roomOrigin));
+export async function readVttMap(roomOrigin: string, editorSession: string): Promise<unknown> {
+  const current = await cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'tab', editorSession]));
+  const entry = current ?? await cacheTransaction(mapStore, 'readonly', store => store.get(roomOrigin));
+  if (typeof entry !== 'string') return entry; // Older browsers stored the map at the origin key.
+  return cacheTransaction(mapStore, 'readonly', store => store.get([roomOrigin, 'room', entry]));
 }
 
-export function writeVttMap(roomOrigin: string, save: unknown): Promise<IDBValidKey> {
-  return cacheTransaction(mapStore, 'readwrite', store => store.put(save, roomOrigin));
+export function writeVttMap(roomOrigin: string, editorSession: string, save: unknown, masterKey: string): Promise<IDBValidKey> {
+  return cacheTransaction(mapStore, 'readwrite', store => {
+    const record = {save, masterKey};
+    store.put(masterKey, roomOrigin);
+    store.put(masterKey, [roomOrigin, 'tab', editorSession]);
+    return store.put(record, [roomOrigin, 'room', masterKey]);
+  });
 }
 
 export function readVttRoom(cacheKey: string): Promise<unknown> {
