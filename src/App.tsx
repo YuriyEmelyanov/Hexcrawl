@@ -584,6 +584,7 @@ const SVG_EXPORT_STYLES = `
   .trail-line { stroke:#8b6a3f; stroke-width:2.25; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
   .trail-line--ford { stroke-dasharray:none; stroke-dashoffset:0; opacity:.42; }
   .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
+  .trail-ferry-mark { fill:none; stroke:#f6eed5; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
   .dbg-node-candidate { fill:#57df63; }
@@ -15933,19 +15934,20 @@ export function App() {
 
   const captureVttRoutes = () => {
     const renderedRoutes = mapSvgRef.current?.querySelectorAll<SVGPolylineElement | SVGLineElement>(
-      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail'
+      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail, .roads-layer .trail-ferry-mark'
     );
     return Array.from(renderedRoutes ?? [], stroke => {
       const kind = stroke.classList.contains('river-polyline') ? 'river'
         : stroke.classList.contains('river-direction-arrow') ? 'river-arrow'
         : stroke.classList.contains('river-rapid-mark') ? 'rapid'
         : stroke.classList.contains('bridge-rail') ? 'rail'
+        : stroke.classList.contains('trail-ferry-mark') ? 'ferry'
         : stroke.classList.contains('trail-line') ? 'trail' : 'road';
       const points = stroke.tagName === 'polyline'
         ? stroke.getAttribute('points')!.split(' ').map(point => point.split(',').map(Number))
         : [['x1', 'y1'], ['x2', 'y2']].map(pair => pair.map(name => Number(stroke.getAttribute(name))));
       const style = getComputedStyle(stroke);
-      const crossing = (kind === 'rail' || stroke.classList.contains('road-line--ford') ||
+      const crossing = (kind === 'rail' || kind === 'ferry' || stroke.classList.contains('road-line--ford') ||
         stroke.classList.contains('trail-line--ford')) && stroke.closest('[data-vtt-crossing-anchor]')
         ?.getAttribute('data-vtt-crossing-anchor')?.split(',').map(Number);
       return {
@@ -15996,7 +15998,7 @@ export function App() {
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
-        body: JSON.stringify({save, position: vttStartHex, resume: identity === vttCachedMap.current, crossingArtworkVersion: 1,
+        body: JSON.stringify({save, position: vttStartHex, resume: identity === vttCachedMap.current, crossingArtworkVersion: 2,
           routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
       });
       if (response.status === 409) {
@@ -17528,11 +17530,17 @@ export function App() {
                 const afterX = crossing.x + crossing.ux * gap;
                 const afterY = crossing.y + crossing.uy * gap;
                 if (crossing.kind === 'ferry') return (
-                  <g key={segment.key} className="river-crossing river-crossing--ferry">
-                    {segment.kind === 'road' && <>
-                      <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
-                      <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
-                    </>}
+                  <g key={segment.key} className="river-crossing river-crossing--ferry"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
+                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className={lineClass} />
+                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className={lineClass} />
+                    {segment.kind === 'trail' && <polyline className="trail-ferry-mark" points={svgPoints(
+                      [[-5, 0], [-3, 2.5], [3, 2.5], [5, 0], [-5, 0], [-2, 0], [-1, -2.5], [2, -2.5], [3, 0]]
+                        .map(([along, across]) => ({
+                          x: crossing.x + crossing.ux * along + crossing.nx * across,
+                          y: crossing.y + crossing.uy * along + crossing.ny * across
+                        }))
+                    )} />}
                   </g>
                 );
                 if (crossing.kind === 'ford') return (

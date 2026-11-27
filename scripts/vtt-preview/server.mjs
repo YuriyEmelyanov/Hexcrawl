@@ -121,7 +121,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         const state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode, rotated};
         candidate = {cells, state, mapDigest, routes: readRoutes(routes), marks: readMarks(marks),
           pois: readPois(pois, cells, poiPaths), history: visibleAt(cells, state.position).map(key),
-          crossingArtworkVersion: crossingArtworkVersion === 1 ? 1 : 0};
+          crossingArtworkVersion: readCrossingArtworkVersion(crossingArtworkVersion)};
       } catch {
         return json(res, 400, {error: 'Invalid map'});
       }
@@ -148,7 +148,8 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         } catch {
           return json(res, 503, {error: 'Room could not be saved'});
         }
-        return json(res, 200, {masterPath: reopening ? '/master' : '/master#' + room.masterKey});
+        // A saved editor map can exist before the master window finishes connecting.
+        return json(res, 200, {masterPath: '/master#' + room.masterKey});
       });
     }
     if (req.method === 'GET') {
@@ -266,9 +267,13 @@ function restoreRoom(snapshot, poiPaths) {
     throw new Error('Invalid saved VTT room');
   }
   return {state, cells, history, masterKey, playerPath, mapDigest,
-    crossingArtworkVersion: snapshot.crossingArtworkVersion === 1 ? 1 : 0,
+    crossingArtworkVersion: readCrossingArtworkVersion(snapshot.crossingArtworkVersion),
     routes: readRoutes(snapshot.routes), marks: readMarks(snapshot.marks),
     pois: readPois(snapshot.pois, cells, poiPaths)};
+}
+
+function readCrossingArtworkVersion(value) {
+  return value === 1 || value === 2 ? value : 0;
 }
 
 function readPois(supplied, cells, paths) {

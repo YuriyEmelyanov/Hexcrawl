@@ -54,7 +54,8 @@ function verifyRouteBounds(view) {
     ]);
     if (route.crossing) {
       verifyPoint(...route.crossing);
-      assert.ok(view.marks.some(mark => mark.kind === (route.kind === 'rail' ? 'bridge' : 'ford') &&
+      const crossingKind = route.kind === 'rail' ? 'bridge' : route.kind === 'ferry' ? 'ferry' : 'ford';
+      assert.ok(view.marks.some(mark => mark.kind === crossingKind &&
         mark.x === route.crossing[0] && mark.y === route.crossing[1]));
     } else if (isArrow || route.kind === 'rapid') {
       const [[x1, y1], [x2, y2]] = route.points;
@@ -478,13 +479,35 @@ async function verifyEditorRestore(browser) {
       if (live) await page.locator('#join').waitFor();
       return page;
     };
-    const [firstOpen, masterPage] = await Promise.all([
+    const masterScript = preview.roomUrl + '/ui.mjs';
+    let interrupted = false;
+    await masterContext.route(masterScript, async route => {
+      interrupted = true;
+      await route.abort('connectionfailed');
+    });
+    const [firstOpen, firstWindow] = await Promise.all([
+      editor.waitForRequest(request => request.url() === preview.roomUrl + '/open' && request.method() === 'POST'),
+      openRoom(false)
+    ]);
+    await firstWindow.waitForURL(url => url.origin === preview.roomUrl && url.pathname === '/master', {waitUntil: 'load'});
+    assert.equal(interrupted, true);
+    assert.equal(await firstWindow.evaluate(() => localStorage.getItem('vtt-preview-master')), null);
+    await firstWindow.close();
+    await masterContext.unroute(masterScript);
+    const firstRoom = JSON.parse(await readFile(storagePath, 'utf8'));
+    await editor.reload();
+    await editor.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
+    assert.equal(await selected.getAttribute('data-selected-hex'), selection);
+    const [retry, revivedMaster] = await Promise.all([
       editor.waitForRequest(request => request.url() === preview.roomUrl + '/open' && request.method() === 'POST'),
       openRoom()
     ]);
-    let master = masterPage;
+    assert.equal(retry.postDataJSON().resume, true);
+    let master = revivedMaster;
     const originalLink = await master.locator('#join').getAttribute('href');
     const playerUrl = new URL(originalLink).href;
+    assert.equal(new URL(playerUrl).pathname, firstRoom.playerPath);
+    assert.equal(await master.locator('#position').textContent(), selection);
     assert.equal(new URL(playerUrl).origin, preview.playerUrl);
     assert.notEqual(preview.playerUrl, preview.roomUrl);
     assert.equal((await player.request.get(preview.playerUrl + '/master')).status(), 404);
@@ -601,7 +624,8 @@ async function verifyEditorRestore(browser) {
       confirmedHex:destination, sameEditorGeography:true, samePlayerLink:true,
       confirmedReload:true, pendingProposalReload:true, fileImport:false, distinctPlayerOrigin:true,
       playerContexts:2, deniedMasterRoutesOnPlayerOrigin:true, samePlayerLinkAfterServiceRestart:true,
-      browserConfirmedSnapshot:true, offlineReadOnly:true, oldRoomReconnected:true}));
+      browserConfirmedSnapshot:true, offlineReadOnly:true, oldRoomReconnected:true,
+      firstMasterLoadInterrupted:true, resumedOriginalRoomFromCachedMap:true}));
   } finally {
     try {
       await Promise.all([masterContext.close(), playerContext.close(), secondContext.close()]);
@@ -673,12 +697,85 @@ async function verifyLakeStartAndMove(browser) {
   }
 }
 
+async function verifyTrailFerry(browser) {
+  const masterContext = await browser.newContext({viewport: {width: 1100, height: 680}});
+  const playerContext = await browser.newContext({viewport: {width: 900, height: 620}});
+  const preview = await startEditorPreview({playerPort: 0});
+  try {
+    const [editor, player] = await Promise.all([masterContext.newPage(), playerContext.newPage()]);
+    await editor.goto(preview.editorUrl);
+    const fixture = JSON.parse(await readFile(new URL('../fixtures/e5-river-editor.json', import.meta.url), 'utf8'));
+    fixture.map.roads[0].segments[0].kind = 'trail';
+    fixture.map.crossings[0].kind = 'ferry';
+    fixture.map.terrainByHexKey['2,0'] = {terrainOverride: 'lake', lakeId: fixture.counters.nextLakeId++};
+    await editor.locator('input[type=file]').setInputFiles({name: 'trail-ferry.json', mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify(fixture))});
+    await editor.locator('[data-selected-hex="0,0"]').waitFor({state: 'attached'});
+    const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
+    const [master] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
+    await master.locator('#join').waitFor();
+    const native = editor.locator('.river-crossing--ferry');
+    assert.equal(await native.locator('line.trail-line').count(), 2, 'editor shows both trail approaches');
+    const nativeGlyph = await native.locator('.trail-ferry-mark').evaluate(element => {
+      const [x, y] = element.parentElement.dataset.vttCrossingAnchor.split(',').map(Number);
+      return element.getAttribute('points').trim().split(/\s+/).map(point => {
+        const [px, py] = point.split(',').map(Number);
+        return [px - x, py - y];
+      });
+    });
+    assert.ok(nativeGlyph.length > 4);
+    const waitPosition = expected => player.waitForFunction(position =>
+      document.querySelector('#position')?.value === position, expected);
+    const state = () => player.evaluate(async () => {
+      const response = await fetch('/state', {headers: {'x-preview-room': location.pathname}});
+      return response.json();
+    });
+    await player.goto(await master.locator('#join').getAttribute('href'));
+    const moveEast = async expected => {
+      await player.locator('[data-direction="0"]').click();
+      await master.locator('[data-proposal="0"]').waitFor();
+      await master.locator('#confirm').click();
+      await waitPosition(expected);
+    };
+    await waitPosition('0,0');
+    for (const bank of ['0,0', '1,0']) {
+      if (bank === '1,0') await moveEast(bank);
+      const view = await state();
+      verifyRouteBounds(view);
+      const [mark] = view.marks.filter(item => item.kind === 'ferry');
+      const glyphs = view.routes.filter(route => route.kind === 'ferry');
+      assert.equal(glyphs.length, 1);
+      assert.equal(glyphs[0].points.length, nativeGlyph.length);
+      for (const [[x, y], [dx, dy]] of glyphs[0].points.map((point, index) => [point, nativeGlyph[index]])) {
+        assert.ok(Math.hypot(x - mark.x - dx, y - mark.y - dy) < 1e-6, 'complete native ferry geometry');
+      }
+      assert.equal(view.routes.filter(route => route.kind === 'trail').length, 1, 'only the current trail approach');
+      assert.equal(await player.locator('#map [data-route-kind="ferry"]').count(), 1);
+      if (bank === '0,0' && process.env.VTT_EVIDENCE_DIR) {
+        await player.locator('#map').evaluate((map, crossing) =>
+          map.setAttribute('viewBox', [crossing.x - 60, crossing.y - 45, 120, 90].join(' ')), mark);
+        await player.locator('#map').screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'trail-ferry-player.jpg'), quality: 72});
+      }
+    }
+    await moveEast('2,0');
+    const away = await state();
+    assert.ok(!away.marks.some(mark => mark.kind === 'ferry'));
+    assert.ok(!away.routes.some(route => route.kind === 'ferry' || route.kind === 'trail'));
+    console.log(JSON.stringify({mode:'trail-ferry',banks:['0,0','1,0'],nativeApproaches:2,wholeGlyph:true,
+      visibleTrailApproachesPerBank:1,hiddenFrom:'2,0'}));
+  } finally {
+    await Promise.all([masterContext.close(), playerContext.close()]);
+    await preview.close();
+  }
+}
+
 const browser = await chromium.launch({executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined,
   headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage']});
 try {
   for (const scenario of scenarios) await verifyRoom(browser, scenario);
   await verifyEditorRestore(browser);
   await verifyLakeStartAndMove(browser);
+  await verifyTrailFerry(browser);
 } finally {
   await browser.close();
 }

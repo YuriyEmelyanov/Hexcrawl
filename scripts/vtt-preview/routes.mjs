@@ -1,6 +1,6 @@
 import {HEX_SIZE, getHexPolygonPoints, toPixel} from '../../src/rendering/baseHexArtwork.ts';
 
-const kinds = new Set(['river', 'road', 'trail', 'rapid', 'rail', 'river-arrow']);
+const kinds = new Set(['river', 'road', 'trail', 'rapid', 'rail', 'river-arrow', 'ferry']);
 const markKinds = new Set(['bridge', 'ford', 'ferry', 'waterfall']);
 const epsilon = 1e-7;
 const samePoint = ([ax, ay], [bx, by]) => Math.abs(ax - bx) < epsilon && Math.abs(ay - by) < epsilon;
@@ -18,8 +18,9 @@ export function readRoutes(routes) {
     if (kind === 'river-arrow' && (!Number.isFinite(arrowSize) || arrowSize <= 0 || arrowSize > HEX_SIZE)) {
       throw new Error('Invalid river arrow');
     }
+    if (kind === 'ferry' && crossing === undefined) throw new Error('Missing ferry anchor');
     if (crossing !== undefined && (!finitePoint(crossing) ||
-      !['rail', 'road', 'trail'].includes(kind) || points.some(point => Math.hypot(
+      !['rail', 'road', 'trail', 'ferry'].includes(kind) || points.some(point => Math.hypot(
         point[0] - crossing[0], point[1] - crossing[1]) > HEX_SIZE))) {
       throw new Error('Invalid crossing artwork');
     }
@@ -76,11 +77,11 @@ function clipSegment(a, b, polygon) {
 export function routesAt(routes, position, visibleMarks) {
   const polygon = hexPolygon(position);
   const visible = [];
-  const crossings = new Set(visibleMarks.filter(mark => mark.kind === 'bridge' || mark.kind === 'ford')
+  const crossings = new Set(visibleMarks.filter(mark => mark.kind !== 'waterfall')
     .map(({kind, x, y}) => `${kind}:${x},${y}`));
   for (const route of routes) {
     if (route.crossing) {
-      const kind = route.kind === 'rail' ? 'bridge' : 'ford';
+      const kind = route.kind === 'rail' ? 'bridge' : route.kind === 'ferry' ? 'ferry' : 'ford';
       if (crossings.has(`${kind}:${route.crossing.join(',')}`)) visible.push(route);
       continue;
     }
