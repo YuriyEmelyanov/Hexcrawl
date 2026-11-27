@@ -12371,11 +12371,9 @@ const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Pa
   completeRegionRoadConnections({ ...options, ...generateRoadsForRegionImpl(options, rng) }));
 
 declare const __HEXCRAWL_VTT_PREVIEW_URL__: string | null;
-declare const __HEXCRAWL_VTT_PREVIEW_KEY__: string | null;
 // Some editor harnesses compile this module without the Vite preview definitions.
 const vttPreview = typeof __HEXCRAWL_VTT_PREVIEW_URL__ === 'string'
-  && typeof __HEXCRAWL_VTT_PREVIEW_KEY__ === 'string'
-  ? {url: __HEXCRAWL_VTT_PREVIEW_URL__, launchKey: __HEXCRAWL_VTT_PREVIEW_KEY__}
+  ? {url: __HEXCRAWL_VTT_PREVIEW_URL__}
   : null;
 
 export function App() {
@@ -15997,7 +15995,7 @@ export function App() {
       const identity = vttMapIdentity(save);
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
-        headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
+        headers: {'content-type': 'application/json'},
         body: JSON.stringify({save, position: vttStartHex, resume: identity === vttCachedMap.current, crossingArtworkVersion: 2,
           routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
       });

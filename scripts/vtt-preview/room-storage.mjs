@@ -23,18 +23,24 @@ export async function roomStorage(path) {
         throw error;
       }
       const snapshot = JSON.parse(contents);
-      if (snapshot?.version !== 1) throw new Error('Unsupported VTT room snapshot');
+      if (snapshot?.version !== 1 && snapshot?.version !== 2) throw new Error('Unsupported VTT room snapshot');
       return snapshot;
     },
     async save(room) {
+      return write({version: 1, ...serialiseRoom(room)});
+    },
+    async saveMany(rooms) {
+      if (rooms.length === 1) return write({version: 1, ...serialiseRoom(rooms[0])});
+      return write({version: 2, rooms: rooms.map(serialiseRoom)});
+    }
+  };
+
+  async function write(snapshot) {
       const temporary = target + '.' + randomUUID() + '.tmp';
       const file = await open(temporary, 'wx', 0o600);
       try {
         try {
-          await file.writeFile(JSON.stringify({
-            version: 1, ...room, cells: [...room.cells.values()],
-            pois: [...room.pois.values()].flat()
-          }));
+          await file.writeFile(JSON.stringify(snapshot));
           await file.sync();
         } finally {
           await file.close();
@@ -45,6 +51,9 @@ export async function roomStorage(path) {
         await rm(temporary, {force: true}).catch(() => {});
         throw error;
       }
-    }
-  };
+  }
+}
+
+function serialiseRoom(room) {
+  return {...room, cells: [...room.cells.values()], pois: [...room.pois.values()].flat()};
 }

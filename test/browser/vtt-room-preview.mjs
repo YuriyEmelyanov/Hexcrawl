@@ -511,9 +511,10 @@ async function verifyEditorRestore(browser) {
     assert.equal(new URL(playerUrl).origin, preview.playerUrl);
     assert.notEqual(preview.playerUrl, preview.roomUrl);
     assert.equal((await player.request.get(preview.playerUrl + '/master')).status(), 404);
-    const authorization = (await firstOpen.allHeaders()).authorization;
+    assert.equal((await firstOpen.allHeaders()).authorization, undefined,
+      'the public editor does not receive or send a reusable room-service credential');
     assert.equal((await player.request.post(preview.playerUrl + '/open', {
-      headers: {origin: preview.editorUrl, authorization}, data: firstOpen.postData()
+      headers: {origin: preview.editorUrl}, data: firstOpen.postData()
     })).status(), 404);
     const masterKey = await master.evaluate(() => localStorage.getItem('vtt-preview-master'));
     assert.equal((await player.request.get(preview.playerUrl + '/state', {

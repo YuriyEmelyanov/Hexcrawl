@@ -10,10 +10,17 @@ import {roomStorage} from './room-storage.mjs';
 const key = ({q, r}) => `${q},${r}`;
 const newPlayerPath = () => '/play/' + randomBytes(16).toString('base64url');
 
-function roomRole(room, headers, playerOnly) {
-  if (!room) return null;
-  if (!playerOnly && headers.authorization === 'Bearer ' + room.masterKey) return 'master';
-  return room.playerPath && headers['x-preview-room'] === room.playerPath ? 'player' : null;
+function roomAccess(rooms, headers, playerOnly) {
+  if (!playerOnly && headers.authorization?.startsWith('Bearer ')) {
+    const room = rooms.get(headers.authorization.slice('Bearer '.length));
+    if (room) return {room, role: 'master'};
+  }
+  const playerPath = headers['x-preview-room'];
+  if (typeof playerPath !== 'string') return null;
+  for (const room of rooms.values()) {
+    if (room.playerPath === playerPath) return {room, role: 'player'};
+  }
+  return null;
 }
 
 function playerLinkOrigin(value) {
@@ -26,8 +33,9 @@ function playerLinkOrigin(value) {
   return url.origin;
 }
 
-export async function startPreview({port = 0, playerPort, playerOrigin, editorOrigin, launchKey, storagePath} = {}) {
+export async function startPreview({port = 0, playerPort, playerOrigin, editorOrigin, storagePath, maxRooms = 64} = {}) {
   if (playerOrigin !== undefined && playerPort === undefined) throw new Error('Configure a separate player port');
+  if (!Number.isSafeInteger(maxRooms) || maxRooms < 1 || maxRooms > 10000) throw new Error('Use a bounded room capacity');
   let linkOrigin = playerOrigin === undefined ? undefined : playerLinkOrigin(playerOrigin);
   const storage = storagePath ? await roomStorage(storagePath) : null;
   const assets = new Map(await Promise.all([
@@ -54,18 +62,20 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
   assets.set('/waterfall-color.svg', {type: 'image/svg+xml',
     body: await readFile(new URL('../../public/waterfall-color.svg', import.meta.url))});
   const page = await readFile(new URL('./index.html', import.meta.url));
-  let room;
-  let local;
+  const rooms = new Map();
   function localAt(next) {
-    if (room?.state.position === next.state.position && room.routes === next.routes && room.marks === next.marks) return local;
     const marks = marksAt(next.marks, next.state.position);
     return {routes: routesAt(next.routes, next.state.position, marks), marks};
   }
   const snapshot = await storage?.load();
   if (snapshot) {
-    const restored = restoreRoom(snapshot, poiPaths);
-    local = localAt(restored);
-    room = restored;
+    const savedRooms = snapshot.version === 2 ? snapshot.rooms : [snapshot];
+    if (!Array.isArray(savedRooms) || savedRooms.length > maxRooms) throw new Error('Invalid VTT room registry');
+    for (const saved of savedRooms) {
+      const restored = restoreRoom(saved, poiPaths);
+      if (rooms.has(restored.masterKey)) throw new Error('Duplicate VTT room authority');
+      rooms.set(restored.masterKey, restored);
+    }
   }
 
   // Check revisions and publish changes in the same order as durable writes.
@@ -78,10 +88,11 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
     return completion;
   }
   async function saveRoom(next) {
-    const nextLocal = localAt(next);
-    await storage?.save(next);
-    room = next;
-    local = nextLocal;
+    const saved = new Map(rooms);
+    saved.set(next.masterKey, next);
+    await storage?.saveMany([...saved.values()]);
+    rooms.clear();
+    for (const [masterKey, room] of saved) rooms.set(masterKey, room);
   }
 
   const send = (res, status, type, body) => {
@@ -97,13 +108,11 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       res.setHeader('access-control-allow-origin', req.headers.origin);
       res.setHeader('vary', 'Origin');
       if (req.method === 'OPTIONS') {
-        res.setHeader('access-control-allow-headers', 'authorization, content-type');
+        res.setHeader('access-control-allow-headers', 'content-type');
         res.setHeader('access-control-allow-methods', 'POST');
         return send(res, 204, 'text/plain', '');
       }
-      if (req.method !== 'POST' || !launchKey || req.headers.authorization !== 'Bearer ' + launchKey) {
-        return json(res, 404, {error: 'Unavailable'});
-      }
+      if (req.method !== 'POST') return json(res, 404, {error: 'Unavailable'});
       let candidate, editorMap, reopening;
       try {
         const {save, position, routes, marks, pois, resume, crossingArtworkVersion} = await readJson(req, 16 * 1024 * 1024);
@@ -127,23 +136,33 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       }
       return mutate(async () => {
         const {mapMode, rotated} = candidate.state;
-        // Earlier snapshots included the original orientation in their digest.
-        const legacyMatch = room && room.mapDigest !== candidate.mapDigest &&
-          room.mapDigest === digestMap([mapMode, room.state.rotated, editorMap]);
-        if (room && room.mapDigest !== candidate.mapDigest && !legacyMatch) {
-          return json(res, 409, {error: 'A different map is already open'});
+        // Earlier snapshots included the original orientation in their digest. A
+        // normal open creates an independent game; only a browser restore resumes
+        // the matching map.
+        let room;
+        let legacyMatch = false;
+        if (reopening) {
+          room = [...rooms.values()].find(saved => {
+            if (saved.mapDigest === candidate.mapDigest) return true;
+            const legacy = saved.mapDigest === digestMap([mapMode, saved.state.rotated, editorMap]);
+            legacyMatch ||= legacy;
+            return legacy;
+          });
         }
         if (reopening && !room) return json(res, 200, {masterPath: '/master'});
         const upgradeArtwork = room && (legacyMatch || candidate.crossingArtworkVersion > room.crossingArtworkVersion);
         try {
           if (!room) {
             if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
-            await saveRoom({...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()});
+            if (rooms.size >= maxRooms) return json(res, 503, {error: 'Room capacity reached'});
+            room = {...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()};
+            await saveRoom(room);
           } else if (upgradeArtwork || room.state.rotated !== rotated) {
             const state = {...room.state, rotated, revision: room.state.revision + 1};
             const artwork = upgradeArtwork ? {cells: candidate.cells, routes: candidate.routes, marks: candidate.marks,
               pois: candidate.pois, mapDigest: candidate.mapDigest, crossingArtworkVersion: candidate.crossingArtworkVersion} : {};
-            await saveRoom({...room, ...artwork, state});
+            room = {...room, ...artwork, state};
+            await saveRoom(room);
           }
         } catch {
           return json(res, 503, {error: 'Room could not be saved'});
@@ -153,7 +172,9 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       });
     }
     if (req.method === 'GET') {
-      if (path === '/master' || path === room?.playerPath) return send(res, 200, 'text/html; charset=utf-8', page);
+      if (path === '/master' || [...rooms.values()].some(room => path === room.playerPath)) {
+        return send(res, 200, 'text/html; charset=utf-8', page);
+      }
       if (path.startsWith('/play/')) return send(res, 404, 'text/html; charset=utf-8', page);
       const asset = assets.get(path);
       if (asset) return send(res, 200, asset.type, asset.body);
@@ -166,15 +187,16 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         }
       }
     }
-    const role = roomRole(room, req.headers, playerOnly);
-    if (path !== '/state' || !role) return json(res, 404, {error: 'Room unavailable'});
+    const access = roomAccess(rooms, req.headers, playerOnly);
+    if (path !== '/state' || !access) return json(res, 404, {error: 'Room unavailable'});
+    const {room, role} = access;
     if (req.method === 'GET') {
       const master = role === 'master';
       const {state, cells, pois, history, playerPath} = room;
       const points = master ? [...pois.values()].flat()
         : (pois.get(key(state.position)) ?? []).filter(point => point.discovery === 'passage');
       const drawings = points.map(({q, r, icon, fill}) => ({q, r, icon, fill}));
-      const {routes, marks} = master ? room : local;
+      const {routes, marks} = master ? room : localAt(room);
       const view = {...viewOf(cells, state, master), routes, marks, pois: drawings};
       const playerUrl = playerPath && linkOrigin ? new URL(playerPath, linkOrigin).href : undefined;
       return json(res, 200, master ? {...view, playerPath, playerUrl, history} : view);
@@ -189,9 +211,9 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
     }
     return mutate(async () => {
       // The link may have been revoked while this request was waiting to write.
-      const currentRole = roomRole(room, req.headers, playerOnly);
-      if (!currentRole) return json(res, 404, {error: 'Room unavailable'});
-      const next = nextRoom(room, action, currentRole === 'master');
+      const current = roomAccess(rooms, req.headers, playerOnly);
+      if (!current || current.room.masterKey !== room.masterKey) return json(res, 404, {error: 'Room unavailable'});
+      const next = nextRoom(current.room, action, current.role === 'master');
       if (!next) return json(res, 409, {error: 'Action not applied'});
       try {
         await saveRoom(next);

@@ -61,10 +61,10 @@ jobs:
           # Bounded same-input native6 acceptance against the published parent.
           ONE_MILE_NATIVE6_BASELINE: ${{ github.head_ref == 'agent/hx-bl-058-base-scale-f1' && github.event.pull_request.base.sha || github.event.pull_request.number == 505 && '7c0eb9f3c9baabc01d63356845c1372df9fc9da5' || github.event.pull_request.number == 504 && 'b7d0a5637ac5980efc8b91ed425dd7bab5577c8f' || github.event.pull_request.number == 503 && 'd41911b8d7c2248f115b182923350dc8d08c0a48' || '' }}
       - name: Verify PR519 production build over HTTPS
-        if: github.event.pull_request.number == 519 && (success() || failure())
+        if: success() || failure()
         run: npm run test:browser:vtt-production
       - uses: actions/upload-artifact@v4
-        if: always() && github.event.pull_request.number == 519
+        if: always()
         with:
           name: HX-BL-078-production-https
           path: reports/HX-BL-078/production-https/

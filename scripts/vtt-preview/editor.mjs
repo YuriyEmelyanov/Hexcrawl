@@ -1,13 +1,11 @@
 // Local integration harness. The editor and player service use separate loopback origins.
-import {randomBytes} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {createServer} from 'vite';
 import {startPreview} from './server.mjs';
 
 export async function startEditorPreview({storagePath, roomPort = 0, editorPort = 0, playerPort, playerOrigin} = {}) {
-  const launchKey = randomBytes(24).toString('base64url');
   let editorUrl;
-  const options = {port: roomPort, playerPort, playerOrigin, storagePath, editorOrigin: () => editorUrl, launchKey};
+  const options = {port: roomPort, playerPort, playerOrigin, storagePath, editorOrigin: () => editorUrl};
   let service = await startPreview(options);
   options.port = service.server.address().port;
   const base = service.base;
@@ -21,8 +19,7 @@ export async function startEditorPreview({storagePath, roomPort = 0, editorPort 
   try {
     editor = await createServer({
       define: {
-        __HEXCRAWL_VTT_PREVIEW_URL__: JSON.stringify(base),
-        __HEXCRAWL_VTT_PREVIEW_KEY__: JSON.stringify(launchKey)
+        __HEXCRAWL_VTT_PREVIEW_URL__: JSON.stringify(base)
       },
       server: {host: '127.0.0.1', port: editorPort, strictPort: true}
     });

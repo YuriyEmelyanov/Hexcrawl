@@ -4,7 +4,7 @@ import {randomBytes} from 'node:crypto';
 import {createServer as createHttpsServer} from 'node:https';
 import {request as httpRequest} from 'node:http';
 import {createServer as createNetServer} from 'node:net';
-import {mkdir, mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
+import {mkdir, mkdtemp, readFile, readdir, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {extname, isAbsolute, join, relative, resolve, sep} from 'node:path';
 import {chromium} from 'playwright';
@@ -50,6 +50,18 @@ function runBuild(env) {
     child.once('exit', (code, signal) => code === 0 ? resolveBuild() :
       reject(new Error(`production build failed (${signal ?? code})`)));
   });
+}
+
+async function builtAssetsContain(value, directory = resolve('dist')) {
+  for (const entry of await readdir(directory, {withFileTypes: true})) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) {
+      if (await builtAssetsContain(value, path)) return true;
+    } else if ((await readFile(path)).includes(Buffer.from(value))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function tlsMaterial(directory) {
@@ -110,7 +122,7 @@ const [editorPort, roomPort, playerPort] = await Promise.all([reservePort(), res
 const editorOrigin = `https://${loopback}:${editorPort}`;
 const roomOrigin = `https://${loopback}:${roomPort}`;
 const playerOrigin = `https://${loopback}:${playerPort}`;
-const launchKey = randomBytes(24).toString('base64url');
+const forbiddenBuildSecret = 'HX078_REUSABLE_SERVER_SECRET_' + randomBytes(12).toString('hex');
 let service;
 let browser;
 let editorServer;
@@ -119,9 +131,11 @@ let playerProxy;
 
 try {
   const tls = await tlsMaterial(temporary);
-  await runBuild({HEXCRAWL_VTT_PREVIEW_URL: roomOrigin, HEXCRAWL_VTT_PREVIEW_KEY: launchKey});
+  await runBuild({HEXCRAWL_VTT_PREVIEW_URL: roomOrigin, HEXCRAWL_VTT_PREVIEW_KEY: forbiddenBuildSecret});
+  assert.equal(await builtAssetsContain(forbiddenBuildSecret), false,
+    'a reusable server credential must never be shipped in public assets');
   const startRoom = () => startPreview({storagePath, playerPort: 0, playerOrigin,
-    editorOrigin: () => editorOrigin, launchKey});
+    editorOrigin: () => editorOrigin});
   service = await startRoom();
   editorServer = staticServer(tls, resolve('dist'));
   roomProxy = proxyServer(tls, () => service?.base);
@@ -160,11 +174,35 @@ try {
   await master.locator('#confirm').click();
   await Promise.all([waitPosition(master, '0,0'), waitPosition(player, '0,0')]);
 
+  const secondEditor = await masterContext.newPage();
+  await secondEditor.goto(editorOrigin);
+  const secondFixture = structuredClone(fixture);
+  secondFixture.map.toponyms.seed += 1;
+  secondFixture.ui.selectedHex = {q: 1, r: 1};
+  await secondEditor.locator('input[type=file]').setInputFiles({name: 'second-map.json',
+    mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(secondFixture))});
+  await secondEditor.locator('[data-selected-hex="1,1"]').waitFor({state: 'attached'});
+  const [secondMaster] = await Promise.all([
+    secondEditor.waitForEvent('popup'),
+    secondEditor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/}).click()
+  ]);
+  await secondMaster.locator('#join').waitFor();
+  const secondPlayerLink = await secondMaster.locator('#join').getAttribute('href');
+  assert.notEqual(secondPlayerLink, playerLink, 'independent maps receive independent rooms');
+  const secondPlayer = await playerContext.newPage();
+  await secondPlayer.goto(secondPlayerLink);
+  await Promise.all([waitPosition(secondMaster, '1,1'), waitPosition(secondPlayer, '1,1')]);
+  await waitPosition(player, '0,0');
+
   await service.close();
   service = await startRoom();
-  await Promise.all([master.reload(), player.reload()]);
-  await Promise.all([waitPosition(master, '0,0'), waitPosition(player, '0,0')]);
+  await Promise.all([master.reload(), player.reload(), secondMaster.reload(), secondPlayer.reload()]);
+  await Promise.all([
+    waitPosition(master, '0,0'), waitPosition(player, '0,0'),
+    waitPosition(secondMaster, '1,1'), waitPosition(secondPlayer, '1,1')
+  ]);
   assert.equal(player.url(), playerLink, 'the player keeps the same HTTPS room link after restart');
+  assert.equal(secondPlayer.url(), secondPlayerLink, 'the second room keeps its own player link after restart');
   assert.ok(await player.locator('[data-cell]').count() < await master.locator('[data-cell]').count(),
     'the player still receives only the authorised projection');
 
@@ -175,7 +213,8 @@ try {
   ]);
   const result = {mode: 'production-https', editorOrigin: true, separateMasterAndPlayerOrigins: true,
     productionEntry: true, confirmedMove: true, roomRestart: true, samePlayerLink: true,
-    authorisedProjectionAfterRestart: true, from: '0,1', to: '0,0'};
+    authorisedProjectionAfterRestart: true, publicBundleSecretFree: true, isolatedRooms: true,
+    from: '0,1', to: '0,0'};
   await writeFile(join(evidenceDir, 'result.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));
 } finally {
