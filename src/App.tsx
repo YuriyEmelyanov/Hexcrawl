@@ -15924,6 +15924,9 @@ export function App() {
 
   const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
   const [vttCacheStatus, setVttCacheStatus] = useState<'idle' | 'restored' | 'restore-error' | 'write-error'>('idle');
+  const vttCachedMap = useRef<string>();
+  const vttMapIdentity = (save: ReturnType<typeof createSaveData>) =>
+    JSON.stringify([save.ui.generationMode, !!save.ui.knaveEnabled, !!save.ui.crowsEnabled, save.map]);
   const vttAvailable = vttPreview && !fineActive && !automaticFinePreparing && !editMode;
   const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
     ? selectedHex : null;
@@ -15942,12 +15945,16 @@ export function App() {
         ? stroke.getAttribute('points')!.split(' ').map(point => point.split(',').map(Number))
         : [['x1', 'y1'], ['x2', 'y2']].map(pair => pair.map(name => Number(stroke.getAttribute(name))));
       const style = getComputedStyle(stroke);
+      const crossing = (kind === 'rail' || stroke.classList.contains('road-line--ford') ||
+        stroke.classList.contains('trail-line--ford')) && stroke.closest('[data-vtt-crossing-anchor]')
+        ?.getAttribute('data-vtt-crossing-anchor')?.split(',').map(Number);
       return {
         kind,
         width: Number.parseFloat(style.strokeWidth),
         faded: Number(style.opacity) < 1,
         solid: style.strokeDasharray === 'none',
         ...(kind === 'river-arrow' ? {arrowSize: Number(stroke.getAttribute('data-vtt-arrow-size'))} : {}),
+        ...(crossing ? {crossing: [crossing[0] - riverOffset.x, crossing[1] - riverOffset.y]} : {}),
         points: points.map(([x, y]) => [x - riverOffset.x, y - riverOffset.y])
       };
     });
@@ -15985,10 +15992,11 @@ export function App() {
     setVttLaunchStatus('pending');
     try {
       const save = structuredClone(createSaveData());
+      const identity = vttMapIdentity(save);
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', authorization: 'Bearer ' + vttPreview.launchKey},
-        body: JSON.stringify({save, position: vttStartHex,
+        body: JSON.stringify({save, position: vttStartHex, resume: identity === vttCachedMap.current, crossingArtworkVersion: 1,
           routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
       });
       if (response.status === 409) {
@@ -16000,6 +16008,7 @@ export function App() {
       const {masterPath} = await response.json();
       try {
         await writeVttMap(vttPreview.url, save);
+        vttCachedMap.current = identity;
         setVttCacheStatus('idle');
       } catch {
         setVttCacheStatus('write-error');
@@ -16134,6 +16143,7 @@ export function App() {
         if (cancelled || saved === undefined) return;
         assertHexcrawlSaveData(saved);
         applySavedDocument(prepareSavedDocument(saved), false);
+        vttCachedMap.current = vttMapIdentity(saved as ReturnType<typeof createSaveData>);
         setVttCacheStatus('restored');
       } catch {
         if (!cancelled) setVttCacheStatus('restore-error');
@@ -17526,7 +17536,8 @@ export function App() {
                   </g>
                 );
                 if (crossing.kind === 'ford') return (
-                  <g key={segment.key} className="river-crossing river-crossing--ford">
+                  <g key={segment.key} className="river-crossing river-crossing--ford"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
                     {segment.kind === 'trail' ? (
                       <>
                         <line
@@ -17561,7 +17572,8 @@ export function App() {
                 const railOffset = 4;
                 const railLength = 11;
                 return (
-                  <g key={segment.key} className="river-crossing river-crossing--bridge">
+                  <g key={segment.key} className="river-crossing river-crossing--bridge"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
                     {paintedRoad}
                     {[-1, 1].map((side) => {
                       const offset = side * railOffset;

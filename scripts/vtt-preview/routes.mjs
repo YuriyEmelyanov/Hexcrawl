@@ -4,21 +4,27 @@ const kinds = new Set(['river', 'road', 'trail', 'rapid', 'rail', 'river-arrow']
 const markKinds = new Set(['bridge', 'ford', 'ferry', 'waterfall']);
 const epsilon = 1e-7;
 const samePoint = ([ax, ay], [bx, by]) => Math.abs(ax - bx) < epsilon && Math.abs(ay - by) < epsilon;
+const finitePoint = point => Array.isArray(point) && point.length === 2 && point.every(Number.isFinite);
 
 export function readRoutes(routes) {
   if (!Array.isArray(routes)) throw new Error('Invalid routes');
   return routes.map(route => {
-    const {kind, width, points, faded, solid, arrowSize} = route;
+    const {kind, width, points, faded, solid, arrowSize, crossing} = route;
     if (!kinds.has(kind) || !Number.isFinite(width) || width <= 0 || width > HEX_SIZE ||
-        !Array.isArray(points) || points.length < 2 || !points.every(point =>
-          Array.isArray(point) && point.length === 2 && point.every(Number.isFinite))) {
+        !Array.isArray(points) || points.length < 2 || !points.every(finitePoint)) {
       throw new Error('Invalid route stroke');
     }
     if ((kind === 'rapid' || kind === 'river-arrow') && points.length !== 2) throw new Error('Invalid river symbol');
     if (kind === 'river-arrow' && (!Number.isFinite(arrowSize) || arrowSize <= 0 || arrowSize > HEX_SIZE)) {
       throw new Error('Invalid river arrow');
     }
+    if (crossing !== undefined && (!finitePoint(crossing) ||
+      !['rail', 'road', 'trail'].includes(kind) || points.some(point => Math.hypot(
+        point[0] - crossing[0], point[1] - crossing[1]) > HEX_SIZE))) {
+      throw new Error('Invalid crossing artwork');
+    }
     return {kind, width, points, faded: faded === true, solid: solid === true,
+      ...(crossing ? {crossing} : {}),
       ...(kind === 'river-arrow' ? {arrowSize} : {})};
   });
 }
@@ -67,10 +73,17 @@ function clipSegment(a, b, polygon) {
   return samePoint(first, last) ? null : [first, last];
 }
 
-export function routesAt(routes, position) {
+export function routesAt(routes, position, visibleMarks) {
   const polygon = hexPolygon(position);
   const visible = [];
+  const crossings = new Set(visibleMarks.filter(mark => mark.kind === 'bridge' || mark.kind === 'ford')
+    .map(({kind, x, y}) => `${kind}:${x},${y}`));
   for (const route of routes) {
+    if (route.crossing) {
+      const kind = route.kind === 'rail' ? 'bridge' : 'ford';
+      if (crossings.has(`${kind}:${route.crossing.join(',')}`)) visible.push(route);
+      continue;
+    }
     // Short river symbols belong to their anchor on the current hex edge.
     // Their strokes can overlap the adjoining hex, as in the editor.
     if (route.kind === 'rapid' || route.kind === 'river-arrow') {

@@ -1,5 +1,6 @@
 import {HEX_SIZE, toPixel, hexPoints, hexGridPath, getHexWidth, engravingLayout} from '/base-hex-artwork.mjs';
 import {terrainTextures} from '/terrain-blend.mjs';
+import {readVttRoom, writeVttRoom} from '/vtt-map-cache.mjs';
 
 const master = location.pathname === '/master';
 const modeLabels = {
@@ -26,14 +27,22 @@ if (master && onboard) {
   localStorage.setItem('vtt-preview-master', onboard);
   history.replaceState(null, '', location.pathname);
 }
+const masterKey = master ? localStorage.getItem('vtt-preview-master') : null;
 const headers = master
-  ? {authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')}
+  ? {authorization: 'Bearer ' + masterKey}
   : {'x-preview-room': location.pathname};
+const masterCache = masterKey && crypto.subtle
+  ? crypto.subtle.digest('SHA-256', new TextEncoder().encode(masterKey)).then(async digest => {
+    const key = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+    const stored = await readVttRoom(key).catch(() => null);
+    return {key, stored: stored?.schema === 1 ? stored : null};
+  }).catch(() => null) : Promise.resolve(null);
 const role = master ? 'Мастер' : 'Игрок';
 get('master-controls').hidden = !master;
 let view;
 let commandError = '';
 let revoked = false;
+let connected = false;
 // null follows the party; a separate camera is available only to the master.
 let camera;
 
@@ -132,14 +141,15 @@ function draw(next) {
   get('role').textContent = `${role} · ${modeLabels[next.mapMode]} · 5–6 миль`;
   progress.textContent = commandError || (next.proposal === null ? 'Ход не предложен' : 'Ход предложен');
   if (master) {
-    const accessOpen = next.playerPath !== null;
-    get('share-controls').hidden = false;
+    const accessOpen = connected && next.playerPath !== null;
+    get('share-controls').hidden = !connected;
     join.hidden = closeAccess.hidden = !accessOpen;
     get('access-closed').hidden = accessOpen;
     rotateLink.textContent = accessOpen ? 'Сменить ссылку' : 'Создать новую ссылку';
     if (accessOpen) join.href = next.playerUrl ?? next.playerPath;
     else join.removeAttribute('href');
-    confirm.disabled = cancel.disabled = next.proposal === null;
+    confirm.disabled = cancel.disabled = !connected || next.proposal === null;
+    for (const button of get('choices').querySelectorAll('button')) button.disabled = !connected;
   }
   const {x, y} = toPixel(next.position.q, next.position.r);
   if (fit) camera = wholeMapFrame();
@@ -288,9 +298,21 @@ async function refresh() {
   if (!response.ok) throw new Error('Room unavailable');
   const next = await response.json();
   if (revoked) return;
-  if (!view || next.revision > view.revision || (next.revision === view.revision && progress.dataset.error)) {
+  if ((master && !connected) || !view || next.revision > view.revision || (next.revision === view.revision && progress.dataset.error)) {
+    connected = true;
     delete progress.dataset.error;
     draw(next);
+    if (master) {
+      const {position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois} = next;
+      const snapshot = {schema: 1, position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois};
+      const cache = await masterCache;
+      if (!cache) {
+        get('save-warning').hidden = false;
+      } else {
+        await writeVttRoom(cache.key, snapshot).then(() => { get('save-warning').hidden = true; },
+          () => { get('save-warning').hidden = false; });
+      }
+    }
   }
 }
 
@@ -305,7 +327,7 @@ function showRevoked() {
 }
 
 async function action(kind, details = {}) {
-  if (revoked) return;
+  if (revoked || (master && !connected)) return;
   commandError = '';
   try {
     const response = await fetch('/state', {method: 'POST',
@@ -324,6 +346,7 @@ async function action(kind, details = {}) {
 vectors.forEach((_, direction) => {
   const button = document.createElement('button');
   button.type = 'button';
+  button.disabled = master;
   button.dataset.direction = direction;
   button.setAttribute('aria-label', `Предложить ход, направление ${direction + 1}`);
   const icon = shape('svg', {viewBox: '0 0 20 20', width: 18, height: 18, 'aria-hidden': true});
@@ -348,7 +371,18 @@ async function followRoom() {
   } catch {
     if (!revoked) {
       progress.dataset.error = 'true';
-      progress.textContent = 'Связь с комнатой потеряна';
+      if (master) {
+        const wasConnected = connected;
+        connected = false;
+        const cache = await masterCache;
+        if (!connected) {
+          const current = view ?? cache?.stored;
+          if (current && (wasConnected || !view)) draw({...current, proposal: null, playerPath: null});
+        }
+      }
+      if (!master || !connected) progress.textContent = master && view
+        ? 'Комната недоступна. Показано последнее сохранённое положение.'
+        : 'Связь с комнатой потеряна';
     }
   }
   if (!revoked) setTimeout(followRoom, 200);

@@ -32,6 +32,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
   const storage = storagePath ? await roomStorage(storagePath) : null;
   const assets = new Map(await Promise.all([
     ['/ui.mjs', 'text/javascript; charset=utf-8', './ui.mjs'],
+    ['/vtt-map-cache.mjs', 'text/javascript; charset=utf-8', '../../src/vttMapCache.ts'],
     ['/style.css', 'text/css; charset=utf-8', './style.css'],
     ['/base-hex-artwork.mjs', 'text/javascript; charset=utf-8', '../../src/rendering/baseHexArtwork.ts'],
     ['/terrain-blend.mjs', 'text/javascript; charset=utf-8', '../../src/rendering/terrainBlend.ts'],
@@ -56,8 +57,9 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
   let room;
   let local;
   function localAt(next) {
-    return room?.state.position === next.state.position && room.routes === next.routes && room.marks === next.marks ? local
-      : {routes: routesAt(next.routes, next.state.position), marks: marksAt(next.marks, next.state.position)};
+    if (room?.state.position === next.state.position && room.routes === next.routes && room.marks === next.marks) return local;
+    const marks = marksAt(next.marks, next.state.position);
+    return {routes: routesAt(next.routes, next.state.position, marks), marks};
   }
   const snapshot = await storage?.load();
   if (snapshot) {
@@ -102,9 +104,10 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       if (req.method !== 'POST' || !launchKey || req.headers.authorization !== 'Bearer ' + launchKey) {
         return json(res, 404, {error: 'Unavailable'});
       }
-      let candidate, editorMap;
+      let candidate, editorMap, reopening;
       try {
-        const {save, position, routes, marks, pois} = await readJson(req, 16 * 1024 * 1024);
+        const {save, position, routes, marks, pois, resume, crossingArtworkVersion} = await readJson(req, 16 * 1024 * 1024);
+        reopening = resume === true;
         const mapMode = readMapMode(save);
         const viewStep = save?.map?.physicalGrid?.viewStep ?? 6;
         if (!mapMode || viewStep !== 6 ||
@@ -117,7 +120,8 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         const cells = mapCells(save);
         const state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode, rotated};
         candidate = {cells, state, mapDigest, routes: readRoutes(routes), marks: readMarks(marks),
-          pois: readPois(pois, cells, poiPaths), history: visibleAt(cells, state.position).map(key)};
+          pois: readPois(pois, cells, poiPaths), history: visibleAt(cells, state.position).map(key),
+          crossingArtworkVersion: crossingArtworkVersion === 1 ? 1 : 0};
       } catch {
         return json(res, 400, {error: 'Invalid map'});
       }
@@ -129,20 +133,22 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         if (room && room.mapDigest !== candidate.mapDigest && !legacyMatch) {
           return json(res, 409, {error: 'A different map is already open'});
         }
+        if (reopening && !room) return json(res, 200, {masterPath: '/master'});
+        const upgradeArtwork = room && (legacyMatch || candidate.crossingArtworkVersion > room.crossingArtworkVersion);
         try {
           if (!room) {
             if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
             await saveRoom({...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()});
-          } else if (legacyMatch || room.state.rotated !== rotated) {
+          } else if (upgradeArtwork || room.state.rotated !== rotated) {
             const state = {...room.state, rotated, revision: room.state.revision + 1};
-            const artwork = legacyMatch ? {cells: candidate.cells, routes: candidate.routes,
-              marks: candidate.marks, pois: candidate.pois, mapDigest: candidate.mapDigest} : {};
+            const artwork = upgradeArtwork ? {cells: candidate.cells, routes: candidate.routes, marks: candidate.marks,
+              pois: candidate.pois, mapDigest: candidate.mapDigest, crossingArtworkVersion: candidate.crossingArtworkVersion} : {};
             await saveRoom({...room, ...artwork, state});
           }
         } catch {
           return json(res, 503, {error: 'Room could not be saved'});
         }
-        return json(res, 200, {masterPath: '/master#' + room.masterKey});
+        return json(res, 200, {masterPath: reopening ? '/master' : '/master#' + room.masterKey});
       });
     }
     if (req.method === 'GET') {
@@ -260,6 +266,7 @@ function restoreRoom(snapshot, poiPaths) {
     throw new Error('Invalid saved VTT room');
   }
   return {state, cells, history, masterKey, playerPath, mapDigest,
+    crossingArtworkVersion: snapshot.crossingArtworkVersion === 1 ? 1 : 0,
     routes: readRoutes(snapshot.routes), marks: readMarks(snapshot.marks),
     pois: readPois(snapshot.pois, cells, poiPaths)};
 }

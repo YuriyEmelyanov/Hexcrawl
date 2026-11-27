@@ -50,9 +50,13 @@ function verifyRouteBounds(view) {
   for (const route of view.routes) {
     const isArrow = route.kind === 'river-arrow';
     assert.deepEqual(Object.keys(route).sort(), [
-      ...(isArrow ? ['arrowSize'] : []), 'faded', 'kind', 'points', 'solid', 'width'
+      ...(isArrow ? ['arrowSize'] : []), ...(route.crossing ? ['crossing'] : []), 'faded', 'kind', 'points', 'solid', 'width'
     ]);
-    if (isArrow || route.kind === 'rapid') {
+    if (route.crossing) {
+      verifyPoint(...route.crossing);
+      assert.ok(view.marks.some(mark => mark.kind === (route.kind === 'rail' ? 'bridge' : 'ford') &&
+        mark.x === route.crossing[0] && mark.y === route.crossing[1]));
+    } else if (isArrow || route.kind === 'rapid') {
       const [[x1, y1], [x2, y2]] = route.points;
       verifyPoint((x1 + x2) / 2, (y1 + y2) / 2);
     } else {
@@ -125,6 +129,23 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       const response = await fetch('/state', {headers: {'x-preview-room': location.pathname}});
       return response.json();
     });
+    const snapshotMaster = () => master.evaluate(async () => {
+      const response = await fetch('/state', {headers: {
+        authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')
+      }});
+      return response.json();
+    });
+    const verifyCrossingArtwork = async view => {
+      const full = await snapshotMaster();
+      const permitted = full.routes.filter(route => route.crossing && view.marks.some(mark =>
+        mark.kind === (route.kind === 'rail' ? 'bridge' : 'ford') &&
+        mark.x === route.crossing[0] && mark.y === route.crossing[1]));
+      if (view.marks.some(mark => mark.kind === 'bridge')) {
+        assert.equal(permitted.filter(route => route.kind === 'rail').length, 2, 'bridge has two complete rails');
+      }
+      assert.deepEqual(view.routes.filter(route => route.crossing), permitted,
+        'player sees complete authorized symbols and no hidden crossing artwork');
+    };
     const before = await snapshotPlayer();
     assert.deepEqual(Object.keys(before).sort(), ['cells', 'mapMode', 'marks', 'pois', 'position', 'proposal', 'revision', 'rotated', 'routes']);
     assert.equal(before.mapMode, mode);
@@ -202,6 +223,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       }
     }
     verifyRouteBounds(before);
+    await verifyCrossingArtwork(before);
     assert.equal(before.rotated, rotated);
     assert.equal(await first.locator('#map > g').getAttribute('transform'), rotated ? 'rotate(90)' : null);
     const arrows = await first.locator('[data-direction] > svg > path').evaluateAll(paths =>
@@ -273,6 +295,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const after = await snapshotPlayer();
     await verifyPoi(after, mode === 'mythic' ? null : '0,0');
     verifyRouteBounds(after);
+    await verifyCrossingArtwork(after);
     assert.equal(await first.locator('[data-route-kind]').count(), after.routes.length);
     assert.equal(await first.locator('[data-mark-kind]').count(), after.marks.length);
     if (mode === 'mythic') assert.ok(after.marks.some(mark => mark.kind === 'ferry'));
@@ -281,12 +304,6 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     assert.ok(after.routes.length < await editorRoutes.count());
     assert.notDeepEqual(after.cells, before.cells, 'confirmed move updates the authorised projection');
     if (privateDir) {
-      const snapshotMaster = () => master.evaluate(async () => {
-        const response = await fetch('/state', {headers: {
-          authorization: 'Bearer ' + localStorage.getItem('vtt-preview-master')
-        }});
-        return response.json();
-      });
       const masterAfter = await snapshotMaster();
       await preview.restartRoom();
       assert.deepEqual(await snapshotPlayer(), after, 'the original link still gives its existing player the same view');
@@ -427,6 +444,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
 
 async function verifyEditorRestore(browser) {
   const privateDir = await mkdtemp(join(tmpdir(), 'hexcrawl-vtt-ingress-'));
+  const storagePath = join(privateDir, 'room.json');
   const masterContext = await browser.newContext({viewport: {width: 1120, height: 720}});
   const playerContext = await browser.newContext({viewport: {width: 420, height: 700}});
   const secondContext = await browser.newContext({viewport: {width: 880, height: 650}});
@@ -435,7 +453,7 @@ async function verifyEditorRestore(browser) {
   secondContext.setDefaultTimeout(20000);
   let preview;
   try {
-    preview = await startEditorPreview({storagePath: join(privateDir, 'room.json'), playerPort: 0});
+    preview = await startEditorPreview({storagePath, playerPort: 0});
     const editor = await masterContext.newPage();
     const player = await playerContext.newPage();
     const second = await secondContext.newPage();
@@ -455,9 +473,9 @@ async function verifyEditorRestore(browser) {
       }
     };
     await screenshot(editor, 'editor-before');
-    const openRoom = async () => {
+    const openRoom = async (live = true) => {
       const [page] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
-      await page.locator('#join').waitFor();
+      if (live) await page.locator('#join').waitFor();
       return page;
     };
     const [firstOpen, masterPage] = await Promise.all([
@@ -505,14 +523,15 @@ async function verifyEditorRestore(browser) {
     const confirmed = await state();
     await screenshot(player, 'player-before-service-restart');
 
-    const restoreEditor = async () => {
+    const restoreEditor = async (live = true) => {
       await master.close();
       await editor.reload();
       await editor.getByText(/^(Карта игры восстановлена\.|Game map restored\.)$/).waitFor();
       assert.equal(await selected.getAttribute('data-selected-hex'), selection);
       assert.equal(await seed.inputValue(), '42');
       assert.deepEqual(await editor.evaluate(terrainSnapshot), geography);
-      master = await openRoom();
+      master = await openRoom(live);
+      if (!live) return;
       assert.equal(await master.locator('#join').getAttribute('href'), originalLink);
       assert.equal(await master.locator('#position').textContent(), destination);
       assert.equal(player.url(), playerUrl);
@@ -532,10 +551,57 @@ async function verifyEditorRestore(browser) {
     await screenshot(editor, 'editor-restored');
     await screenshot(master, 'master-after-reopen');
     await screenshot(player, 'player-original-link');
+
+    const offlineNotice = 'Комната недоступна. Показано последнее сохранённое положение.';
+    const savedRevision = await master.waitForFunction(async expected => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open('hexcrawl-vtt', 2);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        const records = await new Promise((resolve, reject) => {
+          const request = db.transaction('confirmed-rooms').objectStore('confirmed-rooms').getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        const snapshot = records.find(record => record.revision >= expected);
+        return snapshot || false;
+      } finally {
+        db.close();
+      }
+    }, pending.revision).then(handle => handle.jsonValue());
+    assert.equal(`${savedRevision.position.q},${savedRevision.position.r}`, destination);
+    assert.ok(savedRevision.history.includes(destination));
+    assert.equal(Object.hasOwn(savedRevision, 'proposal'), false, 'unconfirmed arrow stays in the live room');
+    assert.equal(Object.hasOwn(savedRevision, 'playerPath'), false, 'browser fallback does not offer a stale link');
+    await rename(storagePath, storagePath + '.held');
+    try {
+      await preview.restartRoom();
+      await restoreEditor(false);
+      await master.getByText(offlineNotice, {exact: true}).waitFor();
+      assert.equal(await master.locator('#position').textContent(), destination);
+      assert.equal(await master.locator('#share-controls').isVisible(), false);
+      assert.equal(await master.locator('#confirm').isDisabled(), true);
+      assert.equal(await master.locator('#choices button:disabled').count(), 6);
+      assert.equal(await master.locator('[data-proposal]').count(), 0);
+      assert.equal((await master.request.get(playerUrl)).status(), 404, 'resume does not silently create a room');
+      await screenshot(master, 'master-saved-position');
+    } finally {
+      await rename(storagePath + '.held', storagePath);
+    }
+    await preview.restartRoom();
+    await master.locator('#join').waitFor();
+    assert.equal(await master.locator('#join').getAttribute('href'), originalLink);
+    assert.equal(await master.locator('[data-proposal]').getAttribute('data-proposal'), String(pending.proposal));
+    await player.reload();
+    await player.waitForFunction(value => document.querySelector('#position').value === value, destination);
+    assert.deepEqual(await state(), pending);
     console.log(JSON.stringify({mode: 'classic-generated-editor-restore', seed:42, startingHex:selection,
       confirmedHex:destination, sameEditorGeography:true, samePlayerLink:true,
       confirmedReload:true, pendingProposalReload:true, fileImport:false, distinctPlayerOrigin:true,
-      playerContexts:2, deniedMasterRoutesOnPlayerOrigin:true, samePlayerLinkAfterServiceRestart:true}));
+      playerContexts:2, deniedMasterRoutesOnPlayerOrigin:true, samePlayerLinkAfterServiceRestart:true,
+      browserConfirmedSnapshot:true, offlineReadOnly:true, oldRoomReconnected:true}));
   } finally {
     try {
       await Promise.all([masterContext.close(), playerContext.close(), secondContext.close()]);
