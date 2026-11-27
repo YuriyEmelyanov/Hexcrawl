@@ -151,6 +151,7 @@ try {
   const editor = await masterContext.newPage();
   const player = await playerContext.newPage();
   await editor.goto(editorOrigin);
+  await editor.locator('.controls--transfer > button:not([disabled])').waitFor();
   const fixture = JSON.parse(await readFile(new URL('../fixtures/classic-six-regions-seed42.json', import.meta.url), 'utf8'));
   fixture.ui.selectedHex = {q: 0, r: 1};
   await editor.locator('input[type=file]').setInputFiles({name: 'classic-map.json',
@@ -176,6 +177,7 @@ try {
 
   const secondEditor = await masterContext.newPage();
   await secondEditor.goto(editorOrigin);
+  await secondEditor.locator('.controls--transfer > button:not([disabled])').waitFor();
   const secondFixture = structuredClone(fixture);
   secondFixture.ui.selectedHex = {q: 1, r: 1};
   await secondEditor.locator('input[type=file]').setInputFiles({name: 'second-map.json',

@@ -89,6 +89,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
     await launch.waitFor();
     assert.ok(await launch.isDisabled(), 'the empty editor cannot start a room');
+    await editor.locator('.controls--transfer > button:not([disabled])').waitFor();
     const save = JSON.parse(await readFile(new URL('../fixtures/' + fixture, import.meta.url), 'utf8'));
     save.ui.selectedHex = {q: 0, r: 1};
     const rotated = mode === 'mythic';
@@ -672,6 +673,7 @@ async function verifyLakeStartAndMove(browser) {
     preview = await startEditorPreview({playerPort: 0});
     const [editor, player] = await Promise.all(contexts.map(context => context.newPage()));
     await editor.goto(preview.editorUrl);
+    await editor.locator('.controls--transfer > button:not([disabled])').waitFor();
     const save = JSON.parse(await readFile(new URL('../fixtures/terrain-display-map.json', import.meta.url), 'utf8'));
     const lake = '-2,12';
     assert.ok(!save.map.regions.some(region => region.hexes.some(({q, r}) => `${q},${r}` === lake)));
@@ -730,6 +732,7 @@ async function verifyTrailFerry(browser) {
   try {
     const [editor, player] = await Promise.all([masterContext.newPage(), playerContext.newPage()]);
     await editor.goto(preview.editorUrl);
+    await editor.locator('.controls--transfer > button:not([disabled])').waitFor();
     const fixture = JSON.parse(await readFile(new URL('../fixtures/e5-river-editor.json', import.meta.url), 'utf8'));
     fixture.map.roads[0].segments[0].kind = 'trail';
     fixture.map.crossings[0].kind = 'ferry';
