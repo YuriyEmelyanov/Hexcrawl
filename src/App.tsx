@@ -16914,11 +16914,12 @@ export function App() {
       const subject=edit.type==='create'?plan.map.rivers.find(r=>r.id===nextRiverId):plan.map.rivers.find(r=>r.id===edit.riverId);
       const affectedCrossings=[...crossings.filter(c=>!plan.map.crossings.some(n=>JSON.stringify(n)===JSON.stringify(c))),...plan.map.crossings.filter(c=>!crossings.some(n=>JSON.stringify(n)===JSON.stringify(c)))];
       const uniqueCrossings=[...new Map(affectedCrossings.map(c=>[c.key,c])).values()];
-      const choices=plan.map.crossings.filter(c=>!crossings.some(old=>old.key===c.key)||plan.unresolvedCrossings.some(old=>old.key===c.key)||riverCommandPreview.options.crossingKinds?.[c.key]);
+      const isDelta=edit.type==='create'&&edit.deltaParentRiverId!==undefined;
+      const choices=isDelta?[]:plan.map.crossings.filter(c=>!crossings.some(old=>old.key===c.key)||plan.unresolvedCrossings.some(old=>old.key===c.key)||riverCommandPreview.options.crossingKinds?.[c.key]);
       const featureConflicts=[...plan.unresolvedFeatures,...(riverCommandPreview.options.featureEdits??[])];
       const tagsLost=tags.instances.filter(t=>t.owner.kind==='river'&&removed.includes(t.owner.id)).length;
       const arms=rivers.filter(r=>r.deltaParentRiverId!==undefined&&(removed.includes(r.id)||edit.type!=='create'&&(r.id===edit.riverId||r.deltaParentRiverId===edit.riverId)));
-      const parent=edit.type==='create'&&edit.deltaParentRiverId!==undefined?rivers.find(r=>r.id===edit.deltaParentRiverId):undefined;
+      const parent=isDelta?rivers.find(r=>r.id===edit.deltaParentRiverId):undefined;
       const maxDeltaFullness=parent?manualDeltaMaximum(parent):undefined;
       return <>
         {edit.type==='create'&&parent&&maxDeltaFullness!==undefined&&<label className="river-feature-control">
