@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-28-programmer-HX078-tab-camera-0000",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "review_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-bf83c32-2200-fix.json",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+  "findings": [
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "status": "fixed_pending_independent_review",
+      "criteria": [
+        "VTT-AC01",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "observed": "После открытия второй вкладки из первой, подтверждённого хода и перезапуска сервера две игры повторно вошли с отдельными позициями 0,0 и 1,1 и каждая сохранила свою ссылку."
+    },
+    {
+      "id": "F519-SCALE-RESTORE-007",
+      "status": "fixed_pending_independent_review",
+      "criteria": [
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "observed": "Сохранение с видом 1 миля перешло на 5–6 миль. Перезагрузка вернула те же масштаб камеры и игровую ссылку."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+    "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+    "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+    "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+    "runners": {
+      "local_browser_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "local_room_browser": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "differential_baseline": {
+        "executed_suites": 2,
+        "failures_at_intended_assertions": 2
+      }
+    }
+  },
+  "publication_authorized": false,
+  "limitations": [
+    "Временная HTTPS-среда. Для выпуска ещё предстоит подтвердить рабочий сервис комнат на поставляемой сборке.",
+    "При недоступности tab storage доступна последняя подтверждённая привязка из браузерного хранилища. Изоляция конкретных вкладок подтверждена с доступным tab storage."
+  ],
+  "pr_base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-tab-camera-0000-review.json",
+  "claim_ref": "agent-work/claims/2026-11-28-programmer-HX078-tab-camera-0000.json",
+  "role_selection_reason": "Согласованный HX-BL-078 имел два подтверждённых замечания к PR519. Слот программиста свободен, исправления независимы от хостинга и согласования выпуска.",
+  "result": "Две игры на одной карте в связанных вкладках сохраняют отдельные позиции и прежние ссылки. После повторного открытия старой карты сохраняется увеличение на 5–6 милях.",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить точный SHA 412e20cc7030f73a5755f8b8ea5f95f0cb64a06b по F519-ROOM-BINDING-005 и F519-SCALE-RESTORE-007, подтвердить режим чтения при недоступной комнате и обновить предварительную оценку 1.3-rc8. Перед выпуском отдельно подтвердить рабочий сервис и получить разрешение.",
+  "screenshots": {
+    "commit": "33856a32afb63e44be9de303c804296eace64a38",
+    "files": [
+      {
+        "path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/master-after-restart.jpg",
+        "blob_sha": "e82317d656b2710e423aa4771a880aba9d4a545d"
+      },
+      {
+        "path": "agent-work/evidence/HX-BL-078/tab-camera-412e20c/second-master-after-restart.jpg",
+        "blob_sha": "25cd63850b4d806144cba7f09912f3b5d57b93d7"
+      }
+    ]
+  },
+  "compatibility": {
+    "legacyTabSameRoom": true,
+    "migratedTabSameRoom": true,
+    "legacyMapOnlyStillReadable": true,
+    "newWritePinsRoom": true
+  },
+  "local_check_scope": {
+    "local_npm_check_input_commit": "81c3ec2bf2c33882e29251810c56b7f0c4ab081c",
+    "final_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "changed_paths_between_checks": [
+      "test/browser/vtt-production-preview.mjs"
+    ],
+    "scope": "Local npm check and room browser inputs identical on final SHA; exact final tree used for HTTPS browser and GitHub Actions."
+  },
+  "forecast": {
+    "remaining_first_release_runs": [
+      2,
+      5
+    ],
+    "confidence": "low",
+    "basis": "Независимая приёмка, возможная настройка и проверка рабочей среды, отдельный выпуск. Ожидание внешнего размещения и разрешения не включено."
+  },
+  "ci": {
+    "run_id": 46068466005,
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 140739527860,
+        "name": "world-random",
+        "conclusion": "success"
+      },
+      {
+        "id": 140739528104,
+        "name": "browser",
+        "conclusion": "success"
+      },
+      {
+        "id": 140739528295,
+        "name": "check",
+        "conclusion": "success"
+      },
+      {
+        "id": 140739529357,
+        "name": "engraved-map-comparison",
+        "conclusion": "skipped"
+      }
+    ],
+    "browser_artifact": {
+      "id": 15232535719,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005/artifacts/15232535719",
+      "sha256": "e9ceb1892bf1aea0594e6ad9c1242eeeb83b88764f9df627b9278eab287889a9",
+      "result": {
+        "mode": "production-https",
+        "editorOrigin": true,
+        "separateMasterAndPlayerOrigins": true,
+        "productionEntry": true,
+        "confirmedMove": true,
+        "roomRestart": true,
+        "samePlayerLink": true,
+        "authorisedProjectionAfterRestart": true,
+        "publicBundleSecretFree": true,
+        "isolatedRooms": true,
+        "sameMapEditorRecovery": true,
+        "linkedEditorTabsIsolated": true,
+        "from": "0,1",
+        "to": "0,0"
+      }
+    }
+  },
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005/artifacts/15232535719",
+  "local_checks": {
+    "command": "npm run check",
+    "status": "success",
+    "node_version": "24.22.3",
+    "executed": 460,
+    "passed": 460,
+    "failed": 0,
+    "skipped": 0,
+    "build": "success",
+    "scope": {
+      "local_npm_check_input_commit": "81c3ec2bf2c33882e29251810c56b7f0c4ab081c",
+      "final_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+      "changed_paths_between_checks": [
+        "test/browser/vtt-production-preview.mjs"
+      ],
+      "scope": "Local npm check and room browser inputs identical on final SHA; exact final tree used for HTTPS browser and GitHub Actions."
+    }
+  },
+  "status": "review_ready",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T21:04:51.257Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T21:24:13.112Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T21:24:13.112Z"
+}
