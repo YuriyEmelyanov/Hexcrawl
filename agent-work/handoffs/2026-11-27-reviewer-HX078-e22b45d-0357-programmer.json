@@ -1,0 +1,97 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX078-e22b45d-0357",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+  "tree_sha": "2b19e9e603105271e86812924ca587ffc6652939",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX078-e22b45d-0357.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-review-fixes-0300.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-review-fixes-0300-reviewer.json",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-e22b45d-0357-programmer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/score-assessment.json",
+  "capture_refs": {
+    "before": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/autosave-confirmed-before.jpg",
+    "after": "agent-work/evidence/HX-BL-078/vtt-recheck-e22b45d/autosave-after-server-snapshot-absent.jpg",
+    "programmer_map": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/mythic-master-full-map.jpg"
+  },
+  "next_role": "programmer",
+  "next_step": "Завершить браузерное автосохранение подтверждённого хода и истории, восстановить полную геометрию разрешённых мостов и перепроверить другие пересечения. Передать новый SHA для повторной независимой проверки.",
+  "status": "changes_requested",
+  "checks_status": "success_with_review_findings",
+  "review_ready": false,
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "publication_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      7
+    ],
+    "confidence": "low",
+    "basis": "Два локальных исправления в утверждённых границах, повторная приёмка, HTTPS-проверка и выпуск при разрешении. Ожидание внешней среды и решения владельца не входит."
+  },
+  "role_selection_reason": "Check завершился успешно на зафиксированном SHA и освобождённом слоте. Независимое ревью передано предыдущим программистом. Ветка, спецификация и замечания владельца сверены.",
+  "prior_findings": [
+    {
+      "id": "HX078-VTT1-R01",
+      "outcome": "verified",
+      "evidence": "Старт на озере -2,12 и подтверждённый уход и возврат."
+    },
+    {
+      "id": "HX078-VTT1-R02",
+      "outcome": "verified",
+      "evidence": "Mythic переоткрывается после поворота с прежней ссылкой и подтверждённым гексом."
+    },
+    {
+      "id": "HX078-VTT1-R03",
+      "outcome": "camera_grid_and_river_symbols_verified_crossing_parity_open",
+      "evidence": "206 гексов в обоих размерах окна. Сетка проверена; длины и число 90 стрелок течения и 90 штрихов порогов мастера совпадают с редактором. Отдельное замечание R06 фиксирует геометрию моста."
+    },
+    {
+      "id": "HX078-VTT1-R04",
+      "outcome": "verified",
+      "evidence": "Игрок на озере внутри региона не получает сухопутный биом после хода и повторного входа."
+    }
+  ],
+  "new_findings": [
+    {
+      "id": "HX078-VTT1-R05",
+      "acceptance": [
+        "VTT-AC08"
+      ],
+      "completion": "Сохранять в профиле мастера последний подтверждённый снимок текущего выпуска отдельно от исходной карты. Проверить сохранённую позицию и историю после повторного входа, отличать недоступность текущей комнаты от запуска новой, не откатывать свежее живое состояние. При сохранённой серверной комнате живые игроки и повторный вход используют прежнюю ссылку.",
+      "boundary": "Пустое хранилище локального сервиса использовано как диагностическое отличие источников. Оно не устанавливает требование полностью восстанавливать сервер или автоматически публиковать старую ссылку из одного браузера. Части ручного тумана и JSON из последующих выпусков вне исправления."
+    },
+    {
+      "id": "HX078-VTT1-R06",
+      "acceptance": [
+        "VTT-AC03"
+      ],
+      "completion": "На двух сторонах разрешённого ребра показать мост целиком в геометрии редактора, в том числе оба перила. У игрока вне разрешённого ребра символ скрыт. Отдельно проверить брод, паром и отсутствие раскрытия дальних частей пути.",
+      "boundary": "Воспроизведён мост. Брод имеет сходный механизм передачи, его отдельный визуальный результат остаётся проверкой. Дороги и реки за пределами разрешённого фрагмента сохраняют отсечение."
+    }
+  ],
+  "external_dependency": {
+    "status": "missing_evidence",
+    "scope": [
+      "VTT-AC01",
+      "VTT-AC06",
+      "VTT-AC08"
+    ],
+    "detail": "Нужен разрешённый удалённый HTTPS-стенд с постоянным серверным состоянием и приватным входом мастера. В SHA протестированы только локальные процессы, включая второй пользовательский адрес.",
+    "source": [
+      "scripts/vtt-preview/server.mjs:203",
+      "vite.config.ts:6"
+    ]
+  },
+  "completion_check": "Классическая карта: ход → браузерный снимок подтверждённого состояния → повторный вход. Карта Mythic: полный разрешённый мост с двух сторон, ограниченные соседние фрагменты. Указать новый SHA и проверки."
+}
