@@ -29,7 +29,7 @@
   "run_id": "2026-11-27-programmer-HX078-https-production-1506",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "implementation_in_progress",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,9 +40,16 @@
   "unverified_weight": null,
   "last_completed_task": "HX-BL-056",
   "operational_state_write": {
-    "result_commit_sha": "5756b0e8f926b26c9a0da122d6541554ad157847",
-    "claim_release_commit_sha": "9ea1fa233701a0b2e2bf6c2b99aad325b7a46ac2",
-    "latest_written_last": true
+    "branch": "agent-operations",
+    "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-https-production-1506.json",
+    "result_ref": "agent-work/results/2026-11-27-programmer-HX078-https-production-1506.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-https-production-1506-review.json",
+    "backlog_updated": true,
+    "lock_released": true,
+    "no_writing_processes_running": true,
+    "latest_written_last": true,
+    "written_at": "2026-11-27T12:38:36.315Z"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -51,23 +58,23 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-078",
   "spec_path": "agent-work/specs/HX-BL-074-classic-manual-delta-D1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-27-reviewer-PR520-score-1446.json",
+  "result_path": "agent-work/results/2026-11-27-programmer-HX078-https-production-1506.json",
   "handoff_commit_sha": "ef1ac5c3ccfee30b637705d0bc09470c9a378475",
-  "next_step": "Собрать production-конфигурацию PR №519 и запустить отдельный HTTPS-сценарий в существующем CI: вход мастера из сборки, отдельный контекст игрока, подтверждённый ход, перезапуск комнаты и прежняя ссылка.",
+  "next_step": "Independently review exact SHA 9dbbd6c: inspect the build-time secret boundary, validate the production HTTPS artifact and default Pages-disabled behavior, then refresh acceptance and score assessment.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-2026-11-27-publish-PR520-e860943.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-074/review-fixes-e860943/verification.json",
+  "evidence_path": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
   "branch_name": "agent/hx078-vtt-live-1",
   "pr": 519,
-  "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
   "tree_sha": "525c467b6968faa5f191512d0890cfb28587a645",
   "checks_status": "success",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45980274165",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
   "review_verdict": "accepted",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
@@ -150,7 +157,7 @@
   "score_update_task_id": "HX-BL-074",
   "score_update_release_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "После закрытия учёта PR №520 ближайшая готовая утверждённая работа — ограниченная production/HTTPS-проверка PR №519; слот программиста и task_id свободны.",
+  "role_selection_reason": "PR520 publication accounting was complete; HX-BL-078/PR519 had the next approved independent programmer step: production build and HTTPS CI verification.",
   "score_update_result_ref": "agent-work/results/2026-11-27-reviewer-PR520-score-1446.json",
   "score_update_completed_at": "2026-11-27T11:48:51.340Z",
   "score_update_delta": 0.4938271604938272,
@@ -160,7 +167,7 @@
   "approval_ref": "agent-work/decisions/owner-2026-11-26-approve-HX074-delta.json",
   "last_completed_stage": "POI-OPEN-COARSE",
   "previous_release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
-  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -169,8 +176,9 @@
       "is_enabled": true
     },
     "end": {
-      "status": "pending",
-      "is_enabled": null
+      "at": "2026-11-27T12:38:36.315Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored": false,
     "errors": []
@@ -766,7 +774,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-27T11:49:10.400Z",
+  "updated_at": "2026-11-27T12:38:36.315Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -952,15 +960,18 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "79a6df4dd2836032b21b6dbb1b21e5b212fe5620",
-    "head_sha": "6a1bebc61fbb401c5491bea98c6471486a7bbc47",
-    "added": 0,
+    "base_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+    "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
+    "added": 1,
     "removed": 0,
     "modified": 0,
-    "suite": "post-publication exact tree verification",
-    "scenario": "Accepted and published Git tree identical.",
-    "reuse_or_new_reason": "Temporary live-browser rerun of prior acceptance scenario.",
-    "source": "Equal git tree IDs. Chromium three observations, passed 3, skipped 0; no permanent test changes introduced by this review."
+    "suite": "Chromium: test/browser/vtt-production-preview.mjs",
+    "scenario_risk": "Production packaging, HTTPS origin separation, room restart, and same player-link continuity.",
+    "reuse_or_new_reason": "Existing local VTT coverage was retained; this is a distinct production delivery path.",
+    "count_source": "git diff 2bf312d..9dbbd6c",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012923161",
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -1007,7 +1018,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-074/review-e860943/verification.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1384,7 +1395,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0.4938271604938272,
-  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-PR520-publication-score.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-https-production-1506-review.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2425,14 +2436,14 @@
   },
   "next_approved_stage_handoff_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
   "authorization_status": "Approved F1 implemented; independent review of exact SHA is next.",
-  "completed_at": "2026-11-27T11:48:51.340Z",
+  "completed_at": "2026-11-27T12:38:36.315Z",
   "score_changed": false,
   "next_stage_id": "POI-OPEN-COARSE",
   "score_evidence_updated": true,
   "current_stage_id": "VTT-FIRST",
   "implementation_started": true,
   "current_stage_release_approved": true,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": "agent-work/claims/2026-11-27-reviewer-PR520-score-1446.json",
   "evidence_commit_sha": "7d4403ff4da7b5c7201ba572f96b8469a3893562",
@@ -5303,7 +5314,7 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/520",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
   "active_claim_scope": null,
   "other_active_claims": [
     {
@@ -7981,7 +7992,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-27-programmer-HX074-review-fixes-1310.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-https-production-1506.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -9485,7 +9496,7 @@
     "next_step": "Аналитик завершает044/CLASSIFY1: точная таблица текущих biome ID и семантических ID тегов, приоритеты ручных исключений и совместимость сохранений; затем передача пригодной спецификации. Три категории приняты: опасная обычно включает труднопроходимость. Код и выпуск не начаты; прежнее поручение пока не программировать сохранено. Claim051/DETAIL1 и его checkpoint не изменены."
   },
   "implementation_authorized": true,
-  "release_authorized": true,
+  "release_authorized": false,
   "latest_CLASSIFY1_implementation": {
     "result_ref": "agent-work/results/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
     "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-RIV011.json",
@@ -12051,7 +12062,7 @@
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
   "next_actor": "programmer",
-  "publication_authorized": true,
+  "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
     "stage_id": "PF2-BATCH1",
@@ -21223,15 +21234,13 @@
       "errors": []
     }
   },
-  "active_claim": {
-    "task_id": "HX-BL-078",
-    "role": "programmer",
-    "run_id": "2026-11-27-programmer-HX078-https-production-1506",
-    "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-https-production-1506.json",
-    "generation": 983,
-    "branch": "agent/hx078-vtt-live-1",
-    "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
-    "status": "in_progress"
-  },
-  "new_release_live_evidence_ref": "agent-work/evidence/HX-BL-074/release-3858b05/live.json"
+  "active_claim": null,
+  "new_release_live_evidence_ref": "agent-work/evidence/HX-BL-074/release-3858b05/live.json",
+  "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065/artifacts/15196798727",
+  "external_public_stand_created": false,
+  "limitations": [
+    "The CI HTTPS stand is ephemeral and cannot be opened by the owner after the job.",
+    "No external/public stand and no production publication were created.",
+    "Default GitHub Pages remains VTT-disabled until a durable room service is selected and configured."
+  ]
 }
