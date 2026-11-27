@@ -1,0 +1,139 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-review-fixes-0300",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+  "tree_sha": "2b19e9e603105271e86812924ca587ffc6652939",
+  "previous_checkpoint_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+  "interim_sha": "756e6b2afb6a9cf104b4edbe96b74f6d92654e3c",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-review-fixes-0300.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-local-015844-programmer.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-review-fixes-0300.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-review-fixes-0300-reviewer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/verification.json",
+  "capture_refs": {
+    "master_before": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/mythic-master-viewport.jpg",
+    "master_after": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/mythic-master-full-map.jpg",
+    "player_at_lake": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/player-after-water-entry.jpg",
+    "master_narrow": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/mythic-master-narrow.jpg"
+  },
+  "next_role": "reviewer",
+  "next_step": "После Check независимо проверить новый SHA по четырём замечаниям. Сверить автосохранение по решению владельца и отдельно подтвердить внешнюю HTTPS-среду.",
+  "status": "implementation_checkpoint",
+  "checks_status": "in_progress",
+  "review_ready": false,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      7
+    ],
+    "confidence": "low",
+    "basis": "Локальные исправления и браузерные сценарии завершены. Остаются CI точного SHA, независимая проверка, доказательство контракта автосохранения, внешний HTTPS-путь и отдельное разрешение выпуска. Время ожидания стенда и согласования отдельно."
+  },
+  "result": "Старт и возвращение на озеро без региона работают, повторный вход после поворота сохраняет комнату, мастер видит полную карту Mythic и может перемещать и масштабировать её. Игрок получает водное представление без скрытого сухопутного биома.",
+  "role_selection_reason": "Утверждённая F1 и замечания независимой проверки к PR 519. Реестр подтвердил свободный слот программиста, уточнения владельца и активность PR сверены.",
+  "checks": {
+    "ci": {
+      "id": 45932528461,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45932528461",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6"
+    },
+    "local_node": {
+      "command": "npm run check",
+      "node": "24.22.3",
+      "exit": 0,
+      "executed": 460,
+      "passed": 460,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser_vtt": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    },
+    "browser_editor": {
+      "command": "node test/browser/terrain-color.smoke.mjs",
+      "exit": 0,
+      "scope": "Цвета и вода, старые JSON и Mythic, поворот, расширение карты, PNG"
+    },
+    "temporary": {
+      "snapshot_compatibility": {
+        "legacySnapshotMigrated": true,
+        "samePosition": true,
+        "sameHistory": true,
+        "sameLink": true,
+        "regionlessLakeRestored": true,
+        "differentMapRejected": true
+      },
+      "narrow_master": {
+        "cells": 206,
+        "viewport": [
+          420,
+          700
+        ],
+        "outside": 0,
+        "dragChangedView": true,
+        "fitRestored": true
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+    "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+    "added": 1,
+    "removed": 0,
+    "modified": 4,
+    "suite": "browser/VTT",
+    "scenario": "Отдельный импорт с озером без региона проверяет запуск, выход, возврат и отсутствие сухопутного биома при повторном чтении. Четыре имеющихся случая импорта повторно используют проверку сетки и разрешённых геометрических фрагментов. В Mythic также проверены размеры окна, управление обзором и повторный вход после поворота.",
+    "reuse_or_new_reason": "Старый сценарий начинается на существующей региональной клетке и сохраняет одну комнату. Для запуска на отсутствовавшей в комнате ячейке нужна отдельная карта и отдельная начальная комната. Остальные проверки добавлены к прежним сценариям.",
+    "count_source": "git diff d2c202e и точного head, вызовы verifyRoom/verifyEditorRestore/verifyLakeStartAndMove в test/browser/vtt-room-preview.mjs"
+  },
+  "finding_response_ids": [
+    "HX078-VTT1-R01",
+    "HX078-VTT1-R02",
+    "HX078-VTT1-R03",
+    "HX078-VTT1-R04"
+  ],
+  "review_submission": {
+    "state": "pending_ci",
+    "role": "reviewer",
+    "scope": "Локальная перепроверка замечаний R01–R04, общий браузерный сценарий, точный SHA",
+    "release_gate": "Отдельно подтвердить браузерное автосохранение и удалённый HTTPS-стенд до согласования выпуска."
+  },
+  "limitations": [
+    "Удалённый вход по публичной ссылке требует разрешённого HTTPS-стенда с постоянным хранилищем и приватным входом мастера.",
+    "Восстановление в запуске проверено с браузерной картой и сохраняемым состоянием локального сервиса. Отдельное доказательство браузерного автосохранения подтверждённого состояния по решению владельца остаётся открытым.",
+    "Предварительная L2-модель 1.3-rc8 ждёт заключения проверяющего по S04-C03 и S02-C05. Данные не дают подтверждённого начисления."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T02:59:40.449Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-27T03:18:28.107Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T03:18:28.107Z",
+  "run_status": "completed"
+}

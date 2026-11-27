@@ -1,0 +1,95 @@
+{
+  "task_id": "HX-BL-078",
+  "role": "programmer",
+  "run_id": "2026-11-27-programmer-HX078-review-fixes-0300",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6",
+  "tree_sha": "2b19e9e603105271e86812924ca587ffc6652939",
+  "previous_checkpoint_sha": "d2c202ec7abaf13874bda108f84976c07db01ae5",
+  "interim_sha": "756e6b2afb6a9cf104b4edbe96b74f6d92654e3c",
+  "claim_ref": "agent-work/claims/2026-11-27-programmer-HX078-review-fixes-0300.json",
+  "final_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-local-015844.json",
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-local-015844-programmer.json",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-review-fixes-0300.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-review-fixes-0300-reviewer.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/verification.json",
+  "capture_refs": {
+    "master_before": "agent-work/evidence/HX-BL-078/vtt-local-review-d2c202e/mythic-master-viewport.jpg",
+    "master_after": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/mythic-master-full-map.jpg",
+    "player_at_lake": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/player-after-water-entry.jpg",
+    "master_narrow": "agent-work/evidence/HX-BL-078/vtt-review-fixes-e22b45d/mythic-master-narrow.jpg"
+  },
+  "next_role": "reviewer",
+  "next_step": "После Check независимо проверить новый SHA по четырём замечаниям. Сверить автосохранение по решению владельца и отдельно подтвердить внешнюю HTTPS-среду.",
+  "status": "implementation_checkpoint",
+  "checks_status": "in_progress",
+  "review_ready": false,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      7
+    ],
+    "confidence": "low",
+    "basis": "Локальные исправления и браузерные сценарии завершены. Остаются CI точного SHA, независимая проверка, доказательство контракта автосохранения, внешний HTTPS-путь и отдельное разрешение выпуска. Время ожидания стенда и согласования отдельно."
+  },
+  "review_submission": {
+    "state": "pending_ci",
+    "role": "reviewer",
+    "scope": "Локальная перепроверка замечаний R01–R04, общий браузерный сценарий, точный SHA",
+    "release_gate": "Отдельно подтвердить браузерное автосохранение и удалённый HTTPS-стенд до согласования выпуска."
+  },
+  "checks": {
+    "id": 45932528461,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45932528461",
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "e22b45d7c9e57b2fe630fe6a6fab59a3475234f6"
+  },
+  "review_input": [
+    {
+      "id": "HX078-VTT1-R01",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC02"
+      ],
+      "result": "Импортированный Mythic с озером без региона (-2,12): открытие комнаты на озере, выход на сушу, обратный подтверждённый переход. Обычные неизвестные гексы не добавляются."
+    },
+    {
+      "id": "HX078-VTT1-R02",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC08"
+      ],
+      "result": "Смена поворота редактора и повторное открытие сохранили комнату, ход, историю и ссылку. Снимок дорефакторинговой комнаты был прочитан, мигрирован и сохранил мастерский вход. Другая карта отклонена."
+    },
+    {
+      "id": "HX078-VTT1-R03",
+      "acceptance": [
+        "VTT-AC01",
+        "VTT-AC03"
+      ],
+      "result": "206 гексов, все вершины в видимой области браузера 1120×720, после режима у отряда доступно увеличение и перемещение. Редактор и VTT используют один генератор сетки. Значки направления течения и порогов восстановлены, фильтр выдачи сопоставляет точку привязки короткого знака с текущим гексом."
+    },
+    {
+      "id": "HX078-VTT1-R04",
+      "acceptance": [
+        "VTT-AC06"
+      ],
+      "result": "Вид игрока на воде содержит тип воды и не содержит скрытого сухопутного биома. Проверено при запуске на озере, ходе на принадлежащее региону озеро и перезагрузке игрока."
+    }
+  ],
+  "limitations": [
+    "Удалённый вход по публичной ссылке требует разрешённого HTTPS-стенда с постоянным хранилищем и приватным входом мастера.",
+    "Восстановление в запуске проверено с браузерной картой и сохраняемым состоянием локального сервиса. Отдельное доказательство браузерного автосохранения подтверждённого состояния по решению владельца остаётся открытым.",
+    "Предварительная L2-модель 1.3-rc8 ждёт заключения проверяющего по S04-C03 и S02-C05. Данные не дают подтверждённого начисления."
+  ],
+  "completion_check": "Перепроверить полный обзор Mythic в реальной области окна, разрешённые русла и символы, вход и ход на озеро без региона, прежнюю ссылку после поворота/повтора и отсутствие сухопутного биома у игрока. Оценить достаточность evidence по двум критериям L2."
+}
