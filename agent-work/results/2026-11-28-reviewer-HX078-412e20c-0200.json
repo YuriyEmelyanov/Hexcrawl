@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "run_id": "2026-11-28-reviewer-HX078-412e20c-0200",
+  "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "e1c1e6f3e60e4da51adf81a61bbc4ea2146f7b22",
+  "review_base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "spec_version": "F1",
+  "role": "reviewer",
+  "role_selection_reason": "PR519 передан в независимую проверку с точным SHA. Реестр и все незавершённые claims сверены, чужой исполнитель отсутствует. HX-BL-064 и HX-BL-069 ждут ответов интервью. Действующая история уже содержит учёт опубликованных PR511 и PR520.",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "result": "Подтверждены восстановление двух отдельных игр из связанных вкладок и сохранение масштаба старой карты. Воспроизведена остановка обновления открытой вкладки игрока после временной потери состояния комнаты. На штатной карте Mythic подтверждено отсутствие границы королевства и препятствий в виде мастера.",
+  "claim_ref": "agent-work/claims/2026-11-28-reviewer-HX078-412e20c-0200.json",
+  "generation": 1004,
+  "reviewed_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "accepted": false,
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+  "checks_status": "ci_passed_targeted_independent_diagnostic_failed",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-412e20c/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-412e20c/score-assessment.json",
+  "score_assessment_status": "insufficient_evidence",
+  "score_model_version": "1.3-rc8",
+  "confirmed_delta": 0,
+  "score_update_status": "not_due_unpublished",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+  "previous_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
+  "previous_programmer_result_ref": "agent-work/results/2026-11-28-programmer-HX078-tab-camera-0000.json",
+  "findings": [
+    {
+      "id": "F519-PLAYER-RECONNECT-008",
+      "severity": "P1",
+      "blocking": true,
+      "status": "open",
+      "confidence": "browser_confirmed_with_independent_source_confirmation",
+      "acceptance_ids": [
+        "VTT-AC08"
+      ],
+      "requirement_ids": [
+        "VTT-R02",
+        "VTT-R08"
+      ],
+      "summary": "При временной недоступности состояния комнаты вкладка игрока сообщает об окончательном закрытии ссылки и прекращает получать карту. После восстановления тот же URL открывает карту в новой вкладке, а уже открытая вкладка остаётся пустой.",
+      "expected": "Открытая вкладка возобновляет получение разрешённого вида по прежней ссылке без перезагрузки. Явный отзыв и смена приглашения прекращают доступ.",
+      "refs": [
+        "scripts/vtt-preview/ui.mjs:296-304",
+        "scripts/vtt-preview/ui.mjs:321-328",
+        "scripts/vtt-preview/ui.mjs:390",
+        "test/browser/vtt-room-preview.mjs:643-664",
+        "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg"
+      ],
+      "evidence": {
+        "mode": "existing-player-after-room-recovery",
+        "originalLinkStillWorksInNewTab": true,
+        "existingTabRecoveredWithoutReload": false,
+        "existingTabStatus": "Доступ по этой ссылке закрыт",
+        "masterRecoveredSameInvite": true,
+        "observedAfterRecoveryMs": 3500
+      }
+    },
+    {
+      "id": "F519-MASTER-MAP-PARITY-009",
+      "severity": "P2",
+      "blocking": true,
+      "status": "open",
+      "confidence": "independent_source_and_fixture_confirmed",
+      "acceptance_ids": [
+        "VTT-AC03"
+      ],
+      "requirement_ids": [
+        "VTT-R09"
+      ],
+      "summary": "На штатной карте Mythic редактор показывает границу королевства и сохранённые препятствия. Эти слои отсутствуют в представлении даже для мастера. В штатной тестовой карте одно королевство и 24 препятствия.",
+      "expected": "Сравнение одной карты в редакторе и у мастера подтверждает наличие обоих штатных слоёв при одинаковом ракурсе. Обзор игрока остаётся ограничен действующими правилами.",
+      "refs": [
+        "src/App.tsx:17627-17632",
+        "src/App.tsx:16013-16014",
+        "scripts/vtt-preview/ui.mjs:159-165",
+        "test/browser/vtt-room-preview.mjs:15"
+      ],
+      "limitation": "Предмет замечания — два штатных слоя карты мастера по AC03 первого выпуска. Полное сравнение узкого и широкого экранов и память раскрытий относятся к AC07 второго выпуска."
+    }
+  ],
+  "verified_findings": [
+    {
+      "id": "F519-RESTORE-004",
+      "status": "verified_fixed",
+      "proof": "В режиме чтения показана последняя позиция мастера. После возврата состояния комнаты прежняя ссылка и активная игра вернулись. Прошло также прерывание первого входа."
+    },
+    {
+      "id": "F519-SCALE-006",
+      "status": "verified_fixed",
+      "proof": "На 1 миле вход скрыт, после перехода на 5–6 миль старая карта открыла живую комнату. Масштаб камеры при восстановлении отражён отдельно."
+    },
+    {
+      "id": "F519-ROOM-BINDING-005",
+      "status": "verified_fixed",
+      "proof": "Второй редактор открыт из первой вкладки. У каждой из двух игр после восстановления свои позиция и действующая ссылка."
+    },
+    {
+      "id": "F519-SCALE-RESTORE-007",
+      "status": "verified_fixed",
+      "proof": "После повторного входа старая карта сохраняет экранное увеличение при нормализации шага карты 1 → 6."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
+    "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Chromium: HTTPS multiple-room scenario and legacy map scenario in Classic VTT",
+    "scenario_risk": "Копирование состояния при открытии редактора из другой вкладки; скачок увеличения после нормализации старого сохранения.",
+    "reuse_or_new_reason": "Встроены две проверки в уже существующие сценарии двух комнат и входа со старой карты. Соотношение экрана и масштаба сохраняется после перезагрузки.",
+    "count_source": "Logical product cases in git diff bf83c329..412e20cc",
+    "runners": {
+      "local_browser_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "local_room_browser": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "differential_baseline": {
+        "executed_suites": 2,
+        "failures_at_intended_assertions": 2
+      }
+    },
+    "independent_reviewer_disposition": "Изменения целевые: расширены два существующих сценария, каждый покрывает отдельную проблему. Отдельный временный сценарий восстановления вкладки подтверждает новый дефект и не входит в PR.",
+    "reviewer_runners": {
+      "preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_diagnostic": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "tracked": false
+      }
+    }
+  },
+  "limits": [
+    "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+    "Полное сравнение экранов и дополнительные состояния видимости относятся к последующим выпускам."
+  ],
+  "external_dependency": {
+    "status": "public_hosting_unverified",
+    "owner_has_existing_stand": false,
+    "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "local_review_blocked": false,
+    "remote_review_completed": false,
+    "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+    "next_step": "Отдельно подтвердить рабочий сервис комнат и конфигурацию поставляемой сборки.",
+    "confirmed_pages_entry_missing": true,
+    "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+    "ci_https_completed": true,
+    "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_public_stand_missing": true,
+    "default_pages_vtt_configured": false,
+    "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+    "release_blockers": [
+      "F519-PLAYER-RECONNECT-008",
+      "F519-MASTER-MAP-PARITY-009"
+    ],
+    "public_hosting_required_before_release": true
+  },
+  "publication_authorized": false,
+  "published": false,
+  "next_role": "programmer",
+  "next_step": "Исправить автоматическое восстановление уже открытой вкладки игрока по прежней ссылке и вернуть штатные границы королевств и препятствия на полной карте мастера. Подтвердить явный отзыв приглашения и ограничение данных игрока. Передать новый SHA проверяющему.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      3,
+      6
+    ],
+    "confidence": "low",
+    "basis": "Исправления, независимая повторная проверка, приёмка рабочей конфигурации и выпуск. Ожидание размещения и разрешения не включено."
+  },
+  "owner_decision_required_for_next_step": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-27T23:02:39.834Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "at": "2026-11-27T23:07:52.233Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-27T23:07:52.233Z"
+}
