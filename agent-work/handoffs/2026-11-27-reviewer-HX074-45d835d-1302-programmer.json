@@ -1,0 +1,101 @@
+{
+  "task_id": "HX-BL-074",
+  "pr": 520,
+  "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+  "branch": "agent/hx074-manual-delta",
+  "role": "programmer",
+  "status": "changes_requested",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX074-45d835d-1302.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-074/review-45d835d/verification.json",
+  "spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "findings": [
+    {
+      "id": "HX074-RV01",
+      "severity": "blocking",
+      "requirements": [
+        "D74-R02",
+        "D74-AC01"
+      ],
+      "summary": "Ручной водопад в точке развилки приходится снять, чтобы подтвердить допустимый рукав.",
+      "steps": [
+        "Загрузить контрольную карту Classic seed 44 с уже удалённым рукавом.",
+        "На основной реке №1 в вершине 96.995,-28 включить водопад вручную.",
+        "Через «Добавить реку» выбрать ту же развилку и свободное морское устье 96.995,-56.",
+        "Подтверждение заблокировано, пока водопад отмечен «Есть». Предлагаются только «Авто» и «Нет». При выборе «Нет» рукав сохраняется и флаг водопада становится off. Undo возвращает исходный флаг."
+      ],
+      "source": [
+        "src/App.tsx:1197-1207",
+        "src/App.tsx:1863-1867",
+        "src/App.tsx:14360-14365"
+      ],
+      "result": {
+        "seed": 44,
+        "parentId": 1,
+        "fork": "96.995,-28",
+        "mouth": "96.995,-56",
+        "waterfallOnAllowedBefore": true,
+        "confirmationDisabledWithOn": true,
+        "stateUntouchedBeforeConfirm": true,
+        "onlyChoices": [
+          "auto",
+          "off"
+        ],
+        "confirmedWithOff": true,
+        "undoRestoredOn": true
+      },
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-45d835d/seed44-waterfall-conflict.png",
+        "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-control.json"
+      ],
+      "acceptance": "На этом сценарии рукав добавляется, флаг водопада остаётся «Есть», водопад виден, и отметка сохраняется при JSON, PNG и Undo/Redo."
+    },
+    {
+      "id": "HX074-RV02",
+      "severity": "normal",
+      "requirements": [
+        "D74-R04",
+        "D74-R05",
+        "D74-AC05"
+      ],
+      "summary": "В принятом JSON повтор записи одного участка той же тропы расходует лишний бросок на единственную новую переправу.",
+      "steps": [
+        "В контрольную карту с тропой через ребро будущего рукава добавить один экземпляр участка 2,-1 → 3,-1, затем в отдельном варианте повторить тот же участок внутри той же дороги.",
+        "Валидатор принимает оба входных JSON. Добавить один рукав с одинаковой исходной случайностью и F3.",
+        "В обеих картах сохраняется одна переправа с тем же ключом 1:2,-1|3,-1:4, но состояние географической случайности различается."
+      ],
+      "source": [
+        "src/App.tsx:1851-1854",
+        "src/App.tsx:9565-9577",
+        "src/saveValidation.ts:168-178"
+      ],
+      "result": {
+        "saveAcceptedForBothVariants": true,
+        "duplicateRouteConsumesExtraRandomness": true,
+        "variants": [
+          {
+            "copies": 1,
+            "initial": 1256095084,
+            "final": 3087660897,
+            "crossing": "1:2,-1|3,-1:4",
+            "kind": "ferry"
+          },
+          {
+            "copies": 2,
+            "initial": 1256095084,
+            "final": 624259414,
+            "crossing": "1:2,-1|3,-1:4",
+            "kind": "ferry"
+          }
+        ]
+      },
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-45d835d/verification.json",
+        "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-fixture.json"
+      ],
+      "acceptance": "Один уникальный ключ новой переправы получает один результат случайного выбора. Добавление дублирующей записи в принятом старом JSON не меняет предложенный тип или дальнейший поток."
+    }
+  ],
+  "next_step": "Программисту исправить сохранность ручного водопада в развилке (HX074-RV01) и один случайный выбор на уникальную новую переправу для принятых JSON с повтором участка (HX074-RV02). Повторить обычный сквозной сценарий seed 44 и точечные контрпримеры на новом SHA.",
+  "updated_sha_requires_independent_review": true,
+  "publish_authorized": false
+}

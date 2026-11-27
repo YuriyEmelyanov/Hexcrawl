@@ -1,0 +1,239 @@
+{
+  "task_id": "HX-BL-074",
+  "role": "reviewer",
+  "run_id": "2026-11-27-reviewer-HX074-45d835d-1302",
+  "branch": "agent/hx074-manual-delta",
+  "pr": 520,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/520",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+  "tree_sha": "f073208b46e19c6e469fc55b567267245b9d7721",
+  "claim_ref": "agent-work/claims/2026-11-27-reviewer-HX074-45d835d-1302.json",
+  "spec_ref": "agent-work/specs/HX-BL-074-classic-manual-delta-F1.md",
+  "result_ref": "agent-work/results/2026-11-27-reviewer-HX074-45d835d-1302.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-074/review-45d835d/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX074-45d835d-1302-programmer.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-074/review-45d835d/score-assessment.json",
+  "findings": [
+    {
+      "id": "HX074-RV01",
+      "severity": "blocking",
+      "requirements": [
+        "D74-R02",
+        "D74-AC01"
+      ],
+      "summary": "Ручной водопад в точке развилки приходится снять, чтобы подтвердить допустимый рукав.",
+      "steps": [
+        "Загрузить контрольную карту Classic seed 44 с уже удалённым рукавом.",
+        "На основной реке №1 в вершине 96.995,-28 включить водопад вручную.",
+        "Через «Добавить реку» выбрать ту же развилку и свободное морское устье 96.995,-56.",
+        "Подтверждение заблокировано, пока водопад отмечен «Есть». Предлагаются только «Авто» и «Нет». При выборе «Нет» рукав сохраняется и флаг водопада становится off. Undo возвращает исходный флаг."
+      ],
+      "source": [
+        "src/App.tsx:1197-1207",
+        "src/App.tsx:1863-1867",
+        "src/App.tsx:14360-14365"
+      ],
+      "result": {
+        "seed": 44,
+        "parentId": 1,
+        "fork": "96.995,-28",
+        "mouth": "96.995,-56",
+        "waterfallOnAllowedBefore": true,
+        "confirmationDisabledWithOn": true,
+        "stateUntouchedBeforeConfirm": true,
+        "onlyChoices": [
+          "auto",
+          "off"
+        ],
+        "confirmedWithOff": true,
+        "undoRestoredOn": true
+      },
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-45d835d/seed44-waterfall-conflict.png",
+        "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-control.json"
+      ],
+      "acceptance": "На этом сценарии рукав добавляется, флаг водопада остаётся «Есть», водопад виден, и отметка сохраняется при JSON, PNG и Undo/Redo."
+    },
+    {
+      "id": "HX074-RV02",
+      "severity": "normal",
+      "requirements": [
+        "D74-R04",
+        "D74-R05",
+        "D74-AC05"
+      ],
+      "summary": "В принятом JSON повтор записи одного участка той же тропы расходует лишний бросок на единственную новую переправу.",
+      "steps": [
+        "В контрольную карту с тропой через ребро будущего рукава добавить один экземпляр участка 2,-1 → 3,-1, затем в отдельном варианте повторить тот же участок внутри той же дороги.",
+        "Валидатор принимает оба входных JSON. Добавить один рукав с одинаковой исходной случайностью и F3.",
+        "В обеих картах сохраняется одна переправа с тем же ключом 1:2,-1|3,-1:4, но состояние географической случайности различается."
+      ],
+      "source": [
+        "src/App.tsx:1851-1854",
+        "src/App.tsx:9565-9577",
+        "src/saveValidation.ts:168-178"
+      ],
+      "result": {
+        "saveAcceptedForBothVariants": true,
+        "duplicateRouteConsumesExtraRandomness": true,
+        "variants": [
+          {
+            "copies": 1,
+            "initial": 1256095084,
+            "final": 3087660897,
+            "crossing": "1:2,-1|3,-1:4",
+            "kind": "ferry"
+          },
+          {
+            "copies": 2,
+            "initial": 1256095084,
+            "final": 624259414,
+            "crossing": "1:2,-1|3,-1:4",
+            "kind": "ferry"
+          }
+        ]
+      },
+      "evidence": [
+        "agent-work/evidence/HX-BL-074/review-45d835d/verification.json",
+        "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-fixture.json"
+      ],
+      "acceptance": "Один уникальный ключ новой переправы получает один результат случайного выбора. Добавление дублирующей записи в принятом старом JSON не меняет предложенный тип или дальнейший поток."
+    }
+  ],
+  "checks": {
+    "github_check": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45971289740",
+      "status": "success",
+      "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a"
+    },
+    "baseline_chromium": {
+      "base": "3d85da66",
+      "seed": 44,
+      "sameFixture": true,
+      "addRiverRejected": true,
+      "message": "Недопустимый исток, устье или разветвление; море не может быть истоком.",
+      "mapCountersAndRngPreserved": true
+    },
+    "ordinary_delta_chromium": {
+      "seed": 44,
+      "regionCells": 9,
+      "parent": 1,
+      "parentMouth": "121.244,-14",
+      "arm": 4,
+      "fork": "96.995,-28",
+      "armMouth": "96.995,-56",
+      "defaultF": 3,
+      "chosenF": 2,
+      "previewExportsUnchanged": true,
+      "pngChanged": true,
+      "undo": true,
+      "redo": true,
+      "jsonReopened": true,
+      "narrowPreview": true,
+      "cancelUnchanged": true
+    },
+    "controlled_f5_map_pointer_chromium": {
+      "parentF": 5,
+      "fixture": "controlled F5 variant of Classic seed 44",
+      "defaultF": 4,
+      "changedF": 3,
+      "pointerClickedBothMapVertices": true,
+      "originalRiverPreserved": true
+    },
+    "crossing_chromium": {
+      "seed": 44,
+      "trail": true,
+      "defaultProposal": "Река 4 · 2,-1 ↔ 3,-1 · Нет переправы → Переправа",
+      "lowProposal": "Река 4 · 2,-1 ↔ 3,-1 · Нет переправы → Брод",
+      "committedKind": "ford",
+      "selectedF": 1,
+      "stableAcrossFullnessChanges": true,
+      "savedRng": true,
+      "undoRedo": true,
+      "jsonReopened": true
+    },
+    "narrow_touch_chromium": {
+      "viewport": [
+        390,
+        844
+      ],
+      "actualTouch": true,
+      "panelVertexSelection": true,
+      "confirmed": true,
+      "mouth": "96.995,-56"
+    },
+    "waterfall_chromium": {
+      "seed": 44,
+      "parentId": 1,
+      "fork": "96.995,-28",
+      "mouth": "96.995,-56",
+      "waterfallOnAllowedBefore": true,
+      "confirmationDisabledWithOn": true,
+      "stateUntouchedBeforeConfirm": true,
+      "onlyChoices": [
+        "auto",
+        "off"
+      ],
+      "confirmedWithOff": true,
+      "undoRestoredOn": true
+    },
+    "legacy_duplicate_node": {
+      "saveAcceptedForBothVariants": true,
+      "duplicateRouteConsumesExtraRandomness": true,
+      "variants": [
+        {
+          "copies": 1,
+          "initial": 1256095084,
+          "final": 3087660897,
+          "crossing": "1:2,-1|3,-1:4",
+          "kind": "ferry"
+        },
+        {
+          "copies": 2,
+          "initial": 1256095084,
+          "final": 624259414,
+          "crossing": "1:2,-1|3,-1:4",
+          "kind": "ferry"
+        }
+      ]
+    },
+    "committed_d74_node": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "limitations": [
+      "RNG при дублированном участке проверен через Node 24 и настоящие обработчики редактора; водопад отдельно проверен в Chromium.",
+      "Обычный сквозной сценарий не закрывает полный объём AC01/AC05, пока сохраняются выявленные контрпримеры."
+    ]
+  },
+  "captures": {
+    "seed44-waterfall-conflict.png": "agent-work/evidence/HX-BL-074/review-45d835d/seed44-waterfall-conflict.png",
+    "seed44-after.png": "agent-work/evidence/HX-BL-074/review-45d835d/seed44-after.png",
+    "seed44-preview.jpg": "agent-work/evidence/HX-BL-074/review-45d835d/seed44-preview.jpg"
+  },
+  "independent_review": {
+    "method": "Отдельный проверяющий в свежем контексте сверил исходники и воспроизвёл оба случая в штатных обработчиках. Основной проверяющий независимо повторил браузерный сценарий водопада и Node-сравнение дублированной тропы.",
+    "tree_sha": "f073208b46e19c6e469fc55b567267245b9d7721",
+    "test_usefulness": "D74-интеграция закрывает уникальный путь ручного рукава и переправы с Undo/Redo. Тест чувствителен к новым обработчикам, но не содержит водопад в точке развилки или повтор участка старой дороги.",
+    "additional_documentation": "docs/river-editing.md:61–63 описывает только старые отмеченные рукава и автоматический мост для всех новых пересечений; уточнить исключение ручного рукава."
+  },
+  "test_change_summary": {
+    "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "head_sha": "45d835d283f4912e0f7583f5aaf783c161d4af4a",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node / test/riverIntegration.test.mjs",
+    "scenario_risk": "Дельта, тип переправы и состояние случайности сохраняются вместе при Undo/Redo.",
+    "reuse_or_new_reason": "Один новый продуктовый сценарий в существующем раннере. Алгоритмические проверки вероятностей не защищают операцию карты. Проверки водопада и старого дубликата — временные диагностики проверяющего.",
+    "count_source": "git diff базы и SHA, один новый test D74",
+    "executed": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "publication_authorized": false,
+  "release_authorized": false
+}
