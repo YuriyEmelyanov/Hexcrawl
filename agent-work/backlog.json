@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T06:11:21.360Z",
+  "updated_at": "2026-11-27T07:16:48.738Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3857,24 +3857,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Исправить повторный вход после прерванной первой загрузки мастера и вид тропной переправы. На новом SHA независимо перепроверить эти случаи и затем пройти удалённый HTTPS-сценарий.",
+      "next_step": "Независимо перепроверить первый повторный вход, переправу на тропе и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Для завершения приёмки проверить удалённое подключение по HTTPS на разрешённом стенде.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T06:11:21.360Z",
+      "updated_at": "2026-11-27T07:16:48.738Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "changes_requested",
+      "execution_state": "review_ready",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-f268916-0605-programmer.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-reentry-ferry-0700.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-reentry-ferry-0700-reviewer.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3938,18 +3938,18 @@
       ],
       "forecast": {
         "remaining_first_release_runs": [
-          3,
-          6
+          2,
+          5
         ],
         "confidence": "low",
-        "basis": "Два точечных исправления, повторная проверка, удалённый HTTPS-сценарий и разрешённый выпуск. Внешнее ожидание не входит."
+        "basis": "Независимая повторная приёмка, удалённая проверка и выпуск после разрешения. Возможны исправления. Внешнее ожидание не включено."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+      "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
-      "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/verification.json",
+      "review_ready": true,
+      "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-reentry-ferry-2bf312d/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -3965,21 +3965,30 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "success_with_review_findings",
+      "checks_status": "success",
       "review_submission": {
-        "state": "changes_requested",
+        "state": "ready",
         "role": "reviewer",
         "scope": "VTT F1, точный SHA",
-        "release_gate": "Два локальных исправления и удалённая HTTPS-проверка, затем разрешение владельца."
+        "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45956099826",
+        "release_gate": "Независимая проверка исправлений и удалённый HTTPS-сценарий перед отдельным разрешением владельца."
       },
-      "score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/score-assessment.json",
-      "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+      "score_assessment_ref": null,
+      "review_result_ref": null,
       "review_findings": [
         "HX078-VTT1-R07",
         "HX078-VTT1-R08"
       ],
-      "reviewed_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
-      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-e22b45d-0357.json"
+      "reviewed_sha": null,
+      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+      "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-f268916/score-assessment.json",
+      "previous_reviewed_sha": "f2689161bb59990f84cb45ce04197fab5190baaa",
+      "previous_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+      "addressed_findings_pending_review": [
+        "HX078-VTT1-R07",
+        "HX078-VTT1-R08"
+      ],
+      "publication_authorized": false
     }
   ],
   "retired_pr_packages": {

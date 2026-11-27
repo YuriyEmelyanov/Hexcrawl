@@ -1,0 +1,38 @@
+{
+  "task_id": "HX-BL-078",
+  "from": "programmer",
+  "to": "reviewer",
+  "run_id": "2026-11-27-programmer-HX078-reentry-ferry-0700",
+  "pr": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+  "head_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
+  "tree_sha": "487fd39ce0ebeec66aedf0438c6f59baa5237be7",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "result_ref": "agent-work/results/2026-11-27-programmer-HX078-reentry-ferry-0700.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/vtt-reentry-ferry-2bf312d/verification.json",
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45956099826",
+  "checks_status": "success",
+  "review_ready": true,
+  "addressed_findings": [
+    "HX078-VTT1-R07",
+    "HX078-VTT1-R08"
+  ],
+  "next_role": "reviewer",
+  "next_step": "Независимо перепроверить первый повторный вход, переправу на тропе и разделение мастера и игрока на SHA 2bf312d80d8fbed6a9a8cd9fc20927d414070d60. Для завершения приёмки проверить удалённое подключение по HTTPS на разрешённом стенде.",
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "release_authorized": false,
+  "external_dependency": {
+    "status": "missing_evidence",
+    "detail": "Указан локальный вход через loopback. В deploy.yml и штатной конфигурации Pages нет адреса сервиса комнаты. В действующих решениях для HX-BL-078 не найден разрешённый HTTPS-стенд. Для удалённой проверки нужен адрес существующего стенда и доступ к приватному входу мастера с постоянным состоянием.",
+    "source": [
+      ".github/workflows/deploy.yml",
+      "vite.config.ts:6",
+      "scripts/vtt-preview/server.mjs:206",
+      "agent-work/handoffs/2026-11-27-programmer-HX078-autosave-crossings-0500-reviewer.json"
+    ]
+  },
+  "completion_condition": "Оба исправления независимо подтверждены на SHA, границы показа сохранены. Перед приёмкой пакета пройден удалённый HTTPS-сценарий на разрешённом стенде и сохранён score_assessment."
+}
