@@ -4,6 +4,89 @@ import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import {solveManualRiverPath} from '../src/manualRiverGeometry.ts';
 import {prepareRiverEdit,validateEditedRiverNetwork,emptyRiverFeatures} from '../src/manualRivers.ts';
 import { validateRiverNetwork } from '../src/riverModel/core.ts';
+import { chooseRiverCrossingKind } from '../src/riverCrossings.ts';
+import { cloneGenerationState, draw } from '../src/worldRandom.ts';
+
+test('D74 manual delta previews a new crossing and commits it with one undoable random transaction', () => {
+  const harness = createGenerationHarness(44);
+  assert.ok(harness.render().safelyAddRegionToMap({q:0,r:0},{coastalPreference:'coast',targetSize:9}).success);
+  const generated = harness.render().captureDocument();
+  const arm = generated.map.rivers.find(r => r.deltaParentRiverId === 1);
+  assert.ok(arm);
+  const [fork, mouth] = arm.vertexPath;
+  assert.deepEqual([fork.key,mouth.key], ['96.995,-28','96.995,-56']);
+  assert.ok(harness.render().editRiverDocument({type:'remove',riverId:arm.id,includeArms:false},{confirmed:true}));
+  assert.ok(harness.render().editRiverFeatures([{type:'waterfall',vertexKey:fork.key,state:'on'}]));
+  const control = harness.render().captureDocument();
+  const stable = () => JSON.parse(JSON.stringify(harness.render().createSaveData(), (key,value) => key==='savedAt'?undefined:value));
+  const parent = control.map.rivers.find(r => r.id===1);
+  for (const kind of ['road','trail']) {
+    const crossingSegment = {from:{q:2,r:-1},to:{q:3,r:-1},kind};
+    const [road,...rest] = control.map.roads;
+    // Legacy saves can represent the same trail segment in both directions.
+    const repeated = kind==='trail'?[{...crossingSegment,from:crossingSegment.to,to:crossingSegment.from}]:[];
+    const roads = [{...road,segments:[...road.segments,crossingSegment,...repeated]},...rest];
+    // This edge crosses the short arm on the coarse map. The generated fine
+    // lake covers that crossing and belongs to a separate rejection case.
+    const physicalGrid = control.map.physicalGrid;
+    const withoutSmallLakes = {...physicalGrid,smallLakes:{...physicalGrid.smallLakes,lakes:[]}};
+    harness.render().applyDocument({...control,map:{...control.map,roads,physicalGrid:withoutSmallLakes}});
+    harness.render().setEditMode(true);
+    const before = stable();
+    harness.geometry.assertHexcrawlSaveData(before);
+    assert.ok(harness.render().startRiverDraft());
+    assert.ok(harness.render().appendRiverDraft(fork.key));
+    assert.ok(harness.render().appendRiverDraft(mouth.key));
+    assert.equal(harness.render().finishRiverDraft(),false,'requires confirmation');
+    let app = harness.render();
+    assert.equal(app.riverCommandPreview.edit.fullness,3);
+    assert.equal(app.riverPreviewPlan.plan.unresolvedFeatures.length,0,'the existing waterfall stays eligible');
+    const getCrossing = () => harness.render().riverPreviewPlan.plan.map.crossings.find(c=>c.riverId===control.map.nextRiverId);
+    const region = control.map.regions.find(r=>r.id===road.regionId);
+    const expectedState = cloneGenerationState(control.map.generation);
+    const previewKind = chooseRiverCrossingKind({
+      fullness:3,heightLevel:region.heightLevel,biomeLandType:region.biomeLandType,roadKind:kind
+    },()=>draw(expectedState,'geography'));
+    const crossing = getCrossing();
+    assert.ok(crossing);
+    assert.equal(crossing.kind,previewKind);
+    assert.notEqual(crossing.kind,'ford');
+    assert.equal(getCrossing().kind,crossing.kind,'recomputing preview does not reroll');
+    assert.deepEqual(stable(),before);
+    assert.ok(app.cancelRiverCommand());
+    assert.deepEqual(stable(),before);
+    assert.equal(harness.render().finishRiverDraft(),false);
+    app = harness.render();
+    const confirmed = app.confirmRiverCommand();
+    assert.ok(confirmed,harness.render().editError??'confirmation must commit the proposal');
+    const after = stable();
+    assert.deepEqual(after.generation,expectedState);
+    assert.deepEqual(after.map.riverFeatures.waterfalls,before.map.riverFeatures.waterfalls);
+    assert.ok(harness.render().riverWaterfalls.some(w=>w.vertexKey===fork.key));
+    assert.deepEqual(after.map.rivers.find(r=>r.id===parent.id),JSON.parse(JSON.stringify(parent)));
+    assert.deepEqual(after.map.crossings.find(c=>c.key===crossing.key),JSON.parse(JSON.stringify(crossing)));
+    assert.equal(after.map.crossings.filter(c=>c.key===crossing.key).length,1);
+    assert.deepEqual(after.map.crossings.filter(c=>c.key!==crossing.key),before.map.crossings);
+    assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);
+    harness.render().undoMap();
+    assert.deepEqual(stable(),before);
+    harness.render().redoMap();
+    assert.deepEqual(stable(),after);
+  }
+
+  const outlet = parent.sectors.at(-1);
+  const stronger = {...parent,sectors:parent.sectors.map(s=>s===outlet?{...s,fullness:5}:s)};
+  const rivers = control.map.rivers.map(r=>r===parent?stronger:r);
+  harness.render().applyDocument({...control,map:{...control.map,rivers}});
+  harness.render().setEditMode(true);
+  assert.ok(harness.render().startRiverDraft());
+  assert.ok(harness.render().appendRiverDraft(fork.key));
+  assert.ok(harness.render().appendRiverDraft(mouth.key));
+  assert.equal(harness.render().finishRiverDraft(),false);
+  const app = harness.render();
+  assert.equal(app.riverCommandPreview.edit.fullness,4,'the default is F4 when the parent mouth is F5');
+  assert.ok(app.confirmRiverCommand(),harness.render().editError);
+});
 
 function values(rivers) {
   return new Map(rivers.flatMap(r => r.sectors.flatMap(s => s.edgeKeys.map(k => [k, s.fullness]))));
