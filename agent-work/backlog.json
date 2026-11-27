@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-27T14:06:25.977Z",
+  "updated_at": "2026-11-27T15:04:01.927Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3902,24 +3902,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Independently review exact SHA 7f602111fcce88b8e2d157baa252b32f3954eae1 against F519-SEC-001, F519-DEPLOY-002 and F519-TEST-003, inspect the production HTTPS artifact, and refresh acceptance plus the 1.3-rc8 score assessment.",
+      "next_step": "Исправить восстановление комнаты на последнем сохранённом состоянии, привязку конкретной игры к полномочиям мастера и вход на 5–6 миль из старого сохранения. Повторить существующие браузерные сценарии, затем вернуть новый SHA.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-27T14:06:25.977Z",
+      "updated_at": "2026-11-27T15:04:01.927Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "review_ready",
+      "execution_state": "review_changes_requested",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "reviewer",
-      "result_ref": "agent-work/results/2026-11-27-programmer-HX078-production-hardening-1601.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-production-hardening-1601-review.json",
+      "next_role": "programmer",
+      "result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-7f602111-1800-fix.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3993,7 +3993,7 @@
       "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
-      "review_ready": true,
+      "review_ready": false,
       "evidence_ref": "agent-work/evidence/HX-BL-078/production-hardening-7f602111/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
@@ -4010,75 +4010,114 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "success",
+      "checks_status": "ci_passed_independent_browser_regression_failed",
       "review_submission": {
-        "state": "review_ready",
-        "role": "reviewer",
-        "scope": "Independent exact-SHA recheck of the three prior PR519 findings and artifact evidence.",
-        "release_gate": "Publication remains separately blocked until reviewer acceptance and an explicit owner authorization for the exact package."
+        "state": "changes_requested",
+        "role": "programmer",
+        "scope": "Fix accepted requirements referenced in the independent handoff."
       },
-      "score_assessment_ref": "agent-work/evidence/HX-BL-078/production-https-9dbbd6c/review/score-assessment.json",
-      "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-9dbbd6c-1541.json",
+      "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-7f602111/score-assessment.json",
+      "review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-7f602111-1800.json",
       "review_findings": [
         {
-          "id": "F519-SEC-001",
+          "id": "F519-RESTORE-004",
           "severity": "P1",
           "blocking": true,
-          "status": "addressed_pending_independent_review",
-          "summary": "Reusable room-launch Bearer is embedded in the public production bundle."
+          "status": "open",
+          "acceptance_ids": [
+            "VTT-AC08"
+          ],
+          "confidence": "browser_confirmed",
+          "summary": "При повторном входе из редактора в новую вкладку мастера недоступная комната не восстанавливает последнее сохранённое положение.",
+          "refs": [
+            "test/browser/vtt-room-preview.mjs:550-558,602-618",
+            "scripts/vtt-preview/ui.mjs:25-41",
+            "src/App.tsx:15984-16018"
+          ],
+          "acceptance": "Повторный вход в том же браузере показывает последнюю подтверждённую позицию в режиме чтения. При восстановлении комнаты возвращаются живая позиция, состояние и прежняя ссылка. Обновление двух открытых вкладок мастера сохраняет их независимость."
         },
         {
-          "id": "F519-DEPLOY-002",
+          "id": "F519-ROOM-BINDING-005",
+          "severity": "P1",
+          "blocking": true,
+          "status": "open",
+          "acceptance_ids": [
+            "VTT-AC01",
+            "VTT-AC06",
+            "VTT-AC08"
+          ],
+          "confidence": "static_confirmed_design_gap",
+          "summary": "Восстановление сопоставляет карту с первой подходящей комнатой. Привязка к конкретной игре и подтверждённым полномочиям мастера обязательна при независимых играх на одной карте.",
+          "refs": [
+            "scripts/vtt-preview/server.mjs:138-171",
+            "src/vttMapCache.ts:32-38"
+          ],
+          "acceptance": "Две независимые игры на одной карте сохраняют каждая свою ссылку и позицию после повторного входа. Сервер подтверждает полномочия мастера для конкретной комнаты."
+        },
+        {
+          "id": "F519-SCALE-006",
           "severity": "P2",
           "blocking": true,
-          "status": "addressed_pending_independent_review",
-          "summary": "Room service has one global room/storage slot and no durable public multi-room deployment."
-        },
-        {
-          "id": "F519-TEST-003",
-          "severity": "P2",
-          "blocking": false,
-          "status": "addressed_pending_independent_review",
-          "summary": "The useful production HTTPS test only runs for PR number 519 and lacks the negative secret assertion."
+          "status": "open",
+          "acceptance_ids": [
+            "VTT-AC01"
+          ],
+          "confidence": "static_confirmed_unrun",
+          "summary": "У ранее сохранённой карты с положением 1 миля переключение редактора на 5–6 миль может показать кнопку, но передаваемый сохранённый масштаб остаётся 1 миля и не проходит серверную проверку.",
+          "refs": [
+            "src/App.tsx:15879-15885,15994-16000,17233-17244",
+            "scripts/vtt-preview/server.mjs:119-125"
+          ],
+          "acceptance": "Открыть сохранённую 1-мильную карту, перевести её в 5–6 миль и успешно войти. На 1 миле вход по-прежнему скрыт."
         }
       ],
-      "reviewed_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b",
-      "previous_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-f268916-0605.json",
+      "reviewed_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
+      "previous_result_ref": "agent-work/results/2026-11-27-programmer-HX078-production-hardening-1601.json",
       "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/vtt-recheck-2bf312d/score-assessment.json",
       "previous_reviewed_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
       "previous_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-2bf312d-1105.json",
-      "addressed_findings_pending_review": [
-        "F519-SEC-001",
-        "F519-DEPLOY-002",
-        "F519-TEST-003"
-      ],
+      "addressed_findings_pending_review": [],
       "publication_authorized": false,
       "external_dependency": {
-        "status": "blocked_for_remote_verification",
+        "status": "public_hosting_unverified",
         "owner_has_existing_stand": false,
         "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
         "local_review_blocked": false,
-        "remote_review_completed": true,
+        "remote_review_completed": false,
         "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
-        "next_step": "После локальной проверки при необходимости предложить владельцу конкретный вариант тестовой среды и условия его запуска.",
+        "next_step": "Продолжить утверждённые исправления. Для выпуска подтвердить рабочий HTTPS-сервис и подключение поставляемой сборки.",
         "confirmed_pages_entry_missing": true,
         "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
         "handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
         "ci_https_completed": true,
-        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45998232065",
+        "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46008396707",
         "external_public_stand_missing": true,
         "default_pages_vtt_configured": false,
-        "note": "Ephemeral HTTPS proof passed, but public deployment is blocked by the embedded reusable credential and the singleton room service.",
+        "note": "Временный HTTPS пройден. Устранение замечаний по приёмке независимо от размещения комнаты.",
         "release_blockers": [
-          "F519-SEC-001",
-          "F519-DEPLOY-002"
+          "F519-RESTORE-004",
+          "F519-ROOM-BINDING-005",
+          "F519-SCALE-006"
         ]
       },
-      "local_review_completed": false,
-      "review_completed": false,
+      "local_review_completed": true,
+      "review_completed": true,
       "verified_findings": [
-        "The exact SHA passes the bounded one-room production HTTPS move/restart/player-link scenario.",
-        "Default Pages build remains VTT-disabled without configuration."
+        {
+          "id": "F519-SEC-001",
+          "status": "fixed_in_reviewed_sha",
+          "scope": "Публичная сборка не содержит постоянный ключ открытия, использованный в проверке."
+        },
+        {
+          "id": "F519-DEPLOY-002",
+          "status": "resolved_for_temporary_https_only",
+          "scope": "Две разные карты проходят независимо с сохранением после перезапуска. Хостинг, подключение к Pages и пользовательская приёмка удалённого стенда отдельно ожидают подтверждения."
+        },
+        {
+          "id": "F519-TEST-003",
+          "status": "resolved_for_original_scope",
+          "scope": "HTTPS-проверка больше не ограничена PR519 и защищает два случая. Падающая проверка повторного входа из существующего suite пока не запускается в обычном CI: использовать её для предотвращения регрессии."
+        }
       ],
       "delivery_validation_plan_ref": "agent-work/results/2026-11-27-HX078-vtt-https-ci-plan.json",
       "candidate_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1",
@@ -4093,37 +4132,43 @@
         "scenario_risk": "Reusable public-bundle authority, cross-room state/credential collision, durable restore of multiple rooms, and loss of the production regression outside PR519.",
         "reuse_or_new_reason": "Extended the two existing VTT scenarios instead of adding a duplicate suite: production HTTPS now asserts a secret-free bundle and two isolated durable rooms; the local room scenario asserts no launch bearer and per-tab master authority.",
         "count_source": "git diff 9dbbd6c662bdd834155a1522df769f0e1e29f03b..7f602111fcce88b8e2d157baa252b32f3954eae1; logical top-level scenarios",
-        "executed": {
-          "node": 460,
-          "browser_production_https": 1,
-          "browser_existing_suite": 1,
-          "world_random": 1
-        },
-        "passed": {
-          "node": 460,
-          "browser_production_https": 1,
-          "browser_existing_suite": 1,
-          "world_random": 1
-        },
-        "skipped": 0,
-        "runners": [
-          "Node test runner",
-          "GitHub Actions Chromium",
-          "GitHub Actions world-random"
-        ]
+        "scope": "Changes since the previous independent review. No product files edited by reviewer.",
+        "necessity": "Проверка публичной сборки и независимости комнат защищает риски, которых не проверял один локальный room. Изменение локальной проверки учитывает раздельные сессии, но теряет сценарий восстановления при недоступном серверном состоянии. Использовать существующий сценарий, а не дублировать тест.",
+        "checks": {
+          "configured_https_ci": {
+            "executed": 1,
+            "passed": 1
+          },
+          "configured_https_reviewer": {
+            "executed": 1,
+            "passed": 1
+          },
+          "reviewer_vtt_room_browser": {
+            "observed_passed": [
+              "classic",
+              "knave",
+              "crows",
+              "mythic"
+            ],
+            "observed_failed": [
+              "classic-generated-editor-restore"
+            ],
+            "remaining": "subsequent cases did not execute after timeout"
+          }
+        }
       },
-      "review_status": "awaiting_exact_sha_recheck",
-      "review_verdict": "pending",
-      "review_evidence_ref": "agent-work/evidence/HX-BL-078/production-hardening-7f602111/verification.json",
-      "fix_handoff_ref": "agent-work/handoffs/2026-11-27-programmer-HX078-production-hardening-1601-review.json",
+      "review_status": "changes_requested",
+      "review_verdict": "changes_requested",
+      "review_evidence_ref": "agent-work/evidence/HX-BL-078/review-7f602111/verification.json",
+      "fix_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-7f602111-1800-fix.json",
       "score_assessment": {
         "model_version": "1.3-rc8",
         "status": "insufficient_evidence",
         "confirmed_delta": 0,
         "points_awarded": 0,
-        "head_sha": "9dbbd6c662bdd834155a1522df769f0e1e29f03b"
+        "head_sha": "7f602111fcce88b8e2d157baa252b32f3954eae1"
       },
-      "score_assessment_status": "pending_exact_sha_recheck"
+      "score_assessment_status": "insufficient_evidence"
     }
   ],
   "retired_pr_packages": {
