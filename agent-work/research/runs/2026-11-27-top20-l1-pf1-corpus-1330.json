@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-RSR-001",
+  "run_id": "2026-11-27-top20-l1-pf1-corpus-1330",
+  "status": "completed_bounded_topic",
+  "selected_task": {
+    "id": "top20_l1_pf1_ultimate_campaign_crosswalk",
+    "game_id": "PF1",
+    "completion_condition": "Закрыть выбранный срез из 13 текущих L1 операций. Каждая имеет первоисточник, binding, критерии и сценарий. На опубликованном SHA проверить совместное сохранение постоянных объектов и численное отличие масштаба."
+  },
+  "selection_reason": "Срез Pathfinder 1e следует из checkpoint после Salvage Union и содержит операцию, где обычные 12 миль могут дать ошибочную эквивалентность шкал.",
+  "alternatives": [
+    {
+      "id": "DCC84",
+      "reason": "Для непроверенных листов карты и ключа нужен доступ к точным первичным страницам, предыдущий checkpoint сохраняется."
+    },
+    {
+      "id": "reddit_expansion",
+      "reason": "Пользовательский срез имеет собственный checkpoint. Текущий запуск выполняет указанную в поручении формализацию игровой когорты."
+    }
+  ],
+  "inputs_and_versions": {
+    "research_sha": "4eff25018c56f3dd1181c0b3eb736a23b1aaaf4a",
+    "product_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+    "model_version": "1.3-rc8",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "binding_registry_blob": "f4bb0500fff9b67585d72222253b929ba4e23422",
+    "source": {
+      "edition": "Pathfinder Roleplaying Game (первая редакция), Ultimate Campaign, Paizo, 2013, гл. 3 Exploration; официальный Legacy PRD на Archives of Nethys",
+      "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+      "selection": "Exploration, Campaign Systems: тематически просмотрены Movement, Hex Terrain Types, Random Map Generation, Planned Encounters и Hazards (PRD). Переиспользованы все 40 решений по примерам, базовые таблицы сверены по всем исходам.",
+      "historical_corpus_refs": [
+        "agent-work/market/rules/PF1-UltimateCampaign.json",
+        "agent-work/research/requirements/PF1-terrain-elements.json",
+        "agent-work/research/requirements/PF1-scope-audit.json"
+      ],
+      "scope_counts": {
+        "source_groups": 25,
+        "requirements": 25,
+        "keep_L1": 13,
+        "defer_L2": 4,
+        "integration_L3": 5,
+        "out_of_scope": 2,
+        "needs_owner_decision": 1
+      },
+      "cell_dispositions": {
+        "reviewed": 40,
+        "keep_L1": 30,
+        "needs_owner_decision": 8,
+        "defer_L2": 2
+      },
+      "other_topics": [
+        {
+          "locator": "Tracking Travel / Getting Lost / Random Encounters; HTML 220–244",
+          "disposition": "defer_L2",
+          "basis": "Отметки исследования, навигация и попытки встреч во время игры."
+        },
+        {
+          "locator": "Exploration Rewards; HTML 223–225",
+          "disposition": "out_of_scope",
+          "basis": "Начисление XP не меняет подготовленную карту."
+        },
+        {
+          "locator": "Sandbox Exploration / Planned Encounters; HTML 195–199, 245–250",
+          "disposition": "keep_L1",
+          "basis": "Сценарий подготовки постоянного адресного места включён в 009/012. Сочинение встречи, поиск и запуск при игре отдельно."
+        },
+        {
+          "locator": "Planned Encounters, HTML 248",
+          "disposition": "needs_owner_decision",
+          "basis": "Рассмотреть отдельную адресную связь признака в соседнем гексе с постоянным местом. Из примера не следуют радиус, автогенерация подсказок или обязательная новая сущность."
+        },
+        {
+          "locator": "Hazards, HTML 367–392",
+          "disposition": "defer_L2",
+          "basis": "Описанные последствия событий, длительность и перенос на соседние неисследованные гексы относятся к состоянию приключения. Постоянная география уже охвачена 008."
+        }
+      ],
+      "limits": "Внешние опасности, общая книга GameMastery Guide, хозяйственные ходы и Kingmaker не включены в выбранный корпус. Тематическая сверка сделана по официальному Legacy PRD. Конкретное печатное издание и постраничная разметка не проверялись."
+    }
+  },
+  "findings": [
+    {
+      "type": "source",
+      "statement": "Все 13 операций L1 Pathfinder 1e сопоставлены с 13 игровыми строками модели и 13 точными bindings. Проверены оба d20, разграничены физический масштаб, содержимое и действия за столом. На опубликованном SHA пять операций получили частичное evidence, восемь остаются unknown."
+    },
+    {
+      "type": "source",
+      "statement": "Пустыня описана в каталоге, но не выпадает отдельным результатом стандартного d20. Standard не добавляет обязательного элемента и совместим с уже нанесёнными объектами."
+    },
+    {
+      "type": "implementation",
+      "statement": "12 миль по сторонам даёт около 13,856 мили по вершинам. При 12 милях по вершинам ширина около 10,392 мили, а площадь 93,531 квадратной мили. Ручная правка биома, существующая деревня, тропа и река вместе пережили JSON."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/top20-l1/games/PF1.json",
+    "agent-work/research/top20-l1/index.json",
+    "agent-work/research/top20-l1/README.md",
+    "agent-work/research/README.md",
+    "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-pf1-corpus-1330.json",
+    "agent-work/research/state.json",
+    "agent-work/latest.json#research_agent"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "rows": 13,
+    "partial": 5,
+    "unknown": 8,
+    "fully_verified": 0,
+    "accepted_requirement_cases": 65,
+    "game_bindings": 13,
+    "model_operation_ids": [
+      "PF1-UC-001-L1",
+      "PF1-UC-002-L1",
+      "PF1-UC-003-L1",
+      "PF1-UC-004-L1",
+      "PF1-UC-005-L1",
+      "PF1-UC-006-L1",
+      "PF1-UC-008-L1",
+      "PF1-UC-009-L1",
+      "PF1-UC-011-L1",
+      "PF1-UC-012-L1",
+      "PF1-UC-013-L1",
+      "PF1-UC-014-L1",
+      "PF1-UC-015-L1"
+    ],
+    "requirement_logic": {
+      "terrainDie": [
+        "forest",
+        "forest",
+        "forest",
+        "hill",
+        "hill",
+        "hill",
+        "marsh",
+        "marsh",
+        "mountain",
+        "mountain",
+        "plain",
+        "plain",
+        "plain",
+        "settlement",
+        "water",
+        "water",
+        "previous",
+        "previous",
+        "previous",
+        "previous"
+      ],
+      "elementDie": [
+        "difficult",
+        "difficult",
+        "difficult",
+        "feature",
+        "feature",
+        "feature",
+        "hunting_ground",
+        "hunting_ground",
+        "hunting_ground",
+        "hunting_ground",
+        "resource",
+        "resource",
+        "secret",
+        "secret",
+        "standard",
+        "standard",
+        "standard",
+        "standard",
+        "standard",
+        "standard"
+      ],
+      "table_entries_checked": 40,
+      "pairs_with_explicit_previous_validated": 400,
+      "source_cells_reviewed_previously": {
+        "reviewed": 40,
+        "keep_L1": 30,
+        "needs_owner_decision": 8,
+        "defer_L2": 2
+      },
+      "acceptance_cases": 65,
+      "limitation": "Логика бумажной процедуры сверена отдельно от приложения."
+    },
+    "actual": {
+      "sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
+      "publication_ref": "agent-work/results/2026-11-26-PR518-publication.json",
+      "method": "Детерминированный прогон штатных обработчиков App и вычислений detailGrid, без DOM. Читались также нативные опции селектора (App.tsx, data-fine-step).",
+      "observed": {
+        "hex": "2,0",
+        "biome": "plain_deciduous_forest",
+        "poi": "village",
+        "road": {
+          "id": 1,
+          "regionId": 1,
+          "segments": [
+            {
+              "from": {
+                "q": 1,
+                "r": 0
+              },
+              "to": {
+                "q": 2,
+                "r": 0
+              },
+              "kind": "trail"
+            }
+          ]
+        },
+        "crossings": [],
+        "riverId": 5,
+        "roundTrip": true,
+        "grid": {
+          "step": 12,
+          "convention": "across_flats",
+          "nativeCorner": 13.856406460551021,
+          "nativeArea": 124.70765814495917,
+          "sourceCorner": 12,
+          "sourceFlats": 10.392304845413264,
+          "sourceArea": 93.53074360871936
+        }
+      },
+      "app_selector_miles": [
+        1,
+        6
+      ],
+      "assertion_source": "import assert from 'node:assert/strict';\nimport {createGenerationHarness} from './bsh-product/test/helpers/generation-harness.mjs';\nimport {regionFixture} from './bsh-product/test/helpers/region-fixture.mjs';\nimport {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles} from './bsh-product/src/detailGrid.ts';\n\nasync function open(data) {\n  const h=createGenerationHarness(42);\n  h.render();\n  h.guardRandom();\n  h.setWindow({alert: message=>{throw Error(message);}, matchMedia:()=>({matches:false})});\n  h.injectFunction('readTextFile',async f=>f.text);\n  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});\n  h.render();\n  return h;\n}\n\nfunction save(h) {\n  const data=JSON.parse(JSON.stringify(h.render().createSaveData()));\n  delete data.savedAt;\n  return data;\n}\n\nconst input=regionFixture('classic',{river:true});\ninput.map.regions[0].pointsOfInterest.push({q:1,r:0});\ninput.map.regions[0].pointOfInterestKinds['1,0']='ruins';\ninput.map.roads=[];\ninput.map.crossings=[];\nconst h=await open(input);\nh.render().setEditMode(true);\nh.render().setSelectedHex({q:2,r:0});\nh.render().setSelectedHexBiomeOverride('plain_deciduous_forest');\nlet edited=save(h);\nassert.equal(edited.map.biomeOverrideByHexKey['2,0'],'plain_deciduous_forest');\nassert.equal(edited.map.regions[0].pointOfInterestKinds['2,0'],'village');\nconst river=edited.map.rivers[0];\nassert.ok(river);\nassert.equal(h.render().editRoadDocument({type:'create',path:[{q:1,r:0},{q:2,r:0}],kind:'trail'}),true);\nedited=save(h);\nassert.equal(edited.map.roads.length,1);\nassert.deepEqual(edited.map.roads[0].segments,[{from:{q:1,r:0},to:{q:2,r:0},kind:'trail'}]);\nassert.deepEqual(edited.map.rivers[0],river);\nconst reopened=save(await open(edited));\nassert.deepEqual(reopened.map.roads,edited.map.roads);\nassert.deepEqual(reopened.map.rivers,edited.map.rivers);\nassert.deepEqual(reopened.map.crossings,edited.map.crossings);\nassert.deepEqual(reopened.map.regions,edited.map.regions);\nassert.deepEqual(reopened.map.biomeOverrideByHexKey,edited.map.biomeOverrideByHexKey);\nconst native=createDetailGrid(12), vertices=detailCellPolygon(native,{q:0,r:0});\nconst nativeCorner=Math.hypot(vertices[0].x-vertices[3].x,vertices[0].y-vertices[3].y);\nassert.ok(Math.abs(nativeCorner-8*Math.sqrt(3))<1e-9);\nassert.equal(native.convention,'across_flats');\nconsole.log(JSON.stringify({\n hex:'2,0', biome:reopened.map.biomeOverrideByHexKey['2,0'], poi:reopened.map.regions[0].pointOfInterestKinds['2,0'],\n road:reopened.map.roads[0], crossings:reopened.map.crossings, riverId:river.id, roundTrip:true,\n grid:{step:native.step,convention:native.convention,nativeCorner,nativeArea:detailCellAreaSquareMiles(native),sourceCorner:12,sourceFlats:6*Math.sqrt(3),sourceArea:54*Math.sqrt(3)}\n}));",
+      "suite": {
+        "command": "node --test test/regionEditing.test.mjs test/manualRoads.test.mjs test/mapTransactions.test.mjs test/riverCrossings.test.mjs",
+        "passed": 64,
+        "failed": 0,
+        "scope": "Штатные тесты общих функций. Не подтверждают специальный профиль PF1."
+      }
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "status": "in_progress"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "status": "completed"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "status": "in_progress"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "status": "completed"
+      }
+    ]
+  },
+  "checkpoint": {
+    "status": "source_coverage_second_pass_checkpoint",
+    "run_id": "2026-11-27-top20-l1-pf1-corpus-1330",
+    "result_ref": "agent-work/research/runs/2026-11-27-top20-l1-pf1-corpus-1330.json",
+    "index_ref": "agent-work/research/top20-l1/index.json",
+    "handoff_ref": "agent-work/research/top20-l1/handoffs/2026-11-27-top20-l1-pf1-corpus-1330.json",
+    "coverage_ref": "agent-work/research/top20-l1/coverage/2026-11-25-second-pass.json",
+    "completed": "Все 13 операций L1 Pathfinder 1e сопоставлены с 13 игровыми строками модели и 13 точными bindings. Проверены оба d20, разграничены физический масштаб, содержимое и действия за столом. На опубликованном SHA пять операций получили частичное evidence, восемь остаются unknown.",
+    "remaining": {
+      "sundered_isles": "Отдельные таблицы первого впечатления, эстетики, деталей и именования сверены только как зависимости, их исходы не оцифровывались. Требуется проверить привязку контролёра, морской путь и судоходность на конкретном опубликованном SHA. Секторная генерация Starforged и остальные главы за пределами выбранного корпуса.",
+      "dcc84": "Нужны разворот с картой и ключом, текст с. 7, 11, 13–18, 19–30 для различения неподвижных и подвижных мест и сверки адресов. Точный масштаб неизвестен. Повторное открытие нужных страниц на индексированном зеркале вернуло 404. Приёмка на SHA не выполнялась.",
+      "cohort": "Сохраняются открытые остатки из предыдущих передач и карты охвата.",
+      "awn": "Проверить семь рабочих AWN-строк на опубликованном SHA. Для полноты AWN за пределами выбранного корпуса тематически проверить готовые карты и ключи в The Example Campaign, отдельно — признаки регионального масштаба у Hazard/Feature Descriptors. Статус будущих руин и способ привязки к существующим картографическим сущностям проверять до предложения новой сущности. Правила раскрытия и находок при скаутинге — L2.",
+      "pirate": "Проверить на опубликованном SHA сценарии 50-мильной карты и кораблекрушений на суше/отмели. В Core с. 134–135 подтверждён ключ готовой карты Black Coral Bay, точные измерения подложки по HTML не установлены. С. 156–165 и правила Starter Set, Cabin Fever, Port Generator — отдельные корпуса или остаток; сканы нужны только при новом подходящем источнике. Не считать игровой балл пересчитанным.",
+      "crows": "Дождаться связанного SHA F1 для проверок CROWS-04–08 и полного CROWS-01–09. Селективная карта игроков, адресная связь карты с тайником и готовые места PT3 требуют отдельной проверки применимости и фактической поддержки. Спорные детали Best Steward Ever и локальных укрытий не считать невыполненными критериями F1.",
+      "shadowdark": "На точном опубликованном SHA повторно проверить независимую видимость признака, категории стационарной опасности, danger, связи POI и сцен. Сохранённый Classic/Knave runtime датирован 20.11. Неопределённый рецепт двух колонок и текущая поддержка остаются открытыми. Поздние errata и дополнения не пересматривались.",
+      "pf2": "Проверить опубликованный UI и сохранения отдельно от выполненной пробы масштаба. Пять ST-кандидатов не имеют отдельных bindings. На GM Core с.146–165 остаётся печатный остаток по планам, Player Core 3–8 и приложениям требуется свой тематический скрининг. Базовый L1 и Kingmaker пополнять раздельно при новом источнике.",
+      "knave2": "На точном опубликованном SHA проверить владельца и видимость признака, перенос посвящения святилища, ручной выбор строки и сохранение нескольких исходов. Для ссылки без следующей обычной строки или неоднозначной целевой таблицы правило оставляет решение мастеру. Остальные вспомогательные таблицы сохраняют локаторы перевода; английские исходы не пересверены сплошь. При новом основании проверить подходящее дополнение отдельно от основной книги.",
+      "wwn": "Сверить перевод Deluxe для шага 1. Точечно проверить One-Roll Terrain Feature Details с. 123 и выбранные результаты размещения из Making the Kingdom Map / Nation с. 124+ при продолжении WWN. На опубликованном интерфейсе требуется проверить океанские границы после JSON, принадлежность имён рельефным объектам, перенос крупных форм в отдельную детализацию и несколько независимых POI в одном гексе.",
+      "ose": "Проверить сквозную подготовку 24→6 с JSON, принадлежность численности логову, применение формулы и принадлежность сведений о службах городу. Полный Referee’s Book 2026, номера зеркальных печатных экземпляров, дополнительные монстры и Starter Set остаются отдельными источниками.",
+      "cairn2": "Нужны сохранение независимых статусов пути и выбранных результатов таблиц, сравнение нумерации с независимыми именами, типизированные связи с водным маршрутом и Heart, сквозной прогон выборочной проекции через интерфейс. Ресурс Hexcrawls in Cairn хранится отдельным источником L2. Номер печатной ревизии в этом проходе не устанавливался.",
+      "root": "Сквозная приёмка: 12 полян и счётчики сообществ, постоянные факты места, уникальность имён, JSON явного графа, выбор углов и мест, сток новой пары, пределы озера и раздельные входы. ROOT-TO-Q04 вне ветки d6=6, знак Q05 и метрика Q07 открыты. Crownland в просмотренном первичном тексте не найдено. Происхождение термина unknown. Блоки фракционного ведения вне выбранного L1.",
+      "bsh": "Сквозная приёмка пяти операций остаётся открыта в части: режим с одновременными подписями непосредственно на карте; разметка произвольной политической границы вдоль рубежа и ничейного гекса; типизированное неподвижное убежище; три портальные ссылки между городами; связь в днях без вывода геометрии. Проверены §§8–10 и тематические части §11 открытого SRD, печатные вставки/дополнения Chaos Crier и чужие гексовые адаптации — отдельные источники.",
+      "swc": "Открыты произвольная маска расширения, точное 5-мильное значение и неизвестная авторская ось ширины, адресуемая связь замка и деревни, отдельный крупный обзор с общими якорями, полный сценарий освоенной крепости. Другие редакции и дополнения отдельны. Возможная несогласованность правила потери направления не закрывалась в L1.",
+      "maus": "Проверить сквозное создание 25 одномильных гексов с центром, адресное наполнение и контроль категорий, поселения и их статические данные, привязку слухов и ключей к местам, подготовку карты игроков и добавление отдельного одномильного гекса. Таблица Governance остаётся за пределами рабочего L1 до решения о территориальной/адресной связи. Другие редакции, печатная книга и кампании отдельны.",
+      "salv": "Workshop Manual V2.0a, с. 245 и 258–262. Для отдельной региональной находки нужен подтверждённый эффект на карте. Проверить штатный ввод, редактирование и обратимый JSON для Tech и Supply, включая явный 0.",
+      "pf1": "На точном опубликованном SHA проверить штатный ввод/сохранение 12 миль между вершинами, явный старт и продолжение по выбранному гексу, два независимых броска и сохранение происхождения, адресные свойства ресурса и скрытого места, климатическую интерпретацию и тип берега. Межгексовый признак к подготовленному месту требует решения о границе функции. Печатная пагинация и Kingmaker/хозяйственные ходы отдельно."
+    },
+    "next": "Собрать сводку по всей когорте create: для каждой игры сверить охват источников, совпадение IDs с моделью, полноту операций, статус реализации и открытый остаток. Выделить общие пробелы, которые можно проверить на одном SHA за несколько игр, и источниковые блокеры, включая DCC #84. Переиспользовать закрытые проверки.",
+    "needs_owner_action": false
+  },
+  "next_candidate": {
+    "id": "top20_l1_cross_game_handoff_inventory",
+    "description": "Собрать сводку по всей когорте create: для каждой игры сверить охват источников, совпадение IDs с моделью, полноту операций, статус реализации и открытый остаток. Выделить общие пробелы, которые можно проверить на одном SHA за несколько игр, и источниковые блокеры, включая DCC #84. Переиспользовать закрытые проверки."
+  }
+}
