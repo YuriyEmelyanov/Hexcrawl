@@ -8,6 +8,8 @@ button { margin: 0 .35rem .35rem 0; min-height: 2.5rem; color: inherit; border: 
 button:disabled { opacity: .5; }
 #choices { max-width: 12rem; }
 #map { display: block; width: 100%; height: 100%; min-height: 29rem; }
+#map[data-master-camera] { cursor: grab; touch-action: none; }
+#map[data-master-camera]:active { cursor: grabbing; }
 [hidden] { display: none !important; }
 @media (max-width: 650px) {
   main { grid-template-columns: 1fr; }
@@ -20,5 +22,5 @@ button:disabled { opacity: .5; }
 .route-trail { stroke:#8b6a3f; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
 .route-solid { stroke-dasharray:none; stroke-dashoffset:0; }
 .route-faded { opacity:.42; }
-.route-rapid { stroke:#8bdbdd; stroke-linecap:round; }
+.route-rapid, .route-river-arrow { stroke:#8bdbdd; stroke-linecap:round; }
 .route-rail { stroke:#4f3922; stroke-linecap:round; stroke-linejoin:round; }

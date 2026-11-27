@@ -1,4 +1,4 @@
-import {HEX_SIZE, toPixel, hexPoints, getHexWidth, engravingLayout} from '/base-hex-artwork.mjs';
+import {HEX_SIZE, toPixel, hexPoints, hexGridPath, getHexWidth, engravingLayout} from '/base-hex-artwork.mjs';
 import {terrainTextures} from '/terrain-blend.mjs';
 
 const master = location.pathname === '/master';
@@ -34,6 +34,90 @@ get('master-controls').hidden = !master;
 let view;
 let commandError = '';
 let revoked = false;
+// null follows the party; a separate camera is available only to the master.
+let camera;
+
+function displayPoint(point) {
+  const {x, y} = toPixel(point.q, point.r);
+  return view.rotated ? [-y, x] : [x, y];
+}
+
+function partyFrame() {
+  const [x, y] = displayPoint(view.position);
+  return [x - 360, y - 260, 720, 520];
+}
+
+function wholeMapFrame() {
+  let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
+  for (const cell of view.cells) {
+    const [x, y] = displayPoint(cell);
+    left = Math.min(left, x);
+    right = Math.max(right, x);
+    top = Math.min(top, y);
+    bottom = Math.max(bottom, y);
+  }
+  const padding = HEX_SIZE + 12;
+  return [left - padding, top - padding, right - left + 2 * padding, bottom - top + 2 * padding];
+}
+
+function drawCamera() {
+  map.setAttribute('viewBox', (camera ?? partyFrame()).join(' '));
+}
+
+function panCamera(dx, dy) {
+  const [x, y, width, height] = camera ?? partyFrame();
+  camera = [x + dx, y + dy, width, height];
+  drawCamera();
+}
+
+function zoomCamera(factor) {
+  if (!view) return;
+  const [x, y, width, height] = camera ?? partyFrame();
+  const nextWidth = width * factor, nextHeight = height * factor;
+  if (Math.min(nextWidth, nextHeight) < 2 * HEX_SIZE || Math.max(nextWidth, nextHeight) > 1e7) return;
+  camera = [x + (width - nextWidth) / 2, y + (height - nextHeight) / 2, nextWidth, nextHeight];
+  drawCamera();
+}
+
+if (master) {
+  map.dataset.masterCamera = '';
+  map.setAttribute('tabindex', '0');
+  get('fit-map').addEventListener('click', () => {
+    if (!view) return;
+    camera = wholeMapFrame();
+    drawCamera();
+  });
+  get('focus-party').addEventListener('click', () => {
+    if (!view) return;
+    camera = null;
+    drawCamera();
+  });
+  get('zoom-in').addEventListener('click', () => zoomCamera(.8));
+  get('zoom-out').addEventListener('click', () => zoomCamera(1.25));
+  map.addEventListener('keydown', event => {
+    const directions = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]};
+    const direction = directions[event.key];
+    if (!view || !direction) return;
+    event.preventDefault();
+    const [, , width, height] = camera ?? partyFrame();
+    panCamera(direction[0] * width / 8, direction[1] * height / 8);
+  });
+  let drag;
+  map.addEventListener('pointerdown', event => {
+    if (!view || !event.isPrimary || event.button !== 0) return;
+    const scale = map.getScreenCTM()?.a;
+    if (!scale) return;
+    drag = {id: event.pointerId, x: event.clientX, y: event.clientY, scale};
+    map.setPointerCapture(event.pointerId);
+  });
+  map.addEventListener('pointermove', event => {
+    if (drag?.id !== event.pointerId) return;
+    panCamera((drag.x - event.clientX) / drag.scale, (drag.y - event.clientY) / drag.scale);
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+  });
+  map.addEventListener('lostpointercapture', () => { drag = null; });
+}
 
 function shape(name, attrs) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', name);
@@ -42,6 +126,7 @@ function shape(name, attrs) {
 }
 
 function draw(next) {
+  const fit = master && (!view || view.rotated !== next.rotated);
   view = next;
   position.value = key(next.position);
   get('role').textContent = `${role} · ${modeLabels[next.mapMode]} · 5–6 миль`;
@@ -57,11 +142,15 @@ function draw(next) {
     confirm.disabled = cancel.disabled = next.proposal === null;
   }
   const {x, y} = toPixel(next.position.q, next.position.r);
-  const [centerX, centerY] = next.rotated ? [-y, x] : [x, y];
-  map.setAttribute('viewBox', [centerX - 360, centerY - 260, 720, 520].join(' '));
+  if (fit) camera = wholeMapFrame();
+  drawCamera();
   const {defs, terrain} = drawTerrain(next);
   const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
-  layer.append(...terrain, drawRoutes(next.routes), drawMarks(next.marks, next.rotated), drawPois(next.pois, next.rotated));
+  layer.append(...terrain, drawRoutes(next.routes, defs), drawMarks(next.marks, next.rotated), drawPois(next.pois, next.rotated));
+  layer.append(shape('path', {class: 'color-hex-grid',
+    d: hexGridPath(next.cells.map(cell => toPixel(cell.q, cell.r)), HEX_SIZE),
+    fill: 'none', stroke: '#575242', 'stroke-opacity': .22, 'stroke-width': .55,
+    'vector-effect': 'non-scaling-stroke', 'pointer-events': 'none'}));
   if (next.proposal !== null) {
     layer.append(shape('path', {d: 'M12 0h25m-9 -7 9 7-9 7',
       transform: `translate(${x} ${y}) rotate(${directionAngle(next.proposal)})`,
@@ -115,14 +204,24 @@ function drawTerrain(next) {
   return {defs, terrain};
 }
 
-function drawRoutes(routes) {
+function drawRoutes(routes, defs) {
   const group = shape('g', {'data-routes': '', 'pointer-events': 'none'});
-  for (const {kind, width, faded, solid, points} of routes) {
+  const arrowMarkers = new Set();
+  for (const {kind, width, faded, solid, points, arrowSize} of routes) {
+    const marker = kind === 'river-arrow' ? 'river-arrow-' + arrowSize : null;
+    if (marker && !arrowMarkers.has(marker)) {
+      arrowMarkers.add(marker);
+      const head = shape('marker', {id: marker, viewBox: '0 0 8 8', refX: 7, refY: 4,
+        markerWidth: arrowSize, markerHeight: arrowSize, orient: 'auto'});
+      head.append(shape('path', {d: 'M 0 0 L 8 4 L 0 8 z', fill: '#8bdbdd'}));
+      defs.append(head);
+    }
     group.append(shape('polyline', {
       points: points.map(([x, y]) => `${x},${y}`).join(' '),
       'data-route-kind': kind,
       class: `route-${kind}${faded ? ' route-faded' : ''}${solid ? ' route-solid' : ''}`,
       'stroke-width': width,
+      ...(marker ? {'marker-end': `url(#${marker})`} : {}),
       fill: 'none'
     }));
   }

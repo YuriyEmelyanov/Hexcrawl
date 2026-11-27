@@ -14,9 +14,9 @@ export function mapCells(save) {
     }
   }
   for (const [coord, {terrainOverride}] of Object.entries(save.map.terrainByHexKey)) {
-    if (!cells.has(coord) && terrainOverride === 'sea') {
+    if (!cells.has(coord) && (terrainOverride === 'sea' || terrainOverride === 'lake')) {
       const [q, r] = coord.split(',').map(Number);
-      cells.set(coord, {q, r, biome: null, height: 1, water: 'sea'});
+      cells.set(coord, {q, r, biome: null, height: 1, water: terrainOverride});
     }
   }
   return cells;
@@ -37,7 +37,11 @@ export function viewOf(cells, state, master) {
     rotated: state.rotated,
     proposal: state.proposal,
     revision: state.revision,
-    cells: master ? [...cells.values()] : visible,
+    cells: master ? [...cells.values()] : visible.map(cell => {
+      if (!cell.water) return cell;
+      const {q, r, height, water} = cell;
+      return {q, r, height, water};
+    }),
     ...(master ? {currentKeys: visible.map(key)} : {})
   };
 }

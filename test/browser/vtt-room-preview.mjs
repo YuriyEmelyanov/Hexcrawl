@@ -48,8 +48,16 @@ function verifyRouteBounds(view) {
     }
   }
   for (const route of view.routes) {
-    assert.deepEqual(Object.keys(route).sort(), ['faded', 'kind', 'points', 'solid', 'width']);
-    for (const [px, py] of route.points) verifyPoint(px, py);
+    const isArrow = route.kind === 'river-arrow';
+    assert.deepEqual(Object.keys(route).sort(), [
+      ...(isArrow ? ['arrowSize'] : []), 'faded', 'kind', 'points', 'solid', 'width'
+    ]);
+    if (isArrow || route.kind === 'rapid') {
+      const [[x1, y1], [x2, y2]] = route.points;
+      verifyPoint((x1 + x2) / 2, (y1 + y2) / 2);
+    } else {
+      for (const [px, py] of route.points) verifyPoint(px, py);
+    }
   }
   for (const mark of view.marks) {
     assert.deepEqual(Object.keys(mark).sort(), ['kind', 'x', 'y']);
@@ -112,6 +120,7 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const allCells = await master.locator('[data-cell]').count();
     assert.ok(firstCells > 0 && firstCells < allCells, 'player sees only local cells');
     assert.equal(await second.locator('[data-cell]').count(), firstCells);
+    assert.equal(await first.locator('#fit-map').isVisible(), false);
     const snapshotPlayer = () => first.evaluate(async () => {
       const response = await fetch('/state', {headers: {'x-preview-room': location.pathname}});
       return response.json();
@@ -144,11 +153,17 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     };
     await verifyPoi(before, mode === 'mythic' ? '0,1' : null);
     if (mode === 'mythic') assert.match(await first.locator('[data-poi="0,1"]').getAttribute('transform'), /^rotate\(-90 /);
-    const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail');
+    const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail');
     const editorRouteCount = await editorRoutes.count();
     assert.ok(editorRouteCount > 0, 'the imported map has real rivers and routes');
     assert.equal(await master.locator('[data-route-kind]').count(), await editorRoutes.count());
     assert.equal(await first.locator('[data-route-kind]').count(), before.routes.length);
+    for (const page of pages) {
+      const grid = page.locator('.color-hex-grid');
+      assert.equal(await grid.getAttribute('stroke'), await editor.locator('.top-hex-grid > path').getAttribute('stroke'));
+      assert.equal(await grid.getAttribute('stroke-opacity'), await editor.locator('.top-hex-grid > path').getAttribute('stroke-opacity'));
+      assert.ok((await grid.getAttribute('d')).length > 0);
+    }
     const editorMarkCount = await editor.locator('.river-crossing, .river-waterfall').count();
     assert.equal(await master.locator('[data-mark-kind]').count(), editorMarkCount);
     assert.equal(await first.locator('[data-mark-kind]').count(), before.marks.length);
@@ -157,6 +172,33 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     if (mode === 'mythic') {
       assert.ok(markTypes.includes('ferry'));
       assert.ok(markTypes.includes('waterfall'));
+      const map = master.locator('#map');
+      const frame = () => map.getAttribute('viewBox');
+      const countOutside = () => map.evaluate(svg => {
+        const box = svg.getBoundingClientRect();
+        const layer = svg.querySelector(':scope > g');
+        const matrix = layer.getScreenCTM();
+        return [...layer.querySelectorAll('[data-cell]')].filter(cell => Array.from(cell.points).some(point => {
+          const {x, y} = point.matrixTransform(matrix);
+          return x < box.left - .5 || x > box.right + .5 || y < box.top - .5 || y > box.bottom + .5;
+        })).length;
+      });
+      const fit = await frame();
+      assert.equal(await countOutside(), 0, 'full master map fits including the edges');
+      await master.getByRole('button', {name: 'К отряду'}).click();
+      assert.ok(await countOutside() > 0, 'party view centres on the turn instead of fitting all cells');
+      const partyFrame = await frame();
+      await master.getByRole('button', {name: 'Приблизить карту'}).click();
+      const zoomed = await frame();
+      assert.ok(Number(zoomed.split(' ')[2]) < Number(partyFrame.split(' ')[2]));
+      await map.press('ArrowDown');
+      assert.notEqual(await frame(), zoomed);
+      await master.getByRole('button', {name: 'Вся карта'}).click();
+      assert.equal(await frame(), fit);
+      assert.equal(await countOutside(), 0);
+      if (process.env.VTT_EVIDENCE_DIR) {
+        await master.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'mythic-master-full-map.jpg'), quality: 72});
+      }
     }
     verifyRouteBounds(before);
     assert.equal(before.rotated, rotated);
@@ -186,7 +228,10 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     const artwork = await first.request.get(new URL(comparable[0].engraving.href, roomUrl).href);
     assert.equal(artwork.status(), 200);
     assert.equal(artwork.headers()['content-type'], 'image/png');
-    assert.deepEqual(Object.keys(before.cells[0]).sort(), ['biome', 'height', 'q', 'r', 'water']);
+    for (const cell of before.cells) {
+      assert.deepEqual(Object.keys(cell).sort(), cell.water
+        ? ['height', 'q', 'r', 'water'] : ['biome', 'height', 'q', 'r', 'water']);
+    }
     assert.equal((await fetch(roomUrl + '/test/fixtures/classic-six-regions-seed42.json')).status, 404);
     assert.ok(!JSON.stringify(before).includes('PRIVATE-EDITOR-FIXTURE'));
     assert.equal((await fetch(roomUrl + '/open', {method: 'POST'})).status, 404);
@@ -262,9 +307,19 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
     await second.reload();
     await waitPosition('0,0');
     assert.deepEqual(await snapshotPlayer(), after);
+    if (mode === 'mythic') {
+      await editor.getByRole('button', {name: /Вернуть исходный поворот|Restore original map rotation/}).click();
+      await editor.locator('[data-selected-hex="0,1"]').waitFor({state: 'attached'});
+    }
     const [reopened] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
     await reopened.waitForFunction(() => document.querySelector('#position').value === '0,0');
     assert.equal(await reopened.locator('#join').getAttribute('href'), offeredLink);
+    if (mode === 'mythic') {
+      await first.waitForFunction(() => !document.querySelector('#map > g').hasAttribute('transform'));
+      const unrotated = await snapshotPlayer();
+      assert.deepEqual(unrotated, {...after, rotated: false, revision: after.revision + 1});
+      for (const page of pages) assert.equal(await page.locator('#position').textContent(), '0,0');
+    }
     await reopened.close();
     if (process.env.VTT_EVIDENCE_DIR) {
       await master.screenshot({path: process.env.VTT_EVIDENCE_DIR + '/' + mode + '-master-after.jpg', quality: 78});
@@ -493,11 +548,70 @@ async function verifyEditorRestore(browser) {
   }
 }
 
+async function verifyLakeStartAndMove(browser) {
+  const contexts = await Promise.all([browser.newContext(), browser.newContext()]);
+  let preview;
+  try {
+    preview = await startEditorPreview({playerPort: 0});
+    const [editor, player] = await Promise.all(contexts.map(context => context.newPage()));
+    await editor.goto(preview.editorUrl);
+    const save = JSON.parse(await readFile(new URL('../fixtures/terrain-display-map.json', import.meta.url), 'utf8'));
+    const lake = '-2,12';
+    assert.ok(!save.map.regions.some(region => region.hexes.some(({q, r}) => `${q},${r}` === lake)));
+    assert.equal(save.map.terrainByHexKey[lake], undefined);
+    save.map.terrainByHexKey[lake] = {terrainOverride: 'lake', lakeId: save.counters.nextLakeId++};
+    save.ui.selectedHex = {q: -2, r: 12};
+    await editor.locator('input[type=file]').setInputFiles({name: 'lake-map.json', mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify(save))});
+    await editor.locator(`[data-selected-hex="${lake}"]`).waitFor({state: 'attached'});
+    const launch = editor.getByRole('button', {name: /^(Гекскроул|Hexcrawl)$/});
+    const [master] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
+    await master.locator('#join').waitFor();
+    const playerUrl = await master.locator('#join').getAttribute('href');
+    await player.goto(playerUrl);
+    const waitPosition = expected => Promise.all([master, player].map(page =>
+      page.waitForFunction(position => document.querySelector('#position').value === position, expected)));
+    const state = () => player.evaluate(async () =>
+      (await fetch('/state', {headers: {'x-preview-room': location.pathname}})).json());
+    async function verifyWater(expected) {
+      await waitPosition(expected);
+      const current = (await state()).cells.find(cell => `${cell.q},${cell.r}` === expected);
+      assert.equal(current.water, 'lake');
+      assert.ok(!Object.hasOwn(current, 'biome'), 'water view carries only its visible terrain');
+    }
+    async function move(direction, expected) {
+      await player.locator(`[data-direction="${direction}"]`).click();
+      await master.locator(`[data-proposal="${direction}"]`).waitFor();
+      await master.locator('#confirm').click();
+      await waitPosition(expected);
+    }
+    await verifyWater(lake);
+    await move(2, '-2,11');
+    await move(5, lake);
+    await verifyWater(lake);
+    await move(2, '-2,11');
+    await move(2, '-2,10');
+    await verifyWater('-2,10');
+    await player.reload();
+    await verifyWater('-2,10');
+    assert.equal(player.url(), playerUrl);
+    if (process.env.VTT_EVIDENCE_DIR) {
+      await player.screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'player-after-water-entry.jpg'), quality: 72});
+    }
+    console.log(JSON.stringify({mode: 'lake-start-and-return', regionlessLake: lake,
+      waterInRegion: '-2,10', waterBiomeOmittedAfterReload: true, playerLinkPreserved: true}));
+  } finally {
+    await Promise.all(contexts.map(context => context.close()));
+    await preview?.close();
+  }
+}
+
 const browser = await chromium.launch({executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined,
   headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage']});
 try {
   for (const scenario of scenarios) await verifyRoom(browser, scenario);
   await verifyEditorRestore(browser);
+  await verifyLakeStartAndMove(browser);
 } finally {
   await browser.close();
 }

@@ -56,7 +56,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
   let room;
   let local;
   function localAt(next) {
-    return room?.state.position === next.state.position ? local
+    return room?.state.position === next.state.position && room.routes === next.routes && room.marks === next.marks ? local
       : {routes: routesAt(next.routes, next.state.position), marks: marksAt(next.marks, next.state.position)};
   }
   const snapshot = await storage?.load();
@@ -102,7 +102,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       if (req.method !== 'POST' || !launchKey || req.headers.authorization !== 'Bearer ' + launchKey) {
         return json(res, 404, {error: 'Unavailable'});
       }
-      let candidate;
+      let candidate, editorMap;
       try {
         const {save, position, routes, marks, pois} = await readJson(req, 16 * 1024 * 1024);
         const mapMode = readMapMode(save);
@@ -112,7 +112,8 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
           return json(res, 400, {error: 'Select a 5–6 mile map and starting hex'});
         }
         const rotated = save.ui.isMapRotated === true;
-        const mapDigest = createHash('sha256').update(JSON.stringify([mapMode, rotated, save.map])).digest('hex');
+        editorMap = save.map;
+        const mapDigest = digestMap([mapMode, editorMap]);
         const cells = mapCells(save);
         const state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode, rotated};
         candidate = {cells, state, mapDigest, routes: readRoutes(routes), marks: readMarks(marks),
@@ -121,14 +122,25 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         return json(res, 400, {error: 'Invalid map'});
       }
       return mutate(async () => {
-        if (room && room.mapDigest !== candidate.mapDigest) return json(res, 409, {error: 'A different map is already open'});
-        if (!room) {
-          if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
-          try {
+        const {mapMode, rotated} = candidate.state;
+        // Earlier snapshots included the original orientation in their digest.
+        const legacyMatch = room && room.mapDigest !== candidate.mapDigest &&
+          room.mapDigest === digestMap([mapMode, room.state.rotated, editorMap]);
+        if (room && room.mapDigest !== candidate.mapDigest && !legacyMatch) {
+          return json(res, 409, {error: 'A different map is already open'});
+        }
+        try {
+          if (!room) {
+            if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
             await saveRoom({...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()});
-          } catch {
-            return json(res, 503, {error: 'Room could not be saved'});
+          } else if (legacyMatch || room.state.rotated !== rotated) {
+            const state = {...room.state, rotated, revision: room.state.revision + 1};
+            const artwork = legacyMatch ? {cells: candidate.cells, routes: candidate.routes,
+              marks: candidate.marks, pois: candidate.pois, mapDigest: candidate.mapDigest} : {};
+            await saveRoom({...room, ...artwork, state});
           }
+        } catch {
+          return json(res, 503, {error: 'Room could not be saved'});
         }
         return json(res, 200, {masterPath: '/master#' + room.masterKey});
       });
@@ -211,6 +223,10 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
     return stopping;
   }
   return {server, base, playerBase, close};
+}
+
+function digestMap(identity) {
+  return createHash('sha256').update(JSON.stringify(identity)).digest('hex');
 }
 
 function nextRoom(room, action, master) {

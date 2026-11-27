@@ -15930,10 +15930,11 @@ export function App() {
 
   const captureVttRoutes = () => {
     const renderedRoutes = mapSvgRef.current?.querySelectorAll<SVGPolylineElement | SVGLineElement>(
-      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail'
+      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail'
     );
     return Array.from(renderedRoutes ?? [], stroke => {
       const kind = stroke.classList.contains('river-polyline') ? 'river'
+        : stroke.classList.contains('river-direction-arrow') ? 'river-arrow'
         : stroke.classList.contains('river-rapid-mark') ? 'rapid'
         : stroke.classList.contains('bridge-rail') ? 'rail'
         : stroke.classList.contains('trail-line') ? 'trail' : 'road';
@@ -15946,6 +15947,7 @@ export function App() {
         width: Number.parseFloat(style.strokeWidth),
         faded: Number(style.opacity) < 1,
         solid: style.strokeDasharray === 'none',
+        ...(kind === 'river-arrow' ? {arrowSize: Number(stroke.getAttribute('data-vtt-arrow-size'))} : {}),
         points: points.map(([x, y]) => [x - riverOffset.x, y - riverOffset.y])
       };
     });
@@ -17487,6 +17489,7 @@ export function App() {
                   x2={arrow.x2}
                   y2={arrow.y2}
                   className="river-direction-arrow"
+                  data-vtt-arrow-size={5 * getRiverArrowScale(arrow.fullness)}
                   strokeWidth={1.2 * getRiverArrowScale(arrow.fullness)}
                   markerEnd={`url(#river-arrowhead-${arrow.fullness})`}
                 />

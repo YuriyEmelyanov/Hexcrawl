@@ -18,6 +18,21 @@ export function hexPoints(cx: number, cy: number, size: number) {
   return getHexPolygonPoints(cx, cy, size).map(({x, y}) => `${x},${y}`).join(' ');
 }
 
+export function hexGridPath(cells: readonly {x: number; y: number}[], radius: number) {
+  const edges = new Map<string, string>();
+  for (const cell of cells) {
+    const points = getHexPolygonPoints(cell.x, cell.y, radius);
+    for (let index = 0; index < points.length; index++) {
+      const start = points[index];
+      const end = points[(index + 1) % points.length];
+      const edge = [start, end].map(point =>
+        `${Math.round(point.x * 1000)},${Math.round(point.y * 1000)}`).sort().join(':');
+      edges.set(edge, `M${start.x.toFixed(3)} ${start.y.toFixed(3)}L${end.x.toFixed(3)} ${end.y.toFixed(3)}`);
+    }
+  }
+  return [...edges.values()].join('');
+}
+
 export function getHexWidth(size: number) {
   return SQRT3 * size;
 }
