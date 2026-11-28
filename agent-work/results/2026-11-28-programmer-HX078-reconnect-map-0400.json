@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "run_id": "2026-11-28-programmer-HX078-reconnect-map-0400",
+  "recorded_at": "2026-11-28T01:22:50.793Z",
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "tree_sha": "deb07dccfbd5bf7eda8099a45549a766ebfab821",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "prior_review_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+  "prior_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-412e20c-0200-fix.json",
+  "publication_authorized": false,
+  "role": "programmer",
+  "role_selection_reason": "Есть два подтверждённых замечания по утверждённому VTT-RELEASE-1. Предыдущий проверяющий завершил работу. Полный реестр и исторические claims сверены, общий слот получен атомарно.",
+  "status": "review_ready",
+  "review_ready": true,
+  "result": "Восстановление открытой вкладки игрока по прежней ссылке и слои Mythic у мастера реализованы в PR №519. Подтверждены явный отзыв после перезапуска, прежняя изоляция данных игрока и перенос штатных слоёв в старой комнате из редактора.",
+  "findings": [
+    {
+      "id": "F519-PLAYER-RECONNECT-008",
+      "status": "addressed_pending_independent_review",
+      "acceptance_ids": [
+        "VTT-AC08",
+        "VTT-AC01"
+      ],
+      "before": "Клиент прекращал опрос после отсутствия состояния комнаты.",
+      "after": "Временно недоступная игра оставляет вкладку в ожидании с пустой картой и выключенным ходом. После возврата игры прежняя ссылка и открытая вкладка автоматически показывают разрешённый вид и текущую стрелку. Явный отзыв и смена ссылки сохраняются при перезапуске.",
+      "screenshots": [
+        "agent-work/evidence/HX-BL-078/review-412e20c/player-recovery-stuck.jpg",
+        "agent-work/evidence/HX-BL-078/reconnect-map-775cb6c/player-existing-tab-reconnected.jpg"
+      ]
+    },
+    {
+      "id": "F519-MASTER-MAP-PARITY-009",
+      "status": "addressed_pending_independent_review",
+      "acceptance_ids": [
+        "VTT-AC03",
+        "VTT-AC06"
+      ],
+      "before": "Полная карта мастера теряла границы королевств и препятствия.",
+      "after": "На проверенной карте Mythic геометрия, цвет, толщина и штриховка каждого сегмента совпадают с редактором. У игроков прежний контракт данных, без новых слоёв.",
+      "screenshots": [
+        "agent-work/evidence/HX-BL-078/reconnect-map-775cb6c/mythic-editor.jpg",
+        "agent-work/evidence/HX-BL-078/reconnect-map-775cb6c/mythic-master-full-map.jpg"
+      ]
+    }
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-078/reconnect-map-775cb6c/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-reconnect-map-0400-review.json",
+  "claim_ref": "agent-work/claims/2026-11-28-programmer-HX078-reconnect-map-0400.json",
+  "generation": 1006,
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46091727619",
+  "checks_status": "success",
+  "test_change_summary": {
+    "base_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+    "added": 0,
+    "removed": 0,
+    "modified": 3,
+    "suite": "Chromium VTT room preview",
+    "scenario_risk": [
+      "Classic: durable explicit revocation after service restart",
+      "Mythic: master/editor geometry, style and role-specific visibility of kingdom boundaries and obstacles",
+      "Classic generated: existing player tab reconnects without reload after temporarily missing room state"
+    ],
+    "reuse_or_new_reason": "Expanded three existing browser flows. Each checks a distinct observable behavior and uses the existing fixtures and runner.",
+    "count_source": "Exact diff 412e20c..775cb6c, executable cases within verifyRoom (Classic and Mythic) and verifyEditorRestore. Temporary migration diagnostic counted separately.",
+    "runners": {
+      "local_browser_preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "local_browser_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_legacy_snapshot_diagnostic": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    }
+  },
+  "score_assessment_status": "awaiting_independent_exact_sha_review",
+  "score_update_status": "not_due_unpublished",
+  "published": false,
+  "limitations": [
+    "Эфемерные HTTPS-адреса проверки не подтверждают размещение работающего сервиса в конфигурации сайта.",
+    "Снимки комнат предыдущего формата восстанавливаются. Для добавления двух слоёв в старую комнату мастер открывает её из редактора. Сервер помечает явные отзывы, сохранённые начиная с этой версии. Ссылки, отозванные до неё, также не дают доступ, а клиент сообщает об общей недоступности."
+  ],
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить SHA 775cb6c9c78f3a763490d30ec394a1bb2edfea25 по F519-PLAYER-RECONNECT-008 и F519-MASTER-MAP-PARITY-009, включая явный отзыв, актуальное состояние открытой вкладки, сравнение Mythic и исключение слоёв мастера из данных игрока. Обновить предварительную оценку 1.3-rc8 и отдельно подтвердить рабочую конфигурацию до выпуска.",
+  "forecast": {
+    "remaining_first_release_runs": [
+      2,
+      5
+    ],
+    "confidence": "low",
+    "basis": "Независимая проверка нового SHA, возможные правки, приёмка поставляемой конфигурации и выпуск. Ожидание рабочего сервиса и решения владельца не включено."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-28T01:04:20.082Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "at": "2026-11-28T01:22:50.793Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-28T01:22:50.793Z"
+}
