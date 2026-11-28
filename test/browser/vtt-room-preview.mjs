@@ -767,7 +767,7 @@ async function verifyLakeStartAndMove(browser) {
   }
 }
 
-async function verifyTrailFerry(browser) {
+async function verifyTrailFerry(browser, duplicateTrail = false) {
   const masterContext = await browser.newContext({viewport: {width: 1100, height: 680}});
   const playerContext = await browser.newContext({viewport: {width: 900, height: 620}});
   const preview = await startEditorPreview({playerPort: 0});
@@ -776,7 +776,9 @@ async function verifyTrailFerry(browser) {
     await editor.goto(preview.editorUrl);
     await editor.locator('.controls--transfer > button:not([disabled])').waitFor();
     const fixture = JSON.parse(await readFile(new URL('../fixtures/e5-river-editor.json', import.meta.url), 'utf8'));
-    fixture.map.roads[0].segments[0].kind = 'trail';
+    const trail = fixture.map.roads[0].segments[0];
+    trail.kind = 'trail';
+    if (duplicateTrail) fixture.map.roads[0].segments.push({...trail, from: trail.to, to: trail.from});
     fixture.map.crossings[0].kind = 'ferry';
     fixture.map.terrainByHexKey['2,0'] = {terrainOverride: 'lake', lakeId: fixture.counters.nextLakeId++};
     await editor.locator('input[type=file]').setInputFiles({name: 'trail-ferry.json', mimeType: 'application/json',
@@ -786,7 +788,10 @@ async function verifyTrailFerry(browser) {
     const [master] = await Promise.all([editor.waitForEvent('popup'), launch.click()]);
     await master.locator('#join').waitFor();
     const native = editor.locator('.river-crossing--ferry');
-    assert.equal(await native.locator('line.trail-line').count(), 2, 'editor shows both trail approaches');
+    assert.equal(await native.locator('line.trail-line').count(), 2, 'editor shows one trail approach per bank');
+    assert.equal(await native.locator('.trail-ferry-mark').count(), 1, 'editor shows one ferry glyph per crossing');
+    assert.equal(await master.locator('#map [data-route-kind="ferry"]').count(), 1);
+    assert.equal(await master.locator('#map [data-mark-kind="ferry"]').count(), 1);
     const nativeGlyph = await native.locator('.trail-ferry-mark').evaluate(element => {
       const [x, y] = element.parentElement.dataset.vttCrossingAnchor.split(',').map(Number);
       return element.getAttribute('points').trim().split(/\s+/).map(point => {
@@ -813,7 +818,9 @@ async function verifyTrailFerry(browser) {
       if (bank === '1,0') await moveEast(bank);
       const view = await state();
       verifyRouteBounds(view);
-      const [mark] = view.marks.filter(item => item.kind === 'ferry');
+      const marks = view.marks.filter(item => item.kind === 'ferry');
+      assert.equal(marks.length, 1);
+      const [mark] = marks;
       const glyphs = view.routes.filter(route => route.kind === 'ferry');
       assert.equal(glyphs.length, 1);
       assert.equal(glyphs[0].points.length, nativeGlyph.length);
@@ -825,14 +832,14 @@ async function verifyTrailFerry(browser) {
       if (bank === '0,0' && process.env.VTT_EVIDENCE_DIR) {
         await player.locator('#map').evaluate((map, crossing) =>
           map.setAttribute('viewBox', [crossing.x - 60, crossing.y - 45, 120, 90].join(' ')), mark);
-        await player.locator('#map').screenshot({path: join(process.env.VTT_EVIDENCE_DIR, 'trail-ferry-player.jpg'), quality: 72});
+        await player.locator('#map').screenshot({path: join(process.env.VTT_EVIDENCE_DIR, duplicateTrail ? 'trail-ferry-legacy-player.jpg' : 'trail-ferry-player.jpg'), quality: 72});
       }
     }
     await moveEast('2,0');
     const away = await state();
     assert.ok(!away.marks.some(mark => mark.kind === 'ferry'));
     assert.ok(!away.routes.some(route => route.kind === 'ferry' || route.kind === 'trail'));
-    console.log(JSON.stringify({mode:'trail-ferry',banks:['0,0','1,0'],nativeApproaches:2,wholeGlyph:true,
+    console.log(JSON.stringify({mode:duplicateTrail?'trail-ferry-legacy-reversed-copy':'trail-ferry',banks:['0,0','1,0'],nativeApproaches:2,wholeGlyph:true,
       visibleTrailApproachesPerBank:1,hiddenFrom:'2,0'}));
   } finally {
     await Promise.all([masterContext.close(), playerContext.close()]);
@@ -847,6 +854,7 @@ try {
   await verifyEditorRestore(browser);
   await verifyLakeStartAndMove(browser);
   await verifyTrailFerry(browser);
+  await verifyTrailFerry(browser, true);
 } finally {
   await browser.close();
 }

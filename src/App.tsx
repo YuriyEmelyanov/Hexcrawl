@@ -12813,8 +12813,20 @@ export function App() {
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    return renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
-  }, [positionedHexes, roads]);
+    const segments = renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
+    const ferryPairs = new Set(crossings.filter(crossing => crossing.kind === 'ferry')
+      .map(crossing => `${crossing.roadId}:${crossing.roadSegmentKey}`));
+    const renderedFerries = new Set<string>();
+    // Older saves can contain both directions of one edge. Keep the same
+    // segment for the ferry's direction and for drawing its two approaches.
+    return segments.filter(segment => {
+      const key = `${segment.roadId}:${segment.segmentKey}`;
+      if (!ferryPairs.has(key)) return true;
+      if (renderedFerries.has(key)) return false;
+      renderedFerries.add(key);
+      return true;
+    });
+  }, [positionedHexes, roads, crossings]);
   const renderedCrossings = useMemo(() => renderRiverCrossings(roadSegments, crossings), [roadSegments, crossings]);
 
   const riverOffset = useMemo(() => {
@@ -16020,7 +16032,7 @@ export function App() {
       const response = await fetch(new URL('/open', vttPreview.url), {
         method: 'POST',
         headers: {'content-type': 'application/json', ...(masterKey ? {authorization: 'Bearer ' + masterKey} : {})},
-        body: JSON.stringify({save, position: vttStartHex, resume: Boolean(masterKey), crossingArtworkVersion: 2,
+        body: JSON.stringify({save, position: vttStartHex, resume: Boolean(masterKey), crossingArtworkVersion: 3,
           routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois(), masterLines: captureVttMasterLines()})
       });
       if (response.status === 409) {

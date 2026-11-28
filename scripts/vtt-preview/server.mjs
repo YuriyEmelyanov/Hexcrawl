@@ -306,7 +306,7 @@ function restoreRoom(snapshot, poiPaths) {
 }
 
 function readCrossingArtworkVersion(value) {
-  return value === 1 || value === 2 ? value : 0;
+  return value === 1 || value === 2 || value === 3 ? value : 0;
 }
 
 function readPois(supplied, cells, paths) {
