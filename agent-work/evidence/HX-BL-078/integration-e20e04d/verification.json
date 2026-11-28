@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "run_id": "2026-11-28-reviewer-HX078-integration-dry-run-1000",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "branch": "agent/hx078-vtt-live-1",
+  "pr": 519,
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+  "release_base_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+  "integration_sha": "6142d162011c6c422e31d2d12cafd77420a05115",
+  "integration_tree_sha": "e20e04d07ca5a6162ee6f125c1d1046998101b14",
+  "integration_local_only": true,
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "previous_review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-775cb6c-0600.json",
+  "previous_strategy_result_ref": "agent-work/results/2026-11-28-strategist-HX078-https-pilot-0800.json",
+  "recorded_at": "2026-11-28T07:16:49.344Z",
+  "status": "integration_changes_requested",
+  "publication_authorized": false,
+  "release_ready": false,
+  "published": false,
+  "scope": "Local integrated runtime verification, inc. independent temporary browser test",
+  "previous_source_CI": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46091727619",
+  "independent_agent": {
+    "method": "separate fresh context, read-only exact merge review",
+    "finding": "Both source changes preserved. Reverse legacy edge maps to one crossing record but to more than one rendered ferry geometry. Static inspection independently identified composed gap before runtime confirmation."
+  },
+  "evidence": {
+    "full_check": {
+      "command": "npm run check",
+      "exit_code": 0,
+      "node_tests": {
+        "executed": 461,
+        "passed": 461,
+        "failed": 0,
+        "skipped": 0
+      },
+      "node_duration_ms": 725992.339123,
+      "build": "✓ built in 10.13s"
+    },
+    "standard_vtt_preview": {
+      "command": "node test/browser/vtt-room-preview.mjs",
+      "exit_code": 0,
+      "observations": [
+        {
+          "mode": "classic",
+          "fixture": "classic-six-regions-seed42.json",
+          "contexts": 5,
+          "durableRoomRestart": true,
+          "failedSavePreservedMove": true,
+          "revokedOpenTabs": 2,
+          "closedAndRotatedLinksSurvivedRestart": true,
+          "nativeLaunchFromSavedFineView": true,
+          "nativeZoomRetainedAfterRecovery": true,
+          "allCells": 52,
+          "firstCells": 7,
+          "afterCells": 6,
+          "from": {
+            "q": 0,
+            "r": 1
+          },
+          "to": {
+            "q": 0,
+            "r": 0
+          },
+          "proposedDirection": 2,
+          "rotated": false,
+          "matchedEngravings": 3,
+          "matchedBlends": 1,
+          "editorRoutes": 92,
+          "playerRoutesBefore": 7,
+          "playerRoutesAfter": 7,
+          "markTypes": [
+            "bridge"
+          ],
+          "marksBefore": [
+            "bridge"
+          ],
+          "marksAfter": [
+            "bridge"
+          ],
+          "masterPoints": 12,
+          "playerPointsBefore": [],
+          "playerPointsAfter": [
+            {
+              "q": 0,
+              "r": 0,
+              "icon": "/poi/v2/land/village.svg",
+              "fill": "#ACB978"
+            }
+          ],
+          "editorImport": true,
+          "reopenedFromEditor": true,
+          "previewSurvivesReload": true,
+          "samePlayerLink": true
+        },
+        {
+          "mode": "knave",
+          "fixture": "classic-six-regions-seed42.json",
+          "contexts": 3,
+          "durableRoomRestart": false,
+          "failedSavePreservedMove": false,
+          "allCells": 52,
+          "firstCells": 7,
+          "afterCells": 6,
+          "from": {
+            "q": 0,
+            "r": 1
+          },
+          "to": {
+            "q": 0,
+            "r": 0
+          },
+          "proposedDirection": 2,
+          "rotated": false,
+          "matchedEngravings": 3,
+          "matchedBlends": 1,
+          "editorRoutes": 92,
+          "playerRoutesBefore": 7,
+          "playerRoutesAfter": 7,
+          "markTypes": [
+            "bridge"
+          ],
+          "marksBefore": [
+            "bridge"
+          ],
+          "marksAfter": [
+            "bridge"
+          ],
+          "masterPoints": 12,
+          "playerPointsBefore": [],
+          "playerPointsAfter": [
+            {
+              "q": 0,
+              "r": 0,
+              "icon": "/poi/v2/land/village.svg",
+              "fill": "#ACB978"
+            }
+          ],
+          "editorImport": true,
+          "reopenedFromEditor": true,
+          "previewSurvivesReload": true,
+          "samePlayerLink": true
+        },
+        {
+          "mode": "crows",
+          "fixture": "classic-six-regions-seed42.json",
+          "contexts": 3,
+          "durableRoomRestart": false,
+          "failedSavePreservedMove": false,
+          "allCells": 52,
+          "firstCells": 7,
+          "afterCells": 6,
+          "from": {
+            "q": 0,
+            "r": 1
+          },
+          "to": {
+            "q": 0,
+            "r": 0
+          },
+          "proposedDirection": 2,
+          "rotated": false,
+          "matchedEngravings": 3,
+          "matchedBlends": 1,
+          "editorRoutes": 92,
+          "playerRoutesBefore": 7,
+          "playerRoutesAfter": 7,
+          "markTypes": [
+            "bridge"
+          ],
+          "marksBefore": [
+            "bridge"
+          ],
+          "marksAfter": [
+            "bridge"
+          ],
+          "masterPoints": 12,
+          "playerPointsBefore": [],
+          "playerPointsAfter": [
+            {
+              "q": 0,
+              "r": 0,
+              "icon": "/poi/v2/land/village.svg",
+              "fill": "#ACB978"
+            }
+          ],
+          "editorImport": true,
+          "reopenedFromEditor": true,
+          "previewSurvivesReload": true,
+          "samePlayerLink": true
+        },
+        {
+          "mode": "mythic",
+          "fixture": "terrain-display-map.json",
+          "contexts": 3,
+          "durableRoomRestart": false,
+          "failedSavePreservedMove": false,
+          "allCells": 206,
+          "firstCells": 7,
+          "afterCells": 7,
+          "from": {
+            "q": 0,
+            "r": 1
+          },
+          "to": {
+            "q": 0,
+            "r": 0
+          },
+          "proposedDirection": 2,
+          "rotated": true,
+          "matchedEngravings": 6,
+          "matchedBlends": 1,
+          "editorRoutes": 398,
+          "playerRoutesBefore": 13,
+          "playerRoutesAfter": 9,
+          "markTypes": [
+            "ferry",
+            "bridge",
+            "waterfall"
+          ],
+          "marksBefore": [
+            "bridge"
+          ],
+          "marksAfter": [
+            "ferry"
+          ],
+          "masterPoints": 41,
+          "playerPointsBefore": [
+            {
+              "q": 0,
+              "r": 1,
+              "icon": "/poi/v2/land/capital.svg",
+              "fill": "#ACB978"
+            }
+          ],
+          "playerPointsAfter": [],
+          "editorImport": true,
+          "reopenedFromEditor": true,
+          "previewSurvivesReload": true,
+          "samePlayerLink": true
+        },
+        {
+          "mode": "classic-generated-editor-restore",
+          "seed": 42,
+          "startingHex": "3,-2",
+          "confirmedHex": "4,-2",
+          "sameEditorGeography": true,
+          "samePlayerLink": true,
+          "confirmedReload": true,
+          "pendingProposalReload": true,
+          "fileImport": false,
+          "distinctPlayerOrigin": true,
+          "playerContexts": 2,
+          "deniedMasterRoutesOnPlayerOrigin": true,
+          "samePlayerLinkAfterServiceRestart": true,
+          "browserConfirmedSnapshot": true,
+          "offlineReadOnly": true,
+          "oldRoomReconnected": true,
+          "firstMasterLoadInterrupted": true,
+          "resumedOriginalRoomFromCachedMap": true,
+          "existingPlayerResumedWithoutReload": true
+        },
+        {
+          "mode": "lake-start-and-return",
+          "regionlessLake": "-2,12",
+          "waterInRegion": "-2,10",
+          "waterBiomeOmittedAfterReload": true,
+          "playerLinkPreserved": true
+        },
+        {
+          "mode": "trail-ferry",
+          "banks": [
+            "0,0",
+            "1,0"
+          ],
+          "nativeApproaches": 2,
+          "wholeGlyph": true,
+          "visibleTrailApproachesPerBank": 1,
+          "hiddenFrom": "2,0"
+        }
+      ],
+      "first_attempt": {
+        "status": "browser_target_crashed",
+        "failure_scope": "environment diagnosis",
+        "retried": "passed on same tree with browser checks run sequentially"
+      }
+    },
+    "standard_https": {
+      "command": "npm run test:browser:vtt-production",
+      "exit_code": 0,
+      "observation": {
+        "mode": "production-https",
+        "editorOrigin": true,
+        "separateMasterAndPlayerOrigins": true,
+        "productionEntry": true,
+        "confirmedMove": true,
+        "roomRestart": true,
+        "samePlayerLink": true,
+        "authorisedProjectionAfterRestart": true,
+        "publicBundleSecretFree": true,
+        "isolatedRooms": true,
+        "sameMapEditorRecovery": true,
+        "linkedEditorTabsIsolated": true,
+        "from": "0,1",
+        "to": "0,0"
+      }
+    },
+    "temporary_composed_flow": {
+      "mode": "integrated-seed44-manual-delta-to-vtt",
+      "beforeRiverStrokes": 7,
+      "afterRiverStrokes": 8,
+      "playerScopedMap": true,
+      "from": "2,-1",
+      "to": "3,-1",
+      "sameInviteAfterRestart": true
+    },
+    "paired_ferry_control": {
+      "mode": "integrated-legacy-trail-ferry",
+      "caseName": "single",
+      "editorFerry": 1,
+      "playerFerry": 1,
+      "masterFerry": 1,
+      "playerMarks": 1,
+      "nativeApproaches": 2,
+      "playerApproaches": 1,
+      "playerStart": "2,-1"
+    },
+    "paired_ferry_duplicate": {
+      "mode": "integrated-legacy-trail-ferry",
+      "caseName": "duplicate",
+      "editorFerry": 2,
+      "playerFerry": 2,
+      "masterFerry": 2,
+      "playerMarks": 1,
+      "nativeApproaches": 4,
+      "playerApproaches": 3,
+      "playerStart": "2,-1"
+    }
+  },
+  "finding": {
+    "id": "F519-INTEGRATION-DUP-FERRY-010",
+    "severity": "P2",
+    "blocking": true,
+    "status": "open",
+    "confidence": "paired_browser_case_on_exact_integration_tree",
+    "acceptance_ids": [
+      "VTT-AC03",
+      "VTT-AC06"
+    ],
+    "requirement_ids": [
+      "VTT-R04",
+      "VTT-R09"
+    ],
+    "summary": "На поддерживаемом старом сохранении с прямой и обратной копиями одного ребра тропы при создании рукава дельты у одного парома два изображения в редакторе, у мастера и у игрока. На первом берегу игрок видит три подхода вместо одного. Единственная отметка парома остаётся в данных.",
+    "expected": "Одна логическая переправа отображается одним полным знаком и одним подходом на каждом разрешённом берегу. Поведение сохраняется при прямой и обратной записи одного ребра. В стандартном сохранении с одним ребром форма знака и односторонняя проекция сохраняются.",
+    "scope": "Только дублирование картографической отрисовки парома и подходов при допустимом импорте. Сохранность старого JSON и уже проверенной логики формирования переправы учитываются отдельно. Внешний стенд для исправления не требуется.",
+    "refs": [
+      "src/App.tsx:11079-11108",
+      "src/App.tsx:15965-15996",
+      "src/App.tsx:17603-17625",
+      "scripts/vtt-preview/routes.mjs:82-111",
+      "agent-work/evidence/HX-BL-078/integration-e20e04d/README.md",
+      "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-diagnostic.mjs"
+    ],
+    "control": {
+      "kind": "same seed 44 map, one trail segment",
+      "editorGlyphs": 1,
+      "masterGlyphs": 1,
+      "playerGlyphs": 1,
+      "playerMarks": 1,
+      "editorApproaches": 2,
+      "playerApproaches": 1
+    },
+    "observed": {
+      "kind": "same seed 44 map, a single reversed duplicate trail segment",
+      "editorGlyphs": 2,
+      "masterGlyphs": 2,
+      "playerGlyphs": 2,
+      "playerMarks": 1,
+      "editorApproaches": 4,
+      "playerApproaches": 3
+    }
+  },
+  "artifact_commit": "5400ea4adf7d576ba85860249b73cb6bafb5ffdd",
+  "artifact_refs": [
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-delta-editor.jpg",
+      "sha": "b9439c611990bbf9b0735350b0de4c050d9f7668"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-delta-master.jpg",
+      "sha": "768b122df411986767af181ca80f0b7ea7c55843"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-single-ferry-player.jpg",
+      "sha": "7a22a666d771cc18ee95699c9f0f05f3e32d52e1"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-duplicate-ferry-player.jpg",
+      "sha": "540be84696aa5db77ffabe9c16eec7959605572f"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-diagnostic.mjs",
+      "sha": "c40baeadfeefda235ab8ac9448b22d6758a6a80d"
+    },
+    {
+      "path": "agent-work/evidence/HX-BL-078/integration-e20e04d/README.md",
+      "sha": "214954dc5cc5f430f524cbf48c45ca6d8a864ded"
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "6142d162011c6c422e31d2d12cafd77420a05115",
+    "head_sha": "6142d162011c6c422e31d2d12cafd77420a05115",
+    "source_parent_refs": [
+      "3858b059ec940cc77c63b99c29ca17825268ab38",
+      "775cb6c9c78f3a763490d30ec394a1bb2edfea25"
+    ],
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "No repository changes for this review. Standard test suites already exist on parents.",
+    "count_source": "No tracked source change from the exact combined tree",
+    "reuse_or_new_reason": "Temporary comparative browser diagnostic fills a gap between existing D74 Node and VTT browser tests. It remains evidence only.",
+    "runners": {
+      "node_full": {
+        "executed": 461,
+        "passed": 461,
+        "failed": 0,
+        "skipped": 0
+      },
+      "standard_vtt_preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "standard_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_combined_path": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_paired_ferry": {
+        "executed": 2,
+        "passed": 1,
+        "failed": 1,
+        "skipped": 0
+      }
+    }
+  },
+  "external_dependency": {
+    "status": "awaiting_owner_for_bounded_https_pilot",
+    "owner_has_existing_stand": false,
+    "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "local_review_blocked": false,
+    "remote_review_completed": false,
+    "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+    "next_step": "Ожидается решение владельца по HX-BL-078-HTTPS-PILOT: временный стенд Selectel до 72 ч, лимит потребления 30 ₽, возможное первое пополнение 200 ₽ и назначение доступа к проекту и трём тестовым поддоменам. После разрешения программист готовит проверяемый интеграционный SHA. Независимый кандидат HX-BL-068 уже ожидает утверждения.",
+    "confirmed_pages_entry_missing": true,
+    "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-775cb6c-0600-delivery.json",
+    "ci_https_completed": true,
+    "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_public_stand_missing": true,
+    "default_pages_vtt_configured": false,
+    "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+    "release_blockers": [
+      "F519-INTEGRATION-DUP-FERRY-010",
+      "production_vtt_endpoint_and_deployment_unverified"
+    ],
+    "public_hosting_required_before_release": true,
+    "local_implementation_checks_completed": true,
+    "local_https_completed": true,
+    "hosting_evidence": {
+      "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+      "pages_workflow_sha": "2eae82e9a9f4d87b5ed61de2391febf25ce534df",
+      "configured_room_origin": false,
+      "ref": ".github/workflows/deploy.yml",
+      "build_setting": "HEXCRAWL_VTT_PREVIEW_URL",
+      "preview_service_scope": "loopback integration fixture"
+    },
+    "prior_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
+    "planning_completed": true,
+    "delivery_pilot_proposal_ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
+    "provisioned": false,
+    "independent_code_fix_ready": true
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/integration-e20e04d/score-assessment.json"
+}
