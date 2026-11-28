@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "run_id": "2026-11-28-reviewer-HX078-775cb6c-0600",
+  "branch": "agent/hx078-vtt-live-1",
+  "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "reviewed_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "base_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+  "tree_sha": "deb07dccfbd5bf7eda8099a45549a766ebfab821",
+  "pr": 519,
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-775cb6c-0600.json",
+  "prior_review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-412e20c-0200.json",
+  "source_programmer_result_ref": "agent-work/results/2026-11-28-programmer-HX078-reconnect-map-0400.json",
+  "recorded_at": "2026-11-28T03:02:36.782Z",
+  "status": "local_review_passed_release_blocked",
+  "local_review_accepted": true,
+  "local_review_completed": true,
+  "release_ready": false,
+  "publication_authorized": false,
+  "published": false,
+  "external_dependency": {
+    "status": "blocked_for_remote_verification",
+    "owner_has_existing_stand": false,
+    "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "local_review_blocked": false,
+    "remote_review_completed": false,
+    "required": "Тестовый HTTPS-адрес сервиса комнаты, приватный вход мастера и отдельный вход игрока.",
+    "next_step": "Уточнить существующую передачу по HTTPS-размещению для HX-BL-078: выбрать один вариант для сервиса комнат с постоянным состоянием, отдельными адресами мастера и игрока и явной настройкой адреса сервиса в сборке сайта. Зафиксировать стоимость, владельца эксплуатации и условия остановки. После решения о среде проверить один сквозной сценарий на подготовленной конфигурации и получить отдельное согласование выпуска.",
+    "confirmed_pages_entry_missing": true,
+    "owner_clarification_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-775cb6c-0600-delivery.json",
+    "ci_https_completed": true,
+    "ci_https_checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46068466005",
+    "external_public_stand_missing": true,
+    "default_pages_vtt_configured": false,
+    "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
+    "release_blockers": [
+      "production_vtt_endpoint_and_deployment_unverified"
+    ],
+    "public_hosting_required_before_release": true,
+    "local_implementation_checks_completed": true,
+    "local_https_completed": true,
+    "hosting_evidence": {
+      "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+      "pages_workflow_sha": "2eae82e9a9f4d87b5ed61de2391febf25ce534df",
+      "configured_room_origin": false,
+      "ref": ".github/workflows/deploy.yml",
+      "build_setting": "HEXCRAWL_VTT_PREVIEW_URL",
+      "preview_service_scope": "loopback integration fixture"
+    },
+    "prior_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json"
+  },
+  "role": "reviewer",
+  "role_selection_reason": "В утверждённой очереди готов точный SHA PR519, предыдущий исполнитель сдал работу, claims сверены. HX-BL-064 и HX-BL-069 ждут интервью. Баллы за опубликованные PR511 и PR520 учтены.",
+  "verdict": "local_review_passed_release_blocked",
+  "result": "Оба замечания PR519 подтверждены исправленными на точном SHA. Состав пакета принят в проверенной локальной и CI конфигурации. Для выпуска нужен подключённый и проверенный сервис комнат.",
+  "claim_ref": "agent-work/claims/2026-11-28-reviewer-HX078-775cb6c-0600.json",
+  "generation": 1008,
+  "verified_findings": [
+    {
+      "id": "F519-PLAYER-RECONNECT-008",
+      "status": "verified_fixed",
+      "proof": "При отсутствии снимка открытая вкладка скрыла карту и отключила ходы. После возврата того же состояния она снова показала разрешённую карту по прежней ссылке без обновления. В случаях закрытия и ротации сервер сохранил явный отзыв после рестарта.",
+      "acceptance_ids": [
+        "VTT-AC08",
+        "VTT-AC01",
+        "VTT-AC06"
+      ],
+      "refs": [
+        "scripts/vtt-preview/ui.mjs:314-358",
+        "scripts/vtt-preview/ui.mjs:401-424",
+        "test/browser/vtt-room-preview.mjs:429-433",
+        "test/browser/vtt-room-preview.mjs:667-697"
+      ]
+    },
+    {
+      "id": "F519-MASTER-MAP-PARITY-009",
+      "status": "verified_fixed",
+      "proof": "Штатная карта Mythic с одним королевством и 24 препятствиями. Координаты относительно общего гекса, цвет, толщина и штрихи совпали. Два игрока не видели слои, их JSON сохраняет ограниченное представление.",
+      "acceptance_ids": [
+        "VTT-AC03",
+        "VTT-AC06"
+      ],
+      "refs": [
+        "src/App.tsx:15974-15981",
+        "scripts/vtt-preview/server.mjs:201-210",
+        "test/browser/vtt-room-preview.mjs:153-199"
+      ]
+    }
+  ],
+  "findings": [],
+  "open_code_findings": [],
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46091727619",
+  "checks_status": "success",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-775cb6c/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-775cb6c/score-assessment.json",
+  "score_assessment_status": "insufficient_evidence",
+  "confirmed_delta": 0,
+  "score_update_status": "not_due_unpublished",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-775cb6c-0600-delivery.json",
+  "limitations": [
+    "Для прежних снимков два слоя добавляются после входа мастера из редактора.",
+    "Старые отзывы до этого изменения остаются недоступными; без сохранённой отметки об отзыве клиент показывает общую недоступность.",
+    "Прогоны HTTPS используют тестовые адреса. Рабочий адрес сервиса и интеграция с актуальной main подлежат отдельной проверке перед выпуском."
+  ],
+  "test_change_summary": {
+    "base_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
+    "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+    "added": 0,
+    "removed": 0,
+    "modified": 3,
+    "suite": "Chromium VTT room preview",
+    "scenario_risk": [
+      "Classic: durable explicit revocation after service restart",
+      "Mythic: master/editor geometry, style and role-specific visibility of kingdom boundaries and obstacles",
+      "Classic generated: existing player tab reconnects without reload after temporarily missing room state"
+    ],
+    "reuse_or_new_reason": "Expanded three existing browser flows. Each checks a distinct observable behavior and uses the existing fixtures and runner.",
+    "count_source": "Exact diff 412e20c..775cb6c, executable cases within verifyRoom (Classic and Mythic) and verifyEditorRestore. Temporary migration diagnostic counted separately.",
+    "runners": {
+      "local_browser_preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "local_browser_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_legacy_snapshot_diagnostic": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    },
+    "reviewer_disposition": "Все три изменения полезны и не дублируются. Они расширяют уже существующие логические случаи по разным контрактам: длительность явного отзыва, совпадение двух слоёв с редактором и возвращение в уже открытую вкладку без ручного reload. Временная проверка видимой стрелки учтена отдельно.",
+    "reviewer_runners": {
+      "vtt_room_preview": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      },
+      "vtt_production_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "temporary_visible_arrow": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "tracked": false
+      }
+    }
+  },
+  "forecast": {
+    "confidence": "low",
+    "remaining_first_release_runs": [
+      3,
+      5
+    ],
+    "basis": "Подготовка и решение по среде, конфигурация, независимая проверка поставляемого пакета и выпуск. Ожидание внешнего ресурса и решений отдельно."
+  },
+  "next_role": "strategist-manager",
+  "next_step": "Уточнить существующую передачу по HTTPS-размещению для HX-BL-078: выбрать один вариант для сервиса комнат с постоянным состоянием, отдельными адресами мастера и игрока и явной настройкой адреса сервиса в сборке сайта. Зафиксировать стоимость, владельца эксплуатации и условия остановки. После решения о среде проверить один сквозной сценарий на подготовленной конфигурации и получить отдельное согласование выпуска.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-28T02:58:26.091Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "at": "2026-11-28T03:02:36.782Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-28T03:02:36.782Z"
+}
