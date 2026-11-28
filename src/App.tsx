@@ -3,6 +3,7 @@ import { CROWS_BUILDINGS, CROWS_SETTLEMENTS, EMPTY_CROWS_SETTLEMENTS, isCrowsSet
 import { CrowsVillageInfo } from './CrowsVillageInfo';
 import { fillCornathWorld, type MapWorld } from './crowsWorld';
 import { MapWorldInfo } from './MapWorldInfo';
+import {readVttMap, rememberVttMap, writeVttMap} from './vttMapCache';
 import {assignDiscovery, type DiscoveryMap} from './poiDiscovery';
 import {routeClearance} from './routeClearance';
 import {refinedRouteBends} from './refinedRouteBends';
@@ -51,6 +52,7 @@ import {buildNaturalLakes} from './rendering/lakeGeometry';
 import { Engraving, EngravingLoading } from './rendering/EngravedTerrain';
 import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engravingAssets';
 import { terrainTextures } from './rendering/terrainBlend';
+import { HEX_SIZE, toPixel, getHexPolygonPoints, hexPoints, getHexWidth } from './rendering/baseHexArtwork';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
 import { MANUAL_BIOMES, manualBiome, type ManualBiomeId } from './rendering/manualBiomes';
@@ -409,7 +411,6 @@ type ChooseBiomeResult = {
   reason?: 'river_height_constraint_failed';
 };
 
-const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
@@ -583,6 +584,7 @@ const SVG_EXPORT_STYLES = `
   .trail-line { stroke:#8b6a3f; stroke-width:2.25; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
   .trail-line--ford { stroke-dasharray:none; stroke-dashoffset:0; opacity:.42; }
   .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
+  .trail-ferry-mark { fill:none; stroke:#f6eed5; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
   .dbg-node-candidate { fill:#57df63; }
@@ -902,29 +904,9 @@ function getBoundaryHexes(region: Region): AxialHex[] {
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
 }
 
-function toPixel(q: number, r: number) {
-  return {
-    x: HEX_SIZE * SQRT3 * (q + r / 2),
-    y: HEX_SIZE * 1.5 * r
-  };
-}
-
 // Расстояние В ТАЙЛАХ (число гексов) от центра карты по гексовой метрике.
 function hexDistanceFromCenter(hex: AxialHex): number {
   return (Math.abs(hex.q) + Math.abs(hex.q + hex.r) + Math.abs(hex.r)) / 2;
-}
-
-function getHexPolygonPoints(cx: number, cy: number, size: number): Array<{ x: number; y: number }> {
-  const points: Array<{ x: number; y: number }> = [];
-  for (let i = 0; i < 6; i += 1) {
-    const angle = (Math.PI / 180) * (60 * i - 30);
-    points.push({ x: cx + size * Math.cos(angle), y: cy + size * Math.sin(angle) });
-  }
-  return points;
-}
-
-function hexPoints(cx: number, cy: number, size: number) {
-  return getHexPolygonPoints(cx, cy, size).map((point) => `${point.x},${point.y}`).join(' ');
 }
 
 function getHexCoordinateLabelLayout(cx: number, cy: number, sourceHeight: number, isRotated: boolean) {
@@ -2207,10 +2189,6 @@ function shuffleArray<T>(values: T[], rng: RandomStreams = fallbackRandomStreams
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
-}
-
-function getHexWidth(hexSize: number): number {
-  return SQRT3 * hexSize;
 }
 
 function getNewRiverFullnessForHeight(heightLevel: RegionHeightLevel): RiverFullness {
@@ -12412,6 +12390,12 @@ function completeRegionRoadConnections(options: {
 const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Parameters<typeof generateRoadsForRegionImpl>[0], rng: RandomStreams = fallbackRandomStreams) =>
   completeRegionRoadConnections({ ...options, ...generateRoadsForRegionImpl(options, rng) }));
 
+declare const __HEXCRAWL_VTT_PREVIEW_URL__: string | null;
+// Some editor harnesses compile this module without the Vite preview definitions.
+const vttPreview = typeof __HEXCRAWL_VTT_PREVIEW_URL__ === 'string'
+  ? {url: __HEXCRAWL_VTT_PREVIEW_URL__}
+  : null;
+
 export function App() {
   const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
   const generationRef = useRef(cloneGenerationState(initialGeneration));
@@ -12557,8 +12541,8 @@ export function App() {
   const [nextObstacleId, setNextObstacleId] = useState(1);
   const [nextRiverId, setNextRiverId] = useState(1);
   const [riverFeatureOverrides,setRiverFeatureOverrides] = useState<RiverFeatures>(emptyRiverFeatures);
-  const importInFlight = useRef(false);
-  const [isImporting, setIsImporting] = useState(false);
+  const importInFlight = useRef(Boolean(vttPreview));
+  const [isImporting, setIsImporting] = useState(Boolean(vttPreview));
   const discoveries = useRef<DiscoveryMap>({});
   const [gmNotesByHexKey, setGmNotesByHexKey] = useState<Record<string, string>>({});
   const notesMapRef = useRef(gmNotesByHexKey);
@@ -12849,8 +12833,20 @@ export function App() {
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    return renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
-  }, [positionedHexes, roads]);
+    const segments = renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
+    const ferryPairs = new Set(crossings.filter(crossing => crossing.kind === 'ferry')
+      .map(crossing => `${crossing.roadId}:${crossing.roadSegmentKey}`));
+    const renderedFerries = new Set<string>();
+    // Older saves can contain both directions of one edge. Keep the same
+    // segment for the ferry's direction and for drawing its two approaches.
+    return segments.filter(segment => {
+      const key = `${segment.roadId}:${segment.segmentKey}`;
+      if (!ferryPairs.has(key)) return true;
+      if (renderedFerries.has(key)) return false;
+      renderedFerries.add(key);
+      return true;
+    });
+  }, [positionedHexes, roads, crossings]);
   const renderedCrossings = useMemo(() => renderRiverCrossings(roadSegments, crossings), [roadSegments, crossings]);
 
   const riverOffset = useMemo(() => {
@@ -15960,6 +15956,139 @@ export function App() {
     }
   });
 
+  const [vttLaunchStatus, setVttLaunchStatus] = useState<'idle' | 'pending' | 'popup' | 'different-map' | 'error'>('idle');
+  const [vttCacheStatus, setVttCacheStatus] = useState<'idle' | 'restored' | 'restore-error' | 'write-error'>('idle');
+  const vttCachedRoom = useRef<{identity: string; masterKey: string}>();
+  const vttNativeSave = (save: ReturnType<typeof createSaveData>): ReturnType<typeof createSaveData> => {
+    const grid = save.map.physicalGrid;
+    if (!grid || grid.viewStep === 6) return save;
+    // The stored zoom uses the saved grid's step. Preserve the view when
+    // rewriting that step for the native-scale room and editor restoration.
+    return {
+      ...save,
+      map: {...save.map, physicalGrid: {...grid, viewStep: 6}},
+      ui: {...save.ui, mapScale: save.ui.mapScale * grid.viewStep / 6}
+    };
+  };
+  const vttMapIdentity = (save: ReturnType<typeof createSaveData>) =>
+    JSON.stringify([save.ui.generationMode, !!save.ui.knaveEnabled, !!save.ui.crowsEnabled, vttNativeSave(save).map]);
+  const vttAvailable = vttPreview && !fineActive && !automaticFinePreparing && !editMode;
+  const vttStartHex = vttAvailable && selectedHex && positionedHexes.hexes.some(h => h.key === hexKey(selectedHex) && h.kind !== 'candidate')
+    ? selectedHex : null;
+
+  const captureVttRoutes = () => {
+    const renderedRoutes = mapSvgRef.current?.querySelectorAll<SVGPolylineElement | SVGLineElement>(
+      '.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail, .roads-layer .trail-ferry-mark'
+    );
+    return Array.from(renderedRoutes ?? [], stroke => {
+      const kind = stroke.classList.contains('river-polyline') ? 'river'
+        : stroke.classList.contains('river-direction-arrow') ? 'river-arrow'
+        : stroke.classList.contains('river-rapid-mark') ? 'rapid'
+        : stroke.classList.contains('bridge-rail') ? 'rail'
+        : stroke.classList.contains('trail-ferry-mark') ? 'ferry'
+        : stroke.classList.contains('trail-line') ? 'trail' : 'road';
+      const points = stroke.tagName === 'polyline'
+        ? stroke.getAttribute('points')!.split(' ').map(point => point.split(',').map(Number))
+        : [['x1', 'y1'], ['x2', 'y2']].map(pair => pair.map(name => Number(stroke.getAttribute(name))));
+      const style = getComputedStyle(stroke);
+      const crossing = (kind === 'rail' || kind === 'ferry' || stroke.classList.contains('road-line--ford') ||
+        stroke.classList.contains('trail-line--ford')) && stroke.closest('[data-vtt-crossing-anchor]')
+        ?.getAttribute('data-vtt-crossing-anchor')?.split(',').map(Number);
+      return {
+        kind,
+        width: Number.parseFloat(style.strokeWidth),
+        faded: Number(style.opacity) < 1,
+        solid: style.strokeDasharray === 'none',
+        ...(kind === 'river-arrow' ? {arrowSize: Number(stroke.getAttribute('data-vtt-arrow-size'))} : {}),
+        ...(crossing ? {crossing: [crossing[0] - riverOffset.x, crossing[1] - riverOffset.y]} : {}),
+        points: points.map(([x, y]) => [x - riverOffset.x, y - riverOffset.y])
+      };
+    });
+  };
+
+  const captureVttMasterLines = () => {
+    const lines = mapSvgRef.current?.querySelectorAll<SVGLineElement>('.kingdom-boundaries > line, .obstacles-layer > line');
+    return Array.from(lines ?? []).map(line => ({
+      kind: line.parentElement?.classList.contains('kingdom-boundaries') ? 'kingdom' : 'obstacle',
+      from: [Number(line.getAttribute('x1')) - riverOffset.x, Number(line.getAttribute('y1')) - riverOffset.y],
+      to: [Number(line.getAttribute('x2')) - riverOffset.x, Number(line.getAttribute('y2')) - riverOffset.y],
+      stroke: line.getAttribute('stroke')
+    }));
+  };
+
+  const captureVttMarks = () => [
+    ...renderedCrossings.map(({kind, x, y}) => ({kind, x: x - riverOffset.x, y: y - riverOffset.y})),
+    ...riverWaterfalls.map(({x, y}) => ({kind: 'waterfall', x: x - riverOffset.x, y: y - riverOffset.y}))
+  ];
+
+  const captureVttPois = () => {
+    const markers = mapSvgRef.current?.querySelectorAll<SVGGElement>('.emoji-layer > [data-vtt-poi-owner]');
+    return Array.from(markers ?? []).flatMap(marker => {
+      const cell = marker.getAttribute('data-engraved-poi')!;
+      const [q, r] = cell.split(',').map(Number);
+      const owner = marker.getAttribute('data-vtt-poi-owner')!;
+      const fill = marker.querySelector('circle')!.getAttribute('fill');
+      const point = (key: string, icon: string | null) => ({q, r, icon, fill,
+        discovery: discoveries.current[key] ?? (generationMode === 'classic' ? 'passage' : null)});
+      const points = [point(owner, marker.querySelector('image')!.getAttribute('href'))];
+      const water = waterPoiByKey.get(cell);
+      if (water && owner.startsWith('poi:')) points.push(point(`waterPoi:${cell}`, getPoiSvgHref(water, true)));
+      return points;
+    });
+  };
+
+  const openVttPreview = async () => {
+    if (!vttPreview || !vttAvailable || !vttStartHex || !renderDetails || documentBusy() || importInFlight.current || vttLaunchStatus === 'pending') return;
+    const roomTab = window.open('about:blank', '_blank');
+    if (!roomTab) {
+      setVttLaunchStatus('popup');
+      return;
+    }
+    roomTab.opener = null;
+    setVttLaunchStatus('pending');
+    try {
+      // The detached editor viewport is already at native scale. Keep the
+      // physical grid edits, but send the scale of the view being played.
+      const save = vttNativeSave(createSaveData());
+      const identity = vttMapIdentity(save);
+      const masterKey = vttCachedRoom.current?.identity === identity ? vttCachedRoom.current.masterKey : undefined;
+      const response = await fetch(new URL('/open', vttPreview.url), {
+        method: 'POST',
+        headers: {'content-type': 'application/json', ...(masterKey ? {authorization: 'Bearer ' + masterKey} : {})},
+        body: JSON.stringify({save, position: vttStartHex, resume: Boolean(masterKey), crossingArtworkVersion: 3,
+          routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois(), masterLines: captureVttMasterLines()})
+      });
+      if (response.status === 409) {
+        roomTab.close();
+        setVttLaunchStatus('different-map');
+        return;
+      }
+      if (masterKey && response.status === 404) {
+        // The same master can view the confirmed browser snapshot while its
+        // room is absent. The room page will reconnect with this authority.
+        roomTab.location.replace(new URL('/master#' + masterKey, vttPreview.url).href);
+        setVttLaunchStatus('idle');
+        return;
+      }
+      if (!response.ok) throw new Error('Unable to open preview room');
+      const {masterPath} = await response.json();
+      const openedKey = typeof masterPath === 'string' && /^\/master#([A-Za-z0-9_-]{32})$/.exec(masterPath)?.[1];
+      if (!openedKey || (masterKey && openedKey !== masterKey)) throw new Error('Unexpected master room');
+      vttCachedRoom.current = {identity, masterKey: openedKey};
+      try {
+        await writeVttMap(vttPreview.url, save, openedKey);
+        setVttCacheStatus('idle');
+      } catch {
+        setVttCacheStatus('write-error');
+      }
+      roomTab.location.replace(new URL('/master#' + openedKey, vttPreview.url).href);
+      setVttLaunchStatus('idle');
+    } catch {
+      roomTab.close();
+      setVttLaunchStatus('error');
+    }
+  };
+
   const handleExportPng = async () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
@@ -16000,6 +16129,108 @@ export function App() {
     if(mutationBlocked()) return;
     jsonImportInputRef.current?.click();
   };
+  const prepareSavedDocument = (parsed: ValidatedHexcrawlSaveData) => {
+    const detached=structuredClone(parsed);
+    const imported=splitImportedRegions(detached);
+    if (imported!==detached) assertHexcrawlSaveData(imported);
+    const terrain=new Map(Object.entries(imported.map.terrainByHexKey));
+    const hexes=imported.map.regions.flatMap(r=>r.hexes);
+    const classic = (imported.ui.generationMode ?? 'classic') === 'classic';
+    const blockedGrowthKeys = getSeaHexKeys(terrain);
+    if (classic) {
+      for (const [key, entry] of terrain) {
+        if (entry.terrainOverride === 'lake') blockedGrowthKeys.add(key);
+      }
+    }
+    const frontier = getCandidateHexes(hexes, blockedGrowthKeys);
+    const frontierKeys = new Set(frontier.map(hexKey));
+    const savedCandidates = imported.map.candidateHexes ?? [];
+    let candidates = frontier;
+    if (imported.version >= 7) {
+      const savedKeys = savedCandidates.map(hexKey);
+      const unique = new Set(savedKeys).size === savedKeys.length;
+      if (unique && classic && savedCandidates.every(candidate =>
+        frontierKeys.has(hexKey(candidate)) || isLakeHex(candidate, terrain)
+      )) {
+        // Preserve valid saved order while removing lake entries and filling omissions.
+        const retained = savedCandidates.filter(candidate => frontierKeys.delete(hexKey(candidate)));
+        candidates = [...retained, ...frontier.filter(candidate => frontierKeys.has(hexKey(candidate)))];
+      } else if (unique && savedKeys.length === frontier.length && savedKeys.every(key => frontierKeys.has(key))) {
+        candidates = savedCandidates;
+      }
+    }
+    const seed=imported.map.toponyms?.seed ?? legacyToponymSeed(imported.map.regions);
+    const retainedNames=imported.map.toponyms?.names ?? {};
+    const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
+    const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
+    const obstacleData=imported.version>=5
+      ? {obstacles:(imported.map.obstacles ?? []) as EditableObstacle[],nextObstacleId:normalizeObstacleCounter((imported.map.obstacles ?? []) as EditableObstacle[],imported.counters.nextObstacleId!)}
+      : migrateLegacyObstacles(imported.map.obstacles as Obstacle[] | undefined);
+    const riverData=imported.version>=7
+      ? {riverFeatures:structuredClone(imported.map.riverFeatures!),nextRiverId:imported.counters.nextRiverId!}
+      : migrateRiverEditing(imported.map.rivers);
+    const seaData=imported.version>=9?{seas:imported.map.seas!,nextSeaId:imported.map.nextSeaId!}:migrateSeas(terrain);
+    const selection=imported.ui.selectedHex;
+    const after:DocumentSnapshot={
+      map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,crowsSettlements:imported.map.crowsSettlements,crowsEnvironmentByHex:imported.map.crowsEnvironmentByHex,
+        poiDiscovery:{...Object.fromEntries(Object.entries(imported.map.knave?.discoveryByPoi??{}).map(([key,value])=>[key,value.mode])),...imported.map.poiDiscovery},
+        knave:imported.map.knave?{...imported.map.knave,discoveryByPoi:{}}:undefined,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
+        candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
+        hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
+        biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
+        nextLakeId:Math.max(imported.counters.nextLakeId,Math.max(0,...Array.from(terrain.values(),t=>t.lakeId??0))+1),
+        nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
+      requiresFineAdaptation:!imported.map.physicalGrid,generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,crowsEnabled:imported.ui.crowsEnabled,
+      selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
+      isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1),MAX_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1))
+    };
+    const prepared=copyDocument(after);
+    return {prepared, scene:validateAcceptedLakeShores(prepared.map), legacy:!imported.generation};
+  };
+  const applySavedDocument = (
+    {prepared, scene, legacy}: ReturnType<typeof prepareSavedDocument>,
+    recordUndo: boolean
+  ) => {
+    if (recordUndo) {
+      const transaction={before:copyDocument(captureDocument()),after:copyDocument(prepared)};
+      setUndoHistory(current=>[...current,transaction].slice(-100));
+      setRedoHistory([]);
+    }
+    if(scene)preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
+    applyPreparedDocument(prepared);
+    setEditMode(false);
+    setLegacyNotice(legacy);
+    setGenerationError(null);
+  };
+  useEffect(() => {
+    if (!vttPreview) return;
+    let cancelled = false;
+    const restore = async () => {
+      try {
+        const cached = await readVttMap(vttPreview.url);
+        if (cancelled || cached === undefined) return;
+        const record = cached && typeof cached === 'object' && 'save' in cached && 'masterKey' in cached ? cached : null;
+        const saved = record ? record.save : cached;
+        assertHexcrawlSaveData(saved);
+        applySavedDocument(prepareSavedDocument(saved), false);
+        if (typeof record?.masterKey === 'string' && /^[A-Za-z0-9_-]{32}$/.test(record.masterKey)) {
+          vttCachedRoom.current = {identity: vttMapIdentity(saved), masterKey: record.masterKey};
+          rememberVttMap(vttPreview.url, record.masterKey);
+        }
+        setVttCacheStatus('restored');
+      } catch {
+        if (!cancelled) setVttCacheStatus('restore-error');
+      } finally {
+        if (!cancelled) {
+          importInFlight.current = false;
+          setIsImporting(false);
+        }
+      }
+    };
+    void restore();
+    return () => { cancelled = true; };
+  }, []);
+
   const handleImportJson = async (event: ChangeEvent<HTMLInputElement>) => {
     const file=event.target.files?.[0]; event.target.value='';
     if(!file || mutationBlocked()) return;
@@ -16009,67 +16240,9 @@ export function App() {
       const text=await readTextFile(file); stage='json';
       const parsed:unknown=JSON.parse(text); stage='validation'; assertHexcrawlSaveData(parsed);
       stage='preparation';
-      const detached=structuredClone(parsed);
-      const imported=splitImportedRegions(detached);
-      if (imported!==detached) assertHexcrawlSaveData(imported);
-      const terrain=new Map(Object.entries(imported.map.terrainByHexKey));
-      const hexes=imported.map.regions.flatMap(r=>r.hexes);
-      const classic = (imported.ui.generationMode ?? 'classic') === 'classic';
-      const blockedGrowthKeys = getSeaHexKeys(terrain);
-      if (classic) {
-        for (const [key, entry] of terrain) {
-          if (entry.terrainOverride === 'lake') blockedGrowthKeys.add(key);
-        }
-      }
-      const frontier = getCandidateHexes(hexes, blockedGrowthKeys);
-      const frontierKeys = new Set(frontier.map(hexKey));
-      const savedCandidates = imported.map.candidateHexes ?? [];
-      let candidates = frontier;
-      if (imported.version >= 7) {
-        const savedKeys = savedCandidates.map(hexKey);
-        const unique = new Set(savedKeys).size === savedKeys.length;
-        if (unique && classic && savedCandidates.every(candidate =>
-          frontierKeys.has(hexKey(candidate)) || isLakeHex(candidate, terrain)
-        )) {
-          // Preserve valid saved order while removing lake entries and filling omissions.
-          const retained = savedCandidates.filter(candidate => frontierKeys.delete(hexKey(candidate)));
-          candidates = [...retained, ...frontier.filter(candidate => frontierKeys.has(hexKey(candidate)))];
-        } else if (unique && savedKeys.length === frontier.length && savedKeys.every(key => frontierKeys.has(key))) {
-          candidates = savedCandidates;
-        }
-      }
-      const seed=imported.map.toponyms?.seed ?? legacyToponymSeed(imported.map.regions);
-      const retainedNames=imported.map.toponyms?.names ?? {};
-      const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
-      const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
-      const obstacleData=imported.version>=5
-        ? {obstacles:(imported.map.obstacles ?? []) as EditableObstacle[],nextObstacleId:normalizeObstacleCounter((imported.map.obstacles ?? []) as EditableObstacle[],imported.counters.nextObstacleId!)}
-        : migrateLegacyObstacles(imported.map.obstacles as Obstacle[] | undefined);
-      const riverData=imported.version>=7
-        ? {riverFeatures:structuredClone(imported.map.riverFeatures!),nextRiverId:imported.counters.nextRiverId!}
-        : migrateRiverEditing(imported.map.rivers);
-      const seaData=imported.version>=9?{seas:imported.map.seas!,nextSeaId:imported.map.nextSeaId!}:migrateSeas(terrain);
-      const selection=imported.ui.selectedHex;
-      const before=captureDocument();
-      const after:DocumentSnapshot={
-        map:{physicalGrid:imported.map.physicalGrid,world:imported.map.world,crowsSettlements:imported.map.crowsSettlements,crowsEnvironmentByHex:imported.map.crowsEnvironmentByHex,
-          poiDiscovery:{...Object.fromEntries(Object.entries(imported.map.knave?.discoveryByPoi??{}).map(([key,value])=>[key,value.mode])),...imported.map.poiDiscovery},
-          knave:imported.map.knave?{...imported.map.knave,discoveryByPoi:{}}:undefined,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
-          candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
-          hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
-          biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
-          nextLakeId:Math.max(imported.counters.nextLakeId,Math.max(0,...Array.from(terrain.values(),t=>t.lakeId??0))+1),
-          nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
-        requiresFineAdaptation:!imported.map.physicalGrid,generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,crowsEnabled:imported.ui.crowsEnabled,
-        selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
-        isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1),MAX_MAP_SCALE*(imported.map.physicalGrid?.viewStep===1?6:1))
-      };
-      // Everything that can fail (including deep copies) is prepared before the first setter.
-      const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
-      const scene=validateAcceptedLakeShores(prepared.map);
-      if(scene)preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
-      setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
-      applyPreparedDocument(prepared); setEditMode(false); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
+      applySavedDocument(prepareSavedDocument(parsed), true);
+      vttCachedRoom.current = undefined;
+      trackGoal('import_json');
     } catch(error) {
       console.error('JSON import failed', {stage, path: error instanceof SaveValidationError ? error.path : '$'});
       const path=error instanceof SaveValidationError?error.path:'$';
@@ -17421,6 +17594,7 @@ export function App() {
                   x2={arrow.x2}
                   y2={arrow.y2}
                   className="river-direction-arrow"
+                  data-vtt-arrow-size={5 * getRiverArrowScale(arrow.fullness)}
                   strokeWidth={1.2 * getRiverArrowScale(arrow.fullness)}
                   markerEnd={`url(#river-arrowhead-${arrow.fullness})`}
                 />
@@ -17449,15 +17623,22 @@ export function App() {
                 const afterX = crossing.x + crossing.ux * gap;
                 const afterY = crossing.y + crossing.uy * gap;
                 if (crossing.kind === 'ferry') return (
-                  <g key={segment.key} className="river-crossing river-crossing--ferry">
-                    {segment.kind === 'road' && <>
-                      <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
-                      <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
-                    </>}
+                  <g key={segment.key} className="river-crossing river-crossing--ferry"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
+                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className={lineClass} />
+                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className={lineClass} />
+                    {segment.kind === 'trail' && <polyline className="trail-ferry-mark" points={svgPoints(
+                      [[-5, 0], [-3, 2.5], [3, 2.5], [5, 0], [-5, 0], [-2, 0], [-1, -2.5], [2, -2.5], [3, 0]]
+                        .map(([along, across]) => ({
+                          x: crossing.x + crossing.ux * along + crossing.nx * across,
+                          y: crossing.y + crossing.uy * along + crossing.ny * across
+                        }))
+                    )} />}
                   </g>
                 );
                 if (crossing.kind === 'ford') return (
-                  <g key={segment.key} className="river-crossing river-crossing--ford">
+                  <g key={segment.key} className="river-crossing river-crossing--ford"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
                     {segment.kind === 'trail' ? (
                       <>
                         <line
@@ -17492,7 +17673,8 @@ export function App() {
                 const railOffset = 4;
                 const railLength = 11;
                 return (
-                  <g key={segment.key} className="river-crossing river-crossing--bridge">
+                  <g key={segment.key} className="river-crossing river-crossing--bridge"
+                    data-vtt-crossing-anchor={vttPreview ? `${crossing.x},${crossing.y}` : undefined}>
                     {paintedRoad}
                     {[-1, 1].map((side) => {
                       const offset = side * railOffset;
@@ -17588,7 +17770,8 @@ export function App() {
                   : getWaterPoiLabel(waterKind!, language));
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 const size = HEX_SIZE * .62;
-                return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
+                return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none"
+                  data-vtt-poi-owner={vttPreview ? (land ? `poi:${region.id}:${hex.key}` : `waterPoi:${hex.key}`) : undefined}>
                   <circle cx={position.x} cy={position.y} r={HEX_SIZE * .425} fill={engravingFor(id)!.poiColor}
                     stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
                   <image className="poi-marker" href={getPoiSvgHref(presentation?.icon??kind, !land)}
@@ -18391,6 +18574,23 @@ export function App() {
 
             </div>
           </div>
+          {vttAvailable && <div className="vtt-preview-entry">
+            {vttCacheStatus === 'restored' && <p role="status">{language === 'ru'
+              ? 'Карта игры восстановлена.' : 'Game map restored.'}</p>}
+            {vttCacheStatus === 'restore-error' && <p role="alert">{language === 'ru'
+              ? 'Не удалось восстановить карту игры из браузера.' : 'Unable to restore the game map from this browser.'}</p>}
+            {vttCacheStatus === 'write-error' && <p role="alert">{language === 'ru'
+              ? 'Не удалось сохранить карту игры в браузере.' : 'Unable to save the game map in this browser.'}</p>}
+            {vttLaunchStatus === 'popup' && <p role="alert">{language === 'ru'
+              ? 'Разрешите открытие новой вкладки.' : 'Allow the browser to open a new tab.'}</p>}
+            {vttLaunchStatus === 'different-map' && <p role="alert">{language === 'ru'
+              ? 'В тестовой комнате уже открыта другая версия карты.' : 'The preview room already contains a different version of the map.'}</p>}
+            {vttLaunchStatus === 'error' && <p role="alert">{language === 'ru'
+              ? 'Не удалось подключиться к тестовой комнате.' : 'Unable to connect to the preview room.'}</p>}
+            <button type="button" disabled={!vttStartHex || !renderDetails || documentBusy() || isImporting || vttLaunchStatus === 'pending'}
+              title={!vttStartHex ? (language === 'ru' ? 'Выберите стартовый гекс' : 'Select a starting hex') : undefined}
+              onClick={() => void openVttPreview()}>{language === 'ru' ? 'Гекскроул' : 'Hexcrawl'}</button>
+          </div>}
 
         </div>
       </section>

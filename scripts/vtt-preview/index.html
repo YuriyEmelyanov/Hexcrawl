@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HexCrawl · изолированный прогон VTT</title>
+<link rel="stylesheet" href="/style.css">
+<main>
+  <aside>
+    <h1>Гекскроул</h1>
+    <p id="role">5–6 миль</p>
+    <p>Позиция <output id="position">—</output></p>
+    <p id="progress" role="status">Подключение…</p>
+    <p id="save-warning" role="status" hidden>Не удалось сохранить положение в браузере.</p>
+    <div id="share-controls" hidden>
+      <a id="join" hidden>Ссылка игроков</a>
+      <p id="access-closed" hidden>Доступ игроков закрыт</p>
+      <div>
+        <button id="rotate-link" type="button">Сменить ссылку</button>
+        <button id="close-access" type="button">Закрыть доступ</button>
+      </div>
+    </div>
+    <div id="choices" aria-label="Направление хода"></div>
+    <div id="master-controls" hidden>
+      <button id="confirm" disabled>Подтвердить ход</button>
+      <button id="cancel" disabled>Отменить</button>
+      <div role="group" aria-label="Обзор карты">
+        <button id="fit-map" type="button">Вся карта</button>
+        <button id="focus-party" type="button">К отряду</button>
+        <button id="zoom-in" type="button" aria-label="Приблизить карту">+</button>
+        <button id="zoom-out" type="button" aria-label="Отдалить карту">−</button>
+      </div>
+    </div>
+  </aside>
+  <svg id="map" role="img" aria-label="Карта гекскроула"></svg>
+</main>
+<script type="module" src="/ui.mjs"></script>
+</html>
