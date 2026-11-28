@@ -151,14 +151,16 @@ function draw(next) {
     if (accessOpen) join.href = next.playerUrl ?? next.playerPath;
     else join.removeAttribute('href');
     confirm.disabled = cancel.disabled = !connected || next.proposal === null;
-    for (const button of get('choices').querySelectorAll('button')) button.disabled = !connected;
   }
+  setMoveEnabled(connected);
   const {x, y} = toPixel(next.position.q, next.position.r);
   if (fit) camera = wholeMapFrame();
   drawCamera();
   const {defs, terrain} = drawTerrain(next);
   const layer = shape('g', next.rotated ? {transform: 'rotate(90)'} : {});
-  layer.append(...terrain, drawRoutes(next.routes, defs), drawMarks(next.marks, next.rotated), drawPois(next.pois, next.rotated));
+  layer.append(...terrain, drawRoutes(next.routes, defs));
+  if (master && next.masterLines?.length) layer.append(...drawMasterLines(next.masterLines));
+  layer.append(drawMarks(next.marks, next.rotated), drawPois(next.pois, next.rotated));
   layer.append(shape('path', {class: 'color-hex-grid',
     d: hexGridPath(next.cells.map(cell => toPixel(cell.q, cell.r)), HEX_SIZE),
     fill: 'none', stroke: '#575242', 'stroke-opacity': .22, 'stroke-width': .55,
@@ -240,6 +242,18 @@ function drawRoutes(routes, defs) {
   return group;
 }
 
+function drawMasterLines(lines) {
+  const kingdoms = shape('g', {'data-master-kingdoms': '', 'pointer-events': 'none'});
+  const obstacles = shape('g', {'data-master-obstacles': '', 'pointer-events': 'none'});
+  for (const {kind, from: [x1, y1], to: [x2, y2], stroke} of lines) {
+    const boundary = kind === 'kingdom';
+    (boundary ? kingdoms : obstacles).append(shape('line', {
+      x1, y1, x2, y2, stroke, 'stroke-width': 3, ...(boundary ? {'stroke-dasharray': '6 4'} : {})
+    }));
+  }
+  return [kingdoms, obstacles];
+}
+
 const markLabels = {bridge: 'Мост', ferry: 'Переправа', ford: 'Брод', waterfall: 'Водопад'};
 
 function drawMarks(marks, rotated) {
@@ -293,20 +307,31 @@ function directionAngle(direction) {
   return Math.atan2(y, x) * 180 / Math.PI;
 }
 
+function setMoveEnabled(enabled) {
+  for (const button of get('choices').querySelectorAll('button')) button.disabled = !enabled;
+}
+
+async function isRevoked(response) {
+  if (master || response.status !== 404) return false;
+  const body = await response.json().catch(() => null);
+  return body?.revoked === true;
+}
+
 async function refresh() {
   if (revoked) return;
   const response = await fetch('/state', {headers});
-  if (!master && response.status === 404) return showRevoked();
+  if (await isRevoked(response)) return showRevoked();
   if (!response.ok) throw new Error('Room unavailable');
   const next = await response.json();
   if (revoked) return;
-  if ((master && !connected) || !view || next.revision > view.revision || (next.revision === view.revision && progress.dataset.error)) {
+  if (!connected || !view || next.revision > view.revision || (next.revision === view.revision && progress.dataset.error)) {
+    if (!master && !connected) commandError = '';
     connected = true;
     delete progress.dataset.error;
     draw(next);
     if (master) {
-      const {position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois} = next;
-      const snapshot = {schema: 1, position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois};
+      const {position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois, masterLines} = next;
+      const snapshot = {schema: 1, position, revision, rotated, mapMode, history, cells, currentKeys, routes, marks, pois, masterLines};
       const cache = await masterCache;
       if (!cache) {
         get('save-warning').hidden = false;
@@ -318,29 +343,35 @@ async function refresh() {
   }
 }
 
-function showRevoked() {
-  revoked = true;
+function hidePlayerView(message) {
+  connected = false;
   view = undefined;
   position.value = '—';
   get('role').textContent = role;
-  progress.textContent = 'Доступ по этой ссылке закрыт';
+  progress.textContent = message;
   map.replaceChildren();
-  for (const button of get('choices').querySelectorAll('button')) button.disabled = true;
+  setMoveEnabled(false);
+}
+
+function showRevoked() {
+  revoked = true;
+  hidePlayerView('Доступ по этой ссылке закрыт');
 }
 
 async function action(kind, details = {}) {
-  if (revoked || (master && !connected)) return;
+  if (revoked || !connected) return;
   commandError = '';
   try {
     const response = await fetch('/state', {method: 'POST',
       headers: {...headers, 'content-type': 'application/json'},
       body: JSON.stringify({kind, revision: view?.revision, ...details})});
-    if (!master && response.status === 404) return showRevoked();
+    if (await isRevoked(response)) return showRevoked();
     if (response.status === 503) commandError = 'Не удалось сохранить состояние комнаты';
     else if (!response.ok) commandError = 'Действие не применено';
     await refresh();
   } catch {
     commandError = 'Связь с комнатой потеряна';
+    if (!master && !revoked) hidePlayerView(commandError);
   }
   if (!revoked && commandError) progress.textContent = commandError;
 }
@@ -348,7 +379,7 @@ async function action(kind, details = {}) {
 vectors.forEach((_, direction) => {
   const button = document.createElement('button');
   button.type = 'button';
-  button.disabled = master;
+  button.disabled = true;
   button.dataset.direction = direction;
   button.setAttribute('aria-label', `Предложить ход, направление ${direction + 1}`);
   const icon = shape('svg', {viewBox: '0 0 20 20', width: 18, height: 18, 'aria-hidden': true});
@@ -382,7 +413,8 @@ async function followRoom() {
           if (current && (wasConnected || !view)) draw({...current, proposal: null, playerPath: null});
         }
       }
-      if (!master || !connected) progress.textContent = master && view
+      if (!master) hidePlayerView('Связь с комнатой потеряна');
+      else if (!connected) progress.textContent = view
         ? 'Комната недоступна. Показано последнее сохранённое положение.'
         : 'Связь с комнатой потеряна';
     }

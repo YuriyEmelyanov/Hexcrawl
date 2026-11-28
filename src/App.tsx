@@ -15971,6 +15971,16 @@ export function App() {
     });
   };
 
+  const captureVttMasterLines = () => {
+    const lines = mapSvgRef.current?.querySelectorAll<SVGLineElement>('.kingdom-boundaries > line, .obstacles-layer > line');
+    return Array.from(lines ?? []).map(line => ({
+      kind: line.parentElement?.classList.contains('kingdom-boundaries') ? 'kingdom' : 'obstacle',
+      from: [Number(line.getAttribute('x1')) - riverOffset.x, Number(line.getAttribute('y1')) - riverOffset.y],
+      to: [Number(line.getAttribute('x2')) - riverOffset.x, Number(line.getAttribute('y2')) - riverOffset.y],
+      stroke: line.getAttribute('stroke')
+    }));
+  };
+
   const captureVttMarks = () => [
     ...renderedCrossings.map(({kind, x, y}) => ({kind, x: x - riverOffset.x, y: y - riverOffset.y})),
     ...riverWaterfalls.map(({x, y}) => ({kind: 'waterfall', x: x - riverOffset.x, y: y - riverOffset.y}))
@@ -16011,7 +16021,7 @@ export function App() {
         method: 'POST',
         headers: {'content-type': 'application/json', ...(masterKey ? {authorization: 'Bearer ' + masterKey} : {})},
         body: JSON.stringify({save, position: vttStartHex, resume: Boolean(masterKey), crossingArtworkVersion: 2,
-          routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois()})
+          routes: captureVttRoutes(), marks: captureVttMarks(), pois: captureVttPois(), masterLines: captureVttMasterLines()})
       });
       if (response.status === 409) {
         roomTab.close();

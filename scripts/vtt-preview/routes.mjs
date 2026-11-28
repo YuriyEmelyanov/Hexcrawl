@@ -38,6 +38,17 @@ export function readMarks(marks) {
   });
 }
 
+export function readMasterLines(lines) {
+  if (lines === undefined) return undefined;
+  if (!Array.isArray(lines)) throw new Error('Invalid master map artwork');
+  return lines.map(({kind, from, to, stroke}) => {
+    const validStroke = kind === 'kingdom' ? /^hsl\([0-9]+ 65% 68%\)$/.test(stroke)
+      : kind === 'obstacle' && stroke === '#a95650';
+    if (!validStroke || !finitePoint(from) || !finitePoint(to)) throw new Error('Invalid master map line');
+    return {kind, from, to, stroke};
+  });
+}
+
 function hexPolygon({q, r}) {
   const {x, y} = toPixel(q, r);
   return getHexPolygonPoints(x, y, HEX_SIZE);

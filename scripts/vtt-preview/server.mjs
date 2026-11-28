@@ -4,7 +4,7 @@ import {stripTypeScriptTypes} from 'node:module';
 import {createHash, randomBytes} from 'node:crypto';
 import {readdir, readFile} from 'node:fs/promises';
 import {applyAction, directions, mapCells, viewOf, visibleAt} from './room.mjs';
-import {readRoutes, routesAt, readMarks, marksAt} from './routes.mjs';
+import {readRoutes, routesAt, readMarks, marksAt, readMasterLines} from './routes.mjs';
 import {roomStorage} from './room-storage.mjs';
 
 const key = ({q, r}) => `${q},${r}`;
@@ -100,6 +100,13 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
     res.end(body);
   };
   const json = (res, status, body) => send(res, status, 'application/json; charset=utf-8', JSON.stringify(body));
+  function denyRoom(req, res) {
+    const playerPath = req.headers['x-preview-room'];
+    const retiredKey = typeof playerPath === 'string' && /^\/play\/[\w-]{22}$/.test(playerPath)
+      ? digestMap(playerPath) : null;
+    const revoked = retiredKey !== null && [...rooms.values()].some(room => room.retiredPlayerKeys.includes(retiredKey));
+    return json(res, 404, {error: 'Room unavailable', ...(revoked ? {revoked: true} : {})});
+  }
   async function handle(req, res, playerOnly) {
     const path = new URL(req.url, 'http://localhost').pathname;
     if (playerOnly && (path === '/open' || path === '/master')) return json(res, 404, {error: 'Room unavailable'});
@@ -115,7 +122,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       if (req.method !== 'POST') return json(res, 404, {error: 'Unavailable'});
       let candidate, editorMap, reopening;
       try {
-        const {save, position, routes, marks, pois, resume, crossingArtworkVersion} = await readJson(req, 16 * 1024 * 1024);
+        const {save, position, routes, marks, pois, resume, crossingArtworkVersion, masterLines} = await readJson(req, 16 * 1024 * 1024);
         reopening = resume === true;
         const mapMode = readMapMode(save);
         const viewStep = save?.map?.physicalGrid?.viewStep ?? 6;
@@ -129,7 +136,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
         const cells = mapCells(save);
         const state = {position: {q: position.q, r: position.r}, proposal: null, revision: 0, mapMode, rotated};
         candidate = {cells, state, mapDigest, routes: readRoutes(routes), marks: readMarks(marks),
-          pois: readPois(pois, cells, poiPaths), history: visibleAt(cells, state.position).map(key),
+          pois: readPois(pois, cells, poiPaths), masterLines: readMasterLines(masterLines), history: visibleAt(cells, state.position).map(key),
           crossingArtworkVersion: readCrossingArtworkVersion(crossingArtworkVersion)};
       } catch {
         return json(res, 400, {error: 'Invalid map'});
@@ -150,17 +157,18 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
           }
         }
         const upgradeArtwork = room && (legacyMatch || candidate.crossingArtworkVersion > room.crossingArtworkVersion);
+        const upgradeMasterLines = room && room.masterLines === undefined && candidate.masterLines !== undefined;
         try {
           if (!room) {
             if (!candidate.cells.has(key(candidate.state.position))) return json(res, 400, {error: 'Select an existing hex'});
             if (rooms.size >= maxRooms) return json(res, 503, {error: 'Room capacity reached'});
-            room = {...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath()};
+            room = {...candidate, masterKey: randomBytes(24).toString('base64url'), playerPath: newPlayerPath(), retiredPlayerKeys: []};
             await saveRoom(room);
-          } else if (upgradeArtwork || room.state.rotated !== rotated) {
+          } else if (upgradeArtwork || upgradeMasterLines || room.state.rotated !== rotated) {
             const state = {...room.state, rotated, revision: room.state.revision + 1};
             const artwork = upgradeArtwork ? {cells: candidate.cells, routes: candidate.routes, marks: candidate.marks,
               pois: candidate.pois, mapDigest: candidate.mapDigest, crossingArtworkVersion: candidate.crossingArtworkVersion} : {};
-            room = {...room, ...artwork, state};
+            room = {...room, ...artwork, state, masterLines: upgradeMasterLines ? candidate.masterLines : room.masterLines};
             await saveRoom(room);
           }
         } catch {
@@ -187,7 +195,8 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       }
     }
     const access = roomAccess(rooms, req.headers, playerOnly);
-    if (path !== '/state' || !access) return json(res, 404, {error: 'Room unavailable'});
+    if (path !== '/state') return json(res, 404, {error: 'Room unavailable'});
+    if (!access) return denyRoom(req, res);
     const {room, role} = access;
     if (req.method === 'GET') {
       const master = role === 'master';
@@ -198,7 +207,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
       const {routes, marks} = master ? room : localAt(room);
       const view = {...viewOf(cells, state, master), routes, marks, pois: drawings};
       const playerUrl = playerPath && linkOrigin ? new URL(playerPath, linkOrigin).href : undefined;
-      return json(res, 200, master ? {...view, playerPath, playerUrl, history} : view);
+      return json(res, 200, master ? {...view, playerPath, playerUrl, history, masterLines: room.masterLines ?? []} : view);
     }
     if (req.method !== 'POST') return json(res, 405, {error: 'Method unavailable'});
     let action;
@@ -211,7 +220,7 @@ export async function startPreview({port = 0, playerPort, playerOrigin, editorOr
     return mutate(async () => {
       // The link may have been revoked while this request was waiting to write.
       const current = roomAccess(rooms, req.headers, playerOnly);
-      if (!current || current.room.masterKey !== room.masterKey) return json(res, 404, {error: 'Room unavailable'});
+      if (!current || current.room.masterKey !== room.masterKey) return denyRoom(req, res);
       const next = nextRoom(current.room, action, current.role === 'master');
       if (!next) return json(res, 409, {error: 'Action not applied'});
       try {
@@ -261,7 +270,8 @@ function nextRoom(room, action, master) {
   if (action.kind === 'close-player-access' || action.kind === 'rotate-player-link') {
     if (!master || action.expectedPlayerPath !== room.playerPath) return null;
     const playerPath = action.kind === 'rotate-player-link' ? newPlayerPath() : null;
-    return {...room, playerPath, state: {...room.state, revision: room.state.revision + 1}};
+    const retiredPlayerKeys = room.playerPath === null ? room.retiredPlayerKeys : [...room.retiredPlayerKeys, digestMap(room.playerPath)];
+    return {...room, playerPath, retiredPlayerKeys, state: {...room.state, revision: room.state.revision + 1}};
   }
   const state = applyAction(room.cells, room.state, action, master);
   if (!state) return null;
@@ -272,7 +282,7 @@ function nextRoom(room, action, master) {
 }
 
 function restoreRoom(snapshot, poiPaths) {
-  const {state, history, masterKey, playerPath, mapDigest} = snapshot;
+  const {state, history, masterKey, playerPath, mapDigest, retiredPlayerKeys = []} = snapshot;
   const cells = new Map(snapshot.cells.map(({q, r, biome, height, water}) => {
     if (!Number.isSafeInteger(q) || !Number.isSafeInteger(r) ||
         (biome !== null && typeof biome !== 'string') || ![1, 2, 3].includes(height) ||
@@ -281,13 +291,15 @@ function restoreRoom(snapshot, poiPaths) {
   }));
   if (!/^[\w-]{32}$/.test(masterKey) || (playerPath !== null && !/^\/play\/[\w-]{22}$/.test(playerPath)) ||
       !/^[0-9a-f]{64}$/.test(mapDigest) || !cells.has(key(state.position)) ||
+      !Array.isArray(retiredPlayerKeys) || !retiredPlayerKeys.every(key => typeof key === 'string' && /^[0-9a-f]{64}$/.test(key)) ||
       !['classic', 'knave', 'crows', 'mythic'].includes(state.mapMode) || typeof state.rotated !== 'boolean' ||
       !Number.isSafeInteger(state.revision) || state.revision < 0 ||
       (state.proposal !== null && (!Number.isInteger(state.proposal) || !directions[state.proposal])) ||
       !Array.isArray(history) || !history.every(coord => cells.has(coord))) {
     throw new Error('Invalid saved VTT room');
   }
-  return {state, cells, history, masterKey, playerPath, mapDigest,
+  return {state, cells, history, masterKey, playerPath, mapDigest, retiredPlayerKeys,
+    masterLines: readMasterLines(snapshot.masterLines),
     crossingArtworkVersion: readCrossingArtworkVersion(snapshot.crossingArtworkVersion),
     routes: readRoutes(snapshot.routes), marks: readMarks(snapshot.marks),
     pois: readPois(snapshot.pois, cells, poiPaths)};

@@ -176,7 +176,28 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       }
     };
     await verifyPoi(before, mode === 'mythic' ? '0,1' : null);
-    if (mode === 'mythic') assert.match(await first.locator('[data-poi="0,1"]').getAttribute('transform'), /^rotate\(-90 /);
+    if (mode === 'mythic') {
+      assert.match(await first.locator('[data-poi="0,1"]').getAttribute('transform'), /^rotate\(-90 /);
+      const readLines = (page, selector, anchor) => page.locator(selector).evaluateAll((lines, anchor) => {
+        const vertices = document.querySelector(anchor).getAttribute('points').split(' ')
+          .map(pair => pair.split(',').map(Number));
+        const [x, y] = [0, 1].map(axis => vertices.reduce((sum, point) => sum + point[axis], 0) / vertices.length);
+        return lines.map(line => {
+          const style = getComputedStyle(line);
+          const coordinates = ['x1', 'y1', 'x2', 'y2'].map((name, axis) =>
+            Math.round((Number(line.getAttribute(name)) - (axis % 2 ? y : x)) * 1000) || 0);
+          return {coordinates, stroke: style.stroke, width: style.strokeWidth, dash: style.strokeDasharray};
+        });
+      }, anchor);
+      for (const [editorLayer, roomLayer] of [
+        ['.kingdom-boundaries', '[data-master-kingdoms]'], ['.obstacles-layer', '[data-master-obstacles]']
+      ]) {
+        const editorLines = await readLines(editor, editorLayer + ' > line', 'polygon[data-hex-key="0,1"]');
+        assert.ok(editorLines.length > 0, 'the Mythic fixture contains ' + editorLayer);
+        assert.deepEqual(await readLines(master, roomLayer + ' > line', 'polygon[data-cell="0,1"]'), editorLines);
+        for (const player of [first, second]) assert.equal(await player.locator(roomLayer).count(), 0);
+      }
+    }
     const editorRoutes = editor.locator('.rivers-layer > polyline.river-polyline, .rivers-layer > .river-direction-arrow, .rivers-layer > .river-rapid-mark, .roads-layer .road-line, .roads-layer .trail-line, .roads-layer .bridge-rail');
     const editorRouteCount = await editorRoutes.count();
     assert.ok(editorRouteCount > 0, 'the imported map has real rivers and routes');
@@ -406,7 +427,9 @@ async function verifyRoom(browser, {mode, label, addOn, fixture = 'classic-six-r
       assert.equal(await master.locator('#join').getAttribute('href'), null);
       assert.equal(await master.locator('#position').textContent(), '1,1');
       for (const old of [offeredLink, rotatedLink]) {
-        assert.equal((await playerState({'x-preview-room': old})).status(), 404);
+        const retired = await playerState({'x-preview-room': old});
+        assert.equal(retired.status(), 404);
+        assert.equal((await retired.json()).revoked, true, 'explicit revocation is known after restart');
         assert.equal((await first.request.get(new URL(old, roomUrl).href)).status(), 404);
       }
 
@@ -651,6 +674,9 @@ async function verifyEditorRestore(browser) {
       assert.equal(await master.locator('#choices button:disabled').count(), 6);
       assert.equal(await master.locator('[data-proposal]').count(), 0);
       assert.equal((await master.request.get(playerUrl)).status(), 404, 'resume does not silently create a room');
+      await player.getByText('Связь с комнатой потеряна', {exact: true}).waitFor({timeout: 5000});
+      assert.equal(await player.locator('[data-cell]').count(), 0);
+      assert.equal(await player.locator('#choices button:disabled').count(), 6);
       await screenshot(master, 'master-saved-position');
     } finally {
       await rename(storagePath + '.held', storagePath);
@@ -659,15 +685,16 @@ async function verifyEditorRestore(browser) {
     await master.locator('#join').waitFor();
     assert.equal(await master.locator('#join').getAttribute('href'), originalLink);
     assert.equal(await master.locator('[data-proposal]').getAttribute('data-proposal'), String(pending.proposal));
-    await player.reload();
     await player.waitForFunction(value => document.querySelector('#position').value === value, destination);
+    assert.equal(await player.locator('#choices button:enabled').count(), 6);
     assert.deepEqual(await state(), pending);
+    await screenshot(player, 'player-existing-tab-reconnected');
     console.log(JSON.stringify({mode: 'classic-generated-editor-restore', seed:42, startingHex:selection,
       confirmedHex:destination, sameEditorGeography:true, samePlayerLink:true,
       confirmedReload:true, pendingProposalReload:true, fileImport:false, distinctPlayerOrigin:true,
       playerContexts:2, deniedMasterRoutesOnPlayerOrigin:true, samePlayerLinkAfterServiceRestart:true,
       browserConfirmedSnapshot:true, offlineReadOnly:true, oldRoomReconnected:true,
-      firstMasterLoadInterrupted:true, resumedOriginalRoomFromCachedMap:true}));
+      firstMasterLoadInterrupted:true, resumedOriginalRoomFromCachedMap:true, existingPlayerResumedWithoutReload:true}));
   } finally {
     try {
       await Promise.all([masterContext.close(), playerContext.close(), secondContext.close()]);
