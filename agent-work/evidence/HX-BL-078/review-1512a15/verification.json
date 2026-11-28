@@ -1,0 +1,564 @@
+{
+  "task_id": "HX-BL-078",
+  "run_id": "2026-11-28-reviewer-HX078-ferry-1512a15-1400",
+  "role": "reviewer",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+  "head_tree_sha": "645bb5b2e034fe84602484b9d7272deeae2e9faa",
+  "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+  "integration_sha": "627fa5a499ff33f73c6486034412c170232bc699",
+  "integration_tree_sha": "b939755c4085f934bca526308b5112ea499ebc3e",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "publication_authorized": false,
+  "published": false,
+  "release_ready": false,
+  "schema_version": 1,
+  "recorded_at": "2026-11-28T11:18:54.397Z",
+  "status": "integrated_review_accepted_sites_pilot_pending",
+  "role_selection_reason": "Authorized HX-BL-078 exact SHA available after correction, stable main, no live concurrent claim, current CI green. Other owner approvals and interviews do not block this independent acceptance.",
+  "claim_ref": "agent-work/claims/2026-11-28-reviewer-HX078-ferry-1512a15-1400.json",
+  "generation": 1016,
+  "prior_result_ref": "agent-work/results/2026-11-28-programmer-HX078-ferry-duplicates-1200.json",
+  "reviewed_head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+  "integration_review_accepted": true,
+  "integrated_review_accepted": true,
+  "local_review_accepted": true,
+  "local_accepted_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+  "open_review_findings": [],
+  "verified_findings": [
+    {
+      "id": "F519-INTEGRATION-DUP-FERRY-010",
+      "status": "verified_fixed",
+      "acceptance_ids": [
+        "VTT-AC03",
+        "VTT-AC06",
+        "VTT-AC08"
+      ],
+      "proof": "На Classic seed 44 после ручного добавления рукава на старой карте с обратной копией ребра редактор, мастер и игрок показывают один знак парома. В редакторе два подхода, у игрока один на текущем берегу. Переход 2,-1 → 3,-1 сохраняется, прежняя ссылка открывает ту же комнату. После входа мастера из редактора прежний снимок отрисовки v2 обновляется до v3, открытая вкладка игрока сама показывает один знак.",
+      "evidence_ref": "agent-work/evidence/HX-BL-078/review-1512a15/verification.json"
+    }
+  ],
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-1512a15/score-assessment.json",
+  "score_assessment_status": "insufficient_evidence_L2",
+  "score_model_version": "1.3-rc8",
+  "preliminary_score_delta": 0,
+  "score_update_status": "not_due_unpublished",
+  "score_update_owner": "reviewer_after_verified_publication",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-1512a15/verification.json",
+  "visible_evidence": {
+    "before": {
+      "ferry_glyphs": 2,
+      "visible_approaches": 3,
+      "ref": "agent-work/evidence/HX-BL-078/integration-e20e04d/integration-duplicate-ferry-player.jpg"
+    },
+    "after": {
+      "ferry_glyphs": 1,
+      "visible_approaches": 1,
+      "ref": "agent-work/evidence/HX-BL-078/review-1512a15/integration-duplicate-ferry-player.jpg"
+    },
+    "focused_player": {
+      "ref": "agent-work/evidence/HX-BL-078/ferry-duplicates-1512a15/trail-ferry-legacy-player.jpg",
+      "git_blob_sha": "be8fa7cd5f4094f1924056537ce98cd2a2153a43",
+      "independent_capture_byte_identical": true
+    },
+    "cached_upgrade_comparison": {
+      "before_ref": "agent-work/evidence/HX-BL-078/review-1512a15/v2-ferry-player.jpg",
+      "after_ref": "agent-work/evidence/HX-BL-078/review-1512a15/v3-ferry-player.jpg",
+      "capture_note": "Synthetic stale snapshot with duplicated coincident draw geometry. SVG object counts and transition evidence prove the change; screenshots can look identical."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+    "head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Chromium VTT room preview",
+    "scenario": "verifyTrailFerry control strengthened to compare exact ferry geometry, player and master marks and a single per-bank approach. One distinct reversed duplicate case for permitted legacy roads reproduces the old regression.",
+    "risk": "A single normalized ferry crossing can produce duplicated routes and approaches after an accepted old map is opened.",
+    "reuse_or_new_reason": "Reuses the existing VTT browser flow with a distinct reversed duplicate fixture. An existing Node case checks crossing records rather than both banks' rendered lines.",
+    "count_source": "git diff 775cb6c..1512a15 on test/browser/vtt-room-preview.mjs, counting verifyTrailFerry control and distinct added call.",
+    "executed": {
+      "chromium_room_preview": {
+        "executed": 8,
+        "passed": 8,
+        "skipped": 0
+      },
+      "chromium_local_https": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "node": {
+        "executed": 461,
+        "passed": 461,
+        "failed": 0,
+        "skipped": 0,
+        "build_passed": true
+      },
+      "temporary_reviewer_diagnostics": {
+        "executed": 2,
+        "passed": 2,
+        "skipped": 0,
+        "observed": [
+          "legacy duplicate and cached v2→v3",
+          "singleton control"
+        ]
+      }
+    }
+  },
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46128734343",
+  "notes_ref": "agent-work/lessons.md",
+  "next_role": "programmer",
+  "next_step": "Программист готовит ограниченный прототип комнаты PR №519 для ChatGPT Sites на одной тестовой карте. Worker принимает запросы комнаты, D1 сохраняет позицию и приглашение. Проверяем наблюдаемый проход: мастер создаёт комнату, два игрока открывают ссылку, мастер подтверждает один шаг, та же позиция и ссылка переживают перезапуск Worker, отозванная ссылка перестаёт действовать. Отдельно проверить вход гостя после согласования аудитории. Публикация конкретного пакета требует разрешения владельца.",
+  "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-ferry-1512a15-1400-sites-pilot.json",
+  "authority_status": "approved_HX078_bounded_Sites_prototype_publication_separate",
+  "owner_platform_choice_ref": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json",
+  "owner_decision_required_for_next_step": false,
+  "owner_sites_publication_and_audience_pending": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-28T11:00:38.840Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "at": "2026-11-28T11:18:54.397Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restored": false,
+    "errors": []
+  },
+  "result": "Независимая проверка закрыла двойной паром на старой карте. Обновление старого снимка открыло исправленную карту в существующей вкладке игрока, сохранило подтверждённый ход и ссылку. Назначен следующий шаг по выбранному владельцем ChatGPT Sites.",
+  "limitations": [
+    "Browser verification used exact synthetic merge on local Node service and local HTTPS. ChatGPT Sites Worker/D1 and unauthenticated guest access remain to be tested.",
+    "Integrated defect scope is an identical trail segment repeated in reverse. Other malformed inputs and competing road definitions were not certified.",
+    "A separate synthetic old-artwork probe supplements the permanent fresh-room tests."
+  ],
+  "checkout": {
+    "sha": "627fa5a499ff33f73c6486034412c170232bc699",
+    "tree": "b939755c4085f934bca526308b5112ea499ebc3e",
+    "parents": [
+      "3858b059ec940cc77c63b99c29ca17825268ab38",
+      "1512a150f058ec767fa761a5138351e9d41bac1d"
+    ],
+    "matches_github_synthetic_merge": true,
+    "source_changes": false
+  },
+  "claim_inventory": {
+    "ops_commit": "a0422117c30ce1678ff80241ecdde058b5b63a8a",
+    "parsed": 1589,
+    "historical_active_labels": 11,
+    "unresolved_product_owners": 0,
+    "notes": "Legacy occurrences matched the lock ledger and completed results or a prior specific reconciliation for HX-RSR-001."
+  },
+  "acceptance_ids": [
+    "VTT-AC03",
+    "VTT-AC06",
+    "VTT-AC08"
+  ],
+  "comparisons": [
+    {
+      "mode": "integrated-legacy-trail-ferry",
+      "caseName": "duplicate",
+      "editorFerry": 1,
+      "playerFerry": 1,
+      "masterFerry": 1,
+      "playerMarks": 1,
+      "nativeApproaches": 2,
+      "playerApproaches": 1,
+      "playerStart": "2,-1"
+    },
+    {
+      "mode": "cached-room-v2-to-v3",
+      "confirmedPosition": "3,-1",
+      "invitePreserved": true,
+      "alreadyOpenPlayerRefreshed": true,
+      "ferryGlyphs": [
+        2,
+        1
+      ],
+      "artworkVersions": [
+        2,
+        3
+      ],
+      "revisionIncrement": 1
+    },
+    {
+      "mode": "integrated-seed44-manual-delta-to-vtt",
+      "beforeRiverStrokes": 7,
+      "afterRiverStrokes": 8,
+      "playerScopedMap": true,
+      "from": "2,-1",
+      "to": "3,-1",
+      "sameInviteAfterRestart": true
+    },
+    {
+      "mode": "integrated-legacy-trail-ferry",
+      "caseName": "single",
+      "editorFerry": 1,
+      "playerFerry": 1,
+      "masterFerry": 1,
+      "playerMarks": 1,
+      "nativeApproaches": 2,
+      "playerApproaches": 1,
+      "playerStart": "2,-1"
+    },
+    {
+      "mode": "integrated-seed44-manual-delta-to-vtt",
+      "beforeRiverStrokes": 7,
+      "afterRiverStrokes": 8,
+      "playerScopedMap": true,
+      "from": "2,-1",
+      "to": "3,-1",
+      "sameInviteAfterRestart": true
+    }
+  ],
+  "browser": [
+    {
+      "mode": "classic",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 5,
+      "durableRoomRestart": true,
+      "failedSavePreservedMove": true,
+      "revokedOpenTabs": 2,
+      "closedAndRotatedLinksSurvivedRestart": true,
+      "nativeLaunchFromSavedFineView": true,
+      "nativeZoomRetainedAfterRecovery": true,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 92,
+      "playerRoutesBefore": 7,
+      "playerRoutesAfter": 7,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "knave",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 3,
+      "durableRoomRestart": false,
+      "failedSavePreservedMove": false,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 92,
+      "playerRoutesBefore": 7,
+      "playerRoutesAfter": 7,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "crows",
+      "fixture": "classic-six-regions-seed42.json",
+      "contexts": 3,
+      "durableRoomRestart": false,
+      "failedSavePreservedMove": false,
+      "allCells": 52,
+      "firstCells": 7,
+      "afterCells": 6,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": false,
+      "matchedEngravings": 3,
+      "matchedBlends": 1,
+      "editorRoutes": 92,
+      "playerRoutesBefore": 7,
+      "playerRoutesAfter": 7,
+      "markTypes": [
+        "bridge"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "bridge"
+      ],
+      "masterPoints": 12,
+      "playerPointsBefore": [],
+      "playerPointsAfter": [
+        {
+          "q": 0,
+          "r": 0,
+          "icon": "/poi/v2/land/village.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "mythic",
+      "fixture": "terrain-display-map.json",
+      "contexts": 3,
+      "durableRoomRestart": false,
+      "failedSavePreservedMove": false,
+      "allCells": 206,
+      "firstCells": 7,
+      "afterCells": 7,
+      "from": {
+        "q": 0,
+        "r": 1
+      },
+      "to": {
+        "q": 0,
+        "r": 0
+      },
+      "proposedDirection": 2,
+      "rotated": true,
+      "matchedEngravings": 6,
+      "matchedBlends": 1,
+      "editorRoutes": 398,
+      "playerRoutesBefore": 13,
+      "playerRoutesAfter": 9,
+      "markTypes": [
+        "ferry",
+        "bridge",
+        "waterfall"
+      ],
+      "marksBefore": [
+        "bridge"
+      ],
+      "marksAfter": [
+        "ferry"
+      ],
+      "masterPoints": 41,
+      "playerPointsBefore": [
+        {
+          "q": 0,
+          "r": 1,
+          "icon": "/poi/v2/land/capital.svg",
+          "fill": "#ACB978"
+        }
+      ],
+      "playerPointsAfter": [],
+      "editorImport": true,
+      "reopenedFromEditor": true,
+      "previewSurvivesReload": true,
+      "samePlayerLink": true
+    },
+    {
+      "mode": "classic-generated-editor-restore",
+      "seed": 42,
+      "startingHex": "3,-2",
+      "confirmedHex": "4,-2",
+      "sameEditorGeography": true,
+      "samePlayerLink": true,
+      "confirmedReload": true,
+      "pendingProposalReload": true,
+      "fileImport": false,
+      "distinctPlayerOrigin": true,
+      "playerContexts": 2,
+      "deniedMasterRoutesOnPlayerOrigin": true,
+      "samePlayerLinkAfterServiceRestart": true,
+      "browserConfirmedSnapshot": true,
+      "offlineReadOnly": true,
+      "oldRoomReconnected": true,
+      "firstMasterLoadInterrupted": true,
+      "resumedOriginalRoomFromCachedMap": true,
+      "existingPlayerResumedWithoutReload": true
+    },
+    {
+      "mode": "lake-start-and-return",
+      "regionlessLake": "-2,12",
+      "waterInRegion": "-2,10",
+      "waterBiomeOmittedAfterReload": true,
+      "playerLinkPreserved": true
+    },
+    {
+      "mode": "trail-ferry",
+      "banks": [
+        "0,0",
+        "1,0"
+      ],
+      "nativeApproaches": 2,
+      "wholeGlyph": true,
+      "visibleTrailApproachesPerBank": 1,
+      "hiddenFrom": "2,0"
+    },
+    {
+      "mode": "trail-ferry-legacy-reversed-copy",
+      "banks": [
+        "0,0",
+        "1,0"
+      ],
+      "nativeApproaches": 2,
+      "wholeGlyph": true,
+      "visibleTrailApproachesPerBank": 1,
+      "hiddenFrom": "2,0"
+    }
+  ],
+  "https": [
+    {
+      "mode": "production-https",
+      "editorOrigin": true,
+      "separateMasterAndPlayerOrigins": true,
+      "productionEntry": true,
+      "confirmedMove": true,
+      "roomRestart": true,
+      "samePlayerLink": true,
+      "authorisedProjectionAfterRestart": true,
+      "publicBundleSecretFree": true,
+      "isolatedRooms": true,
+      "sameMapEditorRecovery": true,
+      "linkedEditorTabsIsolated": true,
+      "from": "0,1",
+      "to": "0,0"
+    }
+  ],
+  "node": {
+    "executed": 461,
+    "passed": 461,
+    "failed": 0,
+    "skipped": 0,
+    "build_passed": true
+  },
+  "actions": {
+    "run": 46128734343,
+    "head": "1512a150f058ec767fa761a5138351e9d41bac1d",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "browser",
+        "conclusion": "success"
+      },
+      {
+        "name": "world-random",
+        "conclusion": "success"
+      },
+      {
+        "name": "check",
+        "conclusion": "success"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "conclusion": "skipped"
+      }
+    ],
+    "check_job": 140929019204,
+    "checkout_verified_in_job_log": "627fa5a499ff33f73c6486034412c170232bc699",
+    "check_node_executed": 461,
+    "check_node_passed": 461,
+    "https_artifact": 15256818828
+  },
+  "secondary_independent_review": {
+    "agent": "fresh-context read-only reviewer",
+    "verdict": "no blocking code finding for exact delta",
+    "reviewed": [
+      "normalized roadId and endpoint pair",
+      "consistent approach and glyph capture",
+      "room storage schema 1/2 and artwork versions 1/2/3",
+      "in-place v3 upgrade at matching digest with master authority",
+      "scope and logical count of permanent tests"
+    ],
+    "source_refs": [
+      "src/App.tsx:748–751",
+      "src/App.tsx:12831–12850",
+      "src/App.tsx:15979–16021",
+      "src/App.tsx:16050–16059",
+      "scripts/vtt-preview/room-storage.mjs:17–35",
+      "scripts/vtt-preview/server.mjs:148–178",
+      "scripts/vtt-preview/server.mjs:284–309",
+      "test/browser/vtt-room-preview.mjs:770–841"
+    ],
+    "limitation": "Read-only code review. Fresh-room cases lack a legacy stored-artwork fixture, which the root reviewer exercises separately."
+  },
+  "temporary_diagnostic": {
+    "script": "agent-work/evidence/HX-BL-078/review-1512a15/integration-diagnostic.mjs",
+    "fixture": "agent-work/evidence/HX-BL-074/manual-delta-45d835d/seed44-crossing-fixture.json",
+    "startup": "Copy the temporary script to test/browser/ in the exact integrated checkout. Put the fixture at /tmp/hx10-crossing.json and provide /tmp/chromium. Create proof/ and run separately with HX10_CASE=single and HX10_CASE=duplicate.",
+    "caveat": "The first downgrade attempt kept a browser on the v3 revision while hand-seeding v2 at the same revision and therefore observed the client's unchanged-revision cache. The final run starts the player on the v2 snapshot after loading it, then leaves the tab open while the master reopens from the editor to exercise the real v2→v3 revision, same link and saved position."
+  },
+  "published_score_verification": {
+    "pr_511_rc8_completed": true,
+    "pr_520_rc8_completed": true,
+    "pr_519_event_exists": false,
+    "score_mutation_required": false
+  }
+}

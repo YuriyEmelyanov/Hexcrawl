@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-078",
+  "run_id": "2026-11-28-reviewer-HX078-ferry-1512a15-1400",
+  "role": "reviewer",
+  "stage_id": "VTT-FIRST",
+  "implementation_slice_id": "VTT-RELEASE-1",
+  "pr": 519,
+  "pr_number": 519,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
+  "branch": "agent/hx078-vtt-live-1",
+  "base_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+  "head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+  "head_tree_sha": "645bb5b2e034fe84602484b9d7272deeae2e9faa",
+  "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+  "integration_sha": "627fa5a499ff33f73c6486034412c170232bc699",
+  "integration_tree_sha": "b939755c4085f934bca526308b5112ea499ebc3e",
+  "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
+  "publication_authorized": false,
+  "published": false,
+  "release_ready": false,
+  "status": "bounded_sites_pilot_ready_for_programmer",
+  "next_role": "programmer",
+  "next_step": "Программист готовит ограниченный прототип комнаты PR №519 для ChatGPT Sites на одной тестовой карте. Worker принимает запросы комнаты, D1 сохраняет позицию и приглашение. Проверяем наблюдаемый проход: мастер создаёт комнату, два игрока открывают ссылку, мастер подтверждает один шаг, та же позиция и ссылка переживают перезапуск Worker, отозванная ссылка перестаёт действовать. Отдельно проверить вход гостя после согласования аудитории. Публикация конкретного пакета требует разрешения владельца.",
+  "owner_platform_choice_ref": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json",
+  "plan_ref": "agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md",
+  "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-ferry-1512a15-1400.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-078/review-1512a15/verification.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-078/review-1512a15/score-assessment.json",
+  "scope_authority": "Existing approved HX-BL-078 plus owner-selected ChatGPT Sites. Build and exercise a bounded adapter within the F1 requirements. Publication and audience decision are independent.",
+  "scope": [
+    "Одна существующая карта Classic 5–6 миль, один профиль комнаты, два клиента.",
+    "Перенести HTTP-обработку и хранилище в Worker и D1 с той же семантикой действий и прав; использовать проверенный редактор и правила комнаты.",
+    "Воспроизвести сохранение шага, перезапуск и отзыв приглашения. Одновременные подтверждения проверяют, что ход записан один раз."
+  ],
+  "done_when": [
+    "Показан запуск комнаты из редактора и согласованный ход на той же тестовой карте после пересоздания Worker.",
+    "Показаны оба клиента с разрешённой частью карты, прежняя ссылка и текущая позиция после переразвёртывания без замены хранилища, опровергнут вход по отозванной ссылке.",
+    "Зафиксированы точный SHA, версия пилотной конфигурации, скриншоты и отдельный статус гостевого входа."
+  ],
+  "depends_on": [
+    "Worker и D1 в выбранном ChatGPT Sites",
+    "Отдельное решение об аудитории для проверки ссылки гостем без учётной записи",
+    "Отдельное разрешение публикации конкретного проверенного пакета"
+  ],
+  "forecast": {
+    "unit": "team work runs",
+    "estimate": "3–5",
+    "basis": "Этапы прототипа на одной карте, браузерной проверки совместимости и независимой приёмки. Уверенность низкая до первой проверки D1 и размещения отдельных входов.",
+    "external_waits_excluded": true
+  },
+  "scope_change_approved": false,
+  "spend_authorized": false,
+  "public_audience_authorized": false,
+  "recorded_at": "2026-11-28T11:18:54.397Z"
+}
