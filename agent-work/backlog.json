@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-28T07:16:49.344Z",
+  "updated_at": "2026-11-28T09:21:59.853Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -3902,24 +3902,24 @@
       "ready_for_development": true,
       "implementation_authorized": true,
       "release_authorized": false,
-      "next_step": "Исправить F519-INTEGRATION-DUP-FERRY-010 в границах HX-BL-078: обеспечить один знак и корректные подходы для одной логической переправы на обоих направлениях пары при допустимом старом JSON. Сохранить одиночный контроль и разрешённую карту игрока. Передать новый SHA и подтверждение на дереве с текущей main для независимой проверки.",
+      "next_step": "Независимо проверить 1512a150f058ec767fa761a5138351e9d41bac1d и дерево b939755c4085f934bca526308b5112ea499ebc3e по F519-INTEGRATION-DUP-FERRY-010: одна отметка и один знак в редакторе, на карте мастера и в разрешённом виде игрока, один подход на каждом берегу, прежняя ссылка и позиция после обновления принятого старого снимка. Отдельно зафиксировать предварительную оценку 1.3-rc8. Для стенда выбран ChatGPT Sites; проработку Worker и D1 вести по сохранённой передаче agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md. Публикация проверенного пакета согласуется отдельно.",
       "approved_at": "2026-11-26T10:33:08.573Z",
-      "updated_at": "2026-11-28T07:16:49.344Z",
+      "updated_at": "2026-11-28T09:21:59.853Z",
       "stage_id": "VTT-FIRST",
       "draft_spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-D1.2.md",
       "draft_spec_version": "D1.2",
       "ui_preview_ref": "agent-work/evidence/HX-BL-078/vtt-F1/preview.json",
       "ui_preview_version": "F1-ui",
       "base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-      "execution_state": "integration_changes_requested",
+      "execution_state": "review_ready",
       "interview_status": "completed",
       "interview_completed": true,
       "ui_preview_status": "prepared_for_presentation_in_current_chat",
       "ui_preview_pending": false,
       "ui_preview_owner": "business_analyst",
-      "next_role": "programmer",
-      "result_ref": "agent-work/results/2026-11-28-reviewer-HX078-integration-dry-run-1000.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-integration-dry-run-1000-fix.json",
+      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-11-28-programmer-HX078-ferry-duplicates-1200.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-28-programmer-HX078-ferry-duplicates-1200-review.json",
       "owner_clarification_ref": "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
       "owner_clarification_refs": [
         "agent-work/decisions/owner-2026-11-26-HX078-map-visibility.json",
@@ -3940,9 +3940,9 @@
           "title": "Живая карта отряда",
           "remaining_runs": [
             4,
-            7
+            8
           ],
-          "state": "integration_changes_requested",
+          "state": "review_ready",
           "acceptance": [
             "VTT-AC01",
             "VTT-AC02",
@@ -3984,17 +3984,17 @@
       "forecast": {
         "remaining_first_release_runs": [
           4,
-          7
+          8
         ],
         "confidence": "low",
-        "basis": "Ограниченное исправление и повторная независимая приёмка, затем разрешённая проверка поставляемой среды и выпуск. Ожидание решения владельца о среде и публикации не включено."
+        "basis": "Независимая проверка парома, ограниченный Worker/D1 пилот, внешняя гостевая проверка, выпуск после решения владельца. Ожидание доступа и согласований отдельно."
       },
       "branch": "agent/hx078-vtt-live-1",
-      "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+      "head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/519",
       "pr_number": 519,
-      "review_ready": false,
-      "evidence_ref": "agent-work/evidence/HX-BL-078/integration-e20e04d/verification.json",
+      "review_ready": true,
+      "evidence_ref": "agent-work/evidence/HX-BL-078/ferry-duplicates-1512a15/verification.json",
       "vtt_map_scale_scope": {
         "map_hex_size_miles": "5–6",
         "generation_modes": [
@@ -4010,13 +4010,16 @@
         ],
         "decision_ref": "agent-work/decisions/owner-2026-11-26-HX078-vtt-map-modes.json"
       },
-      "checks_status": "standard_checks_pass_and_diagnostic_failed",
+      "checks_status": "success",
       "review_submission": {
-        "state": "integration_changes_requested",
-        "role": "programmer",
-        "finding_id": "F519-INTEGRATION-DUP-FERRY-010",
-        "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
-        "integration_tree_sha": "e20e04d07ca5a6162ee6f125c1d1046998101b14"
+        "state": "review_ready",
+        "role": "reviewer",
+        "head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+        "integration_tree_sha": "b939755c4085f934bca526308b5112ea499ebc3e",
+        "scope": [
+          "F519-INTEGRATION-DUP-FERRY-010"
+        ],
+        "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46128734343"
       },
       "score_assessment_ref": "agent-work/evidence/HX-BL-078/integration-e20e04d/score-assessment.json",
       "review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-integration-dry-run-1000.json",
@@ -4025,7 +4028,7 @@
           "id": "F519-INTEGRATION-DUP-FERRY-010",
           "severity": "P2",
           "blocking": true,
-          "status": "open",
+          "status": "addressed_pending_independent_review",
           "confidence": "paired_browser_case_on_exact_integration_tree",
           "acceptance_ids": [
             "VTT-AC03",
@@ -4063,18 +4066,22 @@
             "playerMarks": 1,
             "editorApproaches": 4,
             "playerApproaches": 3
-          }
+          },
+          "fix_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+          "fix_evidence_ref": "agent-work/evidence/HX-BL-078/ferry-duplicates-1512a15/verification.json"
         }
       ],
       "reviewed_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
-      "previous_result_ref": "agent-work/results/2026-11-28-strategist-HX078-https-pilot-0800.json",
+      "previous_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-integration-dry-run-1000.json",
       "previous_score_assessment_ref": "agent-work/evidence/HX-BL-078/review-bf83c32/score-assessment.json",
       "previous_reviewed_sha": "2bf312d80d8fbed6a9a8cd9fc20927d414070d60",
       "previous_review_result_ref": "agent-work/results/2026-11-27-reviewer-HX078-bf83c32-2200.json",
-      "addressed_findings_pending_review": [],
+      "addressed_findings_pending_review": [
+        "F519-INTEGRATION-DUP-FERRY-010"
+      ],
       "publication_authorized": false,
       "external_dependency": {
-        "status": "awaiting_owner_for_bounded_https_pilot",
+        "status": "sites_selected_adaptation_pending",
         "owner_has_existing_stand": false,
         "source_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
         "local_review_blocked": false,
@@ -4091,7 +4098,7 @@
         "note": "Эфемерная HTTPS-среда прошла. Перед выпуском требуется рабочий сервис в конфигурации сайта.",
         "release_blockers": [
           "F519-INTEGRATION-DUP-FERRY-010",
-          "production_vtt_endpoint_and_deployment_unverified"
+          "sites_worker_and_d1_delivery_unverified"
         ],
         "public_hosting_required_before_release": true,
         "local_implementation_checks_completed": true,
@@ -4106,12 +4113,16 @@
         },
         "prior_handoff_ref": "agent-work/handoffs/2026-11-27-reviewer-HX078-2bf312d-1105-next.json",
         "planning_completed": true,
-        "delivery_pilot_proposal_ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
+        "delivery_pilot_proposal_ref": "agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md",
         "provisioned": false,
-        "independent_code_fix_ready": true
+        "independent_code_fix_ready": true,
+        "platform_choice_ref": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json",
+        "previous_selectel_proposal_ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
+        "room_service_still_unverified": true,
+        "code_fix_local_checks_completed": true
       },
-      "local_review_completed": true,
-      "review_completed": true,
+      "local_review_completed": false,
+      "review_completed": false,
       "verified_findings": [
         {
           "id": "F519-RESTORE-004",
@@ -4165,8 +4176,8 @@
         }
       ],
       "delivery_validation_plan_ref": "agent-work/results/2026-11-27-HX078-vtt-https-ci-plan.json",
-      "candidate_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
-      "checks_url": "agent-work/evidence/HX-BL-078/integration-e20e04d/verification.json",
+      "candidate_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46128734343",
       "test_change_summary": {
         "base_sha": "bf83c32921dae2df9d4e098695742e75e2535162",
         "head_sha": "412e20cc7030f73a5755f8b8ea5f95f0cb64a06b",
@@ -4214,8 +4225,8 @@
           }
         }
       },
-      "review_status": "integration_changes_requested",
-      "review_verdict": "integration_changes_requested",
+      "review_status": "awaiting_exact_sha_recheck",
+      "review_verdict": "pending_exact_sha_recheck",
       "review_evidence_ref": "agent-work/evidence/HX-BL-078/integration-e20e04d/verification.json",
       "fix_handoff_ref": "agent-work/handoffs/2026-11-28-reviewer-HX078-integration-dry-run-1000-fix.json",
       "score_assessment": {
@@ -4226,97 +4237,51 @@
         "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
         "integration_tree_sha": "e20e04d07ca5a6162ee6f125c1d1046998101b14"
       },
-      "score_assessment_status": "insufficient_evidence",
-      "tree_sha": "deb07dccfbd5bf7eda8099a45549a766ebfab821",
-      "evidence_path": "agent-work/evidence/HX-BL-078/integration-e20e04d/verification.json",
-      "result_path": "agent-work/results/2026-11-28-reviewer-HX078-integration-dry-run-1000.json",
-      "handoff_path": "agent-work/handoffs/2026-11-28-reviewer-HX078-integration-dry-run-1000-fix.json",
+      "score_assessment_status": "awaiting_independent_exact_sha_review",
+      "tree_sha": "645bb5b2e034fe84602484b9d7272deeae2e9faa",
+      "evidence_path": "agent-work/evidence/HX-BL-078/ferry-duplicates-1512a15/verification.json",
+      "result_path": "agent-work/results/2026-11-28-programmer-HX078-ferry-duplicates-1200.json",
+      "handoff_path": "agent-work/handoffs/2026-11-28-programmer-HX078-ferry-duplicates-1200-review.json",
       "accepted_sha": null,
-      "implementation_head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
-      "review_ready_sha": null,
-      "fix_evidence_ref": "agent-work/evidence/HX-BL-078/reconnect-map-775cb6c/verification.json",
-      "local_review_accepted": true,
-      "local_accepted_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
+      "implementation_head_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+      "review_ready_sha": "1512a150f058ec767fa761a5138351e9d41bac1d",
+      "fix_evidence_ref": "agent-work/evidence/HX-BL-078/ferry-duplicates-1512a15/verification.json",
+      "local_review_accepted": false,
+      "local_accepted_sha": null,
       "release_ready": false,
-      "prior_review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-775cb6c-0600.json",
+      "prior_review_result_ref": "agent-work/results/2026-11-28-reviewer-HX078-integration-dry-run-1000.json",
       "delivery_pilot": {
-        "task_id": "HX-BL-078",
-        "stage_id": "VTT-FIRST",
-        "implementation_slice_id": "VTT-RELEASE-1",
-        "proposal_id": "HX-BL-078-HTTPS-PILOT",
-        "proposal_status": "proposed",
-        "proposal_ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
-        "result_ref": "agent-work/results/2026-11-28-strategist-HX078-https-pilot-0800.json",
-        "review": "agent-work/results/2026-11-28-reviewer-HX078-775cb6c-0600.json",
-        "review_delivery_handoff": "agent-work/handoffs/2026-11-28-reviewer-HX078-775cb6c-0600-delivery.json",
-        "decision_ref": "agent-work/decisions/owner-2026-11-27-HX078-no-https-stand.json",
-        "spec_ref": "agent-work/specs/HX-BL-078-vtt-movement-fog-F1.md",
-        "score_ref": "agent-work/evidence/HX-BL-078/review-775cb6c/score-assessment.json",
-        "checked_workflow_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/3858b059ec940cc77c63b99c29ca17825268ab38/.github/workflows/deploy.yml",
-        "check_run_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/46091727619",
-        "integration": {
-          "head_sha": "775cb6c9c78f3a763490d30ec394a1bb2edfea25",
-          "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
-          "common_base_sha": "3d85da66a5d115c049a512664ef72ca448eabc20",
-          "method": "git merge-tree --write-tree --merge-base using exact refs; local only",
-          "textual_conflicts": false,
-          "preview_tree_sha": "e20e04d07ca5a6162ee6f125c1d1046998101b14",
-          "commit_created": false,
-          "merged_build_tested": false
-        },
-        "selected": {
-          "provider": "Selectel",
-          "plan": "VDS 1-2-25",
-          "currency": "RUB",
-          "rate_per_hour": 0.34,
-          "server_hours_max": 72,
-          "estimated_consumption": 24.48,
-          "spend_cap": 30,
-          "minimum_new_account_top_up": 200,
-          "full_access_tester_limit": 1,
-          "player_contexts": 2,
-          "production": false,
-          "pricing_checked_on": "2026-11-28",
-          "sources": [
-            "https://selectel.ru/services/cloud/vps-vds/hourly-paid/",
-            "https://docs.selectel.ru/vds-servers/about/about-vds-server/",
-            "https://docs.selectel.ru/vds-servers/about/payment/",
-            "https://docs.selectel.ru/account/registration/",
-            "https://docs.selectel.ru/vds-servers/manage/manage-server/",
-            "https://caddyserver.com/docs/automatic-https"
-          ]
-        },
-        "candidate": {
-          "task_id": "HX-BL-068",
-          "state": "existing_proposal_awaiting_owner_approval",
-          "ref": "agent-work/proposals/2026-11-26-HX-BL-068-great-lake-islands.json",
-          "baseline_recheck_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
-          "verified": "В поле «Берег» текущего кода всё ещё Авто, Побережье, Материк. Правило WAT-02 сохраняет незачтённый автоматический сценарий. Реализация независимо возможна после утверждения.",
-          "forecast_l1_max": 0.6535947712418301
-        },
-        "next_role": "owner",
-        "next_step": "Ожидается решение владельца по HX-BL-078-HTTPS-PILOT: временный стенд Selectel до 72 ч, лимит потребления 30 ₽, возможное первое пополнение 200 ₽ и назначение доступа к проекту и трём тестовым поддоменам. После разрешения программист готовит проверяемый интеграционный SHA. Независимый кандидат HX-BL-068 уже ожидает утверждения.",
-        "posted_approval_request": false,
-        "implementation_authorized": false,
+        "commit": "d40216a0a202b2ff6d15b421a9d88fdfc86bd9c2",
+        "choiceRef": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json",
+        "planRef": "agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md",
+        "selected": "ChatGPT Sites",
+        "priorSelectelRef": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
+        "existingProjectMatches": 0,
+        "deployment_authorized": false,
+        "public_audience_authorized": false,
         "spend_authorized": false,
-        "provisioning_authorized": false,
-        "dns_authorized": false,
-        "publication_authorized": false,
-        "readiness_after_owner": {
-          "next_role": "programmer",
-          "approval_required": true,
-          "delivery": "Изолированная сборка на точном интеграционном SHA, поднимающая одну комнату на тестовых адресах. Передача проверяющему с фиксацией фактической цены и датой удаления."
-        }
+        "task_id": "HX-BL-078",
+        "proposal_status": "platform_selected_adaptation_pending",
+        "proposal_ref": "agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md",
+        "decision_ref": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json",
+        "prior_selectel_proposal": {
+          "ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
+          "status": "superseded_by_owner"
+        },
+        "next_after_exact_review": "Bounded ChatGPT Sites Worker and D1 pilot implementation readiness. Verify audience needed for anonymous players."
       },
-      "delivery_proposal_ref": "agent-work/proposals/2026-11-28-HX-BL-078-https-pilot.md",
-      "delivery_proposal_status": "proposed",
+      "delivery_proposal_ref": "agent-work/handoffs/2026-11-28-HX078-sites-room-pilot.md",
+      "delivery_proposal_status": "platform_selected_adaptation_pending",
       "strategy_result_ref": "agent-work/results/2026-11-28-strategist-HX078-https-pilot-0800.json",
       "owner_decision_required_for_next_step": false,
       "integrated_review_accepted": false,
-      "integration_review_completed": true,
+      "integration_review_completed": false,
       "integration_review_tree_sha": "e20e04d07ca5a6162ee6f125c1d1046998101b14",
       "integration_review_sha": "6142d162011c6c422e31d2d12cafd77420a05115",
-      "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38"
+      "main_sha": "3858b059ec940cc77c63b99c29ca17825268ab38",
+      "integration_tree_sha": "b939755c4085f934bca526308b5112ea499ebc3e",
+      "integration_sha": "627fa5a499ff33f73c6486034412c170232bc699",
+      "owner_platform_choice_ref": "agent-work/decisions/owner-2026-11-28-HX078-chatgpt-sites.json"
     }
   ],
   "retired_pr_packages": {
